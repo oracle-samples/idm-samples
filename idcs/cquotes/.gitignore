@@ -1,0 +1,6 @@
+# The following file types will not be added to the Git repo
+
+nb-configuration.xml
+target
+.project
+.classpath
