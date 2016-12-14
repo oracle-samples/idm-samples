@@ -1,0 +1,126 @@
+{
+  "name": "Postman Globals",
+  "values": [
+    {
+      "key": "userid",
+      "value": "",
+      "type": "text",
+      "enabled": true
+    },
+    {
+      "key": "userid1",
+      "value": "",
+      "type": "text",
+      "enabled": true
+    },
+    {
+      "key": "userid2",
+      "value": "",
+      "type": "text",
+      "enabled": true
+    },
+    {
+      "key": "userid3",
+      "value": "",
+      "type": "text",
+      "enabled": true
+    },
+    {
+      "key": "groupid",
+      "value": "",
+      "type": "text",
+      "enabled": true
+    },
+    {
+      "key": "groupid1",
+      "value": "",
+      "type": "text",
+      "enabled": true
+    },
+    {
+      "key": "groupid2",
+      "value": "",
+      "type": "text",
+      "enabled": true
+    },
+    {
+      "key": "groupid3",
+      "value": "",
+      "type": "text",
+      "enabled": true
+    },
+    {
+      "key": "appid",
+      "value": "",
+      "type": "text",
+      "enabled": true
+    },
+    {
+      "key": "appid1",
+      "value": "",
+      "type": "text",
+      "enabled": true
+    },
+    {
+      "key": "appid2",
+      "value": "",
+      "type": "text",
+      "enabled": true
+    },
+    {
+      "key": "appid3",
+      "value": "",
+      "type": "text",
+      "enabled": true
+    },
+    {
+      "key": "filename",
+      "value": "",
+      "type": "text",
+      "enabled": true
+    },
+    {
+      "key": "filename1",
+      "value": "",
+      "type": "text",
+      "enabled": true
+    },
+    {
+      "key": "filename2",
+      "value": "",
+      "type": "text",
+      "enabled": true
+    },
+    {
+      "key": "filename3",
+      "value": "",
+      "type": "text",
+      "enabled": true
+    },
+    {
+      "key": "idpid",
+      "value": "",
+      "type": "text",
+      "enabled": true
+    },
+    {
+      "key": "idpid1",
+      "value": "",
+      "type": "text",
+      "enabled": true
+    },
+    {
+      "key": "idpid2",
+      "value": "",
+      "type": "text",
+      "enabled": true
+    },
+    {
+      "key": "idpid3",
+      "value": "",
+      "type": "text",
+      "enabled": true
+    }
+  ],
+  "_postman_variable_scope": "globals"
+}

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+         version="2.5" xmlns="http://java.sun.com/xml/ns/javaee">
+    <session-config>
+        <session-timeout>30</session-timeout>
+    </session-config>
+    <error-page>
+        <error-code>401</error-code>
+        <location>/unauthorizedAccess.jsp</location>
+    </error-page>
+    <error-page>
+        <error-code>403</error-code>
+        <location>/unauthorizedAccess.jsp</location>
+    </error-page>
+    <security-constraint>
+        <display-name>Employee</display-name>
+        <web-resource-collection>
+            <web-resource-name>Index</web-resource-name>
+            <url-pattern>/index.jsp</url-pattern>
+        </web-resource-collection>
+        <web-resource-collection>
+            <web-resource-name>My Profile</web-resource-name>
+            <url-pattern>/myprofile.jsp</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>appemployee</role-name>
+            <role-name>appmanager</role-name>
+            <role-name>appsecurity</role-name>
+        </auth-constraint>
+    </security-constraint>
+    <security-constraint>
+        <display-name>Manager</display-name>
+        <web-resource-collection>
+            <web-resource-name>Manager</web-resource-name>
+            <url-pattern>/manager.jsp</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>appmanager</role-name>
+        </auth-constraint>
+    </security-constraint>
+    <security-constraint>
+        <display-name>Security</display-name>
+        <web-resource-collection>
+            <web-resource-name>Security Report</web-resource-name>
+            <url-pattern>/securityReport.jsp</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>appsecurity</role-name>
+        </auth-constraint>
+    </security-constraint>
+    <login-config>
+        <auth-method>CLIENT-CERT,BASIC</auth-method>
+        <realm-name>myrealm</realm-name>
+    </login-config>
+    <security-role>
+        <description>Company Manager</description>
+        <role-name>appmanager</role-name>
+    </security-role>
+    <security-role>
+        <description>Security Officers</description>
+        <role-name>appsecurity</role-name>
+    </security-role>
+    <security-role>
+        <description>Regular Employee</description>
+        <role-name>appemployee</role-name>
+    </security-role>
+</web-app>

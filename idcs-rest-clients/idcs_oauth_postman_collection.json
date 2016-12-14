@@ -1,0 +1,291 @@
+{
+	"id": "6e6af634-e5f4-c6eb-e965-7be3de0f4722",
+	"name": "IDCS OAuth",
+	"description": "",
+	"order": [],
+	"folders": [
+		{
+			"id": "7b14106a-8972-3e32-4cf8-e461d3fe7475",
+			"name": "Keys - Search",
+			"description": "",
+			"order": [
+				"f3217e06-186d-4389-fdd7-1d6e90401647"
+			],
+			"owner": 0,
+			"collectionId": "291ec741-a3fa-5834-8c81-2fe0925b3b71"
+		},
+		{
+			"id": "a6acb240-c075-dc19-b8c5-adc9f1615597",
+			"name": "OAuth Configuration - Search",
+			"description": "",
+			"order": [
+				"b8dab749-215b-efbd-eb65-1ae0b7bac768",
+				"00fbbbd8-8e01-c4c3-75aa-9db77e57f11b",
+				"6addfdf6-05ec-3889-7899-2b37deb6e05f",
+				"74f97cb0-3a7f-0e9b-12c5-17229ce3fbbd",
+				"cb77267c-d6f3-a181-6b86-ed8d0c1be384"
+			],
+			"owner": 0,
+			"collectionId": "291ec741-a3fa-5834-8c81-2fe0925b3b71"
+		},
+		{
+			"id": "680c5557-ce2d-e8a6-66b3-5b2f4bf1e826",
+			"name": "Tokens - Get (Authorize)",
+			"description": "",
+			"order": [
+				"914bff92-48eb-86df-c680-74378fe85fab",
+				"8aa7d8fc-208b-714c-b400-d94fe233a8f5"
+			],
+			"owner": 0,
+			"collectionId": "291ec741-a3fa-5834-8c81-2fe0925b3b71"
+		},
+		{
+			"id": "960ecb40-b81e-c933-68f0-0e78f326e00d",
+			"name": "Tokens - Validate Tokens and Authorization",
+			"description": "",
+			"order": [
+				"940acec7-1b11-86e2-6fa3-f7130d1b9d14"
+			],
+			"owner": 0,
+			"collectionId": "291ec741-a3fa-5834-8c81-2fe0925b3b71"
+		}
+	],
+	"timestamp": 0,
+	"owner": 0,
+	"public": false,
+	"requests": [
+		{
+			"id": "00fbbbd8-8e01-c4c3-75aa-9db77e57f11b",
+			"headers": "Authorization: Bearer {{access_token}}\n",
+			"url": "{{HOST}}/admin/v1/OAuthConfig?attributes=accessTokenExpirySeconds,refreshTokenExpirySeconds",
+			"pathVariables": {},
+			"preRequestScript": null,
+			"method": "GET",
+			"collectionId": "6e6af634-e5f4-c6eb-e965-7be3de0f4722",
+			"data": [],
+			"dataMode": "params",
+			"name": "Search all OAuth configurations (get token timeouts)",
+			"description": "",
+			"descriptionFormat": "html",
+			"time": 1469054528810,
+			"version": 2,
+			"responses": [],
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"folder": "a6acb240-c075-dc19-b8c5-adc9f1615597"
+		},
+		{
+			"id": "6addfdf6-05ec-3889-7899-2b37deb6e05f",
+			"headers": "Authorization: Bearer {{access_token}}\n",
+			"url": "{{HOST}}/admin/v1/OAuthConfig/OAuthConfig?attributes=accessTokenExpirySeconds,refreshTokenExpirySeconds",
+			"pathVariables": {},
+			"preRequestScript": null,
+			"method": "GET",
+			"collectionId": "6e6af634-e5f4-c6eb-e965-7be3de0f4722",
+			"data": [],
+			"dataMode": "params",
+			"name": "Search default OAuth configuration (OAuthConfig) (get token timeouts)",
+			"description": "",
+			"descriptionFormat": "html",
+			"time": 1469054563090,
+			"version": 2,
+			"responses": [],
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"folder": "a6acb240-c075-dc19-b8c5-adc9f1615597"
+		},
+		{
+			"id": "74f97cb0-3a7f-0e9b-12c5-17229ce3fbbd",
+			"headers": "Authorization: Bearer {{access_token}}\nContent-Type: application/scim+json\n",
+			"url": "{{HOST}}/admin/v1/OAuthConfig/.search",
+			"preRequestScript": null,
+			"pathVariables": {},
+			"method": "POST",
+			"data": [],
+			"dataMode": "raw",
+			"version": 2,
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1469054453482,
+			"name": "Search for oauth configs using POST",
+			"description": "",
+			"collectionId": "6e6af634-e5f4-c6eb-e965-7be3de0f4722",
+			"responses": [],
+			"folder": "a6acb240-c075-dc19-b8c5-adc9f1615597",
+			"rawModeData": "{\r\n  \"schemas\": [\"urn:ietf:params:scim:api:messages:2.0:SearchRequest\"],\r\n  \"attributes\": [\"accessTokenExpirySeconds\", \"refreshTokenExpirySeconds\", \"maxAllowedScopesPerResource\", \"clockSkewSeconds\"],\r\n  \"sortOrder\": \"ASCENDING\"\r\n}"
+		},
+		{
+			"id": "8aa7d8fc-208b-714c-b400-d94fe233a8f5",
+			"headers": "",
+			"url": "{{HOST}}/oauth2/v1/token",
+			"preRequestScript": null,
+			"pathVariables": {},
+			"method": "POST",
+			"data": [
+				{
+					"key": "grant_type",
+					"value": "password",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "scope",
+					"value": "urn:opc:idm:__myscopes__",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "username",
+					"value": "{{USER_LOGIN}}",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "password",
+					"value": "{{USER_PW}}",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"dataMode": "urlencoded",
+			"tests": null,
+			"currentHelper": "basicAuth",
+			"helperAttributes": {
+				"id": "basic",
+				"username": "{{CLIENT_ID}}",
+				"password": "{{CLIENT_SECRET}}",
+				"saveToRequest": true
+			},
+			"time": 1479763157221,
+			"name": "Obtain access_token (resource owner)",
+			"description": "",
+			"collectionId": "6e6af634-e5f4-c6eb-e965-7be3de0f4722",
+			"responses": []
+		},
+		{
+			"id": "914bff92-48eb-86df-c680-74378fe85fab",
+			"name": "Obtain access_token (client credentials)",
+			"description": "",
+			"collectionId": "6e6af634-e5f4-c6eb-e965-7be3de0f4722",
+			"method": "POST",
+			"headers": "",
+			"dataMode": "urlencoded",
+			"data": [
+				{
+					"key": "grant_type",
+					"value": "client_credentials",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "scope",
+					"value": "urn:opc:idm:__myscopes__",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"rawModeData": "",
+			"url": "{{HOST}}/oauth2/v1/token",
+			"responses": [],
+			"folder": "680c5557-ce2d-e8a6-66b3-5b2f4bf1e826",
+			"preRequestScript": "",
+			"tests": ""
+		},
+		{
+			"id": "940acec7-1b11-86e2-6fa3-f7130d1b9d14",
+			"headers": "",
+			"url": "{{HOST}}/oauth2/v1/introspect",
+			"preRequestScript": null,
+			"pathVariables": {},
+			"method": "POST",
+			"data": [
+				{
+					"key": "token",
+					"value": "{{access_token}}",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"dataMode": "urlencoded",
+			"tests": null,
+			"currentHelper": "basicAuth",
+			"helperAttributes": {
+				"id": "basic",
+				"username": "{{CLIENT_ID}}",
+				"password": "{{CLIENT_SECRET}}",
+				"saveToRequest": true
+			},
+			"time": 1479774306175,
+			"name": "Validate access_token (introspect)",
+			"description": "",
+			"collectionId": "6e6af634-e5f4-c6eb-e965-7be3de0f4722",
+			"responses": []
+		},
+		{
+			"id": "b8dab749-215b-efbd-eb65-1ae0b7bac768",
+			"headers": "Authorization: Bearer {{access_token}}\n",
+			"url": "{{HOST}}/admin/v1/OAuthConfig",
+			"pathVariables": {},
+			"preRequestScript": null,
+			"method": "GET",
+			"collectionId": "6e6af634-e5f4-c6eb-e965-7be3de0f4722",
+			"data": [],
+			"dataMode": "params",
+			"name": "Search all OAuth configurations",
+			"description": "",
+			"descriptionFormat": "html",
+			"time": 1469053959358,
+			"version": 2,
+			"responses": [],
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"folder": "a6acb240-c075-dc19-b8c5-adc9f1615597"
+		},
+		{
+			"id": "cb77267c-d6f3-a181-6b86-ed8d0c1be384",
+			"headers": "Authorization: Bearer {{access_token}}\n",
+			"url": "{{HOST}}/admin/v1/OAuthConfig/OAuthConfig",
+			"pathVariables": {},
+			"preRequestScript": null,
+			"method": "GET",
+			"collectionId": "6e6af634-e5f4-c6eb-e965-7be3de0f4722",
+			"data": [],
+			"dataMode": "params",
+			"name": "Search default OAuth configuration (OAuthConfig)",
+			"description": "",
+			"descriptionFormat": "html",
+			"time": 1469054000876,
+			"version": 2,
+			"responses": [],
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"folder": "a6acb240-c075-dc19-b8c5-adc9f1615597"
+		},
+		{
+			"id": "f3217e06-186d-4389-fdd7-1d6e90401647",
+			"headers": "Authorization: Bearer {{access_token}}\n",
+			"url": "{{HOST}}/admin/v1/SigningCert/jwk",
+			"pathVariables": {},
+			"preRequestScript": null,
+			"method": "GET",
+			"collectionId": "6e6af634-e5f4-c6eb-e965-7be3de0f4722",
+			"data": [],
+			"dataMode": "params",
+			"name": "Get IDCS signing key (JWK)",
+			"description": "",
+			"descriptionFormat": "html",
+			"time": 1469060148265,
+			"version": 2,
+			"responses": [],
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"folder": "7b14106a-8972-3e32-4cf8-e461d3fe7475"
+		}
+	]
+}
