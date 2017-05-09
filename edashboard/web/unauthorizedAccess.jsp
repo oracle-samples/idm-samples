@@ -30,7 +30,7 @@ file 'LICENSE.MD' which is part of this source code package.--%>
     <hr>
     <!-- CONTENT: BEGIN -->
       <header>
-        <h1>Ops!</h1>
+        <h1>Oops!</h1>
         <p>It seems like something went wrong.</p>
         <p><strong>Authorization Error!</strong> <a href="index.jsp" class="alert-link">return to home.</a></p>
         <p><a class="bt bt-navy" href="index.jsp"><i class="fa fa-undo" aria-hidden="true"></i> | Go back Home</a></p>
