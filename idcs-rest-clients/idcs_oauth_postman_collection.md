@@ -21,4 +21,4 @@
 
 ## License
 
-The IDCS REST Client samples are released under the UPL License. Visit [LICENSE.md](LICENSE.md) to know more.
+The Oracle Identity Cloud Service REST Client samples are released under the UPL License. Visit [LICENSE.md](LICENSE.md) to know more.

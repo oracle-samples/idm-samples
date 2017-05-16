@@ -189,7 +189,7 @@
 		{
 			"id": "42e80613-cbde-1166-2193-e8229795c66a",
 			"name": "Delete group",
-			"description": "Delete a Group based on {{id}} already created in IDCS domain.",
+			"description": "Delete a Group based on {{id}} already created in Oracle Identity Cloud Service domain.",
 			"collectionId": "75b2de33-d0e7-a403-e096-c719ac964c48",
 			"method": "DELETE",
 			"headers": "Authorization: Bearer {{access_token}}",
