@@ -12,7 +12,7 @@
 
 ## Make requests
 
-To learn how to make requests check the [Testing IDCS REST APIs with Postman](http://apexapps.oracle.com/pls/apex/f?p=44785:112:0::::P112_CONTENT_ID:13484) tutorial.
+To learn how to make requests check the [Testing Oracle Identity Cloud Service REST APIs with Postman](http://apexapps.oracle.com/pls/apex/f?p=44785:112:0::::P112_CONTENT_ID:13484) tutorial.
 
 ## Important Notes
 
@@ -21,4 +21,4 @@ To learn how to make requests check the [Testing IDCS REST APIs with Postman](ht
 
 ## License
 
-The IDCS REST Client samples are released under the UPL License. Visit [LICENSE.md](LICENSE.md) to know more.
+The Oracle Identity Cloud Service REST Client samples are released under the UPL License. Visit [LICENSE.md](LICENSE.md) to know more.

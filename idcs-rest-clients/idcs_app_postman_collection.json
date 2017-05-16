@@ -1,7 +1,7 @@
 {
 	"id": "5368b0ab-a271-828a-ab91-bf3952113e7b",
 	"name": "IDCS Applications",
-	"description": "Collections of IDCS Applications",
+	"description": "Collections of Oracle Identity Cloud Service Applications",
 	"order": [],
 	"folders": [
 		{
@@ -202,7 +202,7 @@
 			"currentHelper": "normal",
 			"helperAttributes": {},
 			"folder": "27f3eaf9-efe9-c2ad-321a-4d6ffa144e3d",
-			"rawModeData": "{\r\n  \"displayName\": \" IDCS Portal\",\r\n  \"description\": \"Custom portal application for IDCS\",\r\n  \"isOAuthClient\": true,\r\n  \"redirectUris\": [\"https://www.google.co.in/\"],\r\n  \"logoutUri\": \"https://www.google.co.in/\",\r\n  \"postLogoutRedirectUris\": [\"https://www.google.co.in/\"],\r\n  \"clientType\": \"confidential\",\r\n  \"allowedGrants\": [\"authorization_code\"],\r\n  \"allowedScopes\": [{\r\n      \"fqs\": \"www.idcs.com/scope1\"\r\n    }],\r\n  \"isOAuthResource\": true,\r\n  \"accessTokenExpiry\": 10000,\r\n  \"refreshTokenExpiry\": 10001,\r\n  \"audience\": \"www.idcs.com\",\r\n  \"scopes\": [{\r\n      \"value\": \"/scope1\"\r\n    }, {\r\n      \"value\": \"/scope2\"\r\n    }],\r\n  \"basedOnTemplate\": {\r\n    \"value\": \"CustomWebAppTemplateId\"\r\n  },\r\n  \"active\": true,\r\n  \"schemas\": [\r\n    \"urn:ietf:params:scim:schemas:oracle:idcs:App\"\r\n  ],\r\n  \"isLoginTarget\": true,\r\n  \"landingPageUrl\": \"https://www.oracle.com/idcs\",\r\n  \"loginMechanism\": \"OIDC\"\r\n}"
+			"rawModeData": "{\r\n  \"displayName\": \" IDCS Portal\",\r\n  \"description\": \"Custom portal application for Oracle Identity Cloud Service\",\r\n  \"isOAuthClient\": true,\r\n  \"redirectUris\": [\"https://www.google.co.in/\"],\r\n  \"logoutUri\": \"https://www.google.co.in/\",\r\n  \"postLogoutRedirectUris\": [\"https://www.google.co.in/\"],\r\n  \"clientType\": \"confidential\",\r\n  \"allowedGrants\": [\"authorization_code\"],\r\n  \"allowedScopes\": [{\r\n      \"fqs\": \"www.idcs.com/scope1\"\r\n    }],\r\n  \"isOAuthResource\": true,\r\n  \"accessTokenExpiry\": 10000,\r\n  \"refreshTokenExpiry\": 10001,\r\n  \"audience\": \"www.idcs.com\",\r\n  \"scopes\": [{\r\n      \"value\": \"/scope1\"\r\n    }, {\r\n      \"value\": \"/scope2\"\r\n    }],\r\n  \"basedOnTemplate\": {\r\n    \"value\": \"CustomWebAppTemplateId\"\r\n  },\r\n  \"active\": true,\r\n  \"schemas\": [\r\n    \"urn:ietf:params:scim:schemas:oracle:idcs:App\"\r\n  ],\r\n  \"isLoginTarget\": true,\r\n  \"landingPageUrl\": \"https://www.oracle.com/idcs\",\r\n  \"loginMechanism\": \"OIDC\"\r\n}"
 		},
 		{
 			"id": "4318cf46-4de1-c2ea-f8a6-21fc667d9b74",
@@ -262,7 +262,7 @@
 			"description": "Getting the application details",
 			"collectionId": "5368b0ab-a271-828a-ab91-bf3952113e7b",
 			"responses": [],
-			"rawModeData": "{\r\n  \"displayName\": \" IDCS Portal\",\r\n  \"description\": \"Custom portal application for IDCS\",\r\n  \"isOAuthClient\": true,\r\n  \"redirectUris\": [\"https://www.google.co.in/\"],\r\n  \"logoutUri\": \"https://www.google.co.in/\",\r\n  \"postLogoutRedirectUris\": [\"https://www.google.co.in/\"],\r\n  \"clientType\": \"confidential\",\r\n  \"allowedGrants\": [\"authorization_code\"],\r\n  \"allowedScopes\": [{\r\n      \"fqs\": \"www.idcs.com/scope1\"\r\n    }],\r\n  \"isOAuthResource\": true,\r\n  \"accessTokenExpiry\": 10000,\r\n  \"refreshTokenExpiry\": 10001,\r\n  \"audience\": \"www.idcs.com\",\r\n  \"scopes\": [{\r\n      \"value\": \"/scope1\"\r\n    }, {\r\n      \"value\": \"/scope2\"\r\n    }],\r\n  \"basedOnTemplate\": {\r\n    \"value\": \"CustomWebAppTemplateId\"\r\n  },\r\n  \"active\": true,\r\n  \"schemas\": [\r\n    \"urn:ietf:params:scim:schemas:oracle:idcs:App\"\r\n  ],\r\n  \"isLoginTarget\": true,\r\n  \"landingPageUrl\": \"https://www.oracle.com/idcs\",\r\n  \"loginMechanism\": \"OIDC\"\r\n}"
+			"rawModeData": "{\r\n  \"displayName\": \" IDCS Portal\",\r\n  \"description\": \"Custom portal application for Oracle Identity Cloud Service\",\r\n  \"isOAuthClient\": true,\r\n  \"redirectUris\": [\"https://www.google.co.in/\"],\r\n  \"logoutUri\": \"https://www.google.co.in/\",\r\n  \"postLogoutRedirectUris\": [\"https://www.google.co.in/\"],\r\n  \"clientType\": \"confidential\",\r\n  \"allowedGrants\": [\"authorization_code\"],\r\n  \"allowedScopes\": [{\r\n      \"fqs\": \"www.idcs.com/scope1\"\r\n    }],\r\n  \"isOAuthResource\": true,\r\n  \"accessTokenExpiry\": 10000,\r\n  \"refreshTokenExpiry\": 10001,\r\n  \"audience\": \"www.idcs.com\",\r\n  \"scopes\": [{\r\n      \"value\": \"/scope1\"\r\n    }, {\r\n      \"value\": \"/scope2\"\r\n    }],\r\n  \"basedOnTemplate\": {\r\n    \"value\": \"CustomWebAppTemplateId\"\r\n  },\r\n  \"active\": true,\r\n  \"schemas\": [\r\n    \"urn:ietf:params:scim:schemas:oracle:idcs:App\"\r\n  ],\r\n  \"isLoginTarget\": true,\r\n  \"landingPageUrl\": \"https://www.oracle.com/idcs\",\r\n  \"loginMechanism\": \"OIDC\"\r\n}"
 		},
 		{
 			"id": "5fd3417c-a39b-fbd5-b778-28d9b31879d8",
