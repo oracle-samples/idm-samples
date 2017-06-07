@@ -8,7 +8,7 @@ This application is provided “AS IS” with no express or implied warranty for
 
 - Postman native app installed for Windows, Mac, or Linux [Postman Native App Download](https://www.getpostman.com/apps).
     **Note**: Currently, you can still use the Chrome Web Browser with [Postman Extension](https://chrome.google.com/webstore/detail/postman-rest-client-packa/fhbjgbiflinjbdggehcddcbncdddomop), but Google plans to end support for Chrome apps for Windows, Mac, and Linux users in 2017. These steps are written from the perspective of the Postman native app.
-- Register and activate a Client Application in Identity Cloud Service with the following characteristics, and then copy the application `client id` and `client secret`:
+- Register and activate a client application in Identity Cloud Service with the following characteristics, and then copy the application `client id` and `client secret`:
 
 ---
 - **Application Type**: Trusted
