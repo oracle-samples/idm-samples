@@ -276,7 +276,7 @@
 			"collectionId": "6e6af634-e5f4-c6eb-e965-7be3de0f4722",
 			"data": [],
 			"dataMode": "params",
-			"name": "Get IDCS signing key (JWK)",
+			"name": "Get Oracle Identity Cloud Service signing key (JWK)",
 			"description": "",
 			"descriptionFormat": "html",
 			"time": 1469060148265,
