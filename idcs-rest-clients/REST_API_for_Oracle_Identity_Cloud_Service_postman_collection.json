@@ -1,0 +1,5462 @@
+{
+	"variables": [],
+	"info": {
+		"name": "REST API for Oracle Identity Cloud Service",
+		"_postman_id": "ee677732-b3cd-9c47-bf6e-86d6893fed41",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": ".well-known",
+			"description": "",
+			"item": [
+				{
+					"name": "Retrieve IDCS Discovery Doc",
+					"request": {
+						"url": "{{HOST}}/.well-known/idcs-configuration",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Retrieve OpenID Discovery Doc",
+					"request": {
+						"url": "{{HOST}}/.well-known/openid-configuration",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "HTTP Options",
+					"request": {
+						"url": "{{HOST}}/.well-known/openid-configuration",
+						"method": "OPTIONS",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"description": " Provides a list of allowed HTTP methods for the resource in the \n<b>Access-Control-Allow-Methods</b> header."
+					},
+					"response": []
+				},
+				{
+					"name": "HTTP Options",
+					"request": {
+						"url": "{{HOST}}/.well-known/idcs-configuration",
+						"method": "OPTIONS",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"description": " Provides a list of allowed HTTP methods for the resource in the \n<b>Access-Control-Allow-Methods</b> header."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Apps",
+			"description": "",
+			"item": [
+				{
+					"name": "Create",
+					"description": "",
+					"item": [
+						{
+							"name": "Create a confidential client app",
+							"request": {
+								"url": "{{HOST}}/admin/v1/Apps",
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"schemas\": [\"urn:ietf:params:scim:schemas:oracle:idcs:App\"],\r\n  \"basedOnTemplate\": { \"value\": \"CustomWebAppTemplateId\" },\r\n  \"displayName\": \"Test Confidential Client Application\",\r\n  \"description\": \"Confidential client application for testing purposes\",\r\n  \"clientType\": \"confidential\",\r\n  \"isOAuthClient\": true,\r\n  \"allowedGrants\": [\"authorization_code\",\"client_credentials\",\"password\",\"refresh_token\",\"urn:ietf:params:oauth:grant-type:jwt-bearer\"],\r\n  \"redirectUris\": [\"https://www.myapp.com/callback\"],\r\n  \"logoutUri\": \"https://www.myapp.com/logout\",\r\n  \"postLogoutRedirectUris\": [\"https://www.myapp.com/\"]\r\n}"
+								},
+								"description": "Create a client application"
+							},
+							"response": []
+						},
+						{
+							"name": "Create a resource server app",
+							"request": {
+								"url": "{{HOST}}/admin/v1/Apps",
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"schemas\": [\"urn:ietf:params:scim:schemas:oracle:idcs:App\"],\r\n  \"basedOnTemplate\": { \"value\": \"CustomWebAppTemplateId\" },\r\n  \"displayName\": \"Test Resource Server Application\",\r\n  \"description\": \"Resource Server application for testing purposes\",\r\n  \"isOAuthResource\": true,\r\n  \"accessTokenExpiry\": 3600,\r\n  \"refreshTokenExpiry\": 604800,\r\n  \"allUrlSchemesAllowed\": false,\r\n  \"audience\": \"https://api.rserver.com\",\r\n  \"scopes\": [\r\n    {\r\n      \"value\": \"/mysettings\",\r\n      \"fqs\": \"https://api.rserver.com/mysettings\",\r\n      \"requiresConsent\": true,\r\n      \"description\": \"Get information about your preferences\"\r\n    },{\r\n      \"value\": \"/post\",\r\n      \"fqs\": \"https://api.rserver.com/post\",\r\n      \"requiresConsent\": true,\r\n      \"description\": \"Post on your behalf\"\r\n    },{\r\n      \"value\": \"/myprofile\",\r\n      \"fqs\": \"https://api.rserver.com/myprofile\",\r\n      \"requiresConsent\": false,\r\n      \"description\": \"Access your profile information\"\r\n    }]\r\n}"
+								},
+								"description": "Create a resource server app"
+							},
+							"response": []
+						},
+						{
+							"name": "Create a client and resource server app",
+							"request": {
+								"url": "{{HOST}}/admin/v1/Apps",
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"schemas\": [\"urn:ietf:params:scim:schemas:oracle:idcs:App\"],\r\n  \"basedOnTemplate\": { \"value\": \"CustomWebAppTemplateId\" },\r\n  \"displayName\": \"Test Client and Resource Server\",\r\n  \"description\": \"Client and Resource server application for testing purposes\",\r\n  \"clientType\": \"confidential\",\r\n  \"isOAuthClient\": true,\r\n  \"allowedGrants\": [\"authorization_code\",\"client_credentials\"],\r\n  \"redirectUris\": [\"https://www.mytestapp.com/callback\"],\r\n  \"logoutUri\": \"https://www.mytestapp.com/logout\",\r\n  \"postLogoutRedirectUris\": [\"https://www.mytestapp.com/\"],\r\n  \"isOAuthResource\": true,\r\n  \"accessTokenExpiry\": 3600,\r\n  \"refreshTokenExpiry\": 604800,\r\n  \"allUrlSchemesAllowed\": false,\r\n  \"audience\": \"https://api.mytestapp.com\",\r\n  \"scopes\": [\r\n    {\r\n      \"value\": \"/mysettings\",\r\n      \"fqs\": \"https://api.mytestapp.com/mysettings\",\r\n      \"requiresConsent\": true,\r\n      \"description\": \"Get information about your preferences\"\r\n    },{\r\n      \"value\": \"/post\",\r\n      \"fqs\": \"https://api.mytestapp.com/post\",\r\n      \"requiresConsent\": true,\r\n      \"description\": \"Post on your behalf\"\r\n    },{\r\n      \"value\": \"/myprofile\",\r\n      \"fqs\": \"https://api.mytestapp.com/myprofile\",\r\n      \"requiresConsent\": false,\r\n      \"description\": \"Access your profile information\"\r\n    }]\r\n}"
+								},
+								"description": "Create a client and resource server application"
+							},
+							"response": []
+						},
+						{
+							"name": "Create a SAML app",
+							"request": {
+								"url": "{{HOST}}/admin/v1/Apps",
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"schemas\": [\"urn:ietf:params:scim:schemas:oracle:idcs:App\"],\r\n  \"basedOnTemplate\": { \"value\": \"CustomWebAppTemplateId\" },\r\n  \"displayName\": \"Test SAML Application\",\r\n  \"description\": \"SAML application for testing purposes\",\r\n  \"clientType\": \"trusted\",\r\n  \"isOAuthClient\": true,\r\n  \"allowedGrants\": [\"authorization_code\",\"client_credentials\",\"password\",\"refresh_token\",\"urn:ietf:params:oauth:grant-type:jwt-bearer\"],\r\n  \"redirectUris\": [\"https://www.myapp.com/callback\"],\r\n  \"logoutUri\": \"https://www.myapp.com/logout\",\r\n  \"postLogoutRedirectUris\": [\"https://www.myapp.com/\"]\r\n}"
+								},
+								"description": "An OAuth client application is an HTTP client that can acquire, and then use an access token. There are three types of OAuth client applications that you can create: Confidential, Trusted, and Public. Both the confidential and trusted client apps are specified by using CustomWebAppTemplateId as the value for the basedOnTemplate attribute. \r\n\r\nNote: If you are using the optional name attribute in your request, be sure to use only alphanumeric characters and the underscore ( _ ) character in the value. "
+							},
+							"response": []
+						},
+						{
+							"name": "Create a public client app",
+							"request": {
+								"url": "{{HOST}}/admin/v1/Apps",
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"schemas\": [\"urn:ietf:params:scim:schemas:oracle:idcs:App\"],\r\n  \"basedOnTemplate\": { \"value\": \"CustomBrowserMobileTemplateId\" },\r\n  \"displayName\": \"Test Public Client Application\",\r\n  \"description\": \"Public client application for testing purposes\",\r\n  \"clientType\": \"public\",\r\n  \"isOAuthClient\": true,\r\n  \"allowedGrants\": [\"authorization_code\",\"implicit\"],\r\n  \"redirectUris\": [\"https://www.myapp.com/callback\"],\r\n  \"logoutUri\": \"https://www.myapp.com/logout\",\r\n  \"postLogoutRedirectUris\": [\"https://www.myapp.com/\"]\r\n}"
+								},
+								"description": "An OAuth client application is an HTTP client that can acquire, and then use an access token. There are three types of OAuth client applications that you can create: Confidential, Trusted, and Public.\n\nThe public client app is specified by using CustomBrowserMobileTemplateId as the value for the basedOnTemplate attribute. "
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Delete",
+					"description": "",
+					"item": [
+						{
+							"name": "Delete an App",
+							"request": {
+								"url": "{{HOST}}/admin/v1/Apps/{{appid}}",
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": "Deleting an application"
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Lifecycle",
+					"description": "",
+					"item": [
+						{
+							"name": "Activate application",
+							"request": {
+								"url": "{{HOST}}/admin/v1/AppStatusChanger/{{appid}}",
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"active\": true,\r\n  \"schemas\": [\r\n    \"urn:ietf:params:scim:schemas:oracle:idcs:AppStatusChanger\"\r\n  ]\r\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Regenerate client_secret",
+							"request": {
+								"url": "{{HOST}}/admin/v1/AppClientSecretRegenerator/{{appid}}",
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/scim+json",
+										"description": ""
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"displayName\": \" IDCS Portal\",\r\n  \"description\": \"Custom portal application for IDCS\",\r\n  \"isOAuthClient\": true,\r\n  \"redirectUris\": [\"https://www.google.co.in/\"],\r\n  \"logoutUri\": \"https://www.google.co.in/\",\r\n  \"postLogoutRedirectUris\": [\"https://www.google.co.in/\"],\r\n  \"clientType\": \"confidential\",\r\n  \"allowedGrants\": [\"authorization_code\"],\r\n  \"allowedScopes\": [{\r\n      \"fqs\": \"www.idcs.com/scope1\"\r\n    }],\r\n  \"isOAuthResource\": true,\r\n  \"accessTokenExpiry\": 10000,\r\n  \"refreshTokenExpiry\": 10001,\r\n  \"audience\": \"www.idcs.com\",\r\n  \"scopes\": [{\r\n      \"value\": \"/scope1\"\r\n    }, {\r\n      \"value\": \"/scope2\"\r\n    }],\r\n  \"basedOnTemplate\": {\r\n    \"value\": \"CustomWebAppTemplateId\"\r\n  },\r\n  \"active\": true,\r\n  \"schemas\": [\r\n    \"urn:ietf:params:scim:schemas:oracle:idcs:App\"\r\n  ],\r\n  \"isLoginTarget\": true,\r\n  \"landingPageUrl\": \"https://www.oracle.com/idcs\",\r\n  \"loginMechanism\": \"OIDC\"\r\n}"
+								},
+								"description": "Regenerating the OAuth Client secret"
+							},
+							"response": []
+						},
+						{
+							"name": "Deactivate application",
+							"request": {
+								"url": "{{HOST}}/admin/v1/AppStatusChanger/{{appid}}",
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"active\": false,\r\n  \"schemas\": [\r\n    \"urn:ietf:params:scim:schemas:oracle:idcs:AppStatusChanger\"\r\n  ]\r\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Add allowed scope to application",
+							"request": {
+								"url": "{{HOST}}/admin/v1/Apps/{{appid}}",
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"schemas\": [\r\n    \"urn:ietf:params:scim:api:messages:2.0:PatchOp\"\r\n  ],\r\n  \"Operations\": [{\r\n    \"op\": \"add\",\r\n    \"path\": \"allowedScopes\",\r\n    \"value\": [{ \"fqs\": \"https://api.mytestapp.com/myprofile\" }]\r\n   }]\r\n}"
+								},
+								"description": "Add a new allowed scope to the application"
+							},
+							"response": []
+						},
+						{
+							"name": "Remove allowed grant from application",
+							"request": {
+								"url": "{{HOST}}/admin/v1/Apps/{{appid}}",
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"schemas\": [\r\n    \"urn:ietf:params:scim:api:messages:2.0:PatchOp\"\r\n  ],\r\n  \"Operations\": [{\r\n    \"op\": \"remove\",\r\n    \"path\": \"allowedGrants[value eq \\\"refresh_token\\\"]\"\r\n   }]\r\n}"
+								},
+								"description": "Remove an allowed grant from the application"
+							},
+							"response": []
+						},
+						{
+							"name": "Add allowed grant to application",
+							"request": {
+								"url": "{{HOST}}/admin/v1/Apps/{{appid}}",
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"schemas\": [\r\n    \"urn:ietf:params:scim:api:messages:2.0:PatchOp\"\r\n  ],\r\n  \"Operations\": [{\r\n    \"op\": \"add\",\r\n    \"path\": \"allowedGrants\",\r\n    \"value\": [\"refresh_token\"]\r\n   }]\r\n}"
+								},
+								"description": "Add a new allowed grant to the application"
+							},
+							"response": []
+						},
+						{
+							"name": "Remove allowed scope from application",
+							"request": {
+								"url": "{{HOST}}/admin/v1/Apps/{{appid}}",
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"schemas\": [\r\n    \"urn:ietf:params:scim:api:messages:2.0:PatchOp\"\r\n  ],\r\n  \"Operations\": [{\r\n    \"op\": \"remove\",\r\n    \"path\": \"allowedScopes[fqs ew \\\"/myprofile\\\"]\"\r\n   }]\r\n}"
+								},
+								"description": "Remove an allowed scope from the application"
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Modify",
+					"description": "",
+					"item": [
+						{
+							"name": "Update app (single attribute)",
+							"request": {
+								"url": "{{HOST}}/admin/v1/Apps/{{appid}}",
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"schemas\": [\r\n    \"urn:ietf:params:scim:api:messages:2.0:PatchOp\"\r\n  ],\r\n  \"Operations\": [{\r\n      \"op\": \"replace\",\r\n      \"path\": \"description\",\r\n      \"value\": \"Client and Resource Server application used for testing the REST APIs\"\r\n    }]\r\n}"
+								},
+								"description": "Update the App with existing details"
+							},
+							"response": []
+						},
+						{
+							"name": "Update app (multiple attributes)",
+							"request": {
+								"url": "{{HOST}}/admin/v1/Apps/{{appid}}",
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"schemas\": [\r\n    \"urn:ietf:params:scim:api:messages:2.0:PatchOp\"\r\n  ],\r\n  \"Operations\": [{\r\n      \"op\": \"replace\",\r\n      \"path\": \"description\",\r\n      \"value\": \"Cli and Res app for tests\"\r\n    }, {\r\n      \"op\": \"replace\",\r\n      \"path\": \"displayName\",\r\n      \"value\": \"Test Cli plus Res app\"\r\n    }]\r\n}"
+								},
+								"description": "Update the App with existing details"
+							},
+							"response": []
+						},
+						{
+							"name": "Update app (add new scope)",
+							"request": {
+								"url": "{{HOST}}/admin/v1/Apps/{{appid}}",
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"schemas\": [\r\n    \"urn:ietf:params:scim:api:messages:2.0:PatchOp\"\r\n  ],\r\n  \"Operations\": [{\r\n      \"op\": \"add\",\r\n      \"path\": \"scopes\",\r\n      \"value\": [{\r\n          \"value\": \"/myreports\",\r\n          \"requiresConsent\": true,\r\n          \"description\": \"Access your reports\"\r\n        }]\r\n    }]\r\n}"
+								},
+								"description": "Update the App with a new app scope"
+							},
+							"response": []
+						},
+						{
+							"name": "Update app (modify existing scope)",
+							"request": {
+								"url": "{{HOST}}/admin/v1/Apps/{{appid}}",
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"schemas\": [\r\n    \"urn:ietf:params:scim:api:messages:2.0:PatchOp\"\r\n  ],\r\n  \"Operations\": [{\r\n      \"op\": \"replace\",\r\n      \"path\": \"scopes[value sw \\\"/myreports\\\"]\",\r\n      \"value\": [{\r\n          \"value\": \"/myreports\",\r\n          \"requiresConsent\": false,\r\n          \"description\": \"Access your performance reports\"\r\n        }]\r\n    }]\r\n}"
+								},
+								"description": "Update an existing scope"
+							},
+							"response": []
+						},
+						{
+							"name": "Update app (remove existing scope)",
+							"request": {
+								"url": "{{HOST}}/admin/v1/Apps/{{appid}}",
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"schemas\": [\r\n    \"urn:ietf:params:scim:api:messages:2.0:PatchOp\"\r\n  ],\r\n  \"Operations\": [{\r\n      \"op\": \"remove\",\r\n      \"path\": \"scopes[value sw \\\"/myreports\\\"]\"\r\n    }]\r\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Replace an App",
+							"request": {
+								"url": "{{HOST}}/admin/v1/Apps/{{appid}}",
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"allowOffline\": false,\r\n  \"isOAuthResource\": true,\r\n  \"clientType\": \"trusted\",\r\n  \"logoutUri\": \"https://www.idcs.com/idcs/logout\",\r\n  \"accessTokenExpiry\": 10000,\r\n  \"displayName\": \"IDCS Portal\",\r\n  \"landingPageUrl\": \"https://www.idcs.com/idcs\",\r\n  \"loginMechanism\": \"OIDC\",\r\n  \"active\": false,\r\n  \"description\": \"Custom portal application for IDCS\",\r\n  \"refreshTokenExpiry\": 10001,\r\n  \"allUrlSchemesAllowed\": false,\r\n  \"isLoginTarget\": true,\r\n  \"audience\": \"www.idcs.com\",\r\n  \"isOAuthClient\": true,\r\n  \"migrated\": false,\r\n  \"schemas\": [\r\n    \"urn:ietf:params:scim:schemas:oracle:idcs:App\"\r\n  ],\r\n  \"basedOnTemplate\": {\r\n    \"value\": \"CustomWebAppTemplateId\"\r\n  },\r\n  \"allowedGrants\": [\r\n    \"authorization_code\"\r\n  ],\r\n  \"redirectUris\": [\r\n    \"https://www.idcs.com/idcs/login\"\r\n  ],\r\n  \"allowedScopes\": [{\r\n      \"fqs\": \"www.idcs.com/scope1\"\r\n    }, {\r\n      \"fqs\": \"www.idcs.com/scope4\"\r\n    }],\r\n  \"postLogoutRedirectUris\": [\r\n    \"https://www.idcs.com/idcs/post_logout\"\r\n  ],\r\n  \"scopes\": [{\r\n      \"value\": \"/scope1\"\r\n    }, {\r\n      \"value\": \"/scope4\"\r\n    }]\r\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Search",
+					"description": "",
+					"item": [
+						{
+							"name": "Search all apps",
+							"request": {
+								"url": "{{HOST}}/admin/v1/Apps",
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Search all apps (with result pagination)",
+							"request": {
+								"url": {
+									"raw": "{{HOST}}/admin/v1/Apps?count=5&startIndex=0&sortBy=displayName",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"admin",
+										"v1",
+										"Apps"
+									],
+									"query": [
+										{
+											"key": "count",
+											"value": "5"
+										},
+										{
+											"key": "startIndex",
+											"value": "0"
+										},
+										{
+											"key": "sortBy",
+											"value": "displayName"
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": "count = number of entries retrieved\nstartIndex = index for search result\nsortBy = order results by a specific attribute"
+							},
+							"response": []
+						},
+						{
+							"name": "Search all apps (with a specific allowed grant)",
+							"request": {
+								"url": {
+									"raw": "{{HOST}}/admin/v1/Apps?attributes=displayName,allowedGrants&filter=allowedGrants co \"authorization_code\"",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"admin",
+										"v1",
+										"Apps"
+									],
+									"query": [
+										{
+											"key": "attributes",
+											"value": "displayName,allowedGrants",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "filter",
+											"value": "allowedGrants co \"authorization_code\"",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/scim+json",
+										"description": ""
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"displayName\": \" IDCS Portal\",\r\n  \"description\": \"Custom portal application for Oracle Identity Cloud Service\",\r\n  \"isOAuthClient\": true,\r\n  \"redirectUris\": [\"https://www.google.co.in/\"],\r\n  \"logoutUri\": \"https://www.google.co.in/\",\r\n  \"postLogoutRedirectUris\": [\"https://www.google.co.in/\"],\r\n  \"clientType\": \"confidential\",\r\n  \"allowedGrants\": [\"authorization_code\"],\r\n  \"allowedScopes\": [{\r\n      \"fqs\": \"www.idcs.com/scope1\"\r\n    }],\r\n  \"isOAuthResource\": true,\r\n  \"accessTokenExpiry\": 10000,\r\n  \"refreshTokenExpiry\": 10001,\r\n  \"audience\": \"www.idcs.com\",\r\n  \"scopes\": [{\r\n      \"value\": \"/scope1\"\r\n    }, {\r\n      \"value\": \"/scope2\"\r\n    }],\r\n  \"basedOnTemplate\": {\r\n    \"value\": \"CustomWebAppTemplateId\"\r\n  },\r\n  \"active\": true,\r\n  \"schemas\": [\r\n    \"urn:ietf:params:scim:schemas:oracle:idcs:App\"\r\n  ],\r\n  \"isLoginTarget\": true,\r\n  \"landingPageUrl\": \"https://www.oracle.com/idcs\",\r\n  \"loginMechanism\": \"OIDC\"\r\n}"
+								},
+								"description": "Getting the application details"
+							},
+							"response": []
+						},
+						{
+							"name": "Search specific app (return allowed grants)",
+							"request": {
+								"url": {
+									"raw": "{{HOST}}/admin/v1/Apps/{{appid}}?attributes=allowedGrants",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"admin",
+										"v1",
+										"Apps",
+										"{{appid}}"
+									],
+									"query": [
+										{
+											"key": "attributes",
+											"value": "allowedGrants"
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/scim+json",
+										"description": ""
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"displayName\": \" IDCS Portal\",\r\n  \"description\": \"Custom portal application for IDCS\",\r\n  \"isOAuthClient\": true,\r\n  \"redirectUris\": [\"https://www.google.co.in/\"],\r\n  \"logoutUri\": \"https://www.google.co.in/\",\r\n  \"postLogoutRedirectUris\": [\"https://www.google.co.in/\"],\r\n  \"clientType\": \"confidential\",\r\n  \"allowedGrants\": [\"authorization_code\"],\r\n  \"allowedScopes\": [{\r\n      \"fqs\": \"www.idcs.com/scope1\"\r\n    }],\r\n  \"isOAuthResource\": true,\r\n  \"accessTokenExpiry\": 10000,\r\n  \"refreshTokenExpiry\": 10001,\r\n  \"audience\": \"www.idcs.com\",\r\n  \"scopes\": [{\r\n      \"value\": \"/scope1\"\r\n    }, {\r\n      \"value\": \"/scope2\"\r\n    }],\r\n  \"basedOnTemplate\": {\r\n    \"value\": \"CustomWebAppTemplateId\"\r\n  },\r\n  \"active\": true,\r\n  \"schemas\": [\r\n    \"urn:ietf:params:scim:schemas:oracle:idcs:App\"\r\n  ],\r\n  \"isLoginTarget\": true,\r\n  \"landingPageUrl\": \"https://www.oracle.com/idcs\",\r\n  \"loginMechanism\": \"OIDC\"\r\n}"
+								},
+								"description": "Getting the application details"
+							},
+							"response": []
+						},
+						{
+							"name": "Search specific app (return allowed scopes)",
+							"request": {
+								"url": {
+									"raw": "{{HOST}}/admin/v1/Apps/{{appid}}?attributes=allowedScopes",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"admin",
+										"v1",
+										"Apps",
+										"{{appid}}"
+									],
+									"query": [
+										{
+											"key": "attributes",
+											"value": "allowedScopes",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/scim+json",
+										"description": ""
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"displayName\": \" IDCS Portal\",\r\n  \"description\": \"Custom portal application for IDCS\",\r\n  \"isOAuthClient\": true,\r\n  \"redirectUris\": [\"https://www.google.co.in/\"],\r\n  \"logoutUri\": \"https://www.google.co.in/\",\r\n  \"postLogoutRedirectUris\": [\"https://www.google.co.in/\"],\r\n  \"clientType\": \"confidential\",\r\n  \"allowedGrants\": [\"authorization_code\"],\r\n  \"allowedScopes\": [{\r\n      \"fqs\": \"www.idcs.com/scope1\"\r\n    }],\r\n  \"isOAuthResource\": true,\r\n  \"accessTokenExpiry\": 10000,\r\n  \"refreshTokenExpiry\": 10001,\r\n  \"audience\": \"www.idcs.com\",\r\n  \"scopes\": [{\r\n      \"value\": \"/scope1\"\r\n    }, {\r\n      \"value\": \"/scope2\"\r\n    }],\r\n  \"basedOnTemplate\": {\r\n    \"value\": \"CustomWebAppTemplateId\"\r\n  },\r\n  \"active\": true,\r\n  \"schemas\": [\r\n    \"urn:ietf:params:scim:schemas:oracle:idcs:App\"\r\n  ],\r\n  \"isLoginTarget\": true,\r\n  \"landingPageUrl\": \"https://www.oracle.com/idcs\",\r\n  \"loginMechanism\": \"OIDC\"\r\n}"
+								},
+								"description": "Getting the application details"
+							},
+							"response": []
+						},
+						{
+							"name": "Search specific app (return application scopes)",
+							"request": {
+								"url": {
+									"raw": "{{HOST}}/admin/v1/Apps/{{appid}}?attributes=scopes",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"admin",
+										"v1",
+										"Apps",
+										"{{appid}}"
+									],
+									"query": [
+										{
+											"key": "attributes",
+											"value": "scopes",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/scim+json",
+										"description": ""
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"displayName\": \" IDCS Portal\",\r\n  \"description\": \"Custom portal application for IDCS\",\r\n  \"isOAuthClient\": true,\r\n  \"redirectUris\": [\"https://www.google.co.in/\"],\r\n  \"logoutUri\": \"https://www.google.co.in/\",\r\n  \"postLogoutRedirectUris\": [\"https://www.google.co.in/\"],\r\n  \"clientType\": \"confidential\",\r\n  \"allowedGrants\": [\"authorization_code\"],\r\n  \"allowedScopes\": [{\r\n      \"fqs\": \"www.idcs.com/scope1\"\r\n    }],\r\n  \"isOAuthResource\": true,\r\n  \"accessTokenExpiry\": 10000,\r\n  \"refreshTokenExpiry\": 10001,\r\n  \"audience\": \"www.idcs.com\",\r\n  \"scopes\": [{\r\n      \"value\": \"/scope1\"\r\n    }, {\r\n      \"value\": \"/scope2\"\r\n    }],\r\n  \"basedOnTemplate\": {\r\n    \"value\": \"CustomWebAppTemplateId\"\r\n  },\r\n  \"active\": true,\r\n  \"schemas\": [\r\n    \"urn:ietf:params:scim:schemas:oracle:idcs:App\"\r\n  ],\r\n  \"isLoginTarget\": true,\r\n  \"landingPageUrl\": \"https://www.oracle.com/idcs\",\r\n  \"loginMechanism\": \"OIDC\"\r\n}"
+								},
+								"description": "Getting the application details"
+							},
+							"response": []
+						},
+						{
+							"name": "Search specific app (client id and client secret)",
+							"request": {
+								"url": {
+									"raw": "{{HOST}}/admin/v1/Apps/{{appid}}?attributes=displayName,active,name,clientSecret,id",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"admin",
+										"v1",
+										"Apps",
+										"{{appid}}"
+									],
+									"query": [
+										{
+											"key": "attributes",
+											"value": "displayName,active,name,clientSecret,id",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Search specific app (return specific attributes)",
+							"request": {
+								"url": {
+									"raw": "{{HOST}}/admin/v1/Apps/{{appid}}?attributes=displayName,description",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"admin",
+										"v1",
+										"Apps",
+										"{{appid}}"
+									],
+									"query": [
+										{
+											"key": "attributes",
+											"value": "displayName,description"
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"displayName\": \" IDCS Portal\",\r\n  \"description\": \"Custom portal application for IDCS\",\r\n  \"isOAuthClient\": true,\r\n  \"redirectUris\": [\"https://www.google.co.in/\"],\r\n  \"logoutUri\": \"https://www.google.co.in/\",\r\n  \"postLogoutRedirectUris\": [\"https://www.google.co.in/\"],\r\n  \"clientType\": \"confidential\",\r\n  \"allowedGrants\": [\"authorization_code\"],\r\n  \"allowedScopes\": [{\r\n      \"fqs\": \"www.idcs.com/scope1\"\r\n    }],\r\n  \"isOAuthResource\": true,\r\n  \"accessTokenExpiry\": 10000,\r\n  \"refreshTokenExpiry\": 10001,\r\n  \"audience\": \"www.idcs.com\",\r\n  \"scopes\": [{\r\n      \"value\": \"/scope1\"\r\n    }, {\r\n      \"value\": \"/scope2\"\r\n    }],\r\n  \"basedOnTemplate\": {\r\n    \"value\": \"CustomWebAppTemplateId\"\r\n  },\r\n  \"active\": true,\r\n  \"schemas\": [\r\n    \"urn:ietf:params:scim:schemas:oracle:idcs:App\"\r\n  ],\r\n  \"isLoginTarget\": true,\r\n  \"landingPageUrl\": \"https://www.oracle.com/idcs\",\r\n  \"loginMechanism\": \"OIDC\"\r\n}"
+								},
+								"description": "Getting the application details"
+							},
+							"response": []
+						},
+						{
+							"name": "Search specific app",
+							"request": {
+								"url": "{{HOST}}/admin/v1/Apps/{{appid}}",
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"displayName\": \" IDCS Portal\",\r\n  \"description\": \"Custom portal application for IDCS\",\r\n  \"isOAuthClient\": true,\r\n  \"redirectUris\": [\"https://www.google.co.in/\"],\r\n  \"logoutUri\": \"https://www.google.co.in/\",\r\n  \"postLogoutRedirectUris\": [\"https://www.google.co.in/\"],\r\n  \"clientType\": \"confidential\",\r\n  \"allowedGrants\": [\"authorization_code\"],\r\n  \"allowedScopes\": [{\r\n      \"fqs\": \"www.idcs.com/scope1\"\r\n    }],\r\n  \"isOAuthResource\": true,\r\n  \"accessTokenExpiry\": 10000,\r\n  \"refreshTokenExpiry\": 10001,\r\n  \"audience\": \"www.idcs.com\",\r\n  \"scopes\": [{\r\n      \"value\": \"/scope1\"\r\n    }, {\r\n      \"value\": \"/scope2\"\r\n    }],\r\n  \"basedOnTemplate\": {\r\n    \"value\": \"CustomWebAppTemplateId\"\r\n  },\r\n  \"active\": true,\r\n  \"schemas\": [\r\n    \"urn:ietf:params:scim:schemas:oracle:idcs:App\"\r\n  ],\r\n  \"isLoginTarget\": true,\r\n  \"landingPageUrl\": \"https://www.oracle.com/idcs\",\r\n  \"loginMechanism\": \"OIDC\"\r\n}"
+								},
+								"description": "Getting the application details"
+							},
+							"response": []
+						},
+						{
+							"name": "Search for apps with filters using POST",
+							"request": {
+								"url": "{{HOST}}/admin/v1/Apps/.search",
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"schemas\": [ \"urn:ietf:params:scim:api:messages:2.0:SearchRequest\"],\r\n  \"attributes\": [\"displayName\", \"active\"],\r\n  \"filter\": \"displayName co \\\"test\\\"\",\r\n  \"sortBy\": \"displayName\",\r\n  \"startIndex\": 1,\r\n  \"count\": 10\r\n}"
+								},
+								"description": "Searching for the application details using POST"
+							},
+							"response": []
+						},
+						{
+							"name": "Search all apps (with a specific allowed scope)",
+							"request": {
+								"url": {
+									"raw": "{{HOST}}/admin/v1/Apps?attributes=displayName,allowedScopes&filter=allowedScopes.fqs co \"scope\"",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"admin",
+										"v1",
+										"Apps"
+									],
+									"query": [
+										{
+											"key": "attributes",
+											"value": "displayName,allowedScopes",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "filter",
+											"value": "allowedScopes.fqs co \"scope\"",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"displayName\": \" IDCS Portal\",\r\n  \"description\": \"Custom portal application for Oracle Identity Cloud Service\",\r\n  \"isOAuthClient\": true,\r\n  \"redirectUris\": [\"https://www.google.co.in/\"],\r\n  \"logoutUri\": \"https://www.google.co.in/\",\r\n  \"postLogoutRedirectUris\": [\"https://www.google.co.in/\"],\r\n  \"clientType\": \"confidential\",\r\n  \"allowedGrants\": [\"authorization_code\"],\r\n  \"allowedScopes\": [{\r\n      \"fqs\": \"www.idcs.com/scope1\"\r\n    }],\r\n  \"isOAuthResource\": true,\r\n  \"accessTokenExpiry\": 10000,\r\n  \"refreshTokenExpiry\": 10001,\r\n  \"audience\": \"www.idcs.com\",\r\n  \"scopes\": [{\r\n      \"value\": \"/scope1\"\r\n    }, {\r\n      \"value\": \"/scope2\"\r\n    }],\r\n  \"basedOnTemplate\": {\r\n    \"value\": \"CustomWebAppTemplateId\"\r\n  },\r\n  \"active\": true,\r\n  \"schemas\": [\r\n    \"urn:ietf:params:scim:schemas:oracle:idcs:App\"\r\n  ],\r\n  \"isLoginTarget\": true,\r\n  \"landingPageUrl\": \"https://www.oracle.com/idcs\",\r\n  \"loginMechanism\": \"OIDC\"\r\n}"
+								},
+								"description": "Getting the application details"
+							},
+							"response": []
+						},
+						{
+							"name": "Search all apps (with search criteria)",
+							"request": {
+								"url": {
+									"raw": "{{HOST}}/admin/v1/Apps?filter=displayName co \"Test\"",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"admin",
+										"v1",
+										"Apps"
+									],
+									"query": [
+										{
+											"key": "filter",
+											"value": "displayName co \"Test\"",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": "filter = add a filter criteria to the search using attributes, values, and operators"
+							},
+							"response": []
+						},
+						{
+							"name": "Search all apps (client id and client secret)",
+							"request": {
+								"url": {
+									"raw": "{{HOST}}/admin/v1/Apps?attributes=displayName,active,name,clientSecret,id",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"admin",
+										"v1",
+										"Apps"
+									],
+									"query": [
+										{
+											"key": "attributes",
+											"value": "displayName,active,name,clientSecret,id",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Search all apps (return specific attributes)",
+							"request": {
+								"url": {
+									"raw": "{{HOST}}/admin/v1/Apps?attributes=displayName,active",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"admin",
+										"v1",
+										"Apps"
+									],
+									"query": [
+										{
+											"key": "attributes",
+											"value": "displayName,active"
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": "attributes = comma separated list of values retrieved in a search"
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				}
+			]
+		},
+		{
+			"name": "Audit Events",
+			"description": "Creating requests for Audit events",
+			"item": [
+				{
+					"name": "Search Audit Events",
+					"request": {
+						"url": {
+							"raw": "{{HOST}}/admin/v1/AuditEvents?filter=actorName sw \"adm\"",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"admin",
+								"v1",
+								"AuditEvents"
+							],
+							"query": [
+								{
+									"key": "filter",
+									"value": "actorName sw \"adm\"",
+									"equals": true,
+									"description": ""
+								}
+							],
+							"variable": []
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Search Audit Events Using POST",
+					"request": {
+						"url": "{{HOST}}/admin/v1/AuditEvents/.search",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"schemas\": [\r\n\t\t\"urn:ietf:params:scim:api:messages:2.0:SearchRequest\"\r\n\t],\r\n\t\"attributes\": [\r\n\t\t\"actorName\"\r\n\t],\r\n\t\"filter\": \"actorName sw \\\"admin\\\"\",\r\n\t\"startIndex\": 1,\r\n\t\"count\": 5\r\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Search Audit Events by Date Range",
+					"request": {
+						"url": {
+							"raw": "{{HOST}}/admin/v1/AuditEvents?sortBy=timestamp&sortOrder=descending&filter=timestamp ge \"2017-07-18T00:00:00Z\" and timestamp le \"2017-07-19T00:00:00Z\"",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"admin",
+								"v1",
+								"AuditEvents"
+							],
+							"query": [
+								{
+									"key": "sortBy",
+									"value": "timestamp",
+									"equals": true,
+									"description": ""
+								},
+								{
+									"key": "sortOrder",
+									"value": "descending",
+									"equals": true,
+									"description": ""
+								},
+								{
+									"key": "filter",
+									"value": "timestamp ge \"2017-07-18T00:00:00Z\" and timestamp le \"2017-07-19T00:00:00Z\"",
+									"equals": true,
+									"description": ""
+								}
+							],
+							"variable": []
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Search Audit Events to Obtain Total Number of Records",
+					"request": {
+						"url": {
+							"raw": "{{HOST}}/admin/v1/AuditEvents?sortBy=timestamp&sortOrder=descending&filter=timestamp ge \"2017-07-18T00:00:00Z\" and timestamp le \"2017-07-19T00:00:00Z\"&count=0",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"admin",
+								"v1",
+								"AuditEvents"
+							],
+							"query": [
+								{
+									"key": "sortBy",
+									"value": "timestamp",
+									"equals": true,
+									"description": ""
+								},
+								{
+									"key": "sortOrder",
+									"value": "descending",
+									"equals": true,
+									"description": ""
+								},
+								{
+									"key": "filter",
+									"value": "timestamp ge \"2017-07-18T00:00:00Z\" and timestamp le \"2017-07-19T00:00:00Z\"",
+									"equals": true,
+									"description": ""
+								},
+								{
+									"key": "count",
+									"value": "0",
+									"equals": true,
+									"description": ""
+								}
+							],
+							"variable": []
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Search Audit Events Using the Count Parameter",
+					"request": {
+						"url": {
+							"raw": "{{HOST}}/admin/v1/AuditEvents?sortBy=timestamp&sortOrder=descending&filter=timestamp ge \"2017-07-18T00:00:00Z\" and timestamp le \"2017-07-19T00:00:00Z\"&count=4",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"admin",
+								"v1",
+								"AuditEvents"
+							],
+							"query": [
+								{
+									"key": "sortBy",
+									"value": "timestamp",
+									"equals": true,
+									"description": ""
+								},
+								{
+									"key": "sortOrder",
+									"value": "descending",
+									"equals": true,
+									"description": ""
+								},
+								{
+									"key": "filter",
+									"value": "timestamp ge \"2017-07-18T00:00:00Z\" and timestamp le \"2017-07-19T00:00:00Z\"",
+									"equals": true,
+									"description": ""
+								},
+								{
+									"key": "count",
+									"value": "4",
+									"equals": true,
+									"description": ""
+								}
+							],
+							"variable": []
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Search Audit Events Using the startIndex Parameter",
+					"request": {
+						"url": {
+							"raw": "{{HOST}}/admin/v1/AuditEvents?sortBy=timestamp&sortOrder=descending&filter=timestamp ge \"2017-07-18T00:00:00Z\" and timestamp le \"2017-07-19T00:00:00Z\"&startIndex=4",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"admin",
+								"v1",
+								"AuditEvents"
+							],
+							"query": [
+								{
+									"key": "sortBy",
+									"value": "timestamp",
+									"equals": true,
+									"description": ""
+								},
+								{
+									"key": "sortOrder",
+									"value": "descending",
+									"equals": true,
+									"description": ""
+								},
+								{
+									"key": "filter",
+									"value": "timestamp ge \"2017-07-18T00:00:00Z\" and timestamp le \"2017-07-19T00:00:00Z\"",
+									"equals": true,
+									"description": ""
+								},
+								{
+									"key": "startIndex",
+									"value": "4",
+									"equals": true,
+									"description": ""
+								}
+							],
+							"variable": []
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Bulk",
+			"description": "",
+			"item": [
+				{
+					"name": "Import & Export AppRoles",
+					"description": "",
+					"item": [
+						{
+							"name": "Schedule a Job - Export AppRoles - Resource Specific",
+							"request": {
+								"url": "{{HOST}}/job/v1/JobSchedules",
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "Cache-Control",
+										"value": "no-cache",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"schemas\": [\"urn:ietf:params:scim:schemas:oracle:idcs:JobSchedule\"],\r\n  \"jobType\": \"AppRoleExport\",\r\n  \"runNow\": true,\r\n  \"parameters\": [\r\n    {\r\n      \"name\": \"exportFormat\",\r\n      \"value\": \"CSV\"\r\n    }\r\n  ]\r\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Schedule a Job - Export AppRoles - Generic",
+							"request": {
+								"url": "{{HOST}}/job/v1/JobSchedules",
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "Cache-Control",
+										"value": "no-cache",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"schemas\": [\"urn:ietf:params:scim:schemas:oracle:idcs:JobSchedule\"],\r\n  \"jobType\": \"Export\",\r\n  \"runNow\": true,\r\n  \"parameters\": [\r\n    {\r\n      \"name\": \"exportFormat\",\r\n      \"value\": \"CSV\"\r\n    },\r\n    {\r\n      \"name\": \"resourceType\",\r\n      \"value\": \"AppRole\"\r\n    }\r\n  ]\r\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "View the Export Job Details",
+							"request": {
+								"url": {
+									"raw": "{{HOST}}/job/v1/JobHistories?filter=jobScheduleid eq \"abf0e2a7-c0cb-4568-b7d2-1ae9aa8f03b8\"",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"job",
+										"v1",
+										"JobHistories"
+									],
+									"query": [
+										{
+											"key": "filter",
+											"value": "jobScheduleid eq \"abf0e2a7-c0cb-4568-b7d2-1ae9aa8f03b8\"",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "View the Export Job Report",
+							"request": {
+								"url": {
+									"raw": "{{HOST}}/job/v1/JobReports?filter=historyId eq \"79fe30710ea0480b92ce506b57924ea4\"",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"job",
+										"v1",
+										"JobReports"
+									],
+									"query": [
+										{
+											"key": "filter",
+											"value": "historyId eq \"79fe30710ea0480b92ce506b57924ea4\"",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Verify Export Job Success - AppRoles",
+							"request": {
+								"url": {
+									"raw": "{{HOST}}/storage/v1/Files?fileName=files/export/201706230520/Export_3649f903c4e94fa480248b0658368615.csv",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"storage",
+										"v1",
+										"Files"
+									],
+									"query": [
+										{
+											"key": "fileName",
+											"value": "files/export/201706230520/Export_3649f903c4e94fa480248b0658368615.csv",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									},
+									{
+										"key": "Content-Type",
+										"value": "multipart/form-data",
+										"description": ""
+									},
+									{
+										"key": "Cache-Control",
+										"value": "no-cache",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Import a File to Storage",
+							"request": {
+								"url": "{{HOST}}/storage/v1/Files",
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									},
+									{
+										"key": "Content-Type",
+										"value": "multipart/form-data",
+										"description": ""
+									},
+									{
+										"key": "Cache-Control",
+										"value": "no-cache",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "contentType",
+											"value": "text/csv",
+											"description": "",
+											"type": "text"
+										},
+										{
+											"key": "file",
+											"description": "",
+											"type": "file",
+											"src": "AppRoleMembership.csv",
+											"value": ""
+										},
+										{
+											"key": "fileName",
+											"value": "AppRoleMembershipImp1.csv",
+											"description": "",
+											"type": "text"
+										},
+										{
+											"key": "isPublic",
+											"value": "false",
+											"description": "",
+											"type": "text"
+										}
+									]
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Schedule a Job - Import Bulk AppRoles - Resource Specific",
+							"request": {
+								"url": "{{HOST}}/job/v1/JobSchedules",
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									},
+									{
+										"key": "Cache-Control",
+										"value": "no-cache",
+										"description": ""
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n   \"schemas\": [\r\n     \"urn:ietf:params:scim:schemas:oracle:idcs:JobSchedule\"\r\n   ],\r\n  \"jobType\": \"AppRoleImport\",\r\n   \"runNow\": true,\r\n   \"parameters\": [\r\n    {\r\n      \"name\": \"fileLocation\",\r\n      \"value\": \"files/201707052216/AppRoleMembershipImp1.csv\"\r\n     },\r\n    {\r\n       \"name\": \"fileType\",\r\n       \"value\": \"csv\"\r\n     },\r\n     {\r\n     \t\"name\" : \"appDisplayName\",\r\n     \t\"value\" : \"MyApp\"\r\n     }\r\n     ]\r\n }"
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Schedule a Job - Import Bulk AppRoles - Generic",
+							"request": {
+								"url": "{{HOST}}/job/v1/JobSchedules",
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									},
+									{
+										"key": "Cache-Control",
+										"value": "no-cache",
+										"description": ""
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"schemas\": [\r\n    \"urn:ietf:params:scim:schemas:oracle:idcs:JobSchedule\"\r\n  ],\r\n  \"jobType\": \"Import\",\r\n  \"runNow\": true,\r\n  \"parameters\": [\r\n    {\r\n      \"name\": \"fileLocation\",\r\n      \"value\": \"files/201707052222/AppRoleMembershipImp1.csv\"\r\n    },\r\n    {\r\n      \"name\": \"fileType\",\r\n      \"value\": \"csv\"\r\n    },\r\n    {\r\n      \"name\": \"resourceType\",\r\n      \"value\": \"Grant\"\r\n    },\r\n    {\r\n       \"name\": \"appDisplayName\",\r\n       \"value\": \"MyApp\"\r\n    }\r\n  ]\r\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Verify Job Success - AppRoles",
+							"request": {
+								"url": {
+									"raw": "{{HOST}}/job/v1/JobHistories?filter=jobScheduleid eq \"3255bfd9-9d34-4ab8-9b6d-16bccc9484c7\"",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"job",
+										"v1",
+										"JobHistories"
+									],
+									"query": [
+										{
+											"key": "filter",
+											"value": "jobScheduleid eq \"3255bfd9-9d34-4ab8-9b6d-16bccc9484c7\"",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Review the Job Report",
+							"request": {
+								"url": {
+									"raw": "{{HOST}}/job/v1/JobReports?filter=historyId eq \"24d2d84600ee4a3ab553384715ae6219\"",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"job",
+										"v1",
+										"JobReports"
+									],
+									"query": [
+										{
+											"key": "filter",
+											"value": "historyId eq \"24d2d84600ee4a3ab553384715ae6219\"",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									},
+									{
+										"key": "Cache-Control",
+										"value": "no-cache",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Import & Export Groups",
+					"description": "",
+					"item": [
+						{
+							"name": "Schedule a Job - Export Bulk Groups - Resource Specific",
+							"request": {
+								"url": "{{HOST}}/job/v1/JobSchedules",
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/scim+json",
+										"description": ""
+									},
+									{
+										"key": "Cache-Control",
+										"value": "no-cache",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"schemas\": [\"urn:ietf:params:scim:schemas:oracle:idcs:JobSchedule\"],\r\n  \"jobType\": \"GroupExport\",\r\n  \"runNow\": true,\r\n  \"parameters\": [\r\n    {\r\n      \"name\": \"exportFormat\",\r\n      \"value\": \"CSV\"\r\n    }\r\n  ]\r\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Schedule a Job - Export Bulk Groups - Generic",
+							"request": {
+								"url": "{{HOST}}/job/v1/JobSchedules",
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/scim+json",
+										"description": ""
+									},
+									{
+										"key": "Cache-Control",
+										"value": "no-cache",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"schemas\": [\"urn:ietf:params:scim:schemas:oracle:idcs:JobSchedule\"],\r\n  \"jobType\": \"Export\",\r\n  \"runNow\": true,\r\n  \"parameters\": [\r\n    {\r\n      \"name\": \"exportFormat\",\r\n      \"value\": \"CSV\"\r\n    },\r\n    {\r\n      \"name\": \"resourceType\",\r\n      \"value\": \"Group\"\r\n    }\r\n  ]\r\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "View the Export Job Details",
+							"request": {
+								"url": {
+									"raw": "{{HOST}}/job/v1/JobHistories?filter=jobScheduleid eq \"25270e9b-964e-4175-b5c1-289146a2c6dd\"",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"job",
+										"v1",
+										"JobHistories"
+									],
+									"query": [
+										{
+											"key": "filter",
+											"value": "jobScheduleid eq \"25270e9b-964e-4175-b5c1-289146a2c6dd\"",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "View the Export Job Report",
+							"request": {
+								"url": {
+									"raw": "{{HOST}}/job/v1/JobReports?filter=historyId eq \"f1b547acab3d4607abd84dd996dc6d55\"",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"job",
+										"v1",
+										"JobReports"
+									],
+									"query": [
+										{
+											"key": "filter",
+											"value": "historyId eq \"f1b547acab3d4607abd84dd996dc6d55\"",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Verify Export Job Success - Groups",
+							"request": {
+								"url": {
+									"raw": "{{HOST}}/storage/v1/Files?fileName=files/export/201706230532/Export_f1b547acab3d4607abd84dd996dc6d55.csv",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"storage",
+										"v1",
+										"Files"
+									],
+									"query": [
+										{
+											"key": "fileName",
+											"value": "files/export/201706230532/Export_f1b547acab3d4607abd84dd996dc6d55.csv",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									},
+									{
+										"key": "Content-Type",
+										"value": "multipart/form-data",
+										"description": ""
+									},
+									{
+										"key": "Cache-Control",
+										"value": "no-cache",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Import a File to Storage",
+							"request": {
+								"url": "{{HOST}}/storage/v1/Files",
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									},
+									{
+										"key": "Content-Type",
+										"value": "multipart/form-data",
+										"description": ""
+									},
+									{
+										"key": "Cache-Control",
+										"value": "no-cache",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "contentType",
+											"value": "text/csv",
+											"description": "",
+											"type": "text"
+										},
+										{
+											"key": "file",
+											"description": "",
+											"type": "file",
+											"src": "Users.csv",
+											"value": ""
+										},
+										{
+											"key": "fileName",
+											"value": "Groups.csv",
+											"description": "",
+											"type": "text"
+										},
+										{
+											"key": "isPublic",
+											"value": "false",
+											"description": "",
+											"type": "text"
+										}
+									]
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Schedule a Job - Import Bulk Groups - Resource Specific",
+							"request": {
+								"url": "{{HOST}}/job/v1/JobSchedules",
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									},
+									{
+										"key": "Cache-Control",
+										"value": "no-cache",
+										"description": ""
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n   \"schemas\": [\r\n     \"urn:ietf:params:scim:schemas:oracle:idcs:JobSchedule\"\r\n   ],\r\n  \"jobType\": \"GroupImport\",\r\n   \"runNow\": true,\r\n   \"parameters\": [\r\n    {\r\n      \"name\": \"fileLocation\",\r\n      \"value\": \"files/201706280818/Groups.csv\"\r\n     },\r\n    {\r\n       \"name\": \"fileType\",\r\n       \"value\": \"csv\"\r\n     }\r\n   ]\r\n }"
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Schedule a Job - Import Bulk Groups - Generic",
+							"request": {
+								"url": "{{HOST}}/job/v1/JobSchedules",
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									},
+									{
+										"key": "Cache-Control",
+										"value": "no-cache",
+										"description": ""
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"schemas\": [\r\n    \"urn:ietf:params:scim:schemas:oracle:idcs:JobSchedule\"\r\n  ],\r\n  \"jobType\": \"Import\",\r\n  \"runNow\": true,\r\n  \"parameters\": [\r\n    {\r\n      \"name\": \"fileLocation\",\r\n      \"value\": \"files/201706281244/Groups.csv\"\r\n    },\r\n    {\r\n      \"name\": \"fileType\",\r\n      \"value\": \"csv\"\r\n    },\r\n    {\r\n      \"name\": \"resourceType\",\r\n      \"value\": \"Group\"\r\n    }\r\n  ]\r\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Verify Job Success - Groups",
+							"request": {
+								"url": {
+									"raw": "{{HOST}}/job/v1/JobHistories?filter=jobScheduleid eq \"d8877543-e0c1-4ccb-b5ac-235a9e8c9497\"",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"job",
+										"v1",
+										"JobHistories"
+									],
+									"query": [
+										{
+											"key": "filter",
+											"value": "jobScheduleid eq \"d8877543-e0c1-4ccb-b5ac-235a9e8c9497\"",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Review the Job Report",
+							"request": {
+								"url": {
+									"raw": "{{HOST}}/job/v1/JobReports?filter=historyId eq \"e95e63ad99e24b16a9d1043683cd95b1\"",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"job",
+										"v1",
+										"JobReports"
+									],
+									"query": [
+										{
+											"key": "filter",
+											"value": "historyId eq \"e95e63ad99e24b16a9d1043683cd95b1\"",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									},
+									{
+										"key": "Cache-Control",
+										"value": "no-cache",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Import & Export Users",
+					"description": "",
+					"item": [
+						{
+							"name": "Schedule a Job - Export Bulk Users - Resource Specific",
+							"request": {
+								"url": "{{HOST}}/job/v1/JobSchedules",
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/scim+json",
+										"description": ""
+									},
+									{
+										"key": "Cache-Control",
+										"value": "no-cache",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"schemas\": [\"urn:ietf:params:scim:schemas:oracle:idcs:JobSchedule\"],\r\n  \"jobType\": \"UserExport\",\r\n  \"runNow\": true,\r\n  \"parameters\": [\r\n    {\r\n      \"name\": \"exportFormat\",\r\n      \"value\": \"CSV\"\r\n    },\r\n    {\r\n      \"name\": \"attributesToExclude\",\r\n      \"value\": \"userName, profileUrl\"\r\n    }\r\n  ]\r\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Schedule a Job - Export Bulk Users - Generic",
+							"request": {
+								"url": "{{HOST}}/job/v1/JobSchedules",
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/scim+json",
+										"description": ""
+									},
+									{
+										"key": "Cache-Control",
+										"value": "no-cache",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"schemas\": [\"urn:ietf:params:scim:schemas:oracle:idcs:JobSchedule\"],\r\n  \"jobType\": \"Export\",\r\n  \"runNow\": true,\r\n  \"parameters\": [\r\n    {\r\n      \"name\": \"exportFormat\",\r\n      \"value\": \"CSV\"\r\n    },\r\n    {\r\n      \"name\": \"attributesToExclude\",\r\n      \"value\": \"userName, profileUrl\"\r\n    },\r\n    {\r\n      \"name\": \"resourceType\",\r\n      \"value\": \"User\"\r\n    }\r\n  ]\r\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "View the Export Job Details",
+							"request": {
+								"url": {
+									"raw": "{{HOST}}/job/v1/JobHistories?filter=jobScheduleid eq \"e24cc703-8923-4464-8eaa-18bcc2e92e88\"",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"job",
+										"v1",
+										"JobHistories"
+									],
+									"query": [
+										{
+											"key": "filter",
+											"value": "jobScheduleid eq \"e24cc703-8923-4464-8eaa-18bcc2e92e88\"",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "View the Export Job Report",
+							"request": {
+								"url": {
+									"raw": "{{HOST}}/job/v1/JobReports?filter=historyId eq \"69c3cd94b01c46bba3e7917f7e9ee3b8\"",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"job",
+										"v1",
+										"JobReports"
+									],
+									"query": [
+										{
+											"key": "filter",
+											"value": "historyId eq \"69c3cd94b01c46bba3e7917f7e9ee3b8\"",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Verify Export Job Success - Users",
+							"request": {
+								"url": {
+									"raw": "{{HOST}}/storage/v1/Files?fileName=files/export/201706281256/UserExport_69c3cd94b01c46bba3e7917f7e9ee3b8.csv",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"storage",
+										"v1",
+										"Files"
+									],
+									"query": [
+										{
+											"key": "fileName",
+											"value": "files/export/201706281256/UserExport_69c3cd94b01c46bba3e7917f7e9ee3b8.csv",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									},
+									{
+										"key": "Content-Type",
+										"value": "multipart/form-data",
+										"description": ""
+									},
+									{
+										"key": "Cache-Control",
+										"value": "no-cache",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Import a File to Storage",
+							"request": {
+								"url": "{{HOST}}/storage/v1/Files",
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									},
+									{
+										"key": "Content-Type",
+										"value": "multipart/form-data",
+										"description": ""
+									},
+									{
+										"key": "Cache-Control",
+										"value": "no-cache",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "contentType",
+											"value": "text/csv",
+											"description": "",
+											"type": "text"
+										},
+										{
+											"key": "file",
+											"description": "",
+											"type": "file",
+											"src": "Users.csv",
+											"value": ""
+										},
+										{
+											"key": "fileName",
+											"value": "Users.csv",
+											"description": "",
+											"type": "text"
+										},
+										{
+											"key": "isPublic",
+											"value": "false",
+											"description": "",
+											"type": "text"
+										}
+									]
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Schedule a Job - Import Bulk Users - Resource Specific",
+							"request": {
+								"url": "{{HOST}}/job/v1/JobSchedules",
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									},
+									{
+										"key": "Cache-Control",
+										"value": "no-cache",
+										"description": ""
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n   \"schemas\": [\r\n     \"urn:ietf:params:scim:schemas:oracle:idcs:JobSchedule\"\r\n   ],\r\n  \"jobType\": \"UserImport\",\r\n   \"runNow\": true,\r\n   \"parameters\": [\r\n    {\r\n      \"name\": \"fileLocation\",\r\n      \"value\": \"files/201706280803/Users.csv\"\r\n     },\r\n    {\r\n       \"name\": \"fileType\",\r\n       \"value\": \"csv\"\r\n     }\r\n   ]\r\n }"
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Schedule a Job - Import Bulk Users - Generic",
+							"request": {
+								"url": "{{HOST}}/job/v1/JobSchedules",
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									},
+									{
+										"key": "Cache-Control",
+										"value": "no-cache",
+										"description": ""
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"schemas\": [\r\n    \"urn:ietf:params:scim:schemas:oracle:idcs:JobSchedule\"\r\n  ],\r\n  \"jobType\": \"Import\",\r\n  \"runNow\": true,\r\n  \"parameters\": [\r\n    {\r\n      \"name\": \"fileLocation\",\r\n      \"value\": \"files/201706281234/Users.csv\"\r\n    },\r\n    {\r\n      \"name\": \"fileType\",\r\n      \"value\": \"csv\"\r\n    },\r\n    {\r\n      \"name\": \"resourceType\",\r\n      \"value\": \"User\"\r\n    }\r\n  ]\r\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Verify Job Success - Users",
+							"request": {
+								"url": {
+									"raw": "{{HOST}}/job/v1/JobHistories?filter=jobScheduleid eq \"40868a47-e8c4-4f27-bead-805da77bea6e\"",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"job",
+										"v1",
+										"JobHistories"
+									],
+									"query": [
+										{
+											"key": "filter",
+											"value": "jobScheduleid eq \"40868a47-e8c4-4f27-bead-805da77bea6e\"",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Review the Job Report",
+							"request": {
+								"url": {
+									"raw": "{{HOST}}/job/v1/JobReports?filter=historyId eq \"45be38c306284c00a66b729e83819f9f\"",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"job",
+										"v1",
+										"JobReports"
+									],
+									"query": [
+										{
+											"key": "filter",
+											"value": "historyId eq \"45be38c306284c00a66b729e83819f9f\"",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									},
+									{
+										"key": "Cache-Control",
+										"value": "no-cache",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Create users and groups in bulk",
+					"request": {
+						"url": "{{HOST}}/admin/v1/Bulk",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"schemas\": [\r\n    \"urn:ietf:params:scim:api:messages:2.0:BulkRequest\"\r\n  ],\r\n  \"Operations\": [\r\n    {\r\n      \"method\": \"POST\",\r\n      \"path\": \"/Users\",\r\n      \"bulkId\": \"id_user1\",\r\n      \"data\": {\r\n\t    \"schemas\": [\r\n\t      \"urn:ietf:params:scim:schemas:core:2.0:User\"\r\n\t    ],\r\n\t    \"name\": {\r\n\t  \t  \"givenName\": \"Xavier\",\r\n\t\t  \"familyName\": \"Hanel\"\r\n\t    },\r\n\t\t\"userName\": \"xhanel@example.com\",\r\n\t\t\"title\": \"Security Officer\",\r\n\t\t\"emails\": [\r\n\t\t  {\r\n\t\t    \"value\": \"xhanel@example.com\",\r\n\t\t    \"type\": \"work\",\r\n\t\t    \"primary\": true\r\n\t\t  },\r\n\t\t  {\r\n\t\t    \"value\": \"xhanel@example.com\",\r\n\t\t    \"primary\": false,\r\n\t\t    \"type\": \"recovery\"\r\n\t\t  }\r\n\t\t]\r\n      }\r\n    },\r\n    {\r\n      \"method\": \"POST\",\r\n      \"path\": \"/Users\",\r\n      \"bulkId\": \"id_user3\",\r\n      \"data\": {\r\n\t    \"schemas\": [\r\n\t      \"urn:ietf:params:scim:schemas:core:2.0:User\"\r\n\t    ],\r\n\t    \"name\": {\r\n\t  \t  \"givenName\": \"Ferdinand\",\r\n\t\t  \"familyName\": \"Redmilson\"\r\n\t    },\r\n\t\t\"userName\": \"fredmilson@example.com\",\r\n\t\t\"title\": \"GRC Reviewer\",\r\n\t\t\"emails\": [\r\n\t\t  {\r\n\t\t    \"value\": \"fredmilson@example.com\",\r\n\t\t    \"type\": \"work\",\r\n\t\t    \"primary\": true\r\n\t\t  },\r\n\t\t  {\r\n\t\t    \"value\": \"fredmilson@example.com\",\r\n\t\t    \"primary\": false,\r\n\t\t    \"type\": \"recovery\"\r\n\t\t  }\r\n\t\t]\r\n      }\r\n    },\r\n    {\r\n      \"method\": \"POST\",\r\n      \"path\": \"/Users\",\r\n      \"bulkId\": \"id_user2\",\r\n      \"data\": {\r\n\t    \"schemas\": [\r\n\t      \"urn:ietf:params:scim:schemas:core:2.0:User\"\r\n\t    ],\r\n\t    \"name\": {\r\n\t  \t  \"givenName\": \"Alfred\",\r\n\t\t  \"familyName\": \"Ahmlek\"\r\n\t    },\r\n\t\t\"userName\": \"aahmlek@example.com\",\r\n\t\t\"title\": \"Security Engineer\",\r\n\t\t\"emails\": [\r\n\t\t  {\r\n\t\t    \"value\": \"aahmlek@example.com\",\r\n\t\t    \"type\": \"work\",\r\n\t\t    \"primary\": true\r\n\t\t  },\r\n\t\t  {\r\n\t\t    \"value\": \"aahmlek@example.com\",\r\n\t\t    \"primary\": false,\r\n\t\t    \"type\": \"recovery\"\r\n\t\t  }\r\n\t\t]\r\n      }\r\n    },\r\n    {\r\n      \"method\": \"POST\",\r\n      \"path\": \"/Groups\",\r\n      \"bulkId\": \"id_group1\",\r\n      \"data\": {\r\n        \"schemas\": [\r\n          \"urn:ietf:params:scim:schemas:core:2.0:Group\",\r\n          \"urn:ietf:params:scim:schemas:oracle:idcs:extension:group:Group\",\r\n          \"urn:ietf:params:scim:schemas:extension:custom:2.0:Group\"\r\n        ],\r\n        \"displayname\": \"Security Team\",\r\n        \"urn:ietf:params:scim:schemas:oracle:idcs:extension:group:Group\": {\r\n          \"creationMechanism\": \"api\",\r\n          \"description\": \"Group with security employees.\"\r\n        },\r\n        \"members\": [\r\n          {\r\n            \"value\": \"bulkId:id_user1\",\r\n            \"type\": \"User\"\r\n          },\r\n          {\r\n            \"value\": \"bulkId:id_user2\",\r\n            \"type\": \"User\"\r\n          }\r\n        ]\r\n      }\r\n    },\r\n    {\r\n      \"method\": \"POST\",\r\n      \"path\": \"/Groups\",\r\n      \"bulkId\": \"id_group2\",\r\n      \"data\": {\r\n        \"schemas\": [\r\n          \"urn:ietf:params:scim:schemas:core:2.0:Group\",\r\n          \"urn:ietf:params:scim:schemas:oracle:idcs:extension:group:Group\",\r\n          \"urn:ietf:params:scim:schemas:extension:custom:2.0:Group\"\r\n        ],\r\n        \"displayname\": \"Compliance Team\",\r\n        \"urn:ietf:params:scim:schemas:oracle:idcs:extension:group:Group\": {\r\n          \"creationMechanism\": \"api\",\r\n          \"description\": \"Group with security compliance employees.\"\r\n        },\r\n        \"members\": [\r\n          {\r\n            \"value\": \"bulkId:id_user1\",\r\n            \"type\": \"User\"\r\n          },\r\n          {\r\n            \"value\": \"bulkId:id_user2\",\r\n            \"type\": \"User\"\r\n          },\r\n          {\r\n            \"value\": \"bulkId:id_user3\",\r\n            \"type\": \"User\"\r\n          }\r\n        ]\r\n      }\r\n    }\r\n  ]\r\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Delete users and groups in bulk",
+					"request": {
+						"url": "{{HOST}}/admin/v1/Bulk",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"schemas\": [\r\n    \"urn:ietf:params:scim:api:messages:2.0:BulkRequest\"\r\n  ],\r\n  \"Operations\": [\r\n    {\r\n      \"method\": \"DELETE\",\r\n      \"path\": \"/Groups/{{groupid}}\"\r\n    },\r\n    {\r\n      \"method\": \"DELETE\",\r\n      \"path\": \"/Users/{{userid}}\"\r\n    }\r\n  ]\r\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Modify users and groups in bulk",
+					"request": {
+						"url": "{{HOST}}/admin/v1/Bulk",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"schemas\": [\r\n    \"urn:ietf:params:scim:api:messages:2.0:BulkRequest\"\r\n  ],\r\n  \"Operations\": [\r\n     {\r\n      \"method\": \"PATCH\",\r\n      \"path\": \"/Groups/{{groupid}}\",\r\n      \"data\": {\r\n        \"schemas\": [\r\n          \"urn:ietf:params:scim:api:messages:2.0:PatchOp\"\r\n        ],\r\n        \"Operations\": [\r\n          {\r\n            \"op\": \"replace\",\r\n            \"path\": \"displayName\",\r\n            \"value\": \"New Group Name\"\r\n          }\r\n        ]\r\n      }\r\n    },\r\n    {\r\n      \"method\": \"PATCH\",\r\n      \"path\": \"/Users/{{userid}}\",\r\n      \"data\": {\r\n        \"schemas\": [\r\n\t      \"urn:ietf:params:scim:api:messages:2.0:PatchOp\"\r\n\t    ],\r\n\t    \"Operations\": [\r\n\t      {\r\n\t        \"op\": \"replace\",\r\n\t        \"path\": \"phoneNumbers\",\r\n\t        \"value\": [\r\n\t          {\r\n\t            \"value\": \"666-666-1111\",\r\n\t            \"type\": \"home\"\r\n\t          }\r\n\t        ]\r\n\t      }\r\n\t    ]\r\n      }\r\n    }\r\n  ]\r\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Reset user's password in bulk (random value)",
+					"request": {
+						"url": "{{HOST}}/admin/v1/BulkUserPasswordResetter",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"schemas\": [\r\n    \"urn:ietf:params:scim:schemas:oracle:idcs:BulkUserPasswordResetter\"\r\n  ],\r\n  \"userIds\": [\r\n    \"{{userid}}\",\r\n    \"{{userid2}}\"\r\n  ]\r\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Reset user's password in bulk (known value)",
+					"request": {
+						"url": "{{HOST}}/admin/v1/BulkUserPasswordChanger",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"schemas\": [\r\n\t\t\"urn:ietf:params:scim:schemas:oracle:idcs:BulkUserPasswordChanger\"\r\n\t],\r\n\t\"userIds\": [\r\n\t\t\"{{userid}}\",\r\n\t\t\"{{userid2}}\"\r\n\t],\r\n\t\"password\": \"Welcome1\"\r\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Create users and reset passwords in bulk",
+					"request": {
+						"url": "{{HOST}}/admin/v1/Bulk",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"schemas\": [\r\n    \"urn:ietf:params:scim:api:messages:2.0:BulkRequest\"\r\n  ],\r\n  \"Operations\": [\r\n    {\r\n      \"method\": \"POST\",\r\n      \"path\": \"/Users\",\r\n      \"bulkId\": \"id_user1\",\r\n      \"data\": {\r\n\t    \"schemas\": [\r\n\t      \"urn:ietf:params:scim:schemas:core:2.0:User\"\r\n\t    ],\r\n\t    \"name\": {\r\n\t  \t  \"givenName\": \"Simone\",\r\n\t\t  \"familyName\": \"Morrison\"\r\n\t    },\r\n\t\t\"userName\": \"smorrison@example.com\",\r\n\t\t\"title\": \"Finance Director\",\r\n\t\t\"emails\": [\r\n\t\t  {\r\n\t\t    \"value\": \"smorrison@example.com\",\r\n\t\t    \"type\": \"work\",\r\n\t\t    \"primary\": true\r\n\t\t  },\r\n\t\t  {\r\n\t\t    \"value\": \"smorrison@example.com\",\r\n\t\t    \"primary\": false,\r\n\t\t    \"type\": \"recovery\"\r\n\t\t  }\r\n\t\t]\r\n      }\r\n    },\r\n    {\r\n      \"method\": \"POST\",\r\n      \"path\": \"/Users\",\r\n      \"bulkId\": \"id_user2\",\r\n      \"data\": {\r\n\t    \"schemas\": [\r\n\t      \"urn:ietf:params:scim:schemas:core:2.0:User\"\r\n\t    ],\r\n\t    \"name\": {\r\n\t  \t  \"givenName\": \"Rebecca\",\r\n\t\t  \"familyName\": \"Holt\"\r\n\t    },\r\n\t\t\"userName\": \"rholt@example.com\",\r\n\t\t\"title\": \"Marketing Analyst\",\r\n\t\t\"emails\": [\r\n\t\t  {\r\n\t\t    \"value\": \"rholt@example.com\",\r\n\t\t    \"type\": \"work\",\r\n\t\t    \"primary\": true\r\n\t\t  },\r\n\t\t  {\r\n\t\t    \"value\": \"rholt@example.com\",\r\n\t\t    \"primary\": false,\r\n\t\t    \"type\": \"recovery\"\r\n\t\t  }\r\n\t\t]\r\n      }\r\n    },\r\n    {\r\n\t  \"method\": \"POST\",\r\n\t  \"path\": \"/BulkUserPasswordChanger\",\r\n\t  \"bulkId\": \"pw_change\",\r\n\t  \"data\": {\r\n\t    \"schemas\": [\r\n\t\t  \"urn:ietf:params:scim:schemas:oracle:idcs:BulkUserPasswordChanger\"\r\n\t\t],\r\n\t\t\"userIds\": [\r\n\t\t  \"bulkId:id_user1\",\r\n\t\t  \"bulkId:id_user2\"\r\n\t\t ],\r\n\t\t \"password\": \"Welcome1\"\r\n\t  }\r\n    }\r\n  ]\r\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Create users, groups, and apps in bulk",
+					"request": {
+						"url": "{{HOST}}/admin/v1/Bulk",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"schemas\": [\r\n    \"urn:ietf:params:scim:api:messages:2.0:BulkRequest\"\r\n  ],\r\n  \"Operations\": [\r\n    {\r\n      \"method\": \"POST\",\r\n      \"path\": \"/Users\",\r\n      \"bulkId\": \"id_user1\",\r\n      \"data\": {\r\n\t    \"schemas\": [\r\n\t      \"urn:ietf:params:scim:schemas:core:2.0:User\"\r\n\t    ],\r\n\t    \"name\": {\r\n\t  \t  \"givenName\": \"Xavier\",\r\n\t\t  \"familyName\": \"Hanel\"\r\n\t    },\r\n\t\t\"userName\": \"xhanel@example.com\",\r\n\t\t\"title\": \"Security Officer\",\r\n\t\t\"emails\": [\r\n\t\t  {\r\n\t\t    \"value\": \"xhanel@example.com\",\r\n\t\t    \"type\": \"work\",\r\n\t\t    \"primary\": true\r\n\t\t  },\r\n\t\t  {\r\n\t\t    \"value\": \"xhanel@example.com\",\r\n\t\t    \"primary\": false,\r\n\t\t    \"type\": \"recovery\"\r\n\t\t  }\r\n\t\t]\r\n      }\r\n    },\r\n    {\r\n      \"method\": \"POST\",\r\n      \"path\": \"/Users\",\r\n      \"bulkId\": \"id_user2\",\r\n      \"data\": {\r\n\t    \"schemas\": [\r\n\t      \"urn:ietf:params:scim:schemas:core:2.0:User\"\r\n\t    ],\r\n\t    \"name\": {\r\n\t  \t  \"givenName\": \"Alfred\",\r\n\t\t  \"familyName\": \"Ahmlek\"\r\n\t    },\r\n\t\t\"userName\": \"aahmlek@example.com\",\r\n\t\t\"title\": \"Security Engineer\",\r\n\t\t\"emails\": [\r\n\t\t  {\r\n\t\t    \"value\": \"aahmlek@example.com\",\r\n\t\t    \"type\": \"work\",\r\n\t\t    \"primary\": true\r\n\t\t  },\r\n\t\t  {\r\n\t\t    \"value\": \"aahmlek@example.com\",\r\n\t\t    \"primary\": false,\r\n\t\t    \"type\": \"recovery\"\r\n\t\t  }\r\n\t\t]\r\n      }\r\n    },\r\n    {\r\n      \"method\": \"POST\",\r\n      \"path\": \"/Users\",\r\n      \"bulkId\": \"id_user3\",\r\n      \"data\": {\r\n\t    \"schemas\": [\r\n\t      \"urn:ietf:params:scim:schemas:core:2.0:User\"\r\n\t    ],\r\n\t    \"name\": {\r\n\t  \t  \"givenName\": \"Ferdinand\",\r\n\t\t  \"familyName\": \"Redmilson\"\r\n\t    },\r\n\t\t\"userName\": \"fredmilson@example.com\",\r\n\t\t\"title\": \"GRC Reviewer\",\r\n\t\t\"emails\": [\r\n\t\t  {\r\n\t\t    \"value\": \"fredmilson@example.com\",\r\n\t\t    \"type\": \"work\",\r\n\t\t    \"primary\": true\r\n\t\t  },\r\n\t\t  {\r\n\t\t    \"value\": \"fredmilson@example.com\",\r\n\t\t    \"primary\": false,\r\n\t\t    \"type\": \"recovery\"\r\n\t\t  }\r\n\t\t]\r\n      }\r\n    },\r\n    {\r\n      \"method\": \"POST\",\r\n      \"path\": \"/Groups\",\r\n      \"bulkId\": \"id_group1\",\r\n      \"data\": {\r\n        \"schemas\": [\r\n          \"urn:ietf:params:scim:schemas:core:2.0:Group\",\r\n          \"urn:ietf:params:scim:schemas:oracle:idcs:extension:group:Group\",\r\n          \"urn:ietf:params:scim:schemas:extension:custom:2.0:Group\"\r\n        ],\r\n        \"displayname\": \"Security Team\",\r\n        \"urn:ietf:params:scim:schemas:oracle:idcs:extension:group:Group\": {\r\n          \"creationMechanism\": \"api\",\r\n          \"description\": \"Group with security employees.\"\r\n        },\r\n        \"members\": [\r\n          {\r\n            \"value\": \"bulkId:id_user1\",\r\n            \"type\": \"User\"\r\n          },\r\n          {\r\n            \"value\": \"bulkId:id_user2\",\r\n            \"type\": \"User\"\r\n          }\r\n        ]\r\n      }\r\n    },\r\n    {\r\n      \"method\": \"POST\",\r\n      \"path\": \"/Groups\",\r\n      \"bulkId\": \"id_group2\",\r\n      \"data\": {\r\n        \"schemas\": [\r\n          \"urn:ietf:params:scim:schemas:core:2.0:Group\",\r\n          \"urn:ietf:params:scim:schemas:oracle:idcs:extension:group:Group\",\r\n          \"urn:ietf:params:scim:schemas:extension:custom:2.0:Group\"\r\n        ],\r\n        \"displayname\": \"Compliance Team\",\r\n        \"urn:ietf:params:scim:schemas:oracle:idcs:extension:group:Group\": {\r\n          \"creationMechanism\": \"api\",\r\n          \"description\": \"Group with security compliance employees.\"\r\n        },\r\n        \"members\": [\r\n          {\r\n            \"value\": \"bulkId:id_user1\",\r\n            \"type\": \"User\"\r\n          },\r\n          {\r\n            \"value\": \"bulkId:id_user2\",\r\n            \"type\": \"User\"\r\n          },\r\n          {\r\n            \"value\": \"bulkId:id_user3\",\r\n            \"type\": \"User\"\r\n          }\r\n        ]\r\n      }\r\n    },\r\n    {\r\n      \"method\": \"POST\",\r\n      \"path\": \"/Apps\",\r\n      \"bulkId\": \"id_apps1\",\r\n      \"data\": {\r\n\t\t  \"schemas\": [\"urn:ietf:params:scim:schemas:oracle:idcs:App\"],\r\n\t\t  \"basedOnTemplate\": { \"value\": \"CustomWebAppTemplateId\" },\r\n\t\t  \"displayName\": \"Security Portal\",\r\n\t\t  \"description\": \"Portal for security teams\",\r\n\t\t  \"clientType\": \"confidential\",\r\n\t\t  \"isOAuthClient\": true,\r\n\t\t  \"allowedGrants\": [\"authorization_code\",\"client_credentials\"],\r\n\t\t  \"redirectUris\": [\"https://www.mysecapp.com/callback\"],\r\n\t\t  \"logoutUri\": \"https://www.mysecapp.com/logout\",\r\n\t\t  \"postLogoutRedirectUris\": [\"https://www.mysecapp.com/\"],\r\n\t\t  \"isOAuthResource\": true,\r\n\t\t  \"accessTokenExpiry\": 3600,\r\n\t\t  \"refreshTokenExpiry\": 604800,\r\n\t\t  \"allUrlSchemesAllowed\": false,\r\n\t\t  \"audience\": \"https://api.mysecapp.com\",\r\n\t\t  \"scopes\": [\r\n\t\t\t{\r\n\t\t\t  \"value\": \"/mysettings\",\r\n\t\t\t  \"fqs\": \"https://api.mysecapp.com/mysettings\",\r\n\t\t\t  \"requiresConsent\": true,\r\n\t\t\t  \"description\": \"Get information your security clearance\"\r\n\t\t\t},{\r\n\t\t\t  \"value\": \"/alert\",\r\n\t\t\t  \"fqs\": \"https://api.mysecapp.com/alert\",\r\n\t\t\t  \"requiresConsent\": true,\r\n\t\t\t  \"description\": \"Post an alert for the security team\"\r\n\t\t\t},{\r\n\t\t\t  \"value\": \"/myprofile\",\r\n\t\t\t  \"fqs\": \"https://api.mysecapp.com/myprofile\",\r\n\t\t\t  \"requiresConsent\": false,\r\n\t\t\t  \"description\": \"Access your security profile\"\r\n\t\t\t}]\r\n\t\t}\r\n    }\r\n  ]\r\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Groups",
+			"description": "",
+			"item": [
+				{
+					"name": "Create",
+					"description": "",
+					"item": [
+						{
+							"name": "Create a group with members",
+							"request": {
+								"url": "{{HOST}}/admin/v1/Groups",
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/scim+json",
+										"description": ""
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"displayName\": \"Contractors\",\r\n  \"externalId\": \"123456\",\r\n  \"urn:ietf:params:scim:schemas:oracle:idcs:extension:group:Group\": {\r\n    \"creationMechanism\": \"api\",\r\n    \"description\": \"Group with contractors\"\r\n  },\r\n  \"members\": [\r\n    {\r\n      \"value\": \"{{userid}}\",\r\n      \"type\": \"User\"\r\n    }\r\n  ],\r\n  \"schemas\": [\r\n    \"urn:ietf:params:scim:schemas:core:2.0:Group\",\r\n    \"urn:ietf:params:scim:schemas:oracle:idcs:extension:group:Group\",\r\n    \"urn:ietf:params:scim:schemas:extension:custom:2.0:Group\"\r\n  ]\r\n}"
+								},
+								"description": "Creating a group with members"
+							},
+							"response": []
+						},
+						{
+							"name": "Create a group without members",
+							"request": {
+								"url": "{{HOST}}/admin/v1/Groups",
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"displayName\": \"Example Name\",\r\n  \"externalId\": \"123456\",\r\n  \"urn:ietf:params:scim:schemas:oracle:idcs:extension:group:Group\": {\r\n    \"creationMechanism\": \"api\",\r\n    \"description\": \"Example Description\"\r\n  },\r\n  \"schemas\": [\r\n    \"urn:ietf:params:scim:schemas:core:2.0:Group\",\r\n    \"urn:ietf:params:scim:schemas:oracle:idcs:extension:group:Group\",\r\n    \"urn:ietf:params:scim:schemas:extension:custom:2.0:Group\"\r\n  ]\r\n}"
+								},
+								"description": "Creating an empty group"
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Delete",
+					"description": "",
+					"item": [
+						{
+							"name": "Delete group",
+							"request": {
+								"url": "{{HOST}}/admin/v1/Groups/{{groupid}}",
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": "Delete a Group based on {{id}} already created in IDCS domain."
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Membership",
+					"description": "",
+					"item": [
+						{
+							"name": "Search all groups membership",
+							"request": {
+								"url": {
+									"raw": "{{HOST}}/admin/v1/Groups?attributes=members,displayName",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"admin",
+										"v1",
+										"Groups"
+									],
+									"query": [
+										{
+											"key": "attributes",
+											"value": "members,displayName",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Remove group members",
+							"request": {
+								"url": "{{HOST}}/admin/v1/Groups/{{groupid}}",
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"schemas\": [\r\n    \"urn:ietf:params:scim:api:messages:2.0:PatchOp\"\r\n  ],\r\n  \"Operations\": [\r\n    {\r\n      \"op\": \"remove\",\r\n      \"path\": \"members[value eq \\\"{{userid}}\\\"]\"\r\n    }\r\n  ]\r\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Add group members",
+							"request": {
+								"url": "{{HOST}}/admin/v1/Groups/{{groupid}}",
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"schemas\": [\r\n    \"urn:ietf:params:scim:api:messages:2.0:PatchOp\"\r\n  ],\r\n  \"Operations\": [\r\n    {\r\n      \"op\": \"add\",\r\n      \"path\": \"members\",\r\n      \"value\": [\r\n        {\r\n          \"value\": \"{{userid}}\",\r\n          \"type\": \"User\"\r\n        }\r\n      ]\r\n    }\r\n  ]\r\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Get specific group membership",
+							"request": {
+								"url": {
+									"raw": "{{HOST}}/admin/v1/Groups/{{groupid}}?attributes=members,displayName",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"admin",
+										"v1",
+										"Groups",
+										"{{groupid}}"
+									],
+									"query": [
+										{
+											"key": "attributes",
+											"value": "members,displayName"
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Get group membership (for a specific user)",
+							"request": {
+								"url": {
+									"raw": "{{HOST}}/admin/v1/Groups?filter=members eq \"{{userid}}\"&attributes=displayName",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"admin",
+										"v1",
+										"Groups"
+									],
+									"query": [
+										{
+											"key": "filter",
+											"value": "members eq \"{{userid}}\""
+										},
+										{
+											"key": "attributes",
+											"value": "displayName"
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": "Searches for and display the groups that the user belongs to"
+							},
+							"response": []
+						},
+						{
+							"name": "Search all groups membership (with search criteria)",
+							"request": {
+								"url": {
+									"raw": "{{HOST}}/admin/v1/Groups?attributes=members,displayName&filter=displayName sw \"con\"",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"admin",
+										"v1",
+										"Groups"
+									],
+									"query": [
+										{
+											"key": "attributes",
+											"value": "members,displayName"
+										},
+										{
+											"key": "filter",
+											"value": "displayName sw \"con\""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Modify",
+					"description": "",
+					"item": [
+						{
+							"name": "Search all groups (with search criteria)",
+							"request": {
+								"url": {
+									"raw": "{{HOST}}/admin/v1/Groups?filter=displayName sw \"Emp\"",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"admin",
+										"v1",
+										"Groups"
+									],
+									"query": [
+										{
+											"key": "filter",
+											"value": "displayName sw \"Emp\""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": "filter = add a filter criteria to the search using attributes, values, and operators"
+							},
+							"response": []
+						},
+						{
+							"name": "Replace a Group",
+							"request": {
+								"url": "{{HOST}}/admin/v1/Groups/{{groupid}}",
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"displayName\": \"Retired Employees\",\r\n  \"externalId\": \"123456\",\r\n  \"urn:ietf:params:scim:schemas:oracle:idcs:extension:group:Group\": {\r\n    \"description\": \"Employees retired from Example\"\r\n  },\r\n  \"members\": [\r\n    {\r\n      \"value\": \"{{userid}}\",\r\n      \"type\": \"User\"\r\n    }\r\n  ],\r\n  \"schemas\": [\r\n    \"urn:ietf:params:scim:schemas:core:2.0:Group\",\r\n    \"urn:ietf:params:scim:schemas:oracle:idcs:extension:group:Group\",\r\n    \"urn:ietf:params:scim:schemas:extension:custom:2.0:Group\"\r\n  ]\r\n}"
+								},
+								"description": "Replace a Group {{id}} with all new group name and its members."
+							},
+							"response": []
+						},
+						{
+							"name": "Update Group (replace single attribute)",
+							"request": {
+								"url": "{{HOST}}/admin/v1/Groups/{{groupid}}",
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"schemas\": [\r\n    \"urn:ietf:params:scim:api:messages:2.0:PatchOp\"\r\n  ],\r\n  \"Operations\": [\r\n    {\r\n      \"op\": \"replace\",\r\n      \"path\": \"displayName\",\r\n      \"value\": \"Employees from Example\"\r\n    }\r\n  ]\r\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Update Group (multiple attributes)",
+							"request": {
+								"url": "{{HOST}}/admin/v1/Groups/{{groupid}}",
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"schemas\": [\r\n    \"urn:ietf:params:scim:api:messages:2.0:PatchOp\"\r\n  ],\r\n  \"Operations\": [\r\n    {\r\n      \"op\": \"replace\",\r\n      \"path\": \"displayName\",\r\n      \"value\": \"Example Contractors\"\r\n    },\r\n    {\r\n      \"op\": \"replace\",\r\n      \"path\": \"urn:ietf:params:scim:schemas:oracle:idcs:extension:group:Group:description\",\r\n      \"value\": \"Contractors from Example\"\r\n    }\r\n  ]\r\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Search",
+					"description": "",
+					"item": [
+						{
+							"name": "Search specific group (return specific attributes)",
+							"request": {
+								"url": {
+									"raw": "{{HOST}}/admin/v1/Groups/{{groupid}}?attributes=displayName",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"admin",
+										"v1",
+										"Groups",
+										"{{groupid}}"
+									],
+									"query": [
+										{
+											"key": "attributes",
+											"value": "displayName"
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Search groups wuth filters using POST",
+							"request": {
+								"url": "{{HOST}}/admin/v1/Groups/.search",
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"schemas\": [\"urn:ietf:params:scim:api:messages:2.0:SearchRequest\"],\r\n  \"attributes\": [\"displayName\", \"externalId\"],\r\n  \"filter\":\r\n          \"displayName sw \\\"Employee\\\"\",\r\n  \"startIndex\": 1,\r\n  \"count\": 10\r\n}"
+								},
+								"description": "Searching the existing groups using the POST method."
+							},
+							"response": []
+						},
+						{
+							"name": "Search specific group",
+							"request": {
+								"url": "{{HOST}}/admin/v1/Groups/{{groupid}}",
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Search all groups (with search criteria)",
+							"request": {
+								"url": {
+									"raw": "{{HOST}}/admin/v1/Groups?filter=displayName sw \"Emp\"",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"admin",
+										"v1",
+										"Groups"
+									],
+									"query": [
+										{
+											"key": "filter",
+											"value": "displayName sw \"Emp\""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": "filter = add a filter criteria to the search using attributes, values, and operators"
+							},
+							"response": []
+						},
+						{
+							"name": "Search all groups (return specific attributes)",
+							"request": {
+								"url": {
+									"raw": "{{HOST}}/admin/v1/Groups?attributes=displayName",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"admin",
+										"v1",
+										"Groups"
+									],
+									"query": [
+										{
+											"key": "attributes",
+											"value": "displayName"
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": "attributes = comma separated list of values retrieved in a search"
+							},
+							"response": []
+						},
+						{
+							"name": "Search all groups (with result pagination)",
+							"request": {
+								"url": {
+									"raw": "{{HOST}}/admin/v1/Groups?count=5&startIndex=0",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"admin",
+										"v1",
+										"Groups"
+									],
+									"query": [
+										{
+											"key": "count",
+											"value": "5",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "startIndex",
+											"value": "0",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"displayName\": \"Employee\",\r\n  \"externalId\": \"123456\",\r\n  \"urn:ietf:params:scim:schemas:oracle:idcs:extension:group:Group\": {\r\n    \"creationMechanism\": \"api\",\r\n    \"description\": \"Employee Group\"\r\n  },\r\n  \"schemas\": [\r\n    \"urn:ietf:params:scim:schemas:core:2.0:Group\",\r\n    \"urn:ietf:params:scim:schemas:oracle:idcs:extension:group:Group\",\r\n    \"urn:ietf:params:scim:schemas:extension:custom:2.0:Group\"\r\n  ]\r\n}"
+								},
+								"description": "Searching the existing groups"
+							},
+							"response": []
+						},
+						{
+							"name": "Search all groups",
+							"request": {
+								"url": "{{HOST}}/admin/v1/Groups",
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"displayName\": \"Employee\",\r\n  \"externalId\": \"123456\",\r\n  \"urn:ietf:params:scim:schemas:oracle:idcs:extension:group:Group\": {\r\n    \"creationMechanism\": \"api\",\r\n    \"description\": \"Employee Group\"\r\n  },\r\n  \"schemas\": [\r\n    \"urn:ietf:params:scim:schemas:core:2.0:Group\",\r\n    \"urn:ietf:params:scim:schemas:oracle:idcs:extension:group:Group\",\r\n    \"urn:ietf:params:scim:schemas:extension:custom:2.0:Group\"\r\n  ]\r\n}"
+								},
+								"description": "Searching the existing groups"
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				}
+			]
+		},
+		{
+			"name": "MFA",
+			"description": "",
+			"item": [
+				{
+					"name": "Security Questions",
+					"description": "",
+					"item": [
+						{
+							"name": "Search Security Questions",
+							"request": {
+								"url": "{{HOST}}//admin/v1/SecurityQuestions",
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Search for a Security Question",
+							"request": {
+								"url": "{{HOST}}//admin/v1/SecurityQuestions/249624ad1f6647e598dc2ee88205cc1e",
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Update a Security Question",
+							"request": {
+								"url": "{{HOST}}//admin/v1/SecurityQuestions",
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"active\": false,\r\n  \"type\": \"custom\",\r\n  \"id\": \"FavActor\",\r\n  \"questionText\": [\r\n    {\r\n      \"locale\": \"en\",\r\n      \"default\": true,\r\n      \"value\": \"What is your favorite dog breed?\"\r\n    }\r\n  ],\r\n  \"schemas\": [\r\n    \"urn:ietf:params:scim:schemas:oracle:idcs:SecurityQuestion\"\r\n  ]\r\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Update a Security Question",
+							"request": {
+								"url": "{{HOST}}//admin/v1/SecurityQuestions/2e5f96d677fc42d781fa64bf939f6253",
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"schemas\": [\r\n    \"urn:ietf:params:scim:api:messages:2.0:PatchOp\"\r\n  ],\r\n  \"Operations\": [\r\n    {\r\n      \"op\": \"replace\",\r\n      \"path\": \"active\",\r\n      \"value\": false\r\n    }\r\n  ]\r\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Delete a Security Question",
+							"request": {
+								"url": "{{HOST}}//admin/v1/SecurityQuestions/579d36713b904b1caee166f923b3214d",
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				}
+			]
+		},
+		{
+			"name": "OAuth",
+			"description": "",
+			"item": [
+				{
+					"name": "OAuth Tokens - Validate Tokens and Authorization",
+					"description": "",
+					"item": [
+						{
+							"name": "Validate access_token (introspect)",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": {
+										"username": "{{CLIENT_ID}}",
+										"password": "{{CLIENT_SECRET}}",
+										"saveHelperData": true,
+										"showPassword": false
+									}
+								},
+								"url": "{{HOST}}/oauth2/v1/introspect",
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "text"
+										}
+									]
+								},
+								"description": ""
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "OAuth Tokens - Get (Authorize)",
+					"description": "",
+					"item": [
+						{
+							"name": "Obtain access_token (client credentials)",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": {
+										"username": "{{CLIENT_ID}}",
+										"password": "{{CLIENT_SECRET}}",
+										"saveHelperData": true,
+										"showPassword": false
+									}
+								},
+								"url": "{{HOST}}/oauth2/v1/token",
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Basic OWNlMjkwODZmNDQ0NGI3OWE1YzUxOWQ0ZGI3Mjk0ZDg6M2YxNGRkYTgtMDhkOS00MWVkLThmYTctOWQ2NmI3ODgzZDc1",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "grant_type",
+											"value": "client_credentials",
+											"type": "text"
+										},
+										{
+											"key": "scope",
+											"value": "urn:opc:idm:__myscopes__",
+											"type": "text"
+										}
+									]
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Obtain access_token (resource owner)",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": {
+										"username": "{{CLIENT_ID}}",
+										"password": "{{CLIENT_SECRET}}",
+										"saveHelperData": true,
+										"showPassword": false
+									}
+								},
+								"url": "{{HOST}}/oauth2/v1/token",
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "grant_type",
+											"value": "password",
+											"type": "text"
+										},
+										{
+											"key": "scope",
+											"value": "urn:opc:idm:__myscopes__",
+											"type": "text"
+										},
+										{
+											"key": "username",
+											"value": "{{USER_LOGIN}}",
+											"type": "text"
+										},
+										{
+											"key": "password",
+											"value": "{{USER_PW}}",
+											"type": "text"
+										}
+									]
+								},
+								"description": ""
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "OAuth Configuration - Search",
+					"description": "",
+					"item": [
+						{
+							"name": "Search all OAuth configurations",
+							"request": {
+								"url": "{{HOST}}/admin/v1/OAuthConfig",
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Search default OAuth configuration (OAuthConfig)",
+							"request": {
+								"url": "{{HOST}}/admin/v1/OAuthConfig/OAuthConfig",
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Search for oauth configs using POST",
+							"request": {
+								"url": "{{HOST}}/admin/v1/OAuthConfig/.search",
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/scim+json",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"schemas\": [\"urn:ietf:params:scim:api:messages:2.0:SearchRequest\"],\r\n  \"attributes\": [\"accessTokenExpirySeconds\", \"refreshTokenExpirySeconds\", \"maxAllowedScopesPerResource\", \"clockSkewSeconds\"],\r\n  \"sortOrder\": \"ASCENDING\"\r\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Search default OAuth configuration (OAuthConfig) (get token timeouts)",
+							"request": {
+								"url": {
+									"raw": "{{HOST}}/admin/v1/OAuthConfig/OAuthConfig?attributes=accessTokenExpirySeconds,refreshTokenExpirySeconds",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"admin",
+										"v1",
+										"OAuthConfig",
+										"OAuthConfig"
+									],
+									"query": [
+										{
+											"key": "attributes",
+											"value": "accessTokenExpirySeconds,refreshTokenExpirySeconds"
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Search all OAuth configurations (get token timeouts)",
+							"request": {
+								"url": {
+									"raw": "{{HOST}}/admin/v1/OAuthConfig?attributes=accessTokenExpirySeconds,refreshTokenExpirySeconds",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"admin",
+										"v1",
+										"OAuthConfig"
+									],
+									"query": [
+										{
+											"key": "attributes",
+											"value": "accessTokenExpirySeconds,refreshTokenExpirySeconds",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "OAuth Configuration - Modify",
+					"description": "",
+					"item": [
+						{
+							"name": "Replace OAuthConfig (token expiration) (DENIED)",
+							"request": {
+								"url": "{{HOST}}/admin/v1/OAuthConfig/OAuthConfig",
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"schemas\": [\n    \"urn:ietf:params:scim:schemas:oracle:idcs:OAuthConfig\"\n  ],\n  \"id\": \"OAuthConfig\",\n  \"accessTokenExpirySeconds\": 36000,\n  \"refreshTokenExpirySeconds\": 6048000,\n  \"maxAllowedScopesPerResource\": 100,\n  \"clockSkewSeconds\": 60,\n  \"oidcUserAttributesMapping\": \"{ \\\"sub\\\":\\\"userName\\\", \\\"name\\\":\\\"name.formatted\\\", \\\"given_name\\\":\\\"name.givenName\\\", \\\"family_name\\\":\\\"name.familyName\\\", \\\"middle_name\\\":\\\"name.middleName\\\", \\\"nickname\\\":\\\"nickName\\\", \\\"preferred_username\\\":\\\"userName\\\", \\\"profile\\\":\\\"profileUrl\\\", \\\"picture\\\":\\\"photos.value\\\", \\\"website\\\":\\\"\\\", \\\"email\\\":\\\"emails.value\\\", \\\"email_verified\\\":\\\"\\\", \\\"gender\\\":\\\"\\\", \\\"birthdate\\\":\\\"\\\", \\\"zoneinfo\\\":\\\"timezone\\\", \\\"locale\\\":\\\"locale\\\", \\\"phone_number\\\":\\\"phoneNumbers.value\\\", \\\"phone_number_verified\\\":\\\"\\\", \\\"address\\\":\\\"addresses\\\", \\\"updated_at\\\":\\\"lastModified\\\"}\"\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Update OAuthConfig (token expiration) (DENIED)",
+							"request": {
+								"url": "{{HOST}}/admin/v1/OAuthConfig/OAuthConfig",
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"schemas\": [\n    \"urn:ietf:params:scim:api:messages:2.0:PatchOp\"\n  ],\n  \"Operations\": [\n    {\n      \"op\": \"replace\",\n      \"path\": \"accessTokenExpirySeconds\",\n      \"value\": 36000\n    }\n  ]\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "OAuth - Keys - Search",
+					"description": "",
+					"item": [
+						{
+							"name": "Get Oracle Identity Cloud Service encryption keys (DENIED)",
+							"request": {
+								"url": "{{HOST}}/admin/v1/EncryptionKeys",
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Get Oracle Identity Cloud Service signing key (JWK)",
+							"request": {
+								"url": "{{HOST}}/admin/v1/SigningCert/jwk",
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				}
+			]
+		},
+		{
+			"name": "Reports",
+			"description": "",
+			"item": [
+				{
+					"name": "PDF and CSV",
+					"description": "",
+					"item": [
+						{
+							"name": "Get Diagnostics Data (CSV)",
+							"request": {
+								"url": "{{HOST}}/report/v1/Reports",
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"schemas\": [\"urn:ietf:params:scim:schemas:oracle:idcs:Report\"],\r\n  \"outputFormat\": \"csv\",\r\n  \"reports\": [{\r\n      \"name\": \"diagnostics\",\r\n      \"type\": \"detail\",\r\n      \"correlationId\": \"diagnosticsReport\",\r\n      \"attributesToGet\": \"timestamp,ecid,serviceName,userid,message\",\r\n      \"resourceType\": \"DiagnosticRecord\",\r\n      \"sortBy\": \"timestamp\"\r\n    }]\r\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Generate Unsuccessful Login Attempts report (PDF)",
+							"request": {
+								"url": "{{HOST}}/report/v1/Reports",
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"schemas\": [\"urn:ietf:params:scim:schemas:oracle:idcs:Report\"],\r\n  \"outputFormat\": \"pdf\",\r\n  \"reports\": [{\r\n      \"name\": \"suspiciousEvents\",\r\n      \"type\": \"detail\",\r\n      \"correlationId\": \"suspiciousEventsReport\",\r\n      \"attributesToGet\": \"actorName,timestamp,message\"\r\n    }]\r\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Download Report/Diagnostic files",
+							"request": {
+								"url": {
+									"raw": "{{HOST}}/storage/v1/Files?fileName={{filename}}",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"storage",
+										"v1",
+										"Files"
+									],
+									"query": [
+										{
+											"key": "fileName",
+											"value": "{{filename}}",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Get Diagnostics Data (JSON)",
+					"request": {
+						"url": "{{HOST}}/report/v1/Reports",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"schemas\": [\"urn:ietf:params:scim:schemas:oracle:idcs:Report\"],\r\n  \"outputFormat\": \"json\",\r\n  \"reports\": [{\r\n      \"name\": \"diagnostics\",\r\n      \"type\": \"detail\",\r\n      \"correlationId\": \"diagnosticsReport\",\r\n      \"attributesToGet\": \"timestamp,ecid,serviceName,userid,message\",\r\n      \"resourceType\": \"DiagnosticRecord\",\r\n      \"sortBy\": \"timestamp\"\r\n    }]\r\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Generate Application Role Privileges report (JSON)",
+					"request": {
+						"url": "{{HOST}}/report/v1/Reports",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"schemas\": [\"urn:ietf:params:scim:schemas:oracle:idcs:Report\"],\r\n  \"outputFormat\": \"json\",\r\n  \"reports\": [{\r\n      \"name\": \"appRoleAssignment\",\r\n      \"type\": \"detail\",\r\n      \"correlationId\": \"appRoleAssignmentReport\",\r\n      \"attributesToGet\": \"adminResourceName,adminAppRoleAppName,message,adminRefResourceType,adminRefResourceName,actorDisplayName,timestamp\"\r\n    }]\r\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Generate Application Access report (JSON)",
+					"request": {
+						"url": "{{HOST}}/report/v1/Reports",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"schemas\": [\"urn:ietf:params:scim:schemas:oracle:idcs:Report\"],\r\n  \"outputFormat\": \"json\",\r\n  \"reports\": [{\r\n      \"name\": \"applicationAccess\",\r\n      \"type\": \"detail\",\r\n      \"correlationId\": \"applicationAccessReport\",\r\n      \"attributesToGet\": \"actorDisplayName,actorName, timestamp, ssoRp, message\"\r\n    }]\r\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Generate Unsuccessful Login Attempts report (JSON)",
+					"request": {
+						"url": "{{HOST}}/report/v1/Reports",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"schemas\": [\"urn:ietf:params:scim:schemas:oracle:idcs:Report\"],\r\n  \"outputFormat\": \"json\",\r\n  \"reports\": [{\r\n      \"name\": \"suspiciousEvents\",\r\n      \"type\": \"detail\",\r\n      \"correlationId\": \"suspiciousEventsReport\",\r\n      \"attributesToGet\": \"actorName,timestamp,message\"\r\n    }]\r\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Generate Successful Login Attempts report (JSON)",
+					"request": {
+						"url": "{{HOST}}/report/v1/Reports",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"schemas\": [\"urn:ietf:params:scim:schemas:oracle:idcs:Report\"],\r\n  \"outputFormat\": \"json\",\r\n  \"reports\": [{\r\n      \"name\": \"userLogin\",\r\n      \"type\": \"detail\",\r\n      \"correlationId\": \"userLoginReport\",\r\n      \"attributesToGet\": \"actorName, timestamp, ssoIdentityProvider\"\r\n    }]\r\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Get Multiple Reports (details)",
+					"request": {
+						"url": "{{HOST}}/report/v1/Reports",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"schemas\": [\"urn:ietf:params:scim:schemas:oracle:idcs:Report\"],\r\n  \"outputFormat\": \"json\",\r\n  \"reports\": [{\r\n      \"name\": \"userLogin\",\r\n      \"type\": \"detail\",\r\n      \"correlationId\": \"userLoginReport\",\r\n      \"attributesToGet\": \"actorName, timestamp, ssoIdentityProvider\"\r\n    },\r\n    {\r\n      \"name\": \"appRoleAssignment\",\r\n      \"type\": \"detail\",\r\n      \"correlationId\": \"appRoleAssignmentReport\",\r\n      \"attributesToGet\": \"adminResourceName,adminAppRoleAppName,message,adminRefResourceType,adminRefResourceName,actorDisplayName,timestamp\"\r\n    },\r\n    {\r\n      \"name\": \"diagnostics\",\r\n      \"type\": \"detail\",\r\n      \"correlationId\": \"diagnosticsReport\",\r\n      \"attributesToGet\": \"timestamp,ecid,serviceName,userid,message\",\r\n      \"resourceType\": \"DiagnosticRecord\",\r\n      \"sortBy\": \"timestamp\"\r\n    },\r\n    {\r\n      \"name\": \"suspiciousEvents\",\r\n      \"type\": \"detail\",\r\n      \"correlationId\": \"suspiciousEventsReport\",\r\n      \"attributesToGet\": \"actorName,timestamp,message\"\r\n    },\r\n    {\r\n      \"name\": \"dashboard\",\r\n      \"type\": \"count\",\r\n      \"resourceType\": \"AuditEvent\",\r\n      \"correlationId\": \"dashboardReport\"\r\n    },\r\n    {\r\n      \"name\": \"applicationAccess\",\r\n      \"type\": \"detail\",\r\n      \"correlationId\": \"applicationAccessReport\",\r\n      \"attributesToGet\": \"actorDisplayName,actorName, timestamp, ssoRp, message\"\r\n    }]\r\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Get Multiple Reports (count)",
+					"request": {
+						"url": "{{HOST}}/report/v1/Reports",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"schemas\": [\"urn:ietf:params:scim:schemas:oracle:idcs:Report\"],\r\n  \"outputFormat\": \"json\",\r\n  \"reports\": [{\r\n      \"name\": \"userLogin\",\r\n      \"type\": \"count\",\r\n      \"correlationId\": \"userLoginReport\"\r\n    },{\r\n      \"name\": \"suspiciousEvents\",\r\n      \"type\": \"count\",\r\n      \"correlationId\": \"suspiciousEventsReport\"\r\n    },{\r\n      \"name\": \"applicationAccess\",\r\n      \"type\": \"count\",\r\n      \"correlationId\": \"applicationAccessReport\"\r\n    },{\r\n      \"name\": \"appRoleAssignment\",\r\n      \"type\": \"count\",\r\n      \"correlationId\": \"appRoleAssignmentReport\"\r\n    }]\r\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "SAML",
+			"description": "",
+			"item": [
+				{
+					"name": "Service Provider - Search",
+					"description": "",
+					"item": [
+						{
+							"name": "Search all Service Providers",
+							"request": {
+								"url": "{{HOST}}/admin/v1/ServiceProviders",
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Service Provider - Create",
+					"description": "",
+					"item": [
+						{
+							"name": "Create a Service Provider",
+							"request": {
+								"url": "{{HOST}}/admin/v1/ServiceProviders",
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"schemas\": [\r\n    \"urn:ietf:params:scim:schemas:oracle:idcs:ServiceProvider\"\r\n  ],\r\n  \"partnerProviderId\": \"http://host2.us.oracle.com:7499/fed/sp\",\r\n  \"assertionConsumerUrl\": \"http://host2.us.oracle.com/fed/sp/authnResponse20\",\r\n  \"logoutRequestUrl\": \"http://host2.us.oracle.com/fed/sp/samlv20\",\r\n  \"partnerName\": \"serviceProviderPartner1\",\r\n  \"enabled\": false,\r\n  \"nameIdFormat\": \"saml-emailaddress\",\r\n  \"nameIdUserstoreAttribute\": \"emails.primary\"\r\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Identity Providers - Search",
+					"description": "",
+					"item": [
+						{
+							"name": "Search specific Identity Provider (idp metadata)",
+							"request": {
+								"url": {
+									"raw": "{{HOST}}/admin/v1/IdentityProviders/{{idpid}}?attributes=metadata",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"admin",
+										"v1",
+										"IdentityProviders",
+										"{{idpid}}"
+									],
+									"query": [
+										{
+											"key": "attributes",
+											"value": "metadata",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Search specific Identity Provider",
+							"request": {
+								"url": "{{HOST}}/admin/v1/IdentityProviders/{{idpid}}",
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Search specific Identity Provider (return specific attributes)",
+							"request": {
+								"url": {
+									"raw": "{{HOST}}/admin/v1/IdentityProviders/{{idpid}}?attributes=partnerName,partnerProviderId",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"admin",
+										"v1",
+										"IdentityProviders",
+										"{{idpid}}"
+									],
+									"query": [
+										{
+											"key": "attributes",
+											"value": "partnerName,partnerProviderId"
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Search all Identity Providers (return specific attributes)",
+							"request": {
+								"url": {
+									"raw": "{{HOST}}/admin/v1/IdentityProviders?attributes=partnerName,partnerProviderId",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"admin",
+										"v1",
+										"IdentityProviders"
+									],
+									"query": [
+										{
+											"key": "attributes",
+											"value": "partnerName,partnerProviderId"
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Search all Identity Providers",
+							"request": {
+								"url": "{{HOST}}/admin/v1/IdentityProviders",
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Identity Providers - Modify",
+					"description": "",
+					"item": [
+						{
+							"name": "Update Identity Provider name and description",
+							"request": {
+								"url": "{{HOST}}/admin/v1/IdentityProviders/{{idpid}}",
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"schemas\": [\r\n    \"urn:ietf:params:scim:api:messages:2.0:PatchOp\"\r\n  ],\r\n  \"Operations\": [\r\n    {\r\n      \"op\": \"replace\",\r\n      \"path\": \"partnerName\",\r\n      \"value\": \"Intranet\"\r\n    },{\r\n      \"op\": \"replace\",\r\n      \"path\": \"description\",\r\n      \"value\": \"Login with your intranet credentials\"\r\n    }\r\n  ]\r\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Enable Identity Provider",
+							"request": {
+								"url": "{{HOST}}/admin/v1/IdentityProviders/{{idpid}}",
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"schemas\": [\r\n    \"urn:ietf:params:scim:api:messages:2.0:PatchOp\"\r\n  ],\r\n  \"Operations\": [\r\n    {\r\n      \"op\": \"replace\",\r\n      \"path\": \"enabled\",\r\n      \"value\": true\r\n    }\r\n  ]\r\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Disable Identity Provider",
+							"request": {
+								"url": "{{HOST}}/admin/v1/IdentityProviders/{{idpid}}",
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"schemas\": [\r\n    \"urn:ietf:params:scim:api:messages:2.0:PatchOp\"\r\n  ],\r\n  \"Operations\": [\r\n    {\r\n      \"op\": \"replace\",\r\n      \"path\": \"enabled\",\r\n      \"value\": false\r\n    }\r\n  ]\r\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				}
+			]
+		},
+		{
+			"name": "Self Service",
+			"description": "",
+			"item": [
+				{
+					"name": "Get My Information",
+					"request": {
+						"url": "{{HOST}}/admin/v1/Me",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "text"
+								}
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Replace Me",
+					"request": {
+						"url": "{{HOST}}/admin/v1/Me",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"schemas\": [\n    \"urn:ietf:params:scim:schemas:core:2.0:User\"\n  ],\n  \"urn:ietf:params:scim:schemas:oracle:idcs:extension:me:User:currentPassword\": \"Welcome1\",\n  \"name\": {\n\t\"givenName\": \"John\",\n\t\"familyName\": \"Saladna\"\n  },\n  \"userName\": \"jsaladna@example.com\",\n  \"emails\": [\n\t{\n\t  \"value\": \"jsaladna@example.com\",\n\t  \"type\": \"work\",\n\t  \"primary\": true\n\t},\n\t{\n\t  \"value\": \"jsaladna@example.com\",\n\t  \"primary\": false,\n\t  \"type\": \"recovery\"\n\t}\n  ]\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Update Me (add a single attribute)",
+					"request": {
+						"url": "{{HOST}}/admin/v1/Me",
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"schemas\": [\r\n    \"urn:ietf:params:scim:api:messages:2.0:PatchOp\"\r\n  ],\r\n  \"Operations\": [\r\n    {\r\n      \"op\": \"add\",\r\n      \"path\": \"phoneNumbers\",\r\n      \"value\": [\r\n        {\r\n          \"value\": \"555-555-1111\",\r\n          \"type\": \"home\"\r\n        }\r\n      ]\r\n    }\r\n  ]\r\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Update Me (replace single attribute)",
+					"request": {
+						"url": "{{HOST}}/admin/v1/Me",
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"schemas\": [\r\n    \"urn:ietf:params:scim:api:messages:2.0:PatchOp\"\r\n  ],\r\n  \"Operations\": [\r\n    {\r\n      \"op\": \"replace\",\r\n      \"path\": \"phoneNumbers\",\r\n      \"value\": [\r\n        {\r\n          \"value\": \"666-666-1111\",\r\n          \"type\": \"home\"\r\n        }\r\n      ]\r\n    }\r\n  ]\r\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Update Me (multiple attributes)",
+					"request": {
+						"url": "{{HOST}}/admin/v1/Me",
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"schemas\": [\r\n    \"urn:ietf:params:scim:api:messages:2.0:PatchOp\"\r\n  ],\r\n  \"Operations\": [\r\n    {\r\n      \"op\": \"replace\",\r\n      \"path\": \"addresses[type eq \\\"work\\\"]\",\r\n      \"value\": [\r\n        {\r\n          \"type\": \"work\",\r\n\t      \"country\": \"US\",\r\n\t      \"postalCode\": \"94065\",\r\n\t      \"streetAddress\": \"200 Oracle Parkway\",\r\n\t      \"locality\": \"Redwood Shores\",\r\n\t      \"region\": \"CA\"\r\n        }\r\n      ]\r\n    }\r\n  ]\r\n}"
+						},
+						"description": "Modify the user address and phone"
+					},
+					"response": []
+				},
+				{
+					"name": "Change Password (known value)",
+					"request": {
+						"url": "{{HOST}}/admin/v1/MePasswordChanger",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"oldPassword\": \"Welcome1\",\r\n  \"password\": \"Oracle1234\",\r\n  \"schemas\": [\r\n    \"urn:ietf:params:scim:schemas:oracle:idcs:MePasswordChanger\"\r\n  ]\r\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"description": "",
+			"item": [
+				{
+					"name": "Search",
+					"description": "",
+					"item": [
+						{
+							"name": "Search all users",
+							"request": {
+								"url": "{{HOST}}/admin/v1/Users",
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Search all users (with result pagination)",
+							"request": {
+								"url": {
+									"raw": "{{HOST}}/admin/v1/Users?count=5&startIndex=0",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"admin",
+										"v1",
+										"Users"
+									],
+									"query": [
+										{
+											"key": "count",
+											"value": "5"
+										},
+										{
+											"key": "startIndex",
+											"value": "0"
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": "count = number of entries retrieved\nstartIndex = index for search result"
+							},
+							"response": []
+						},
+						{
+							"name": "Search all users (return specific attributes)",
+							"request": {
+								"url": {
+									"raw": "{{HOST}}/admin/v1/Users?attributes=userName",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"admin",
+										"v1",
+										"Users"
+									],
+									"query": [
+										{
+											"key": "attributes",
+											"value": "userName"
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": "attributes = comma separated list of values retrieved in a search"
+							},
+							"response": []
+						},
+						{
+							"name": "Search all users (with search criteria)",
+							"request": {
+								"url": {
+									"raw": "{{HOST}}/admin/v1/Users?filter=userName sw \"csaladna\"",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"admin",
+										"v1",
+										"Users"
+									],
+									"query": [
+										{
+											"key": "filter",
+											"value": "userName sw \"csaladna\"",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": "filter = add a filter criteria to the search using attributes, values, and operators"
+							},
+							"response": []
+						},
+						{
+							"name": "Search specific user",
+							"request": {
+								"url": "{{HOST}}/admin/v1/Users/{{userid}}",
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Search specific user (return specific attributes)",
+							"request": {
+								"url": {
+									"raw": "{{HOST}}/admin/v1/Users/{{userid}}?attributes=userName",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"admin",
+										"v1",
+										"Users",
+										"{{userid}}"
+									],
+									"query": [
+										{
+											"key": "attributes",
+											"value": "userName",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Get user's group membership",
+							"request": {
+								"url": {
+									"raw": "{{HOST}}/admin/v1/Groups?filter=members eq \"{{userid}}\"&attributes=displayName",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"admin",
+										"v1",
+										"Groups"
+									],
+									"query": [
+										{
+											"key": "filter",
+											"value": "members eq \"{{userid}}\"",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "attributes",
+											"value": "displayName",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/scim+json",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": "Searches for and display the groups that the user belongs to"
+							},
+							"response": []
+						},
+						{
+							"name": "Search for users via POST",
+							"request": {
+								"url": "{{HOST}}/admin/v1/Users/.search",
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"schemas\": [\"urn:ietf:params:scim:api:messages:2.0:SearchRequest\"],\r\n  \"attributes\": [\"displayName\", \"userName\"],\r\n  \"filter\":\r\n          \"userName sw \\\"c\\\"\",\r\n  \"startIndex\": 1,\r\n  \"count\": 10\r\n}"
+								},
+								"description": "Search for users with filters using POST method.\nThis type of search is considered safer than the search using GET method."
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Password",
+					"description": "",
+					"item": [
+						{
+							"name": "Check user password",
+							"request": {
+								"url": "{{HOST}}/admin/v1/PasswordAuthenticator",
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"mappingAttribute\": \"userName\",\r\n  \"mappingAttributeValue\": \"csaladna@example.com\",\r\n  \"password\": \"Welcome1\",\r\n  \"schemas\": [\r\n    \"urn:ietf:params:scim:schemas:oracle:idcs:PasswordAuthenticator\"\r\n  ]\r\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Validate password against password policy",
+							"request": {
+								"url": "{{HOST}}/admin/v1/UserPasswordValidator",
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"userName\": \"jdoe@example.com\",\r\n  \"givenName\": \"John\",\r\n  \"familyName\": \"Doe\",\r\n  \"password\": \"John\",\r\n  \"schemas\": [\r\n    \"urn:ietf:params:scim:schemas:oracle:idcs:UserPasswordValidator\"\r\n  ]\r\n}"
+								},
+								"description": "Validate password against the password policy.\nInform the username, first, and last name. This information will be used to validate the policy."
+							},
+							"response": []
+						},
+						{
+							"name": "Validate password against password policy (specific user)",
+							"request": {
+								"url": "{{HOST}}/admin/v1/UserPasswordValidator/{{userid}}",
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"password\": \"clarence\",\r\n  \"schemas\": [\r\n    \"urn:ietf:params:scim:schemas:oracle:idcs:UserPasswordValidator\"\r\n  ]\r\n}"
+								},
+								"description": "Validate a user password by submitting a PUT request."
+							},
+							"response": []
+						},
+						{
+							"name": "Generate a password (suggestion for specific user)",
+							"request": {
+								"url": "{{HOST}}/admin/v1/UserPasswordGenerator/{{userid}}",
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"schemas\": [\r\n    \"urn:ietf:params:scim:schemas:oracle:idcs:UserPasswordGenerator\"\r\n  ]\r\n}"
+								},
+								"description": "Generate a password for {{userid}} compliant with the password policy"
+							},
+							"response": []
+						},
+						{
+							"name": "Reset user's password (random value)",
+							"request": {
+								"url": "{{HOST}}/admin/v1/UserPasswordResetter/{{userid}}",
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"schemas\": [\r\n    \"urn:ietf:params:scim:schemas:oracle:idcs:UserPasswordResetter\"\r\n  ]\r\n}"
+								},
+								"description": "Reset the {{userid}} password to random value"
+							},
+							"response": []
+						},
+						{
+							"name": "Reset user's password (known value)",
+							"request": {
+								"url": "{{HOST}}/admin/v1/UserPasswordChanger/{{userid}}",
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"password\": \"Welcome123\",\r\n  \"schemas\": [\r\n    \"urn:ietf:params:scim:schemas:oracle:idcs:UserPasswordChanger\"\r\n  ]\r\n}"
+								},
+								"description": "Reset {{userid}} password to a known value Welcome123"
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Modify",
+					"description": "",
+					"item": [
+						{
+							"name": "Replace a User",
+							"request": {
+								"url": "{{HOST}}/admin/v1/Users/{{userid}}",
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"schemas\": [\r\n    \"urn:ietf:params:scim:schemas:core:2.0:User\"\r\n  ],\r\n  \"name\": {\r\n    \"givenName\": \"Barbara\",\r\n    \"familyName\": \"Jensen\"\r\n  },\r\n  \"userName\": \"bjensen@example.com\",\r\n  \"active\": true,\r\n  \"emails\": [\r\n    {\r\n      \"value\": \"bjensen@example.com\",\r\n      \"primary\": true,\r\n      \"type\": \"home\",\r\n      \"verified\": true\r\n    },\r\n    {\r\n      \"value\": \"bjensen@example.org\",\r\n      \"type\": \"work\"\r\n    }\r\n  ]\r\n}"
+								},
+								"description": "Replace the entire user register.\n(attributes not informed are blanked out)"
+							},
+							"response": []
+						},
+						{
+							"name": "Update User (add a single attribute)",
+							"request": {
+								"url": "{{HOST}}/admin/v1/Users/{{userid}}",
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"schemas\": [\r\n    \"urn:ietf:params:scim:api:messages:2.0:PatchOp\"\r\n  ],\r\n  \"Operations\": [\r\n    {\r\n      \"op\": \"add\",\r\n      \"path\": \"phoneNumbers\",\r\n      \"value\": [\r\n        {\r\n          \"value\": \"555-555-1111\",\r\n          \"type\": \"home\"\r\n        }\r\n      ]\r\n    }\r\n  ]\r\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Update User (replace single attribute)",
+							"request": {
+								"url": "{{HOST}}/admin/v1/Users/{{userid}}",
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"schemas\": [\r\n    \"urn:ietf:params:scim:api:messages:2.0:PatchOp\"\r\n  ],\r\n  \"Operations\": [\r\n    {\r\n      \"op\": \"replace\",\r\n      \"path\": \"phoneNumbers\",\r\n      \"value\": [\r\n        {\r\n          \"value\": \"666-666-1111\",\r\n          \"type\": \"home\"\r\n        }\r\n      ]\r\n    }\r\n  ]\r\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Update User (multiple attributes)",
+							"request": {
+								"url": "{{HOST}}/admin/v1/Users/{{userid}}",
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"schemas\": [\r\n    \"urn:ietf:params:scim:api:messages:2.0:PatchOp\"\r\n  ],\r\n  \"Operations\": [\r\n    {\r\n      \"op\": \"replace\",\r\n      \"path\": \"addresses[type eq \\\"other\\\"]\",\r\n      \"value\": [\r\n        {\r\n          \"type\": \"other\",\r\n          \"streetAddress\": \"911 Universal City Plaza\",\r\n          \"locality\": \"Hollywood\",\r\n          \"region\": \"CA\",\r\n          \"postalCode\": \"91608\",\r\n          \"country\": \"US\",\r\n          \"formatted\": \"911 Universal City Plaza\\nHollywood, CA 91608 US\"\r\n        }\r\n      ]\r\n    },\r\n    {\r\n      \"op\": \"remove\",\r\n      \"path\": \"ims[type eq \\\"xmpp\\\" and value ew \\\"gmail.com\\\"]\"\r\n    },\r\n    {\r\n      \"op\": \"add\",\r\n      \"path\": \"phoneNumbers\",\r\n      \"value\": [\r\n        {\r\n          \"value\": \"555-555-1111\",\r\n          \"type\": \"home\"\r\n        }\r\n      ]\r\n    }\r\n  ]\r\n}"
+								},
+								"description": "Modify the user recovery e-mail, address, and title in a single request"
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Lifecycle",
+					"description": "",
+					"item": [
+						{
+							"name": "Assert user",
+							"request": {
+								"url": "{{HOST}}/admin/v1/Asserter",
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"mappingAttribute\": \"userName\",\r\n  \"mappingAttributeValue\": \"csaladna@example.com\",\r\n  \"includeMemberships\": true,\r\n  \"schemas\": [\r\n    \"urn:ietf:params:scim:schemas:oracle:idcs:Asserter\"\r\n  ]\r\n}"
+								},
+								"description": "Search for a user, his details, and membership using the Asserter endpoint."
+							},
+							"response": []
+						},
+						{
+							"name": "Start User Activation (invite user)",
+							"request": {
+								"url": "{{HOST}}/admin/v1/UserActivationInitiator/{{userid}}",
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"schemas\": [\r\n    \"urn:ietf:params:scim:schemas:oracle:idcs:UserActivationInitiator\"\r\n  ]\r\n}"
+								},
+								"description": "Initiate User Activation by sending an activation email to a user who has not yet been activated in the system."
+							},
+							"response": []
+						},
+						{
+							"name": "Activate user",
+							"request": {
+								"url": "{{HOST}}/admin/v1/UserStatusChanger/{{userid}}",
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"active\": true,\r\n  \"schemas\": [\r\n    \"urn:ietf:params:scim:schemas:oracle:idcs:UserStatusChanger\"\r\n  ]\r\n}"
+								},
+								"description": "Changing the {{userid}} status by setting the active attribute to true."
+							},
+							"response": []
+						},
+						{
+							"name": "Deactivate user",
+							"request": {
+								"url": "{{HOST}}/admin/v1/UserStatusChanger/{{userid}}",
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"active\": false,\r\n  \"schemas\": [\r\n    \"urn:ietf:params:scim:schemas:oracle:idcs:UserStatusChanger\"\r\n  ]\r\n}"
+								},
+								"description": "Changing the {{userid}} status by setting the active attribute to false."
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Delete",
+					"description": "",
+					"item": [
+						{
+							"name": "Delete user",
+							"request": {
+								"url": "{{HOST}}/admin/v1/Users/{{userid}}",
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Create",
+					"description": "",
+					"item": [
+						{
+							"name": "Create a user",
+							"request": {
+								"url": "{{HOST}}/admin/v1/Users",
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"schemas\": [\n    \"urn:ietf:params:scim:schemas:core:2.0:User\"\n  ],\n  \"name\": {\n\t\"givenName\": \"Clarence\",\n\t\"familyName\": \"Saladna\"\n  },\n  \"userName\": \"csaladna@example.com\",\n  \"emails\": [\n\t{\n\t  \"value\": \"csaladna@example.com\",\n\t  \"type\": \"work\",\n\t  \"primary\": true\n\t},\n\t{\n\t  \"value\": \"csaladna@example.com\",\n\t  \"primary\": false,\n\t  \"type\": \"recovery\"\n\t}\n  ]\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Generate a unique username",
+							"request": {
+								"url": "{{HOST}}/admin/v1/UserNameGenerator",
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"email\": \"csaladna@example.com\",\r\n  \"schemas\": [\r\n    \"urn:ietf:params:scim:schemas:oracle:idcs:UserNameGenerator\"\r\n  ]\r\n}"
+								},
+								"description": "Used for getting a unique username before user creation."
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				}
+			]
+		}
+	]
+}
