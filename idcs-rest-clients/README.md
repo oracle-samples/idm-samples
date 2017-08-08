@@ -1,45 +1,43 @@
-# Oracle Identity Cloud Service (IDCS) REST Client Samples
+# Oracle Identity Cloud Service REST Client Samples
 
-This code contains a collection of sample REST API requests that can be used in clients such as [Postman](http://getpostman.com) to make test calls to Oracle Identity Cloud Service (IDCS). 
+This code contains a collection of sample REST API requests that can be used with clients such as [Postman](http://getpostman.com) to make test calls to Oracle Identity Cloud Service. 
 
-This application is provided “AS IS” with no express or implied warranty for accuracy or accessibility. The sample code is intended for study purposes and does not represent, by any means, the recommended approach or is intended to be used in development or productions environments.
+This application is provided “AS IS” with no express or implied warranty for accuracy or accessibility. The sample code is intended for study purposes and doesn't represent the recommended approach or is intended to be used in development or productions environments.
 
 ## Requirements
-Chrome Web Browser with [Postman Extension](https://chrome.google.com/webstore/detail/postman-rest-client-packa/fhbjgbiflinjbdggehcddcbncdddomop) installed.
 
-![Postman](img/screenshot001.jpg)
-
-Register and activate a Client Application in Identity Cloud Service with the following characteristics, and then copy the application `client id` and `client secret`:
+- Postman native app installed for Windows, Mac, or Linux [Postman Native App Download](https://www.getpostman.com/apps).
+    **Note**: Currently, you can still use the Chrome Web Browser with [Postman Extension](https://chrome.google.com/webstore/detail/postman-rest-client-packa/fhbjgbiflinjbdggehcddcbncdddomop), but Google plans to end support for Chrome apps for Windows, Mac, and Linux users in 2017. These steps are written from the perspective of the Postman native app.
+- Register and activate a client application in Identity Cloud Service with the following characteristics, and then copy the application `client id` and `client secret`:
 
 ---
-- **Application Type:** Trusted
-- **Name:** REST Test
-- **Description:** This client will be used to test REST API calls.
-- **Authorization:** *Configure this application as client now* selected
-- **Allowed Grant Types:** select *Resource Owner* and *Client Credentials*
-- **Grant the client access to Identity Cloud Service Admin APIs:** selected. Also, select *Identity Domain Administrator*
+- **Application Type**: Trusted
+- **Name**: REST Test
+- **Description**: This client will be used to test REST API calls
+- **Authorization**: Select *Configure this application as client now*
+- **Allowed Grant Types**: Select *Resource Owner* and *Client Credentials*
+- **Grant the client access to Identity Cloud Service Admin APIs**: Select, and then in the box that appears, select **Identity Domain Administrator**
 ---
 
-## Setup
-1. Open Google Chrome, visit `chrome://apps`, and then launch **Postman**.
-2. Click **Import** 
-3. In **Import from Link**, paste the Identity Cloud Service [environment template](idcs_postman_environment.json)
-4. Repeat the import, and paste the Identity Cloud Service [global variables](idcs_postman_globals.json)
-5. Click **Settings** (gear icon) and select **Manage environments**
-6. Click the **Duplicate environment** next to **EXAMPLE_IDCS**
-7. Click **EXAMPLE_IDCS copy**
-8. Update the environment variables and click **Update**:
+## Set Up
+1. Open your Postman native app.
+2. Click **Import**. The Import window appears.
+3. Click **Import from Link**, paste the Identity Cloud Service [environment template](idcs_postman_environment.json) url, and then paste the Identity Cloud Service [global variables](idcs_postman_globals.json) url.
+5. Click **Settings** (gear icon), and then select **Manage environments**.
+6. Click the **Duplicate environment** next to **EXAMPLE_IDCS**.
+7. Click **EXAMPLE_IDCS copy**.
+8. Update the environment variables, and then click **Update**:
 
- - `HOST`: the Identity Cloud Service UI address. For example: *https://**example**.identity.oraclecorp.com*
- - `CLIENT_ID` and `CLIENT_SECRET`: the client id and secret obtained from your Identity Cloud Service application.
- - `USER_LOGIN` and `USER_PW`: the user login and password (in case you want to use the *password_grant* or *authorization_code* g)
+ - `HOST`: The Identity Cloud Service UI address. For example: *https://**example**.identity.oraclecorp.com*
+ - `CLIENT_ID` and `CLIENT_SECRET`: The client id and secret obtained from your Identity Cloud Service application.
+ - `USER_LOGIN` and `USER_PW`: The user login and password (in case you want to use *password_grant* or *authorization_code*).
 
-9. Click the **Environment combo box** (top-right corner) and select `your environment`.
+9. Click the **Environment combo box** (top-right corner), and then select `your environment`.
 
-## Get collections
-After setting up Postman and obtaining an access_token, you can leverage our sample collections. To do this:
-1. In Postman, click **import**.
-2. Select the **From URL** tab and import the following URLs:
+## Get Collections
+After setting up Postman and obtaining an access_token, you can leverage our sample collections.
+1. In Postman, click **Import**.
+2. Select the **From URL** tab, and then import the following URLs:
 
 - [User](idcs_user_postman_collection.json)
 - [Group](idcs_group_postman_collection.json)
@@ -49,12 +47,10 @@ After setting up Postman and obtaining an access_token, you can leverage our sam
 - [Self](idcs_self_postman_collection.json)
 - [OAuth](idcs_oauth_postman_collection.json)
 
-## Make requests
-Each Identity Cloud Service collection contains REST API calls with request **uris**, **headers**, and **body** parameters.
-To perform your calls, you will need to modify these parameters according to your preferences.
+## Make Requests
+Each Identity Cloud Service collection contains REST API calls with request **uris**, **headers**, and **body** parameters. To perform your calls, you need to modify these parameters according to your preferences.
 
-For a general example on how to take advantage of the sample requests, check the [Testing IDCS REST APIs with Postman](http://apexapps.oracle.com/pls/apex/f?p=44785:112:0::::P112_CONTENT_ID:13484) tutorial.
-For high-level instructions on how to use each collection, check its respective readme file:
+For a general example on how to take advantage of the sample requests, see the [Testing Oracle Identity Cloud Service REST APIs with Postman](http://apexapps.oracle.com/pls/apex/f?p=44785:112:0::::P112_CONTENT_ID:13484) tutorial. For high-level instructions on how to use each collection, see the associated readme file.
 
 - [User](idcs_user_postman_collection.md)
 - [Group](idcs_group_postman_collection.md)
