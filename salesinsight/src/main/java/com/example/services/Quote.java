@@ -16,7 +16,7 @@ public class Quote {
     private static final int MAX_QUOTES=20;
     
     @GET
-    @Produces(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.TEXT_HTML)
     public static String getQuotes() {
         Random random = new Random();
         int numberOfQuotes = random.nextInt(MAX_QUOTES);
