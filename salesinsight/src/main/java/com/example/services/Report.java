@@ -18,7 +18,7 @@ public class Report {
     private static final int NUMBER_OF_MONTHS=6;
     
     @GET
-    @Produces(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.TEXT_HTML)
     public static String getReport(){
         Random random = new Random();
         Calendar cal = Calendar.getInstance();

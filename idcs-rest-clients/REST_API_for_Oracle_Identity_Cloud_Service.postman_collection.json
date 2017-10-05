@@ -3581,6 +3581,277 @@
 						}
 					],
 					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Bypass Codes",
+					"description": "",
+					"item": [
+						{
+							"name": "Generate a Bypass Code for a User",
+							"request": {
+								"url": "{{HOST}}/admin/v1/BypassCodes",
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"user\": {\r\n    \"value\": \"<user ID>\"\r\n  },\r\n  \"schemas\": [\r\n    \"urn:ietf:params:scim:schemas:oracle:idcs:BypassCode\"\r\n  ]\r\n}"
+								},
+								"description": "Generate a Bypass Code for a User"
+							},
+							"response": []
+						},
+						{
+							"name": "Search Bypass Codes",
+							"request": {
+								"url": "{{HOST}}/admin/v1/BypassCodes",
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"user\": {\r\n    \"value\": \"<user ID>\"\r\n  },\r\n  \"schemas\": [\r\n    \"urn:ietf:params:scim:schemas:oracle:idcs:BypassCode\"\r\n  ]\r\n}"
+								},
+								"description": "Search for Bypass Codes"
+							},
+							"response": []
+						},
+						{
+							"name": "Get a Bypass Code",
+							"request": {
+								"url": "{{HOST}}/admin/v1/BypassCodes/<BypassCodeID>",
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"user\": {\r\n    \"value\": \"<user ID>\"\r\n  },\r\n  \"schemas\": [\r\n    \"urn:ietf:params:scim:schemas:oracle:idcs:BypassCode\"\r\n  ]\r\n}"
+								},
+								"description": "Get a Bypass Code Using the Bypass Code ID."
+							},
+							"response": []
+						},
+						{
+							"name": "Search Bypass Codes Using POST",
+							"request": {
+								"url": "{{HOST}}/admin/v1/BypassCodes/.search",
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"sortOrder\": \"ASCENDING\",\r\n  \"pagingCount\": 20,\r\n  \"pagingStartIndex\": 1,\r\n  \"schemas\": [\r\n    \"urn:ietf:params:scim:api:messages:2.0:SearchRequest\"\r\n  ]\r\n}"
+								},
+								"description": "Search for Bypass Codes using the POST /.search method."
+							},
+							"response": []
+						},
+						{
+							"name": "Delete a Bypass Code",
+							"request": {
+								"url": "{{HOST}}/admin/v1/BypassCodes/<BypassCodeID>",
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": "Delete a Bypass Code using its ID."
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Authentication Factor Settings",
+					"description": "",
+					"item": [
+						{
+							"name": "Search Authentication Factor Settings",
+							"request": {
+								"url": "{{HOST}}/admin/v1/AuthenticationFactorSettings",
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"user\": {\r\n    \"value\": \"<user ID>\"\r\n  },\r\n  \"schemas\": [\r\n    \"urn:ietf:params:scim:schemas:oracle:idcs:BypassCode\"\r\n  ]\r\n}"
+								},
+								"description": "Search for Authentication Factor Settings"
+							},
+							"response": []
+						},
+						{
+							"name": "Get Authentication Factor Settings",
+							"request": {
+								"url": "{{HOST}}/admin/v1/AuthenticationFactorSettings/<AuthenticationFactorSettingsID>",
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"user\": {\r\n    \"value\": \"<user ID>\"\r\n  },\r\n  \"schemas\": [\r\n    \"urn:ietf:params:scim:schemas:oracle:idcs:BypassCode\"\r\n  ]\r\n}"
+								},
+								"description": "Get Authentication Factor Settings using the ID."
+							},
+							"response": []
+						},
+						{
+							"name": "Search Authentication Factor Settings Using POST",
+							"request": {
+								"url": "{{HOST}}/admin/v1/AuthenticationFactorSettings/.search",
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"schemas\":\r\n          [\"urn:ietf:params:scim:api:messages:2.0:SearchRequest\"]\r\n  ,\r\n  \"sortOrder\": \"ASCENDING\",\r\n  \"pagingCount\": 20,\r\n  \"pagingStartIndex\": 1\r\n\r\n}"
+								},
+								"description": "Search Authentication Factor Settings using the POST /.search method."
+							},
+							"response": []
+						},
+						{
+							"name": "Replace Authentication Factor Settings",
+							"request": {
+								"url": "{{HOST}}/admin/v1/AuthenticationFactorSettings/AuthenticationFactorSettings",
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"bypassCodeEnabled\": true,\r\n  \"bypassCodeSettings\": {\r\n    \"helpDeskCodeExpiryInMins\": 61,\r\n    \"helpDeskGenerationEnabled\": true,\r\n    \"helpDeskMaxUsage\": 5,\r\n    \"length\": 12,\r\n    \"maxActive\": 5,\r\n    \"selfServiceGenerationEnabled\": true\r\n  },\r\n  \"clientAppSettings\": {\r\n    \"deviceProtectionPolicy\": \"NONE\",\r\n    \"initialLockoutPeriodInSecs\": 30,\r\n    \"keyPairLength\": 2048,\r\n    \"lockoutEscalationPattern\": \"Constant\",\r\n    \"maxFailuresBeforeLockout\": 8,\r\n    \"maxFailuresBeforeWarning\": 5,\r\n    \"maxLockoutIntervalInSecs\": 86400,\r\n    \"minPinLength\": 6,\r\n    \"policyUpdateFreqInDays\": 7,\r\n    \"requestSigningAlgo\": \"SHA256withRSA\",\r\n    \"sharedSecretEncoding\": \"Base32\",\r\n    \"unlockAppForEachRequestEnabled\": false,\r\n    \"unlockAppIntervalInSecs\": 300,\r\n    \"unlockOnAppForegroundEnabled\": false,\r\n    \"unlockOnAppStartEnabled\": false\r\n  },\r\n  \"compliancePolicy\": [\r\n    {\r\n      \"action\": \"Allow\",\r\n      \"name\": \"lockScreenRequired\",\r\n      \"value\": \"false\"\r\n    },\r\n    {\r\n      \"action\": \"Allow\",\r\n      \"name\": \"lockScreenRequiredUnknown\",\r\n      \"value\": \"false\"\r\n    },\r\n    {\r\n      \"action\": \"Allow\",\r\n      \"name\": \"jailBrokenDevice\",\r\n      \"value\": \"false\"\r\n    },\r\n    {\r\n      \"action\": \"Allow\",\r\n      \"name\": \"jailBrokenDeviceUnknown\",\r\n      \"value\": \"false\"\r\n    },\r\n    {\r\n      \"action\": \"Allow\",\r\n      \"name\": \"minWindowsVersion\",\r\n      \"value\": \"8.1\"\r\n    },\r\n    {\r\n      \"action\": \"Allow\",\r\n      \"name\": \"minIosVersion\",\r\n      \"value\": \"7.1\"\r\n    },\r\n    {\r\n      \"action\": \"Allow\",\r\n      \"name\": \"minAndroidVersion\",\r\n      \"value\": \"4.1\"\r\n    },\r\n    {\r\n      \"action\": \"Allow\",\r\n      \"name\": \"minIosAppVersion\",\r\n      \"value\": \"4.0\"\r\n    },\r\n    {\r\n      \"action\": \"Allow\",\r\n      \"name\": \"minAndroidAppVersion\",\r\n      \"value\": \"8.0\"\r\n    },\r\n    {\r\n      \"action\": \"Allow\",\r\n      \"name\": \"minWindowsAppVersion\",\r\n      \"value\": \"1.0\"\r\n    }\r\n  ],\r\n  \"endpointRestrictions\": {\r\n    \"maxEndpointTrustDurationInDays\": 15,\r\n    \"maxEnrolledDevices\": 5,\r\n    \"maxTrustedEndpoints\": 5,\r\n    \"trustedEndpointsEnabled\": true,\r\n    \"maxIncorrectAttempts\": 8\r\n  },\r\n  \"id\": \"AuthenticationFactorSettings\",\r\n  \"mfaEnrollmentType\": \"Required\",\r\n  \"pushEnabled\": true,\r\n  \"schemas\": [\r\n    \"urn:ietf:params:scim:schemas:oracle:idcs:AuthenticationFactorSettings\"\r\n  ],\r\n  \"securityQuestionsEnabled\": false,\r\n  \"smsEnabled\": false,\r\n  \"totpEnabled\": true,\r\n  \"totpSettings\": {\r\n    \"hashingAlgorithm\": \"SHA1\",\r\n    \"jwtValidityDurationInSecs\": 300,\r\n    \"keyRefreshIntervalInDays\": 60,\r\n    \"passcodeLength\": 6,\r\n    \"smsOtpValidityDurationInMins\": 10,\r\n    \"smsPasscodeLength\": 6,\r\n    \"timeStepInSecs\": 30,\r\n    \"timeStepTolerance\": 3\r\n  }\r\n}"
+								},
+								"description": "Replace Authentication Factor Settings"
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Authentication Factors Remover",
+					"description": "Remove all authentication factor channels for a user.",
+					"item": [
+						{
+							"name": "Remove All Authentication Factors for a User",
+							"request": {
+								"url": "{{HOST}}/admin/v1/AuthenticationFactorsRemover",
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"user\": {\r\n    \"value\": \"<User ID>\"\r\n  },\r\n  \"schemas\": [\r\n    \"urn:ietf:params:scim:schemas:oracle:idcs:AuthenticationFactorsRemover\"\r\n  ]\r\n}"
+								},
+								"description": "Remove all authentication factor channels for a user. Deleting all of the enrolled MFA channels includes a user's registered devices, bypass codes created for or by the user, any trusted devices for the user, and any security questions registered for the user."
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
 				}
 			]
 		},
