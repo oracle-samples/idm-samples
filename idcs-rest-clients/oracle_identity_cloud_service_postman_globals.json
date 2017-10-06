@@ -1,5 +1,5 @@
 {
-  "id": "c9bccbd3-cdcf-9605-535b-82790375a7d7",
+  "id": "1b67356c-952e-bb9b-f709-6ab5cbcb2fc9",
   "name": "Postman Globals",
   "values": [
     {
@@ -121,9 +121,58 @@
       "value": "",
       "type": "text",
       "enabled": true
+    },
+    {
+      "key": "securityquestionId",
+      "value": "",
+      "description": "",
+      "type": "text",
+      "enabled": true
+    },
+    {
+      "key": "jobScheduleid",
+      "value": "",
+      "description": "",
+      "type": "text",
+      "enabled": true
+    },
+    {
+      "key": "historyId",
+      "value": "",
+      "description": "",
+      "type": "text",
+      "enabled": true
+    },
+    {
+      "key": "bypasscodeId",
+      "value": "",
+      "description": "",
+      "type": "text",
+      "enabled": true
+    },
+    {
+      "key": "AuthenticationFactorSettingsId",
+      "value": "",
+      "description": "",
+      "type": "text",
+      "enabled": true
+    },
+    {
+      "key": "OAuthConfigId",
+      "value": "",
+      "description": "",
+      "type": "text",
+      "enabled": true
+    },
+    {
+      "key": "securityquestionsettingsId",
+      "value": "",
+      "description": "",
+      "type": "text",
+      "enabled": true
     }
   ],
   "_postman_variable_scope": "globals",
-  "_postman_exported_at": "2017-08-01T23:35:27.727Z",
-  "_postman_exported_using": "Postman/5.1.2"
+  "_postman_exported_at": "2017-10-06T18:40:30.685Z",
+  "_postman_exported_using": "Postman/5.2.0"
 }
