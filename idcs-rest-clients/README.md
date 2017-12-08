@@ -43,7 +43,7 @@ After setting up Postman and obtaining an access_token, you can leverage our sam
 1. In Postman, click **Import,** and then click **Import from Link.**
 2. Paste the following URL:
 
-`https://github.com/oracle/idm-samples/raw/master/idcs-rest-clients/REST_API_for_Oracle_Identity_Cloud_Service_postman_collection.json`
+`https://github.com/oracle/idm-samples/raw/master/idcs-rest-clients/REST_API_for_Oracle_Identity_Cloud_Service.postman_collection.json`
 
 ## Make Requests
 The Oracle Identity Cloud Service collection contains REST API calls with request **uris**, **headers**, and **body** parameters. To perform your calls, you need to modify the parameters according to your preferences. See the OBE [Using the Oracle Identity Cloud Service REST APIs with Postman](http://www.oracle.com/webfolder/technetwork/tutorials/obe/cloud/idcs/idcs_rest_postman_obe/rest_postman.html) for an example of how to create a user using the collection and the sample requests.
