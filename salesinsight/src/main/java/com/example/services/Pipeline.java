@@ -25,7 +25,7 @@ public class Pipeline {
     }
     
     @GET
-    @Produces(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.TEXT_HTML)
     public static String getPipeline(){
         Random random = new Random();
         Calendar cal = Calendar.getInstance();

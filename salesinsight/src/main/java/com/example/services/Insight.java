@@ -19,7 +19,7 @@ public class Insight {
     private static final int MAX_INSIGHTS=20;
     
     @GET
-    @Produces(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.TEXT_HTML)
     public static String getInsights() {
         Random random = new Random();
         int numberOfInsights = random.nextInt(MAX_INSIGHTS);
