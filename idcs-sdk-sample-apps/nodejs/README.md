@@ -4,7 +4,7 @@ Oracle Identity Cloud Service provides a Software Development Kit (SDK) that you
 
 The Node.js SDK is available as a passport strategy, called **passport-idcs**, and must be installed in the Node.js web application source code's node_modules folder.
 
-This Sample Code is used in the following tutorial: [Use Oracle Identity Cloud Service's SDK for Authentication in Node.js Web Applications](https://apexapps.oracle.com/pls/apex/f?p=44785:24:109248393081534::NO:24:P24_CONTENT_ID,P24_PREV_PAGE:22661,1)
+This Sample Code is used in the following tutorial: [Use Oracle Identity Cloud Service's SDK for Authentication in Node.js Web Applications](https://apexapps.oracle.com/pls/apex/f?p=44785:112:0::::P112_CONTENT_ID:22661)
 
 **Important:** The sample web application isn't meant to be published to production and isn't concerned about the language’s specific best practices, such as data handling, patterns, security, and so on. The sole purpose of the sample web application is to address the recommended approach to integrate Oracle Identity Cloud Service and a custom application using the SDK.
 
