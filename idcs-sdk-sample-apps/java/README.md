@@ -4,7 +4,7 @@ Oracle Identity Cloud Service provides a Software Development Kit (SDK) that you
 
 The Java SDK is available as a Java Archive (JAR) (idcs-assert.jar) file, which must be loaded as a web application library.
 
-This Sample Code is used in the following tutorial: [Use Oracle Identity Cloud Service's SDK for Authentication in Java Web Applications](https://apexapps.oracle.com/pls/apex/f?p=44785:24:109248393081534::NO:24:P24_CONTENT_ID,P24_PREV_PAGE:22663,1)
+This Sample Code is used in the following tutorial: [Use Oracle Identity Cloud Service's SDK for Authentication in Java Web Applications](https://apexapps.oracle.com/pls/apex/f?p=44785:112:0::::P112_CONTENT_ID:22663)
 
 **Important:** The sample web application isn't meant to be published to production and isn't concerned about the language’s specific best practices, such as data handling, patterns, security, and so on. The sole purpose of the sample web application is to address the recommended approach to integrate Oracle Identity Cloud Service and a custom application using the SDK.
 
