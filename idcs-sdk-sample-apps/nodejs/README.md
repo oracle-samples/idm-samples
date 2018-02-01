@@ -4,7 +4,7 @@ Oracle Identity Cloud Service provides a Software Development Kit (SDK) that you
 
 The Node.js SDK is available as a passport strategy, called **passport-idcs**, and must be installed in the Node.js web application source code's node_modules folder.
 
-# Comming soon
+# Comming soon ...
 
 ## License
 
