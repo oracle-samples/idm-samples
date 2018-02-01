@@ -4,7 +4,7 @@ Oracle Identity Cloud Service provides a Software Development Kit (SDK) that you
 
 The Java SDK is available as a Java Archive (JAR) (idcs-assert.jar) file, which must be loaded as a web application library.
 
-# Comming soon ...
+# Coming soon ...
 
 ## License
 

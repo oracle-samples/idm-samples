@@ -4,7 +4,7 @@ Oracle Identity Cloud Service provides a Software Development Kit (SDK) that you
 
 The Python SDK is available as two python files **IdcsClient.py** and **Constants.py**, which must be included in the web application.
 
-# Comming soon ...
+# Coming soon ...
 
 ## License
 

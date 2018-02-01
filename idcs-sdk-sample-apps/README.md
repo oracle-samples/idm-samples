@@ -19,7 +19,7 @@ To understand how to use the SDKs, Oracle provides sample web applications for e
 
 Learn how to configure SSO between Oracle Identity Cloud Service and the sample applications by using one of the following tutorials:
 
-#### Comming soon ...
+#### Coming soon ...
 
 The sample applications implement two use cases: one for user authentication and the other for  accessing detailed information from the logged-in user.
 
