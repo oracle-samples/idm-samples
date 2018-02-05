@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+  <html>
+	<head>
+	  <meta content="text/html; charset=UTF-8" http-equiv="content-type">
+	  <title>Sample Application</title>
+		{% load staticfiles %}
+
+    <link href="{% static 'css/sample-app.css' %}" rel="stylesheet" type="text/css">
+	<script language="javascript">
+	  function loginIDCS(){
+		alert('Logging in with Oracle Identity Cloud Service credentials!');
+	  }
+	  
+	  function doLogin(){
+		alert('Logging in to the Sample Application!');
+		//window.open('http://www.google.com.br');
+		window.location='home.html';
+	  }
+	  
+	  </script>
+	</head>
+	<body>
+	  <table style="width: 100%;border-spacing:0px;">
+		<tbody>
+		  <tr class="header">
+			<td style="width: 300px;" nowrap="nowrap">
+			  <table style="width: 100%;padding:5px;border:0px solid white;">
+				<tbody>
+				  <tr>
+					<td>&nbsp;</td>
+				  </tr>
+				  <tr>
+					<td nowrap="nowrap"><a href="index.html"><font class="lightTextLarge">Python Sample Application</font></a></td>
+				  </tr>
+				  <tr>
+					<td>&nbsp;</td>
+				  </tr>
+				</tbody>
+			  </table>
+			</td>
+			<td>&nbsp;</td>
+			<td style="width: 300px;">
+			  <table style="width: 100%;padding:5px;border:0px solid white;text-align:center">
+				<tbody>
+				  <tr>
+					{% block content %}
+					
+					{% include "sampleapp/includes/publicheader.html" with title="login" %}
+					
+					{% endblock %}
+				  </tr>
+				</tbody>
+			  </table>
+			</td>
+		  </tr>
+		  <tr class="center">
+			<td style="width: 300px;">&nbsp; </td>
+			<td style="padding: 15px;vertical-align:top;"> <font class="darkTextSmall">
+			  <p>Provide your credential to access<br>private content:</p>
+			  </font>
+			  <form class="customform" name="login" action="" method="post">
+				<table><tr>
+				  <td width="25%">&nbsp;</td>
+				  <td width="50%">
+					<input name="username" placeholder="Email" type="text">
+					  <p><input name="password" placeholder="Password" type="password"></p>
+				  </td>
+				  <td width="25%">&nbsp;</td>
+				  </tr>
+				  <tr>
+					<td width="25%">&nbsp;</td>
+					<td width="50%" align="right"><button onclick="doLogin();">Log In</button></td>
+					<td width="25%">&nbsp;</td>
+				  </tr>
+				</table>
+			  </form>
+            <p>
+            <table>
+              <tr>
+                <td>or You can log in with&nbsp;</td>
+                <td><a href="/auth">
+                <img title="Oracle Identity Cloud Service" alt="Oracle Identity Cloud Service" src="{% static 'images/oracle.gif' %}" height="40px"></a>
+                </td>
+              </tr>
+            </table>
+            
+          </td>
+          <td style="width: 300px;">&nbsp; <span style="font-family: &quot;Source Sans Pro&quot;,sans-serif;"><br>
+            </span></td>
+        </tr>
+        <tr class="footer">
+          <td colspan="3" style="text-align: center;" nowrap="nowrap"><a
+
+class="lightTextSmall" href="http://www.oracle.com/pls/topic/lookup?ctx=cpyr&amp;id=en">Copyright © 2015, 2017, Oracle and/or its affiliates. All rights reserved.</a></td>
+        </tr>
+      </tbody>
+    </table>
+</body>
+</html>
