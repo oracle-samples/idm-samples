@@ -1,4 +1,4 @@
-# Use an external customized sign-in page with Oracle Identity Cloud Service
+# Oracle Identity Cloud Service's sample sign-in applications
 
 You may not use the identified files except in compliance with the
 Universal Permissive License (UPL), Version 1.0 (the "License.")\
