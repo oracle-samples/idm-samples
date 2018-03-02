@@ -21,6 +21,7 @@ This Sample Code is used in the following tutorial: [Use an External Customized 
 - A Java SDK 8 compliant application server. This tutorial uses Oracle WebLogic Server 12c (12.2.1) and Java SDK 8.
 - To download the Custom Sign-In page project from the Repository. Use a Git Client or download the repository content as zip file, and then decompress it.
 - NetBeans 8.2 with Maven plugin installed.
+- Your web browser must be set to allow third-party cookies, otherwise the sample application fails.
 
 ## Build and Deploy the Custom Sign-In Application:
 
@@ -101,6 +102,8 @@ Enable CORS in Oracle Identity Cloud Service for the custom sign in application 
 **Note**: You can click Access Token content to get more detailed information on the access token that was issued to you, and you can click Logout to see Oracle Identity Cloud Service log out.
 
 **Note**: Every time time you re-start the WebLogic Server, before using the application you need to click Configuration and click the existing Domain name.
+
+**Note**: The current implementation of custom login for Oracle Identity Cloud Service relies upon third-party cookies. If you click Submit and nothing happens check your browser to insure that they are enabled.
 
 ## License
 
