@@ -1,0 +1,580 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Mar 3, 2016, 10:55:49 PM
+    Author     : manumalh
+*/
+
+p {
+    color: blue;
+    text-align: Left;
+    font-family: "Lucida Console", Monaco, monospace;
+} 
+
+pright {
+    color: blue;
+    text-align: right;
+    font-family: "Lucida Console", Monaco, monospace;
+}
+
+body {
+    background-color: whitesmoke
+}
+
+input[type=button], input[type=submit1], input[type=reset] {
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 16px 32px;
+    text-decoration: none;
+    margin: 4px 2px;
+    cursor: pointer;
+}
+
+input[type=submit1]:disabled {
+    background-color: #4CAB12;
+}
+
+ 
+input[type=text] {
+    border: none;
+    border-bottom: 2px solid red;
+    border: 1px solid #F0F0F0;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, .1);
+}
+
+
+.low {
+    background-color: #3A9EF0;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius:6px;
+    color: #fff;
+    font-size: 15px;
+    text-decoration: none;
+    cursor: pointer;
+    border:none;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    font-family: "Sans-serif", Monaco, monospace;
+    width: 460px
+}
+
+.high {
+    background-color: #3A9EF0;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius:6px;
+    color: #fff;
+    font-size: 25px;
+    text-decoration: none;
+    cursor: pointer;
+    border:none;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    font-family: "Sans-serif", Monaco, monospace;
+    width: 460px
+}
+
+.login {
+    background-color: #3A9EF0;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius:6px;
+    color: #fff;
+    font-size: 60px;
+    text-decoration: none;
+    cursor: pointer;
+    border:none;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    font-family: "Sans-serif", Monaco, monospace;
+    width: 460px
+}
+
+.login:active {
+  font-size: 58px;
+}
+
+.logincentered {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.centered {
+  position: relative;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.forgotPassword {
+
+font-family: "Sans-serif", Monaco, monospace;
+font-size: 20px;
+}
+
+
+a.likeAButton {
+  background-color:#67a0cf;
+  border:1px outset #2683cf;
+  color:#fff;
+  padding:3px 3px 3px 3px;
+  margin:1px;
+  text-decoration:none;
+}
+a.likeAButton:hover {
+  background-color:#5788af;
+  border:1px outset #2683cf;
+  color:#fcffdf;
+  padding:3px 3px 3px 3px;
+  margin:1px;
+  text-decoration:none;
+}
+a.likeAButton:active {
+  background-color:#67b4cf;
+  border:1px inset #1d659f;
+  color:#e0ffaf;
+  padding:4px 2px 2px 4px;
+  margin:1px;
+  text-decoration:none;
+}
+
+
+.sectionheading{
+    font: 38px/1.4 "Helvetica Neue", Helvetica, Arial, sans-serif;
+    display: block;
+    font-size: 38px;
+    text-align: center;
+    background: linear-gradient(#49708f, #293f50);
+    color: white;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius:6px;
+}
+
+.userimg {
+    width: 30%;
+    height: 30%;
+    padding: 6px;
+    margin: 6px;
+    float: left;    
+    
+}
+
+.boxed {
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius:6px;
+    border: 1px solid #ddd; 
+    margin:0 auto;
+    
+}
+
+.boxed:before,
+.boxed:after {
+  content: "";
+  display: table;
+}
+.boxed:after {
+  clear: both;
+}
+.boxed {
+  clear: both;
+  *zoom: 1;
+}
+
+
+.lrg-boxed {
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    width: 90%;
+    height: 90%;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius:6px;
+    
+    /*border: 1px solid #ddd; */
+}
+
+.lrg-boxed:before,
+.lrg-boxed:after {
+  content: "";
+  display: table;
+}
+.lrg-boxed:after {
+  clear: both;
+}
+.lrg-boxed {
+  clear: both;
+  *zoom: 1;
+}
+
+.userinformation {
+    width: 100%;
+    float: right;
+}
+
+
+.userinfo {
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    width: 40%;
+    float: right;
+    margin: 1px
+}
+
+
+.userinfo tr, .userinfo th {
+    padding: 2px 0 2px 0;
+}
+
+
+.userinfo td:nth-child(odd){
+    text-align: right;
+    font-weight: bold;
+}
+
+.userinfo tr:hover {background-color: #ddd;}
+
+.userinfo th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    background-color: #4CAF50;
+    color: white;
+}
+
+hr {
+    border: 0;
+    height: 1px;
+    background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
+}
+
+form {
+  border-radius: 5px;
+  font: 14px/1.4 "Helvetica Neue", Helvetica, Arial, sans-serif;
+  width: 100%;
+  height: 88%;
+}
+
+#forgotpasswordform {
+  border-radius: 5px;
+  font: 14px/1.4 "Helvetica Neue", Helvetica, Arial, sans-serif;
+  width: auto;
+  height: auto;
+}
+
+#forgotpassword {
+  border-radius: 5px;
+  font: 14px/1.4 "Helvetica Neue", Helvetica, Arial, sans-serif;
+  width: 400px;
+  height: auto;
+}
+
+fieldset {
+  border: 0;
+  margin: 0;
+  padding: 0;
+}
+
+input {
+  border-radius: 2px;
+  font: 14px/1.4 "Helvetica Neue", Helvetica, Arial, sans-serif;
+  margin: 0;
+}
+
+.account-info {
+  padding: 20px 20px 0 20px;
+}
+
+.account-info label {
+  color: #395870;
+  display: block;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.account-info input {
+  background: #fff;
+  border: 1px solid #F0F0F0;
+   box-shadow: inset 0 1px 1px rgba(0, 0, 0, .1);
+  color: #636466;
+  padding: 6px;
+  margin-top: 6px;
+  width: 100%;
+}
+.account-action {
+  background: #f0f0f2;
+  border-top: 1px solid #c6c7cc;
+  padding: 20px;
+}
+
+.account-action .btn {
+  background: linear-gradient(#49708f, #293f50);
+  border: 0;
+  color: #fff;
+  cursor: pointer;
+  font-weight: bold;
+  padding: 8px 16px;
+}
+
+.account-action .btn:disabled{
+  background: linear-gradient(#497700, #293f50);
+}
+
+.account-action label {
+  color: #7c7c80;
+  font-size: 12px;
+  float: left;
+  margin: 10px 0 0 20px;
+}
+
+
+.user-info {
+  padding: 0 40px 0 40px;
+}
+
+.user-info label {
+  color: #395870;
+  display: block;
+  font-weight: bold;
+  margin-right: 4px;
+  width: 140px;
+}
+
+.user-info input {
+  background: #fff;
+  color: #636466;
+  padding: 2px;
+  margin: 2px;
+  width: 250px;
+}
+
+.user-info-action {
+  background: #ddd;
+  border-top: 1px solid #c6c7cc;
+  padding: 4px;
+  height: 9%;
+  width: 100%
+      
+}
+
+.user-info-action .btn {
+  background: linear-gradient(#49708f, #293f50);
+  border: 0;
+  color: #fff;
+  cursor: pointer;
+  font-weight: bold;
+  padding: 8px 16px;
+  display: inline-block
+}
+
+.user-info-action .btn:disabled{
+  background: linear-gradient(#497700, #293f50);
+}
+
+.user-info-action label {
+  color: #7c7c80;
+  font-size: 12px;
+  float: left;
+  margin: 10px 0 0 20px;
+}
+
+#confirmation {
+  position: relative;
+  background: #DFF2BF;
+  border-radius: 5px;
+  padding: 5px;
+  font: 14px/1.4 "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: #4F8A10;
+}
+
+
+#errormsg {
+  position: relative;
+  background: #FFBABA;
+  border-radius: 5px;
+  padding: 5px;
+  font: 14px/1.4 "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: #D8000C;
+}
+
+.wrap {
+    width: 100%;
+    overflow:auto;
+}
+
+.mainscreen {
+    height: 100%;
+    width: 90%;
+    overflow-y: auto;
+    overflow-x: auto;
+    margin:0 auto;
+}
+
+.wirelog {
+    height: 100%;
+    width: 0%;
+    float: right;
+    border: 2px solid gray;
+    overflow-y: auto;
+    overflow-x: auto;
+    background: cyan;
+}
+
+#wirelogbtn1 {
+  position: fixed;
+  top: 95%;
+  left: 95%;
+  background: #DFF2BF;
+  border-radius: 5px;
+  padding: 5px;
+  font: 14px/1.4 "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: #4F8A10;
+  transform: rotate(90deg);
+  transform-origin: left top 0;
+  
+}
+
+#wirelogbtn {
+  height: 100%;
+  width: 20px;
+  float: right;
+  font: 14px/1.4 "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: #4F8A10;
+  text-align: center;
+  vertical-align: middle;
+  display:table-cell;
+  
+}
+
+#closewirelog {
+  position: absolute;
+  top: 5%;
+  left: 85%;
+  background: #DFF2BF;
+  border-radius: 5px;
+  padding: 5px;
+  font: 14px/1.4 "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: #4F8A10;
+  
+}
+
+
+#wirelogstable table{
+    overflow:auto;
+}
+
+.console {
+  font-family: Courier;
+  color: #CCCCCC;
+  background: 	#E0FFFF; 
+  border: 3px double #CCCCCC;
+  padding: 10px;
+}
+
+td {
+    word-wrap: break-word;
+    
+}
+
+
+
+::-webkit-scrollbar {
+    width: 12px;
+}
+ 
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
+}
+ 
+::-webkit-scrollbar-thumb {
+    background: green;
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5); 
+}
+
+::-webkit-scrollbar-thumb:window-inactive {
+	background: rgba(255,0,0,0.4); 
+}
+
+
+.bordered {
+    border: solid #ccc 1px;
+    -moz-border-radius: 6px;
+    -webkit-border-radius: 6px;
+    border-radius: 6px;
+    -webkit-box-shadow: 0 1px 1px #ccc; 
+    -moz-box-shadow: 0 1px 1px #ccc; 
+    box-shadow: 0 1px 1px #ccc;         
+}
+
+
+.nomatch {
+    color: white;
+    background: red;
+    border-radius: 12px;
+    border: 10px red;
+}
+
+.match {
+    color: white;
+    background: green;
+    border-radius: 12px;
+    border: 10px green;
+}
+    
+    
+#passwordpolicy td:nth-child(odd) {
+    text-align: right;
+    font-weight: bold;
+    width: 10%;
+}
+
+#passwordpolicy table {
+    width: 100px;
+}
+
+
+#header {
+    height: 100px;
+    background-color: darkblue;
+}
+
+option.head {
+    selected:selected;
+    display:none;
+    disabled:disabled;
+}
+
+.add-buffer{
+    margin-top:10px;
+    margin-bottom:10px;
+    margin-right:10px;
+    margin-left:10px;
+}
+
+.add-buffer-top{
+    margin-top:10px;
+    margin-right:10px;
+    margin-left:10px;
+}
+
+.add-buffer-bottom{
+    margin-bottom:10px;
+    margin-right:10px;
+    margin-left:10px;
+}
+
+body {
+    background-color: white;
+}
+
+#profilebanner {
+    background-image: url("/images/IDCSuserBackground.jpg");
+    height: 200px;
+    color: white;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+}
