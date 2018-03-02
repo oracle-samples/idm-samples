@@ -8,7 +8,9 @@ This Sample Code is used in the following tutorial: [Use Oracle Identity Cloud S
 
 **Important:** The sample web application isn't meant to be published to production and isn't concerned about the language’s specific best practices, such as data handling, patterns, security, and so on. The sole purpose of the sample web application is to address the recommended approach to integrate Oracle Identity Cloud Service and a custom application using the SDK.
 
-## How to use the Sample Application:
+**Note:** Before deploying or using this sample application, it need to be updated following the instruction below:
+
+## How to Update the Sample Application:
 
 The sample web application needs an application's Client ID and Secret to establish communication with Oracle Identity Cloud Service.  Follow the referenced tutorial to register an application.
 
