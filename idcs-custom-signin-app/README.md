@@ -12,7 +12,7 @@ Oracle provides a sample sign-in application to be used in this tutorial. This s
 - Multi Factor Authentication.
 - Show Access Token and Identity Token content details.
     
-This Sample Code is used in the following tutorial: [Use an External Customized Sign-in Page with Oracle Identity Cloud Service](https://apexapps.oracle.com/pls/apex/f?p=44785:112:0::::P112_CONTENT_ID:)
+This Sample Code is used in the following tutorial: [Use an External Customized Sign-in Page with Oracle Identity Cloud Service](https://apexapps.oracle.com/pls/apex/f?p=44785:112:0::::P112_CONTENT_ID:23086)
 
 **Important:** The sample web application isn't meant to be published to production and isn't concerned about the language’s specific best practices, such as data handling, patterns, security, and so on. The sole purpose of the sample web application is to demonstrate how to use an external custom sign in page with Oracle Identity Cloud Service.
 
