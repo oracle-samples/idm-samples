@@ -88,8 +88,9 @@ You need to register the custom sign-in application as a **Client Credentials** 
 
 Enable CORS in Oracle Identity Cloud Service for the custom sign in application hosted in another domain (in this example localhost) to work.
 
-1. In the Identity Cloud Service console, expand the Navigation Drawer , expand Settings, then click Session Settings.
-2. Enable Allow Cross-Origin Resource Sharing (CORS) by clicking the slider, and then click Save
+1. Open the Session Settings page.
+2. Enable **Allow Cross-Origin Resource Sharing (CORS)** by clicking the slider.
+3. Enter localhost in **Allowed CORS Domain Names** and then click Save.
 
 ## Test the Custom Sign-In Page
 1. Open a new browser window and enter the following URL: https://localhost:7001/idcscustomlogin/
