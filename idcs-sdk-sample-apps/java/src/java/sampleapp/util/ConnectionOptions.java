@@ -17,7 +17,7 @@ import oracle.security.jps.idcsbinding.shared.IDCSTokenAssertionConfiguration;
  */
 public class ConnectionOptions {
     
-    private Map<String,Object> options = new HashMap<>();
+    private Map<String,Object> options = new HashMap<String,Object>();
     
     public ConnectionOptions(){
         this.options = new HashMap<>();

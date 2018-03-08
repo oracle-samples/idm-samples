@@ -86,7 +86,6 @@ Edit the **myProfile.jsp** file and add the following content at the beginning o
   String access_token = session.getAttribute("access_token").toString();
   oracle.security.jps.idcsbinding.shared.IDCSUserManager um = new oracle.security.jps.idcsbinding.shared.IDCSUserManagerImpl(configuration);
   oracle.security.jps.idcsbinding.api.IDCSUser user = um.getAuthenticatedUser(access_token);
-  user = um.getUser(user.getId());
   net.minidev.json.JSONObject json = user.getUser();
   String jsonString = json.toString();
 %>
