@@ -10,8 +10,6 @@ The SDK wraps some Oracle Identity Cloud Service calls that are made by the appl
 
 The SDKs can be downloaded from the **Downloads** page of the Identity Cloud Service console, as zip files, for the following languages:
 - **Java**: The file you download contains a *jar* library file.
-- **JavaScript/Node.js**: The file you download contains a passport strategy library file (see http://passportjs.org/).
-- **Python**: The file you download contains two python files: *IdcsClient.py* and *Constants.py*.
 
 ## Tutorials and Sample Applications
 
@@ -20,8 +18,6 @@ To understand how to use the SDKs, Oracle provides sample web applications for e
 Learn how to configure SSO between Oracle Identity Cloud Service and the sample applications by using one of the following tutorials:
 
 - [Use Oracle Identity Cloud Service's Software Development Kit (SDK) for Authentication in Java Web Applications](https://apexapps.oracle.com/pls/apex/f?p=44785:112:0::::P112_CONTENT_ID:22663)
-- [Use Oracle Identity Cloud Service's Software Development Kit (SDK) for Authentication in Node.js Web Applications](https://apexapps.oracle.com/pls/apex/f?p=44785:112:0::::P112_CONTENT_ID:22661)
-- [Use Oracle Identity Cloud Service's Software Development Kit (SDK) for Authentication in Python Web Applications](https://apexapps.oracle.com/pls/apex/f?p=44785:112:0::::P112_CONTENT_ID:22662)
 
 The sample applications implement two use cases: one for user authentication and the other for  accessing detailed information from the logged-in user.
 
