@@ -58,8 +58,25 @@ public Map<String,Object> getOptions(){
 }
 ```
 
+Below is a brief explanation  for each of the required attributes for the SDK:
+- **IDCSTokenAssertionConfiguration.IDCS_HOST**: The Oracle Identity Cloud Service instance domain sufix.
+- **IDCSTokenAssertionConfiguration.IDCS_PORT**: The Oracle Identity Cloud Service instance HTTPS port. Usually 443.
+- **IDCSTokenAssertionConfiguration.IDCS_CLIENT_ID**: Client ID value generated after you register the web application in Oracle Identity Cloud Service console.
+- **IDCSTokenAssertionConfiguration.IDCS_CLIENT_SECRET**: Client Secret value generated after you register the web application in Oracle Identity Cloud Service console.
+- **IDCSTokenAssertionConfiguration.IDCS_TENANT**: The domain prefix of you Oracle Identity Cloud Service instance. Usually a value similar to the example above.
+- **Constants.AUDIENCE_SERVICE_URL**: The full qualified domain name URL of your Oracle Identity Cloud Service instance.
+- **Constants.TOKEN_ISSUER**: Oracle recomends to keep the value as presented here.
+- **Constants.TOKEN_CLAIM_SCOPE**: Scope contols what data the application can access/process on behalf of the user. Since the application uses the SDK for authentication purpose the scope is openid. This way the access token issued through this scope can be used to request Oracle Identity Cloud Service user details.
+- **SSLEnabled**: Indicates wether he Oracle Identity Cloud Service responds HTTPs or HTTP requests. Oracle recomends to keep the value as presented here.
+
+The **logoutSufix** and **redirectURL** are both used by the application, hence they are not required by the SDK.
+
 The **AuthSevlet.java** file  class maps to the **/auth** URL. It uses the SDK to generate the authorization code URL, and redirects the browser to the generated URL.
-The parameter value (1234) of the getAuthorizationCodeUrl method is meant to be a code that the sample web application might use to check if the communication was made correctly to Oracle Identity Cloud Service. The sample web application does not use it.
+Four important parameters are used to generate the authorization code URL:
+- **redirectUrl**: After successfull sign in, Oracle Identity Cloud Service redirects the user browser to this URL. This URL must match the one configured in the trusted application in Oracle Identity Cloud Service console.
+- **scope**: The OAuth/OpenID Connect scope of authentication. This application requires only openid authentication to be handled by Oracle Identity Cloud Service.
+- **1234**: The state value is meant to be a code that the sample web application might use to check if the communication was made correctly to Oracle Identity Cloud Service. The state parameter is defined by the OAuth protocol.
+- **code**: Value required by the authorization code grant type.
 
 Tthe **CallbackServlet.java** class maps to the **/callback** URL, and uses the authorization code parameter to request an access token. The access token is then stored in the user session, along with the userId and displayName values. Then, the servlet forwards the request to the **private/home.jsp** page.
 
