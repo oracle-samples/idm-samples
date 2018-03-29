@@ -1,14 +1,24 @@
 <%if(session.getAttribute("access_token")==null) response.sendRedirect("/login.html");%>
 <!DOCTYPE html>
 <%
-    //Replace the code block with the code provided in the OBE section 3, step 5.
-java.util.Map<String, Object> options = new sampleapp.util.ConnectionOptions().getOptions();
+/**
+ * The /private/myProfile.jsp page accesses the user's access token previously set in the session, 
+ * calls the getAuthenticatedUser method to retrieve the user's information, and then formats it as HTML.
+ * @author felippe.oliveira@oracle.com
+ * @Copyright Oracle
+*/
+  java.util.Map<String, Object> options = new sampleapp.util.ConnectionOptions().getOptions();
+  //Configuration object instance with the parameters loaded.
   oracle.security.jps.idcsbinding.shared.IDCSTokenAssertionConfiguration configuration = new oracle.security.jps.idcsbinding.shared.IDCSTokenAssertionConfiguration(options);
-
+ 
   String access_token = session.getAttribute("access_token").toString();
+  //User Manager loaded with the configurations
   oracle.security.jps.idcsbinding.shared.IDCSUserManager um = new oracle.security.jps.idcsbinding.shared.IDCSUserManagerImpl(configuration);
+  //Using the access_token value to get an object instance representing the User Profile.
   oracle.security.jps.idcsbinding.api.IDCSUser user = um.getAuthenticatedUser(access_token);
+  //Getting the user details in json object format.
   user = um.getUser(user.getId());
+  //User information can now be accessed and printed in the page.
   net.minidev.json.JSONObject json = user.getUser();
   String jsonString = json.toString();
 %>

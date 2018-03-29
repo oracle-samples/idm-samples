@@ -17,8 +17,10 @@ import javax.servlet.http.HttpSession;
 import oracle.security.jps.idcsbinding.shared.Constants;
 
 /**
- *
+ * The LogoutServlet class invalidates the user session and then redirects the user 
+ * to Oracle Identity Cloud Service's log out URL.
  * @author felippe.oliveira@oracle.com
+ * @Copyright Oracle
  */
 public class LogoutServlet extends HttpServlet {
 
@@ -36,7 +38,7 @@ public class LogoutServlet extends HttpServlet {
         HttpSession session=request.getSession();
         session.invalidate();
         Map options = new ConnectionOptions().getOptions();
-        String logoutURL = (String)options.get(Constants.AUDIENCE_SERVICE_URL) +"/sso/v1/user/logout";
+        String logoutURL = (String)options.get(Constants.AUDIENCE_SERVICE_URL) + (String)options.get("logoutSufix");
         response.sendRedirect(logoutURL);
     }
 

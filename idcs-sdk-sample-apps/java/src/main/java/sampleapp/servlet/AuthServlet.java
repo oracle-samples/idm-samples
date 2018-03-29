@@ -19,8 +19,10 @@ import oracle.security.jps.idcsbinding.shared.AuthenticationManagerImpl;
 import oracle.security.jps.idcsbinding.shared.IDCSTokenAssertionConfiguration;
 
 /**
- *
+ * The AuthSevlet class maps to the /auth URL. 
+ * It uses the SDK to generate the authorization code URL, and redirects the browser to the generated URL.
  * @author felippe.oliveira@oracle.com
+ * @Copyright Oracle
  */
 public class AuthServlet extends HttpServlet {
 
@@ -35,12 +37,16 @@ public class AuthServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        Map options = new ConnectionOptions().getOptions();
-        String redirectUrl = (String)options.get("redirectURL");
-        String scope = (String)options.get("scope");
+        //Loading the configurations
+        Map<String, Object> options = new ConnectionOptions().getOptions();
+        //Configuration object instance with the parameters loaded.
         IDCSTokenAssertionConfiguration config = new IDCSTokenAssertionConfiguration(options);
+        //Authentication Manager loaded with the configurations.
         AuthenticationManager am = new AuthenticationManagerImpl(config);
+        //Using Authentication Manager to generate the Authorization Code URL, passing the
+        //application's callback URL as parameter, along with code value and code parameter.
         String authzURL = am.getAuthorizationCodeUrl(redirectUrl, scope, "1234", "code");
+        //Redirecting the browser to the Oracle Identity Cloud Service Authorization URL.
         response.sendRedirect(authzURL);
     }
 

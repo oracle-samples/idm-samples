@@ -16,6 +16,7 @@ import oracle.security.jps.idcsbinding.shared.IDCSTokenAssertionConfiguration;
  * Oracle Identity Cloud Service instance.
  * The list of parameters must be added to a HashMap.
  * @author felippe.oliveira@oracle.com
+ * @Copyright Oracle
  */
 public class ConnectionOptions {
     

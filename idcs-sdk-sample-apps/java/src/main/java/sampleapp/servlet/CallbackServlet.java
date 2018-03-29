@@ -21,8 +21,12 @@ import oracle.security.jps.idcsbinding.api.IDCSUser;
 import oracle.security.jps.idcsbinding.shared.*;
 
 /**
- *
+ * The CallbackServlet maps to the /callback URL, and uses the authorization code parameter 
+ * to request an access token. The access token is then stored in the user session, 
+ * along with the userId and displayName values. 
+ * Then, the Servlet forwards the request to the private/home.jsp page.
  * @author felippe.oliveira@oracle.com
+ * @Copyright Oracle
  */
 public class CallbackServlet extends HttpServlet {
 
@@ -37,27 +41,32 @@ public class CallbackServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        Map<String, Object> options = new ConnectionOptions().getOptions();
+        //After Oracle Identity Cloud Service authenticates the user, the browser is redirected to the
+        //callback URL, implemented as a Servlet.
         IDCSTokenAssertionConfiguration config = new IDCSTokenAssertionConfiguration(options);
-        AuthenticationManager am = new AuthenticationManagerImpl(config); 
+        //Authentication Manager loaded with the configurations.
+        AuthenticationManager am = new AuthenticationManagerImpl(config);
+        //Getting the authorization code from the "code" parameter
         String authzCode = request.getParameter("code");
-        AuthenticationResult ar = am.authorizationCode(authzCode);
+        //Using the Authentication Manager to exchange the Authorization Code to an Access Token.
+        AuthenticationResult ar = am.authorizationCode(authzCode)
+        //Getting the Access Token Value.
         String access_token = ar.getAccessToken();
-        
+        //The application then creates a User Session.
         IDCSUserManager um = new IDCSUserManagerImpl(config);
         IDCSUser user = um.getAuthenticatedUser(access_token);
         user = um.getUser(user.getId());
         net.minidev.json.JSONObject json = user.getUser();
-        
+         
         HttpSession session=request.getSession();
         session.setAttribute("access_token", access_token);
         session.setAttribute("userId", user.getId());
-
+ 
         String displayName = json.getAsString("displayName");
         session.setAttribute("displayName", displayName);
-
+ 
         request.getRequestDispatcher("private/home.jsp").forward(request, response);
-    }
+     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
