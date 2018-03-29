@@ -1,55 +1,168 @@
-# Oracle Identity Cloud Service's Software Development Kit (SDK)
+# Oracle Identity Cloud Service' SDK Java Sample Application
 
-## Overview
+Oracle Identity Cloud Service provides a Software Development Kit (SDK) that you can use to integrate Java web applications with Oracle Identity Cloud Service.
 
-Use software development kits (SDKs) when developing applications, allowing them to connect to Oracle Identity Cloud Service to authenticate and get an access token to identify registered users in Oracle Identity Cloud Service.
+The Java SDK is available as a Java Archive (JAR) (idcs-assert.jar) file, which must be loaded as a web application library.
 
-![Overview Diagram](images/SDK_Header.png)
+This Sample Code is used in the following tutorial: [Use Oracle Identity Cloud Service's SDK for Authentication in Java Web Applications]( https://apexapps.oracle.com/pls/apex/f?p=44785:112:0::::P112_CONTENT_ID:22663)
 
-The SDK wraps some Oracle Identity Cloud Service calls that are made by the applications, simplifying the development.
+**Important:** The sample web application isn't meant to be published to production and isn't concerned about the language’s specific best practices, such as data handling, patterns, security, and so on. The sole purpose of the sample web application is to address the recommended approach to integrate Oracle Identity Cloud Service and a custom application using the SDK.
 
-The SDKs can be downloaded from the **Downloads** page of the Identity Cloud Service console, as zip files, for the following languages:
-- **Java**: The file you download contains a *jar* library file.
+## Dependent Third-party libraries
+The Oracle Identity Cloud Service SDK for Java is depedent of the following libraries and version:
+- [ASM Helper Minidev 1.0.2](https://mvnrepository.com/artifact/net.minidev/asm)
+- [Apache Commons Lang 3.6](https://mvnrepository.com/artifact/org.apache.commons/commons-lang3)
+- [JSON Small And Fast Parser](https://mvnrepository.com/artifact/net.minidev/json-smart)
+- [Nimbus LangTag](https://mvnrepository.com/artifact/com.nimbusds/lang-tag)
+- [Nimbus JOSE+JWT](https://mvnrepository.com/artifact/com.nimbusds/nimbus-jose-jwt)
+- [OAuth 2.0 SDK With OpenID Connect Extensions](https://mvnrepository.com/artifact/com.nimbusds/oauth2-oidc-sdk)
+- [Apache Commons Collections](https://mvnrepository.com/artifact/org.apache.commons/commons-collections4)
 
-## Tutorials and Sample Applications
+**Note:** Before deploying or using this sample application, it need to be updated following the instruction below:
 
-To understand how to use the SDKs, Oracle provides sample web applications for each of the supported languages listed above. Use these sample applications for learning purposes.
+## How to use the Sample Application:
 
-Learn how to configure SSO between Oracle Identity Cloud Service and the sample applications by using one of the following tutorials:
+The sample web application needs an application's Client ID and Secret to establish communication with Oracle Identity Cloud Service.  Follow the referenced tutorial to register an application.
 
-- [Use Oracle Identity Cloud Service's Software Development Kit (SDK) for Authentication in Java Web Applications](https://apexapps.oracle.com/pls/apex/f?p=44785:112:0::::P112_CONTENT_ID:22663)
+Access the Oracle Identity Cloud Service console and download the SDK for Java. Inside the downloaded zip file there is a file called **idcs-asserter.jar**. The name of the java sdk jar file may vary.
+Copy the file to the location pointed in the pom.xml file below.
 
-The sample applications implement two use cases: one for user authentication and the other for  accessing detailed information from the logged-in user.
+Edit the **pom.xml** file, update the JAR file name in the following statement, and then save the file.
+```xml
+<!-- Add here the Oracle Identity Cloud Service SDK dependency entry -->
+        <dependency>
+                <groupId>oracle.security.jps.idcsbinding</groupId>
+                <artifactId>sdk</artifactId>
+                <version>1.0</version>
+                <scope>system</scope>
+                <systemPath>${basedir}/src/main/webapp/WEB-INF/lib/idcs-asserter.jar</systemPath>
+        </dependency>
+```
+**Note:** make sure the name of the idcs-asserter.jar file matches the name of the java SDK jar file downloaded from the Oracle Identity Cloud Service console.
 
-#### Use Case #1: User Authentication
+Edit the **ConnectionOptions.java** file and update the IDCS_HOST, IDCS_PORT, IDCS_CLIENT_ID, IDCS_CLIENT_SECRET,  IDCS_CLIENT_TENANT and AUDIENCE_SERVICE_URL variables.
+```java
+public Map<String,Object> getOptions(){
+        this.options.put(IDCSTokenAssertionConfiguration.IDCS_HOST, "identity.oraclecloud.com");
+        this.options.put(IDCSTokenAssertionConfiguration.IDCS_PORT, "443");
+        this.options.put(IDCSTokenAssertionConfiguration.IDCS_CLIENT_ID, "123456789abcdefghij");
+        this.options.put(IDCSTokenAssertionConfiguration.IDCS_CLIENT_SECRET, "abcde-12345-zyxvu-98765-qwerty");
+        this.options.put(IDCSTokenAssertionConfiguration.IDCS_CLIENT_TENANT, "idcs-abcd1234");
+        this.options.put(Constants.AUDIENCE_SERVICE_URL, "https://idcs-abcd1234.identity.oraclecloud.com");
+        this.options.put(Constants.TOKEN_ISSUER, "https://identity.oraclecloud.com");
+        this.options.put(Constants.TOKEN_CLAIM_SCOPE, "urn:opc:idm:t.user.me openid");
+        this.options.put("SSLEnabled", "true");
+        this.options.put("redirectURL", "http://localhost:8080/callback");
+        this.options.put("logoutSufix", "/sso/v1/user/logout");
+	return this.options;
+}
+```
 
-This graphical overview explains the flow of events, calls, and responses between the web browser, the web application, and Oracle Identity Cloud Service for authenticating users.
+Edit the **AuthSevlet.java** file and update the **processRequest** method:
+```java
+protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {   
+    //Loading the configurations
+    Map options = new ConnectionOptions().getOptions();
+    String redirectUrl = (String)options.get("redirectURL");
+    String scope = (String)options.get("scope");
+    //Configuration object instance with the parameters loaded.
+    IDCSTokenAssertionConfiguration config = new IDCSTokenAssertionConfiguration(options);
+    //Authentication Manager loaded with the configurations.
+    AuthenticationManager am = new AuthenticationManagerImpl(config);
+    //Using Authentication Manager to generate the Authorization Code URL, passing the
+    //application's callback URL as parameter, along with code value and code parameter.
+    String authzURL = am.getAuthorizationCodeUrl(redirectUrl, scope, "1234", "code");
+    //Redirecting the browser to the Oracle Identity Cloud Service Authorization URL.
+    response.sendRedirect(authzURL);
+}
+```
+The AuthSevlet class maps to the **/auth** URL. It uses the SDK to generate the authorization code URL, and redirects the browser to the generated URL.
 
-![Authentication Sequence Diagram](images/SDK_SequenceDiagramAuthN.png)
+The parameter value (1234) of the getAuthorizationCodeUrl method is meant to be a code that the sample web application might use to check if the communication was made correctly to Oracle Identity Cloud Service. The sample web application does not use it.
 
-**Detailed flow:**
-1. The user requests an authenticated resource.
-2. The authentication module generates a request-authorization-code URL and redirects the user's browser.
-3. The Oracle Identity Cloud Service **Sign In** page is presented.
-4. The user submits their Oracle Identity Cloud Service login credentials.
-5. Oracle Identity Cloud Service issues an authorization code.
-6. The sample application calls Oracle Identity Cloud Service to exchange the authorization code for an access token.
-7. Oracle Identity Cloud Service issues the access token.
-8. A session is established, and the user is redirected to the **Home** page.
-9. The **Home** page of the sample application is presented.
+Edit the **CallbackServlet.java** file and update the **processRequest** method:
+```java
+protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+    //Loading the configurations
+    Map<String, Object> options = new ConnectionOptions().getOptions();
+	//After Oracle Identity Cloud Service authenticates the user, 
+	//the browser is redirected to the callback URL, implemented as a Servlet.
+    IDCSTokenAssertionConfiguration config = new IDCSTokenAssertionConfiguration(options);
+    //Authentication Manager loaded with the configurations.
+    AuthenticationManager am = new AuthenticationManagerImpl(config); 
+    //Getting the authorization code from the "code" parameter
+	String authzCode = request.getParameter("code");
+    //Using the Authentication Manager to exchange the Authorization Code to an Access Token.
+	AuthenticationResult ar = am.authorizationCode(authzCode);
+    //Getting the Access Token Value.
+    String access_token = ar.getAccessToken();
+    //The application then creates a User Session.
+    IDCSUserManager um = new IDCSUserManagerImpl(config);
+    IDCSUser user = um.getAuthenticatedUser(access_token);
+    user = um.getUser(user.getId());
+    net.minidev.json.JSONObject json = user.getUser();
+    //Accessing the application's user session.
+    HttpSession session=request.getSession();
+    //Setting the access token and the user id into the application's user session.
+    session.setAttribute("access_token", access_token);
+    session.setAttribute("userId", user.getId());
+	//Accessing the user displaName attribute from the json object.
+    String displayName = json.getAsString("displayName");
+    //Setting the user displayName into the application's user session.
+    session.setAttribute("displayName", displayName);
+    //Forwarding the request to the home page.
+    request.getRequestDispatcher("private/home.jsp").forward(request, response);
+}
+```
+The CallbackServlet maps to the **/callback** URL, and uses the authorization code parameter to request an access token. The access token is then stored in the user session, along with the userId and displayName values. Then, the servlet forwards the request to the **private/home.jsp** page.
 
-#### Use Case #2: Get User Details
+Edit the **myProfile.jsp** file and add the following content at the beginning of the file:
+```java
+<%
+ //Replace the code block with the code provided in the OBE section 3, step 5.
+  java.util.Map<String, Object> options = new sampleapp.util.ConnectionOptions().getOptions();
+  //Configuration object instance with the parameters loaded.
+  oracle.security.jps.idcsbinding.shared.IDCSTokenAssertionConfiguration configuration = new oracle.security.jps.idcsbinding.shared.IDCSTokenAssertionConfiguration(options);
+  String access_token = session.getAttribute("access_token").toString();
+  //User Manager loaded with the configurations
+  oracle.security.jps.idcsbinding.shared.IDCSUserManager um = new oracle.security.jps.idcsbinding.shared.IDCSUserManagerImpl(configuration);
+  //Using the access_token value to get an object instance representing the User Profile.
+  oracle.security.jps.idcsbinding.api.IDCSUser user = um.getAuthenticatedUser(access_token);
+  //Getting the user details in json object format.
+  net.minidev.json.JSONObject json = user.getUser();
+  //User information can now be accessed and printed in the page.
+  String jsonString = json.toString();
+%>
+```
+The **/private/myProfile.jsp** page accesses the user's access token previously set in the session, calls the getAuthenticatedUser method to retrieve the user's information, and then formats it as HTML.
 
-The image illustrates the get user details flow between the user’s web browser, the sample application, and Oracle Identity Cloud Service when using the user authentication SDKs.
+Edit the **LogoutServlet.java** file and update the **processRequest** method:
+```java
+protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+  HttpSession session=request.getSession();
+  //Terminates the application's user session.
+  session.invalidate();
+  Map options = new ConnectionOptions().getOptions();
+  //Creating the Oracle Identity Cloud Service logout URL
+  String logoutURL = (String)options.get(Constants.AUDIENCE_SERVICE_URL) +"/sso/v1/user/logout";
+  //Redirects the browser to log out from Oracle Identity Cloud Service.
+  response.sendRedirect(logoutURL);
+}
+```
+The LogoutServlet class invalidates the user session and then redirects the user to Oracle Identity Cloud Service's log out URL.
 
+## Run the Sample Web Application
 
-![Get User Details Sequence Diagram](images/SDK_SequenceDiagramGetDetails.png)
+- Open the java project in [NetBeans](https://netbeans.org/). Make sure to use [Java SDK 8](http://www.oracle.com/technetwork/pt/java/javase/downloads/jdk8-downloads-2133151.html). 
 
-**Detailed flow:**
-1. The user requests the **/myProfile** resource.
-2. The sample application calls Oracle Identity Cloud Service using the SDK, which uses the access token stored in the user session as a parameter.
-3. The user's details are sent to the sample application as a JSON object.
-4. The **My Profile** page renders the JSON object as an HTML file.
+- Build and Run the application.
+ 
+- Open a browser window, access the http://localhost:8080 URL, click **Log in**, and then click the Oracle red icon.
+
+- The Oracle Identity Cloud Service Sign In page appears.
 
 ## License
 
