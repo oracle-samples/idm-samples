@@ -58,78 +58,31 @@ public Map<String,Object> getOptions(){
 }
 ```
 
-Edit the **AuthSevlet.java** file and update the **processRequest** method:
-```java
-protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {   
-    Map options = new ConnectionOptions().getOptions();
-    String redirectUrl = (String)options.get("redirectURL");
-    String scope = (String)options.get("scope");
-    IDCSTokenAssertionConfiguration config = new IDCSTokenAssertionConfiguration(options);
-    AuthenticationManager am = new AuthenticationManagerImpl(config);
-    String authzURL = am.getAuthorizationCodeUrl(redirectUrl, scope, "1234", "code");
-    response.sendRedirect(authzURL);
-}
-```
-The AuthSevlet class maps to the **/auth** URL. It uses the SDK to generate the authorization code URL, and redirects the browser to the generated URL.
+Below is a brief explanation  for each of the required attributes for the SDK:
+- **IDCSTokenAssertionConfiguration.IDCS_HOST**: The Oracle Identity Cloud Service instance domain sufix.
+- **IDCSTokenAssertionConfiguration.IDCS_PORT**: The Oracle Identity Cloud Service instance HTTPS port. Usually 443.
+- **IDCSTokenAssertionConfiguration.IDCS_CLIENT_ID**: Client ID value generated after you register the web application in Oracle Identity Cloud Service console.
+- **IDCSTokenAssertionConfiguration.IDCS_CLIENT_SECRET**: Client Secret value generated after you register the web application in Oracle Identity Cloud Service console.
+- **IDCSTokenAssertionConfiguration.IDCS_TENANT**: The domain prefix of you Oracle Identity Cloud Service instance. Usually a value similar to the example above.
+- **Constants.AUDIENCE_SERVICE_URL**: The full qualified domain name URL of your Oracle Identity Cloud Service instance.
+- **Constants.TOKEN_ISSUER**: Oracle recomends to keep the value as presented here.
+- **Constants.TOKEN_CLAIM_SCOPE**: Scope contols what data the application can access/process on behalf of the user. Since the application uses the SDK for authentication purpose the scope is openid. This way the access token issued through this scope can be used to request Oracle Identity Cloud Service user details.
+- **SSLEnabled**: Indicates wether he Oracle Identity Cloud Service responds HTTPs or HTTP requests. Oracle recomends to keep the value as presented here.
 
-The parameter value (1234) of the getAuthorizationCodeUrl method is meant to be a code that the sample web application might use to check if the communication was made correctly to Oracle Identity Cloud Service. The sample web application does not use it.
+The **logoutSufix** and **redirectURL** are both used by the application, hence they are not required by the SDK.
 
-Edit the **CallbackServlet.java** file and update the **processRequest** method:
-```java
-protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-	Map<String, Object> options = new ConnectionOptions().getOptions();
-        IDCSTokenAssertionConfiguration config = new IDCSTokenAssertionConfiguration(options);
-        AuthenticationManager am = new AuthenticationManagerImpl(config); 
-        String authzCode = request.getParameter("code");
-        AuthenticationResult ar = am.authorizationCode(authzCode);
-        String access_token = ar.getAccessToken();
-        
-        IDCSUserManager um = new IDCSUserManagerImpl(config);
-        IDCSUser user = um.getAuthenticatedUser(access_token);
-        user = um.getUser(user.getId());
-        net.minidev.json.JSONObject json = user.getUser();
-        
-        HttpSession session=request.getSession();
-        session.setAttribute("access_token", access_token);
-        session.setAttribute("userId", user.getId());
+The **AuthSevlet.java** file  class maps to the **/auth** URL. It uses the SDK to generate the authorization code URL, and redirects the browser to the generated URL.
+Four important parameters are used to generate the authorization code URL:
+- **redirectUrl**: After successfull sign in, Oracle Identity Cloud Service redirects the user browser to this URL. This URL must match the one configured in the trusted application in Oracle Identity Cloud Service console.
+- **scope**: The OAuth/OpenID Connect scope of authentication. This application requires only openid authentication to be handled by Oracle Identity Cloud Service.
+- **1234**: The state value is meant to be a code that the sample web application might use to check if the communication was made correctly to Oracle Identity Cloud Service. The state parameter is defined by the OAuth protocol.
+- **code**: Value required by the authorization code grant type.
 
-        String displayName = json.getAsString("displayName");
-        session.setAttribute("displayName", displayName);
+Tthe **CallbackServlet.java** class maps to the **/callback** URL, and uses the authorization code parameter to request an access token. The access token is then stored in the user session, along with the userId and displayName values. Then, the servlet forwards the request to the **private/home.jsp** page.
 
-        request.getRequestDispatcher("private/home.jsp").forward(request, response);
-}
-```
-The CallbackServlet maps to the **/callback** URL, and uses the authorization code parameter to request an access token. The access token is then stored in the user session, along with the userId and displayName values. Then, the servlet forwards the request to the **private/home.jsp** page.
-
-Edit the **myProfile.jsp** file and add the following content at the beginning of the file:
-```java
-<%
-  java.util.Map<String, Object> options = new sampleapp.util.ConnectionOptions().getOptions();
-  oracle.security.jps.idcsbinding.shared.IDCSTokenAssertionConfiguration configuration = new oracle.security.jps.idcsbinding.shared.IDCSTokenAssertionConfiguration(options);
-
-  String access_token = session.getAttribute("access_token").toString();
-  oracle.security.jps.idcsbinding.shared.IDCSUserManager um = new oracle.security.jps.idcsbinding.shared.IDCSUserManagerImpl(configuration);
-  oracle.security.jps.idcsbinding.api.IDCSUser user = um.getAuthenticatedUser(access_token);
-  net.minidev.json.JSONObject json = user.getUser();
-  String jsonString = json.toString();
-%>
-```
 The **/private/myProfile.jsp** page accesses the user's access token previously set in the session, calls the getAuthenticatedUser method to retrieve the user's information, and then formats it as HTML.
 
-Edit the **LogoutServlet.java** file and update the **processRequest** method:
-```java
-protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-  HttpSession session=request.getSession();
-  session.invalidate();
-  Map options = new ConnectionOptions().getOptions();
-  String logoutURL = (String)options.get(Constants.AUDIENCE_SERVICE_URL) +"/sso/v1/user/logout";
-  response.sendRedirect(logoutURL);
-}
-```
-The LogoutServlet class invalidates the user session and then redirects the user to Oracle Identity Cloud Service's log out URL.
+The **LogoutServlet.java** class invalidates the user session and then redirects the user to Oracle Identity Cloud Service's log out URL.
 
 ## Run the Sample Web Application
 
