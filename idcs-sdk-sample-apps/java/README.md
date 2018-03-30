@@ -70,6 +70,7 @@ Below is a brief explanation  for each of the required attributes for the SDK:
 - **SSLEnabled**: Indicates wether he Oracle Identity Cloud Service responds HTTPs or HTTP requests. Oracle recomends to keep the value as presented here.
 
 The **logoutSufix** and **redirectURL** are both used by the application, hence they are not required by the SDK.
+<<<<<<< HEAD
 
 The **AuthSevlet.java** file  class maps to the **/auth** URL. It uses the SDK to generate the authorization code URL, and redirects the browser to the generated URL.
 Four important parameters are used to generate the authorization code URL:
@@ -80,6 +81,18 @@ Four important parameters are used to generate the authorization code URL:
 
 Tthe **CallbackServlet.java** class maps to the **/callback** URL, and uses the authorization code parameter to request an access token. The access token is then stored in the user session, along with the userId and displayName values. Then, the servlet forwards the request to the **private/home.jsp** page.
 
+=======
+
+The **AuthSevlet.java** file  class maps to the **/auth** URL. It uses the SDK to generate the authorization code URL, and redirects the browser to the generated URL.
+Four important parameters are used to generate the authorization code URL:
+- **redirectUrl**: After successfull sign in, Oracle Identity Cloud Service redirects the user browser to this URL. This URL must match the one configured in the trusted application in Oracle Identity Cloud Service console.
+- **scope**: The OAuth/OpenID Connect scope of authentication. This application requires only openid authentication to be handled by Oracle Identity Cloud Service.
+- **1234**: The state value is meant to be a code that the sample web application might use to check if the communication was made correctly to Oracle Identity Cloud Service. The state parameter is defined by the OAuth protocol.
+- **code**: Value required by the authorization code grant type.
+
+Tthe **CallbackServlet.java** class maps to the **/callback** URL, and uses the authorization code parameter to request an access token. The access token is then stored in the user session, along with the userId and displayName values. Then, the servlet forwards the request to the **private/home.jsp** page.
+
+>>>>>>> cfceee184a31cefaf5d66455daef71f26635705f
 The **/private/myProfile.jsp** page accesses the user's access token previously set in the session, calls the getAuthenticatedUser method to retrieve the user's information, and then formats it as HTML.
 
 The **LogoutServlet.java** class invalidates the user session and then redirects the user to Oracle Identity Cloud Service's log out URL.
