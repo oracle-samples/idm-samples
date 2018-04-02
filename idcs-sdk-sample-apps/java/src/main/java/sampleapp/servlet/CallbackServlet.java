@@ -41,6 +41,8 @@ public class CallbackServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        //Loading the configurations
+        Map<String, Object> options = new ConnectionOptions().getOptions();
         //After Oracle Identity Cloud Service authenticates the user, the browser is redirected to the
         //callback URL, implemented as a Servlet.
         IDCSTokenAssertionConfiguration config = new IDCSTokenAssertionConfiguration(options);

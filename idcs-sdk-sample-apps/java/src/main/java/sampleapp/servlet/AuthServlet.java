@@ -41,6 +41,8 @@ public class AuthServlet extends HttpServlet {
         Map<String, Object> options = new ConnectionOptions().getOptions();
         //Configuration object instance with the parameters loaded.
         IDCSTokenAssertionConfiguration config = new IDCSTokenAssertionConfiguration(options);
+		String redirectUrl = (String)options.get("redirectUrl");
+        String scope = (String)options.get("scope");
         //Authentication Manager loaded with the configurations.
         AuthenticationManager am = new AuthenticationManagerImpl(config);
         //Using Authentication Manager to generate the Authorization Code URL, passing the
