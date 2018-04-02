@@ -36,7 +36,7 @@ public class ConnectionOptions {
         this.options.put(IDCSTokenAssertionConfiguration.IDCS_CLIENT_TENANT, "idcs-abcd1234");
         this.options.put(Constants.AUDIENCE_SERVICE_URL, "https://idcs-abcd1234.identity.oraclecloud.com");
         this.options.put(Constants.TOKEN_ISSUER, "https://identity.oraclecloud.com");
-        this.options.put(Constants.TOKEN_CLAIM_SCOPE, "openid");
+        this.options.put(Constants.TOKEN_CLAIM_SCOPE, "urn:opc:idm:t.user.me openid");
         this.options.put("SSLEnabled", "true");
         this.options.put("redirectURL", "http://localhost:8080/callback");
         this.options.put("logoutSufix", "/oauth2/v1/userlogout");

@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import oracle.security.jps.idcsbinding.shared.AuthenticationManager;
 import oracle.security.jps.idcsbinding.shared.AuthenticationManagerImpl;
+import oracle.security.jps.idcsbinding.shared.Constants;
 import oracle.security.jps.idcsbinding.shared.IDCSTokenAssertionConfiguration;
 
 /**
@@ -41,8 +42,8 @@ public class AuthServlet extends HttpServlet {
         Map<String, Object> options = new ConnectionOptions().getOptions();
         //Configuration object instance with the parameters loaded.
         IDCSTokenAssertionConfiguration config = new IDCSTokenAssertionConfiguration(options);
-		String redirectUrl = (String)options.get("redirectUrl");
-        String scope = (String)options.get("scope");
+		String redirectUrl = (String)options.get("redirectURL");
+        String scope = (String)options.get(Constants.TOKEN_CLAIM_SCOPE);
         //Authentication Manager loaded with the configurations.
         AuthenticationManager am = new AuthenticationManagerImpl(config);
         //Using Authentication Manager to generate the Authorization Code URL, passing the
