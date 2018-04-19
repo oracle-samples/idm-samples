@@ -27,6 +27,21 @@ The sample web application needs an application's Client ID and Secret to establ
 Access the Oracle Identity Cloud Service console and download the SDK for Java. Inside the downloaded zip file there is a file called **idcs-asserter.jar**. The name of the java sdk jar file may vary.
 Copy the file to the location pointed in the pom.xml file below.
 
+Access the Oracle Identity Cloud Service console, and add a trusted application with the following information:
+- Populate the Details pane as follows, and then click Next.
+    Name: SDK Web Application
+    Description: SDK Web Application
+
+- In the Client pane, select Configure this application as a client now, and then populate the fields of this pane, as follows:
+    Allowed Grant Types: Select **Authorization Code**.
+    Allow non-HTTPS URLs: Select this check box. The sample application works in non-HTTPS mode.
+    Redirect URL: http://localhost:8080/callback
+    Logout URL: http://localhost:8080/logout
+    Post Logout Redirect URL: http://localhost:8080
+
+- In the Client pane, scroll down, select Grant the client access to Identity Cloud Service Admin APIs., enter **Me**.  
+- Finish, make a note of the **Client ID** and **Client Secret** values, and activate the application.
+
 Edit the **pom.xml** file, update the JAR file name in the following statement, and then save the file.
 ```xml
 <!-- Add here the Oracle Identity Cloud Service SDK dependency entry -->
