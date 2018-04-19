@@ -51,26 +51,24 @@ public class CallbackServlet extends HttpServlet {
         //Getting the authorization code from the "code" parameter
         String authzCode = request.getParameter("code");
         //Using the Authentication Manager to exchange the Authorization Code to an Access Token.
-        AuthenticationResult ar = am.authorizationCode(authzCode)
+        AuthenticationResult ar = am.authorizationCode(authzCode);
         //Getting the Access Token Value.
         String access_token = ar.getAccessToken();
         //The application then creates a User Session.
         IDCSUserManager um = new IDCSUserManagerImpl(config);
         IDCSUser user = um.getAuthenticatedUser(access_token);
-        user = um.getUser(user.getId());
         net.minidev.json.JSONObject json = user.getUser();
-         
+        //Storing information into the HTTP Session.
         HttpSession session=request.getSession();
         session.setAttribute("access_token", access_token);
         session.setAttribute("userId", user.getId());
- 
+		//Getting information from within the JSON object.
         String displayName = json.getAsString("displayName");
         session.setAttribute("displayName", displayName);
- 
+		//Forwarding the request to the Home page.
         request.getRequestDispatcher("private/home.jsp").forward(request, response);
      }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
      *

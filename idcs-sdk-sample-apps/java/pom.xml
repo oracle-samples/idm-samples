@@ -70,7 +70,7 @@
                 <artifactId>sdk</artifactId>
                 <version>1.0</version>
                 <scope>system</scope>
-                <systemPath>${basedir}/src/main/webapp/WEB-INF/lib/idcs-assert-1.0.0-1711301730.jar</systemPath>
+                <systemPath>${basedir}/src/main/webapp/WEB-INF/lib/idcs-assert.jar</systemPath>
         </dependency>
 
     </dependencies>

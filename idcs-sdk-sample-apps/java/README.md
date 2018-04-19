@@ -11,12 +11,12 @@ This Sample Code is used in the following tutorial: [Use Oracle Identity Cloud S
 ## Dependent Third-party libraries
 The Oracle Identity Cloud Service SDK for Java is depedent of the following libraries and version:
 - [ASM Helper Minidev 1.0.2](https://mvnrepository.com/artifact/net.minidev/asm)
+- [Apache Commons Collections 4.1](https://mvnrepository.com/artifact/org.apache.commons/commons-collections4)
 - [Apache Commons Lang 3.6](https://mvnrepository.com/artifact/org.apache.commons/commons-lang3)
-- [JSON Small And Fast Parser](https://mvnrepository.com/artifact/net.minidev/json-smart)
-- [Nimbus LangTag](https://mvnrepository.com/artifact/com.nimbusds/lang-tag)
-- [Nimbus JOSE+JWT](https://mvnrepository.com/artifact/com.nimbusds/nimbus-jose-jwt)
-- [OAuth 2.0 SDK With OpenID Connect Extensions](https://mvnrepository.com/artifact/com.nimbusds/oauth2-oidc-sdk)
-- [Apache Commons Collections](https://mvnrepository.com/artifact/org.apache.commons/commons-collections4)
+- [JSON Small And Fast Parser 2.3](https://mvnrepository.com/artifact/net.minidev/json-smart)
+- [Nimbus LangTag 1.4.3](https://mvnrepository.com/artifact/com.nimbusds/lang-tag)
+- [Nimbus JOSE+JWT 4.39.1](https://mvnrepository.com/artifact/com.nimbusds/nimbus-jose-jwt)
+- [OAuth 2.0 SDK With OpenID Connect Extensions 5.30](https://mvnrepository.com/artifact/com.nimbusds/oauth2-oidc-sdk)
 
 **Note:** Before deploying or using this sample application, it need to be updated following the instruction below:
 
@@ -50,10 +50,10 @@ public Map<String,Object> getOptions(){
         this.options.put(IDCSTokenAssertionConfiguration.IDCS_CLIENT_TENANT, "idcs-abcd1234");
         this.options.put(Constants.AUDIENCE_SERVICE_URL, "https://idcs-abcd1234.identity.oraclecloud.com");
         this.options.put(Constants.TOKEN_ISSUER, "https://identity.oraclecloud.com");
-        this.options.put(Constants.TOKEN_CLAIM_SCOPE, "openid");
+        this.options.put(Constants.TOKEN_CLAIM_SCOPE, "urn:opc:idm:t.user.me openid");
         this.options.put("SSLEnabled", "true");
         this.options.put("redirectURL", "http://localhost:8080/callback");
-        this.options.put("logoutSufix", "/oauth2/v1/userlogout");
+        this.options.put("logoutSufix", "/sso/v1/user/logout");
 	return this.options;
 }
 ```
@@ -66,7 +66,7 @@ Below is a brief explanation  for each of the required attributes for the SDK:
 - **IDCSTokenAssertionConfiguration.IDCS_TENANT**: The domain prefix of you Oracle Identity Cloud Service instance. Usually a value similar to the example above.
 - **Constants.AUDIENCE_SERVICE_URL**: The full qualified domain name URL of your Oracle Identity Cloud Service instance.
 - **Constants.TOKEN_ISSUER**: Oracle recomends to keep the value as presented here.
-- **Constants.TOKEN_CLAIM_SCOPE**: Scope contols what data the application can access/process on behalf of the user. Since the application uses the SDK for authentication purpose the scope is openid. This way the access token issued through this scope can be used to request Oracle Identity Cloud Service user details.
+- **Constants.TOKEN_CLAIM_SCOPE**: Scope contols what data the application can access/process on behalf of the user. Since the application uses the SDK for authentication purpose the scope is openid. The application also implements the get user's details use case. In this case you need to also use the scope urn:opc:idm:t.user.me.
 - **SSLEnabled**: Indicates wether he Oracle Identity Cloud Service responds HTTPs or HTTP requests. Oracle recomends to keep the value as presented here.
 
 The **logoutSufix** and **redirectURL** are both used by the application, hence they are not required by the SDK.

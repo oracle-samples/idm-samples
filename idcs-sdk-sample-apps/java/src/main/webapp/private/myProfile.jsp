@@ -17,15 +17,14 @@
   //Using the access_token value to get an object instance representing the User Profile.
   oracle.security.jps.idcsbinding.api.IDCSUser user = um.getAuthenticatedUser(access_token);
   //Getting the user details in json object format.
-  user = um.getUser(user.getId());
-  //User information can now be accessed and printed in the page.
   net.minidev.json.JSONObject json = user.getUser();
+  //User information can now be accessed and printed in the page.
   String jsonString = json.toString();
 %>
 <html>
   <head>
     <meta content="text/html; charset=UTF-8" http-equiv="content-type">
-    <title>index.html</title>
+    <title>Java SDK Sample Application</title>
     <link href="../css/sample-app.css" rel="stylesheet" type="text/css">
   </head>
   <body>
@@ -90,7 +89,7 @@
         <tr class="footer">
           <td colspan="3" style="text-align: center;" nowrap="nowrap"><a
 
-              class="lightTextSmall" href="http://www.oracle.com/pls/topic/lookup?ctx=cpyr&amp;id=en">Copyright © 2015, 2017, Oracle and/or its affiliates. All rights reserved.</a></td>
+              class="lightTextSmall" href="http://www.oracle.com/pls/topic/lookup?ctx=cpyr&amp;id=en">Copyright © 2018, Oracle and/or its affiliates. All rights reserved.</a></td>
         </tr>
       </tbody>
     </table>
