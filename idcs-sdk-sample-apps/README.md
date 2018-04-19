@@ -31,14 +31,16 @@ This graphical overview explains the flow of events, calls, and responses betwee
 
 **Detailed flow:**
 1. The user requests an authenticated resource.
-2. The authentication module generates a request-authorization-code URL and redirects the user's browser.
-3. The Oracle Identity Cloud Service **Sign In** page is presented.
-4. The user submits their Oracle Identity Cloud Service login credentials.
-5. Oracle Identity Cloud Service issues an authorization code.
-6. The sample application calls Oracle Identity Cloud Service to exchange the authorization code for an access token.
-7. Oracle Identity Cloud Service issues the access token.
-8. A session is established, and the user is redirected to the **Home** page.
-9. The **Home** page of the sample application is presented.
+2. The authentication module generates a request-authorization-code URL for Oracle Identity Cloud Service and sends a redirect response to the web browser.
+3. The web browser calls the URL.
+4. The Oracle Identity Cloud Service Sign In page appears.
+5. The user submits their Oracle Identity Cloud Service login credentials.
+6. Oracle Identity Cloud Service issues an authorization code.
+7. The web application calls Oracle Identity Cloud Service to exchange the authorization code for a user access token.
+8. Oracle Identity Cloud Service issues the access token.
+9. A session is established, and the user is redirected to the Home page.
+10. The Home page of the web application appears.
+
 
 #### Use Case #2: Get User Details
 
@@ -48,10 +50,10 @@ The image illustrates the get user details flow between the user’s web browser
 ![Get User Details Sequence Diagram](images/SDK_SequenceDiagramGetDetails.png)
 
 **Detailed flow:**
-1. The user requests the **/myProfile** resource.
-2. The sample application calls Oracle Identity Cloud Service using the SDK, which uses the access token stored in the user session as a parameter.
-3. The user's details are sent to the sample application as a JSON object.
-4. The **My Profile** page renders the JSON object as an HTML file.
+1. The user requests the /myProfile resource.
+2. The web application calls Oracle Identity Cloud Service using the SDK, which uses the access token stored in the user session as a parameter.
+3. The user's details are sent to the web application as a JSON object.
+4. The My Profile page renders the JSON object as HTML content.
 
 ## License
 
