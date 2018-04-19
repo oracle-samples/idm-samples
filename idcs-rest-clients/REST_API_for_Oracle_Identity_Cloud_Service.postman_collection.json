@@ -1,8 +1,7 @@
 {
 	"info": {
-		"name": "REST API for Oracle Identity Cloud Service",
 		"_postman_id": "9ba7c93e-35e3-98d5-28ec-677e9167a3f3",
-		"description": "",
+		"name": "REST API for Oracle Identity Cloud Service",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -33,8 +32,7 @@
 								".well-known",
 								"idcs-configuration"
 							]
-						},
-						"description": ""
+						}
 					},
 					"response": []
 				},
@@ -61,8 +59,7 @@
 								".well-known",
 								"openid-configuration"
 							]
-						},
-						"description": ""
+						}
 					},
 					"response": []
 				},
@@ -132,6 +129,80 @@
 					"name": "Create",
 					"description": "",
 					"item": [
+						{
+							"name": "Create an application with a webtier policy",
+							"description": null,
+							"item": [
+								{
+									"name": "Step 1 - Create a confidential client app",
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "Authorization",
+												"value": "Bearer {{access_token}}"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n  \"name\": \"App2\",\r\n  \"displayName\": \"App2\",\r\n  \"description\": \"Custom Application\",\r\n  \"basedOnTemplate\": {\r\n    \"value\": \"CustomWebAppTemplateId\"\r\n  },\r\n  \"isOAuthClient\": true,\r\n  \"redirectUris\": [\"https://%hostid%/cloudgate/v1/oauth2/callback\"],\r\n  \"logoutUri\": \"https://%hostid%/cloudgate/v1/oauth2/logout\",\r\n  \"postLogoutRedirectUris\": [\r\n  ],\r\n  \"clientType\": \"confidential\",\r\n  \"allowedGrants\": [\r\n    \"authorization_code\",\r\n    \"client_credentials\"\r\n  ],\r\n  \"idcsAppRoles\": [\r\n    \"Cloud Gate\"\r\n  ],\r\n  \"allowedScopes\": [\r\n  ],\r\n  \"active\": true,\r\n  \"schemas\": [\r\n    \"urn:ietf:params:scim:schemas:oracle:idcs:App\"\r\n  ]\r\n}"
+										},
+										"url": {
+											"raw": "{{HOST}}/admin/v1/Apps",
+											"host": [
+												"{{HOST}}"
+											],
+											"path": [
+												"admin",
+												"v1",
+												"Apps"
+											]
+										},
+										"description": "Create a confidential client application for use with a webtier policy."
+									},
+									"response": []
+								},
+								{
+									"name": "Step 2 - Update an application with a webtier policy",
+									"request": {
+										"method": "PATCH",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "Authorization",
+												"value": "Bearer {{access_token}}"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n  \"schemas\":[ \"urn:ietf:params:scim:api:messages:2.0:PatchOp\" ],\r\n  \"Operations\":[\r\n    {\r\n      \"op\": \"replace\",\r\n      \"path\": \"isWebTierPolicy\",\r\n      \"value\": true\r\n    },\r\n    {\r\n      \"op\": \"replace\",\r\n      \"path\": \"urn:ietf:params:scim:schemas:oracle:idcs:extension:webTierPolicy:App:webTierPolicyJson\",\r\n      \"value\": \"{\\r\\n  \\\"cloudgatePolicy\\\": {\\r\\n    \\\"version\\\"              : \\\"2.6\\\",\\r\\n    \\\"requireSecureCookies\\\" : true,\\r\\n    \\\"webtierPolicy\\\"        : [\\r\\n      {\\r\\n        \\\"policyName\\\"       : \\\"default\\\",\\r\\n        \\\"resourceFilters\\\"  : [\\r\\n            {\\r\\n                \\\"comment\\\"   : \\\"Public Filter\\\",\\r\\n                \\\"type\\\"      : \\\"regex\\\",\\r\\n                \\\"filter\\\"    : \\\".*\\\",\\r\\n                \\\"method\\\"    : \\\"public\\\"\\r\\n            }\\r\\n        ]\\r\\n      }\\r\\n    ]\\r\\n  }\\r\\n}\"\r\n    }\r\n  ]\r\n}"
+										},
+										"url": {
+											"raw": "{{HOST}}/admin/v1/Apps/{{APP_ID}}",
+											"host": [
+												"{{HOST}}"
+											],
+											"path": [
+												"admin",
+												"v1",
+												"Apps",
+												"{{APP_ID}}"
+											]
+										},
+										"description": "This is an example request that shows what a properly escaped WebTier Policy looks like in the request payload. \n\nOnce you have constructed your Web Tier Policy, you need to escape it before uploading it to Oracle Identity Cloud Service. At this time, you need to manually do this using a JSON-escaping website such as:\n\nhttps://www.freeformatter.com/javascript-escape.html\n\nCopy the output from the website and use it in the request payload for the \"value\" attribute."
+									},
+									"response": []
+								}
+							],
+							"_postman_isSubFolder": true
+						},
 						{
 							"name": "Create a confidential client app",
 							"request": {
@@ -370,8 +441,7 @@
 										"AppStatusChanger",
 										"{{appid}}"
 									]
-								},
-								"description": ""
+								}
 							},
 							"response": []
 						},
@@ -438,8 +508,7 @@
 										"AppStatusChanger",
 										"{{appid}}"
 									]
-								},
-								"description": ""
+								}
 							},
 							"response": []
 						},
@@ -751,8 +820,7 @@
 										"Apps",
 										"{{appid}}"
 									]
-								},
-								"description": ""
+								}
 							},
 							"response": []
 						},
@@ -785,85 +853,9 @@
 										"Apps",
 										"{{appid}}"
 									]
-								},
-								"description": ""
+								}
 							},
 							"response": []
-						},
-						{
-							"name": "Update an app with a WebTier Policy - Example Escaped WebTier Policy",
-							"request": {
-								"method": "PATCH",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "Authorization",
-										"value": "Bearer {{access_token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\r\n  \"schemas\":[ \"urn:ietf:params:scim:api:messages:2.0:PatchOp\" ],\r\n  \"Operations\":[\r\n    {\r\n      \"op\": \"replace\",\r\n      \"path\": \"isWebTierPolicy\",\r\n      \"value\": true\r\n    },\r\n    {\r\n      \"op\": \"replace\",\r\n      \"path\": \"urn:ietf:params:scim:schemas:oracle:idcs:extension:webTierPolicy:App:webTierPolicyJson\",\r\n      \"value\": \"Properly Escaped WebTier Policy\"\r\n    }\r\n  ]\r\n}"
-								},
-								"url": {
-									"raw": "{{HOST}}/admin/v1/Apps/{{APP_ID}}",
-									"host": [
-										"{{HOST}}"
-									],
-									"path": [
-										"admin",
-										"v1",
-										"Apps",
-										"{{APP_ID}}"
-									]
-								},
-								"description": "This is an example request that shows what a properly escaped WebTier Policy looks like in the request payload. \n\nOnce you have constructed your Web Tier Policy, you need to escape it before uploading it to Oracle Identity Cloud Service. At this time, you need to manually do this using a JSON-escaping website such as:\n\nhttps://www.freeformatter.com/javascript-escape.html\n\nCopy the output from the website and use it in the request payload for the \"value\" attribute."
-							},
-							"response": [
-								{
-									"id": "eb2a452e-2833-469a-acc5-a8987d2e870b",
-									"name": "Update an Application with a WebTier Policy - Example Escaped WebTier Policy",
-									"originalRequest": {
-										"method": "PATCH",
-										"header": [
-											{
-												"key": "Content-Type",
-												"value": "application/json"
-											},
-											{
-												"key": "Authorization",
-												"value": "Bearer {{access_token}}"
-											}
-										],
-										"body": {
-											"mode": "raw",
-											"raw": "{\r\n  \"schemas\":[ \"urn:ietf:params:scim:api:messages:2.0:PatchOp\" ],\r\n  \"Operations\":[\r\n    {\r\n      \"op\": \"replace\",\r\n      \"path\": \"isWebTierPolicy\",\r\n      \"value\": true\r\n    },\r\n    {\r\n      \"op\": \"replace\",\r\n      \"path\": \"urn:ietf:params:scim:schemas:oracle:idcs:extension:webTierPolicy:App:webTierPolicyJson\",\r\n      \"value\": \"{\\r\\n  \\\"cloudgatePolicy\\\": {\\r\\n    \\\"version\\\"              : \\\"2.6\\\",\\r\\n    \\\"requireSecureCookies\\\" : true,\\r\\n    \\\"webtierPolicy\\\"        : [\\r\\n      {\\r\\n        \\\"policyName\\\"       : \\\"default\\\",\\r\\n        \\\"resourceFilters\\\"  : [\\r\\n            {\\r\\n                \\\"comment\\\"   : \\\"Public Filter\\\",\\r\\n                \\\"type\\\"      : \\\"regex\\\",\\r\\n                \\\"filter\\\"    : \\\".*\\\",\\r\\n                \\\"method\\\"    : \\\"public\\\"\\r\\n            }\\r\\n        ]\\r\\n      }\\r\\n    ]\\r\\n  }\\r\\n}\"\r\n    }\r\n  ]\r\n}"
-										},
-										"url": {
-											"raw": "{{HOST}}/admin/v1/Apps/{{APP_ID}}",
-											"host": [
-												"{{HOST}}"
-											],
-											"path": [
-												"admin",
-												"v1",
-												"Apps",
-												"{{APP_ID}}"
-											]
-										}
-									},
-									"status": "OK",
-									"code": 200,
-									"_postman_previewlanguage": "",
-									"header": [],
-									"cookie": [],
-									"responseTime": "0",
-									"body": ""
-								}
-							]
 						}
 					],
 					"_postman_isSubFolder": true
@@ -900,8 +892,7 @@
 												"v1",
 												"Apps"
 											]
-										},
-										"description": ""
+										}
 									},
 									"response": []
 								},
@@ -932,18 +923,15 @@
 											"query": [
 												{
 													"key": "count",
-													"value": "5",
-													"equals": true
+													"value": "5"
 												},
 												{
 													"key": "startIndex",
-													"value": "0",
-													"equals": true
+													"value": "0"
 												},
 												{
 													"key": "sortBy",
-													"value": "displayName",
-													"equals": true
+													"value": "displayName"
 												}
 											]
 										},
@@ -982,13 +970,11 @@
 											"query": [
 												{
 													"key": "attributes",
-													"value": "displayName,allowedGrants",
-													"equals": true
+													"value": "displayName,allowedGrants"
 												},
 												{
 													"key": "filter",
-													"value": "allowedGrants co \"authorization_code\"",
-													"equals": true
+													"value": "allowedGrants co \"authorization_code\""
 												}
 											]
 										},
@@ -1028,8 +1014,7 @@
 											"query": [
 												{
 													"key": "attributes",
-													"value": "allowedGrants",
-													"equals": true
+													"value": "allowedGrants"
 												}
 											]
 										},
@@ -1064,13 +1049,11 @@
 											"query": [
 												{
 													"key": "attributes",
-													"value": "displayName,allowedScopes",
-													"equals": true
+													"value": "displayName,allowedScopes"
 												},
 												{
 													"key": "filter",
-													"value": "allowedScopes.fqs co \"scope\"",
-													"equals": true
+													"value": "allowedScopes.fqs co \"scope\""
 												}
 											]
 										},
@@ -1105,8 +1088,7 @@
 											"query": [
 												{
 													"key": "filter",
-													"value": "displayName co \"Test\"",
-													"equals": true
+													"value": "displayName co \"Test\""
 												}
 											]
 										},
@@ -1141,12 +1123,10 @@
 											"query": [
 												{
 													"key": "attributes",
-													"value": "displayName,active,name,clientSecret,id",
-													"equals": true
+													"value": "displayName,active,name,clientSecret,id"
 												}
 											]
-										},
-										"description": ""
+										}
 									},
 									"response": []
 								},
@@ -1177,8 +1157,7 @@
 											"query": [
 												{
 													"key": "attributes",
-													"value": "displayName,active",
-													"equals": true
+													"value": "displayName,active"
 												}
 											]
 										},
@@ -1218,8 +1197,7 @@
 											"query": [
 												{
 													"key": "attributes",
-													"value": "allowedScopes",
-													"equals": true
+													"value": "allowedScopes"
 												}
 											]
 										},
@@ -1259,8 +1237,7 @@
 											"query": [
 												{
 													"key": "attributes",
-													"value": "scopes",
-													"equals": true
+													"value": "scopes"
 												}
 											]
 										},
@@ -1296,12 +1273,10 @@
 											"query": [
 												{
 													"key": "attributes",
-													"value": "displayName,active,name,clientSecret,id",
-													"equals": true
+													"value": "displayName,active,name,clientSecret,id"
 												}
 											]
-										},
-										"description": ""
+										}
 									},
 									"response": []
 								},
@@ -1333,8 +1308,7 @@
 											"query": [
 												{
 													"key": "attributes",
-													"value": "displayName,description",
-													"equals": true
+													"value": "displayName,description"
 												}
 											]
 										},
@@ -1437,8 +1411,7 @@
 											"query": [
 												{
 													"key": "filter",
-													"value": "grantedAppRoles.value eq \"{{approleid}}\"",
-													"equals": true
+													"value": "grantedAppRoles.value eq \"{{approleid}}\""
 												}
 											]
 										},
@@ -1481,8 +1454,7 @@
 											"query": [
 												{
 													"key": "attributes",
-													"value": "grants[granteeType eq \"Group\"]",
-													"equals": true
+													"value": "grants[granteeType eq \"Group\"]"
 												}
 											]
 										},
@@ -1518,8 +1490,7 @@
 											"query": [
 												{
 													"key": "attributes",
-													"value": "grants[granteeType eq \"User\"]",
-													"equals": true
+													"value": "grants[granteeType eq \"User\"]"
 												}
 											]
 										},
@@ -1555,8 +1526,7 @@
 											"query": [
 												{
 													"key": "attributes",
-													"value": "grants",
-													"equals": true
+													"value": "grants"
 												}
 											]
 										},
@@ -1621,12 +1591,10 @@
 									"query": [
 										{
 											"key": "attributes",
-											"value": "displayName,urn:ietf:params:scim:schemas:oracle:idcs:extension:webTierPolicy:App:webTierPolicyJson",
-											"equals": true
+											"value": "displayName,urn:ietf:params:scim:schemas:oracle:idcs:extension:webTierPolicy:App:webTierPolicyJson"
 										}
 									]
-								},
-								"description": ""
+								}
 							},
 							"response": []
 						},
@@ -1661,17 +1629,14 @@
 									"query": [
 										{
 											"key": "filter",
-											"value": "name+eq+%22{{app_name}}%22",
-											"equals": true
+											"value": "name+eq+%22{{app_name}}%22"
 										},
 										{
 											"key": "attributes",
-											"value": "displayName,urn:ietf:params:scim:schemas:oracle:idcs:extension:webTierPolicy:App:webTierPolicyJson",
-											"equals": true
+											"value": "displayName,urn:ietf:params:scim:schemas:oracle:idcs:extension:webTierPolicy:App:webTierPolicyJson"
 										}
 									]
-								},
-								"description": ""
+								}
 							},
 							"response": []
 						},
@@ -1703,8 +1668,7 @@
 									"query": [
 										{
 											"key": "attributes",
-											"value": "urn:ietf:params:scim:schemas:oracle:idcs:extension:user:User:accounts",
-											"equals": true
+											"value": "urn:ietf:params:scim:schemas:oracle:idcs:extension:user:User:accounts"
 										}
 									]
 								},
@@ -1740,13 +1704,11 @@
 									"query": [
 										{
 											"key": "attributes",
-											"value": "accounts.ownerId",
-											"equals": true
+											"value": "accounts.ownerId"
 										},
 										{
 											"key": "distinct",
-											"value": "true",
-											"equals": true
+											"value": "true"
 										}
 									]
 								},
@@ -1785,8 +1747,7 @@
 									"query": [
 										{
 											"key": "filter",
-											"value": "allowedScopes.idOfDefiningApp eq \"{{oauthresourceappid}}\"",
-											"equals": true
+											"value": "allowedScopes.idOfDefiningApp eq \"{{oauthresourceappid}}\""
 										}
 									]
 								},
@@ -1833,13 +1794,11 @@
 											"query": [
 												{
 													"key": "attributes",
-													"value": "allowedScopes.idOfDefiningApp",
-													"equals": true
+													"value": "allowedScopes.idOfDefiningApp"
 												},
 												{
 													"key": "distinct",
-													"value": "true",
-													"equals": true
+													"value": "true"
 												}
 											]
 										},
@@ -1875,13 +1834,11 @@
 											"query": [
 												{
 													"key": "attributes",
-													"value": "allowedScopes[idOfDefiningApp eq \"{{oauthresourceappid}}\"].idOfDefiningApp",
-													"equals": true
+													"value": "allowedScopes[idOfDefiningApp eq \"{{oauthresourceappid}}\"].idOfDefiningApp"
 												},
 												{
 													"key": "distinct",
-													"value": "true",
-													"equals": true
+													"value": "true"
 												}
 											]
 										},
@@ -1946,8 +1903,7 @@
 											"query": [
 												{
 													"key": "attributes",
-													"value": "allowedTags",
-													"equals": true
+													"value": "allowedTags"
 												}
 											]
 										},
@@ -1982,8 +1938,7 @@
 											"query": [
 												{
 													"key": "filter",
-													"value": "(tags[key eq \"{{tag1key}}\" and value eq \"{{tag1value}}\"] or tags[key eq \"{{tag2key}}\" and value eq \"{{tag2value}}\"])",
-													"equals": true
+													"value": "(tags[key eq \"{{tag1key}}\" and value eq \"{{tag1value}}\"] or tags[key eq \"{{tag2key}}\" and value eq \"{{tag2value}}\"])"
 												}
 											]
 										},
@@ -2018,8 +1973,7 @@
 											"query": [
 												{
 													"key": "filter",
-													"value": "id eq \"{{oauthresourceappid}}\" and (tags[key eq \"{{tag1key}}\" and value eq \"{{tag1value}}\"] or tags[key eq \"{{tag2key}}\" and value eq \"{{tag2value}}\"])",
-													"equals": true
+													"value": "id eq \"{{oauthresourceappid}}\" and (tags[key eq \"{{tag1key}}\" and value eq \"{{tag1value}}\"] or tags[key eq \"{{tag2key}}\" and value eq \"{{tag2value}}\"])"
 												}
 											]
 										},
@@ -2083,8 +2037,7 @@
 											"query": [
 												{
 													"key": "filter",
-													"value": "isOAuthResource eq true",
-													"equals": true
+													"value": "isOAuthResource eq true"
 												}
 											]
 										},
@@ -2120,8 +2073,7 @@
 											"query": [
 												{
 													"key": "attributes",
-													"value": "isOAuthResource",
-													"equals": true
+													"value": "isOAuthResource"
 												}
 											]
 										},
@@ -2186,8 +2138,7 @@
 											"query": [
 												{
 													"key": "attributes",
-													"value": "grantedAppRoles",
-													"equals": true
+													"value": "grantedAppRoles"
 												}
 											]
 										},
@@ -2223,8 +2174,7 @@
 											"query": [
 												{
 													"key": "attributes",
-													"value": "grantedAppRoles[appId eq \"{{appidthatdefinedtheapprole}}\"]",
-													"equals": true
+													"value": "grantedAppRoles[appId eq \"{{appidthatdefinedtheapprole}}\"]"
 												}
 											]
 										},
@@ -2260,8 +2210,7 @@
 											"query": [
 												{
 													"key": "attributes",
-													"value": "grantedAppRoles[value eq \"{{approleid}}\"]",
-													"equals": true
+													"value": "grantedAppRoles[value eq \"{{approleid}}\"]"
 												}
 											]
 										},
@@ -2297,8 +2246,7 @@
 											"query": [
 												{
 													"key": "attributes",
-													"value": "grantedAppRoles[appId eq \"{{appidthatdefinedtheapprole}}\" and display eq \"{{approledisplayname}}\"]",
-													"equals": true
+													"value": "grantedAppRoles[appId eq \"{{appidthatdefinedtheapprole}}\" and display eq \"{{approledisplayname}}\"]"
 												}
 											]
 										},
@@ -2334,13 +2282,11 @@
 											"query": [
 												{
 													"key": "attributes",
-													"value": "grantedAppRoles[appId eq \"{{serverappid}}\"].appId",
-													"equals": true
+													"value": "grantedAppRoles[appId eq \"{{serverappid}}\"].appId"
 												},
 												{
 													"key": "distinct",
-													"value": "true",
-													"equals": true
+													"value": "true"
 												}
 											]
 										},
@@ -2376,13 +2322,11 @@
 											"query": [
 												{
 													"key": "attributes",
-													"value": "grantedAppRoles.appId",
-													"equals": true
+													"value": "grantedAppRoles.appId"
 												},
 												{
 													"key": "distinct",
-													"value": "true",
-													"equals": true
+													"value": "true"
 												}
 											]
 										},
@@ -2479,8 +2423,7 @@
 											"query": [
 												{
 													"key": "filter",
-													"value": "grantee[value eq \"{{clientappid}}\" and type eq \"App\"] and entitlement[attributeName eq \"appRoles\" and attributeValue eq \"{{approleid}}\"]",
-													"equals": true
+													"value": "grantee[value eq \"{{clientappid}}\" and type eq \"App\"] and entitlement[attributeName eq \"appRoles\" and attributeValue eq \"{{approleid}}\"]"
 												}
 											]
 										},
@@ -2607,8 +2550,7 @@
 									"query": [
 										{
 											"key": "filter",
-											"value": "app.value eq \"{{appid}}\"",
-											"equals": true
+											"value": "app.value eq \"{{appid}}\""
 										}
 									]
 								},
@@ -2643,8 +2585,7 @@
 									"query": [
 										{
 											"key": "filter",
-											"value": "app.value eq \"{{appid}}\" and grantee.type eq \"User\"",
-											"equals": true
+											"value": "app.value eq \"{{appid}}\" and grantee.type eq \"User\""
 										}
 									]
 								},
@@ -2683,8 +2624,7 @@
 									"query": [
 										{
 											"key": "filter",
-											"value": "grantee[value eq \"{{clientappid}}\" and type eq \"App\"] and entitlement[attributeName eq \"appRoles\" and attributeValue eq \"{{approleid}}\"]",
-											"equals": true
+											"value": "grantee[value eq \"{{clientappid}}\" and type eq \"App\"] and entitlement[attributeName eq \"appRoles\" and attributeValue eq \"{{approleid}}\"]"
 										}
 									]
 								},
@@ -2719,8 +2659,7 @@
 									"query": [
 										{
 											"key": "filter",
-											"value": "grantee.type eq \"App\" and app.value eq \"{{appid}}\"",
-											"equals": true
+											"value": "grantee.type eq \"App\" and app.value eq \"{{appid}}\""
 										}
 									]
 								},
@@ -2755,8 +2694,7 @@
 									"query": [
 										{
 											"key": "filter",
-											"value": "grantee.type eq \"App\" and entitlement[attributeName eq \"appRoles\" and attributeValue eq \"{{approleid}}\"]",
-											"equals": true
+											"value": "grantee.type eq \"App\" and entitlement[attributeName eq \"appRoles\" and attributeValue eq \"{{approleid}}\"]"
 										}
 									]
 								},
@@ -2791,8 +2729,7 @@
 									"query": [
 										{
 											"key": "filter",
-											"value": "app.value eq \"{{appid}}\" and grantee.type eq \"Group\"",
-											"equals": true
+											"value": "app.value eq \"{{appid}}\" and grantee.type eq \"Group\""
 										}
 									]
 								},
@@ -2827,8 +2764,7 @@
 									"query": [
 										{
 											"key": "filter",
-											"value": "grantee[value eq \"{{clientappid}}\" and type eq \"App\"]",
-											"equals": true
+											"value": "grantee[value eq \"{{clientappid}}\" and type eq \"App\"]"
 										}
 									]
 								},
@@ -2949,8 +2885,7 @@
 									"query": [
 										{
 											"key": "filter",
-											"value": "app.value eq \"{{appid}}\"",
-											"equals": true
+											"value": "app.value eq \"{{appid}}\""
 										}
 									]
 								},
@@ -2985,8 +2920,7 @@
 									"query": [
 										{
 											"key": "filter",
-											"value": "app.value eq \"{{appid}}\" and adminRole eq true",
-											"equals": true
+											"value": "app.value eq \"{{appid}}\" and adminRole eq true"
 										}
 									]
 								},
@@ -3021,8 +2955,7 @@
 									"query": [
 										{
 											"key": "filter",
-											"value": "app.value eq \"{{appid}}\" and adminRole eq false",
-											"equals": true
+											"value": "app.value eq \"{{appid}}\" and adminRole eq false"
 										}
 									]
 								},
@@ -3088,8 +3021,7 @@
 									"query": [
 										{
 											"key": "attributes",
-											"value": "members",
-											"equals": true
+											"value": "members"
 										}
 									]
 								},
@@ -3125,8 +3057,7 @@
 									"query": [
 										{
 											"key": "attributes",
-											"value": "members[type eq \"User\"]",
-											"equals": true
+											"value": "members[type eq \"User\"]"
 										}
 									]
 								},
@@ -3162,8 +3093,7 @@
 									"query": [
 										{
 											"key": "attributes",
-											"value": "members[type eq \"Group\"]",
-											"equals": true
+											"value": "members[type eq \"Group\"]"
 										}
 									]
 								},
@@ -3199,8 +3129,7 @@
 									"query": [
 										{
 											"key": "attributes",
-											"value": "members[value eq \"{{groupid}}\" and type eq \"Group\"]",
-											"equals": true
+											"value": "members[value eq \"{{groupid}}\" and type eq \"Group\"]"
 										}
 									]
 								},
@@ -3235,8 +3164,7 @@
 									"query": [
 										{
 											"key": "filter",
-											"value": "members[value eq \"{{groupid}}\" and type eq \"Group\"]",
-											"equals": true
+											"value": "members[value eq \"{{groupid}}\" and type eq \"Group\"]"
 										}
 									]
 								},
@@ -3272,8 +3200,7 @@
 									"query": [
 										{
 											"key": "attributes",
-											"value": "members[value eq \"{{userid}}\" and type eq \"User\"]",
-											"equals": true
+											"value": "members[value eq \"{{userid}}\" and type eq \"User\"]"
 										}
 									]
 								},
@@ -3308,8 +3235,7 @@
 									"query": [
 										{
 											"key": "filter",
-											"value": "members[value eq \"{{userid}}\" and type eq \"User\"]",
-											"equals": true
+											"value": "members[value eq \"{{userid}}\" and type eq \"User\"]"
 										}
 									]
 								},
@@ -3496,8 +3422,7 @@
 											"query": [
 												{
 													"key": "filter",
-													"value": "grantee[value eq \"{{clientappid}}\" and type eq \"App\"] and entitlement[attributeName eq \"appRoles\" and attributeValue eq \"{{approleid}}\"]",
-													"equals": true
+													"value": "grantee[value eq \"{{clientappid}}\" and type eq \"App\"] and entitlement[attributeName eq \"appRoles\" and attributeValue eq \"{{approleid}}\"]"
 												}
 											]
 										},
@@ -3579,7 +3504,7 @@
 									"raw": ""
 								},
 								"url": {
-									"raw": "{{HOST}}/admin/v1/Grants?filter=entitlement[attributeName eq \"appRoles\" and attributeValue eq \"{{approleid}}\"]",
+									"raw": "{{HOST}}/admin/v1/Grants?filter=entitlement[attributeName eq \"appRoles\" and attributeValue eq \"{{approleid}}\"] ",
 									"host": [
 										"{{HOST}}"
 									],
@@ -3591,8 +3516,7 @@
 									"query": [
 										{
 											"key": "filter",
-											"value": "entitlement[attributeName eq \"appRoles\" and attributeValue eq \"{{approleid}}\"] ",
-											"equals": true
+											"value": "entitlement[attributeName eq \"appRoles\" and attributeValue eq \"{{approleid}}\"] "
 										}
 									]
 								},
@@ -3615,7 +3539,7 @@
 									"raw": ""
 								},
 								"url": {
-									"raw": "{{HOST}}/admin/v1/Grants?filter=entitlement[attributeName eq \"appRoles\" and attributeValue eq \"{{approleid}}\"]",
+									"raw": "{{HOST}}/admin/v1/Grants?filter=entitlement[attributeName eq \"appRoles\" and attributeValue eq \"{{approleid}}\"] ",
 									"host": [
 										"{{HOST}}"
 									],
@@ -3627,8 +3551,7 @@
 									"query": [
 										{
 											"key": "filter",
-											"value": "entitlement[attributeName eq \"appRoles\" and attributeValue eq \"{{approleid}}\"] ",
-											"equals": true
+											"value": "entitlement[attributeName eq \"appRoles\" and attributeValue eq \"{{approleid}}\"] "
 										}
 									]
 								},
@@ -3663,8 +3586,7 @@
 									"query": [
 										{
 											"key": "filter",
-											"value": "entitlement[attributeName eq \"appRoles\" and attributeValue eq \"{{approleid}}\"] and grantee.type eq \"Group\"",
-											"equals": true
+											"value": "entitlement[attributeName eq \"appRoles\" and attributeValue eq \"{{approleid}}\"] and grantee.type eq \"Group\""
 										}
 									]
 								},
@@ -3785,12 +3707,10 @@
 							"query": [
 								{
 									"key": "filter",
-									"value": "actorName sw \"adm\"",
-									"equals": true
+									"value": "actorName sw \"adm\""
 								}
 							]
-						},
-						"description": ""
+						}
 					},
 					"response": []
 				},
@@ -3823,8 +3743,7 @@
 								"AuditEvents",
 								".search"
 							]
-						},
-						"description": ""
+						}
 					},
 					"response": []
 				},
@@ -3855,22 +3774,18 @@
 							"query": [
 								{
 									"key": "sortBy",
-									"value": "timestamp",
-									"equals": true
+									"value": "timestamp"
 								},
 								{
 									"key": "sortOrder",
-									"value": "descending",
-									"equals": true
+									"value": "descending"
 								},
 								{
 									"key": "filter",
-									"value": "timestamp ge \"2017-07-18T00:00:00Z\" and timestamp le \"2017-07-19T00:00:00Z\"",
-									"equals": true
+									"value": "timestamp ge \"2017-07-18T00:00:00Z\" and timestamp le \"2017-07-19T00:00:00Z\""
 								}
 							]
-						},
-						"description": ""
+						}
 					},
 					"response": []
 				},
@@ -3901,27 +3816,22 @@
 							"query": [
 								{
 									"key": "sortBy",
-									"value": "timestamp",
-									"equals": true
+									"value": "timestamp"
 								},
 								{
 									"key": "sortOrder",
-									"value": "descending",
-									"equals": true
+									"value": "descending"
 								},
 								{
 									"key": "filter",
-									"value": "timestamp ge \"2017-07-18T00:00:00Z\" and timestamp le \"2017-07-19T00:00:00Z\"",
-									"equals": true
+									"value": "timestamp ge \"2017-07-18T00:00:00Z\" and timestamp le \"2017-07-19T00:00:00Z\""
 								},
 								{
 									"key": "count",
-									"value": "0",
-									"equals": true
+									"value": "0"
 								}
 							]
-						},
-						"description": ""
+						}
 					},
 					"response": []
 				},
@@ -3952,27 +3862,22 @@
 							"query": [
 								{
 									"key": "sortBy",
-									"value": "timestamp",
-									"equals": true
+									"value": "timestamp"
 								},
 								{
 									"key": "sortOrder",
-									"value": "descending",
-									"equals": true
+									"value": "descending"
 								},
 								{
 									"key": "filter",
-									"value": "timestamp ge \"2017-07-18T00:00:00Z\" and timestamp le \"2017-07-19T00:00:00Z\"",
-									"equals": true
+									"value": "timestamp ge \"2017-07-18T00:00:00Z\" and timestamp le \"2017-07-19T00:00:00Z\""
 								},
 								{
 									"key": "count",
-									"value": "4",
-									"equals": true
+									"value": "4"
 								}
 							]
-						},
-						"description": ""
+						}
 					},
 					"response": []
 				},
@@ -4003,27 +3908,22 @@
 							"query": [
 								{
 									"key": "sortBy",
-									"value": "timestamp",
-									"equals": true
+									"value": "timestamp"
 								},
 								{
 									"key": "sortOrder",
-									"value": "descending",
-									"equals": true
+									"value": "descending"
 								},
 								{
 									"key": "filter",
-									"value": "timestamp ge \"2017-07-18T00:00:00Z\" and timestamp le \"2017-07-19T00:00:00Z\"",
-									"equals": true
+									"value": "timestamp ge \"2017-07-18T00:00:00Z\" and timestamp le \"2017-07-19T00:00:00Z\""
 								},
 								{
 									"key": "startIndex",
-									"value": "4",
-									"equals": true
+									"value": "4"
 								}
 							]
-						},
-						"description": ""
+						}
 					},
 					"response": []
 				}
@@ -4069,8 +3969,7 @@
 										"v1",
 										"JobSchedules"
 									]
-								},
-								"description": ""
+								}
 							},
 							"response": []
 						},
@@ -4106,8 +4005,7 @@
 										"v1",
 										"JobSchedules"
 									]
-								},
-								"description": ""
+								}
 							},
 							"response": []
 						},
@@ -4138,12 +4036,10 @@
 									"query": [
 										{
 											"key": "filter",
-											"value": "jobScheduleid eq \"{{jobScheduleid}}\"",
-											"equals": true
+											"value": "jobScheduleid eq \"{{jobScheduleid}}\""
 										}
 									]
-								},
-								"description": ""
+								}
 							},
 							"response": []
 						},
@@ -4174,12 +4070,10 @@
 									"query": [
 										{
 											"key": "filter",
-											"value": "historyId eq \"{{historyId}}\"",
-											"equals": true
+											"value": "historyId eq \"{{historyId}}\""
 										}
 									]
-								},
-								"description": ""
+								}
 							},
 							"response": []
 						},
@@ -4218,12 +4112,10 @@
 									"query": [
 										{
 											"key": "fileName",
-											"value": "files/export/201706230520/{{filename}}",
-											"equals": true
+											"value": "files/export/201706230520/{{filename}}"
 										}
 									]
-								},
-								"description": ""
+								}
 							},
 							"response": []
 						},
@@ -4285,8 +4177,7 @@
 										"v1",
 										"Files"
 									]
-								},
-								"description": ""
+								}
 							},
 							"response": []
 						},
@@ -4322,8 +4213,7 @@
 										"v1",
 										"JobSchedules"
 									]
-								},
-								"description": ""
+								}
 							},
 							"response": []
 						},
@@ -4359,8 +4249,7 @@
 										"v1",
 										"JobSchedules"
 									]
-								},
-								"description": ""
+								}
 							},
 							"response": []
 						},
@@ -4391,12 +4280,10 @@
 									"query": [
 										{
 											"key": "filter",
-											"value": "jobScheduleid eq \"{{jobScheduleid}}\"",
-											"equals": true
+											"value": "jobScheduleid eq \"{{jobScheduleid}}\""
 										}
 									]
-								},
-								"description": ""
+								}
 							},
 							"response": []
 						},
@@ -4435,12 +4322,10 @@
 									"query": [
 										{
 											"key": "filter",
-											"value": "historyId eq \"{{historyId}}\"",
-											"equals": true
+											"value": "historyId eq \"{{historyId}}\""
 										}
 									]
-								},
-								"description": ""
+								}
 							},
 							"response": []
 						}
@@ -4483,8 +4368,7 @@
 										"v1",
 										"JobSchedules"
 									]
-								},
-								"description": ""
+								}
 							},
 							"response": []
 						},
@@ -4520,8 +4404,7 @@
 										"v1",
 										"JobSchedules"
 									]
-								},
-								"description": ""
+								}
 							},
 							"response": []
 						},
@@ -4552,12 +4435,10 @@
 									"query": [
 										{
 											"key": "filter",
-											"value": "jobScheduleid eq \"{{jobScheduleid}}\"",
-											"equals": true
+											"value": "jobScheduleid eq \"{{jobScheduleid}}\""
 										}
 									]
-								},
-								"description": ""
+								}
 							},
 							"response": []
 						},
@@ -4588,12 +4469,10 @@
 									"query": [
 										{
 											"key": "filter",
-											"value": "historyId eq \"{{historyId}}\"",
-											"equals": true
+											"value": "historyId eq \"{{historyId}}\""
 										}
 									]
-								},
-								"description": ""
+								}
 							},
 							"response": []
 						},
@@ -4632,12 +4511,10 @@
 									"query": [
 										{
 											"key": "fileName",
-											"value": "files/export/201706230532/{{filename}}",
-											"equals": true
+											"value": "files/export/201706230532/{{filename}}"
 										}
 									]
-								},
-								"description": ""
+								}
 							},
 							"response": []
 						},
@@ -4699,8 +4576,7 @@
 										"v1",
 										"Files"
 									]
-								},
-								"description": ""
+								}
 							},
 							"response": []
 						},
@@ -4736,8 +4612,7 @@
 										"v1",
 										"JobSchedules"
 									]
-								},
-								"description": ""
+								}
 							},
 							"response": []
 						},
@@ -4773,8 +4648,7 @@
 										"v1",
 										"JobSchedules"
 									]
-								},
-								"description": ""
+								}
 							},
 							"response": []
 						},
@@ -4805,12 +4679,10 @@
 									"query": [
 										{
 											"key": "filter",
-											"value": "jobScheduleid eq \"{{jobScheduleid}}\"",
-											"equals": true
+											"value": "jobScheduleid eq \"{{jobScheduleid}}\""
 										}
 									]
-								},
-								"description": ""
+								}
 							},
 							"response": []
 						},
@@ -4849,12 +4721,10 @@
 									"query": [
 										{
 											"key": "filter",
-											"value": "historyId eq \"{{historyId}}\"",
-											"equals": true
+											"value": "historyId eq \"{{historyId}}\""
 										}
 									]
-								},
-								"description": ""
+								}
 							},
 							"response": []
 						}
@@ -4897,8 +4767,7 @@
 										"v1",
 										"JobSchedules"
 									]
-								},
-								"description": ""
+								}
 							},
 							"response": []
 						},
@@ -4934,8 +4803,7 @@
 										"v1",
 										"JobSchedules"
 									]
-								},
-								"description": ""
+								}
 							},
 							"response": []
 						},
@@ -4966,12 +4834,10 @@
 									"query": [
 										{
 											"key": "filter",
-											"value": "jobScheduleid eq \"{{jobScheduleid}}\"",
-											"equals": true
+											"value": "jobScheduleid eq \"{{jobScheduleid}}\""
 										}
 									]
-								},
-								"description": ""
+								}
 							},
 							"response": []
 						},
@@ -5002,12 +4868,10 @@
 									"query": [
 										{
 											"key": "filter",
-											"value": "historyId eq \"{{historyId}}\"",
-											"equals": true
+											"value": "historyId eq \"{{historyId}}\""
 										}
 									]
-								},
-								"description": ""
+								}
 							},
 							"response": []
 						},
@@ -5046,12 +4910,10 @@
 									"query": [
 										{
 											"key": "fileName",
-											"value": "files/export/201706281256/{{filename}}",
-											"equals": true
+											"value": "files/export/201706281256/{{filename}}"
 										}
 									]
-								},
-								"description": ""
+								}
 							},
 							"response": []
 						},
@@ -5113,8 +4975,7 @@
 										"v1",
 										"Files"
 									]
-								},
-								"description": ""
+								}
 							},
 							"response": []
 						},
@@ -5150,8 +5011,7 @@
 										"v1",
 										"JobSchedules"
 									]
-								},
-								"description": ""
+								}
 							},
 							"response": []
 						},
@@ -5187,8 +5047,7 @@
 										"v1",
 										"JobSchedules"
 									]
-								},
-								"description": ""
+								}
 							},
 							"response": []
 						},
@@ -5219,12 +5078,10 @@
 									"query": [
 										{
 											"key": "filter",
-											"value": "jobScheduleid eq \"{{jobScheduleid}}\"",
-											"equals": true
+											"value": "jobScheduleid eq \"{{jobScheduleid}}\""
 										}
 									]
-								},
-								"description": ""
+								}
 							},
 							"response": []
 						},
@@ -5263,12 +5120,10 @@
 									"query": [
 										{
 											"key": "filter",
-											"value": "historyId eq \"{{historyId}}\"",
-											"equals": true
+											"value": "historyId eq \"{{historyId}}\""
 										}
 									]
-								},
-								"description": ""
+								}
 							},
 							"response": []
 						}
@@ -5303,8 +5158,7 @@
 								"v1",
 								"Bulk"
 							]
-						},
-						"description": ""
+						}
 					},
 					"response": []
 				},
@@ -5336,8 +5190,7 @@
 								"v1",
 								"Bulk"
 							]
-						},
-						"description": ""
+						}
 					},
 					"response": []
 				},
@@ -5369,8 +5222,7 @@
 								"v1",
 								"Bulk"
 							]
-						},
-						"description": ""
+						}
 					},
 					"response": []
 				},
@@ -5402,8 +5254,7 @@
 								"v1",
 								"BulkUserPasswordResetter"
 							]
-						},
-						"description": ""
+						}
 					},
 					"response": []
 				},
@@ -5435,8 +5286,7 @@
 								"v1",
 								"BulkUserPasswordChanger"
 							]
-						},
-						"description": ""
+						}
 					},
 					"response": []
 				},
@@ -5468,8 +5318,7 @@
 								"v1",
 								"Bulk"
 							]
-						},
-						"description": ""
+						}
 					},
 					"response": []
 				},
@@ -5501,8 +5350,7 @@
 								"v1",
 								"Bulk"
 							]
-						},
-						"description": ""
+						}
 					},
 					"response": []
 				}
@@ -5551,8 +5399,7 @@
 											"query": [
 												{
 													"key": "filter",
-													"value": "grantee[value eq \"{{clientappid}}\" and type eq \"App\"] and entitlement[attributeName eq \"appRoles\" and attributeValue eq \"{{approleid}}\"]",
-													"equals": true
+													"value": "grantee[value eq \"{{clientappid}}\" and type eq \"App\"] and entitlement[attributeName eq \"appRoles\" and attributeValue eq \"{{approleid}}\"]"
 												}
 											]
 										},
@@ -5679,8 +5526,7 @@
 									"query": [
 										{
 											"key": "filter",
-											"value": "app.value eq \"{{appid}}\"",
-											"equals": true
+											"value": "app.value eq \"{{appid}}\""
 										}
 									]
 								},
@@ -5715,8 +5561,7 @@
 									"query": [
 										{
 											"key": "filter",
-											"value": "app.value eq \"{{appid}}\" and grantee.type eq \"User\"",
-											"equals": true
+											"value": "app.value eq \"{{appid}}\" and grantee.type eq \"User\""
 										}
 									]
 								},
@@ -5755,8 +5600,7 @@
 									"query": [
 										{
 											"key": "filter",
-											"value": "grantee[value eq \"{{clientappid}}\" and type eq \"App\"] and entitlement[attributeName eq \"appRoles\" and attributeValue eq \"{{approleid}}\"]",
-											"equals": true
+											"value": "grantee[value eq \"{{clientappid}}\" and type eq \"App\"] and entitlement[attributeName eq \"appRoles\" and attributeValue eq \"{{approleid}}\"]"
 										}
 									]
 								},
@@ -5791,8 +5635,7 @@
 									"query": [
 										{
 											"key": "filter",
-											"value": "grantee.type eq \"App\" and app.value eq \"{{appid}}\"",
-											"equals": true
+											"value": "grantee.type eq \"App\" and app.value eq \"{{appid}}\""
 										}
 									]
 								},
@@ -5827,8 +5670,7 @@
 									"query": [
 										{
 											"key": "filter",
-											"value": "grantee.type eq \"App\" and entitlement[attributeName eq \"appRoles\" and attributeValue eq \"{{approleid}}\"]",
-											"equals": true
+											"value": "grantee.type eq \"App\" and entitlement[attributeName eq \"appRoles\" and attributeValue eq \"{{approleid}}\"]"
 										}
 									]
 								},
@@ -5863,8 +5705,7 @@
 									"query": [
 										{
 											"key": "filter",
-											"value": "app.value eq \"{{appid}}\" and grantee.type eq \"Group\"",
-											"equals": true
+											"value": "app.value eq \"{{appid}}\" and grantee.type eq \"Group\""
 										}
 									]
 								},
@@ -5899,8 +5740,7 @@
 									"query": [
 										{
 											"key": "filter",
-											"value": "grantee[value eq \"{{clientappid}}\" and type eq \"App\"]",
-											"equals": true
+											"value": "grantee[value eq \"{{clientappid}}\" and type eq \"App\"]"
 										}
 									]
 								},
@@ -5972,8 +5812,7 @@
 											"query": [
 												{
 													"key": "filter",
-													"value": "grantee[value eq \"{{clientappid}}\" and type eq \"App\"] and entitlement[attributeName eq \"appRoles\" and attributeValue eq \"{{approleid}}\"]",
-													"equals": true
+													"value": "grantee[value eq \"{{clientappid}}\" and type eq \"App\"] and entitlement[attributeName eq \"appRoles\" and attributeValue eq \"{{approleid}}\"]"
 												}
 											]
 										},
@@ -6055,7 +5894,7 @@
 									"raw": ""
 								},
 								"url": {
-									"raw": "{{HOST}}/admin/v1/Grants?filter=entitlement[attributeName eq \"appRoles\" and attributeValue eq \"{{approleid}}\"]",
+									"raw": "{{HOST}}/admin/v1/Grants?filter=entitlement[attributeName eq \"appRoles\" and attributeValue eq \"{{approleid}}\"] ",
 									"host": [
 										"{{HOST}}"
 									],
@@ -6067,8 +5906,7 @@
 									"query": [
 										{
 											"key": "filter",
-											"value": "entitlement[attributeName eq \"appRoles\" and attributeValue eq \"{{approleid}}\"] ",
-											"equals": true
+											"value": "entitlement[attributeName eq \"appRoles\" and attributeValue eq \"{{approleid}}\"] "
 										}
 									]
 								},
@@ -6091,7 +5929,7 @@
 									"raw": ""
 								},
 								"url": {
-									"raw": "{{HOST}}/admin/v1/Grants?filter=entitlement[attributeName eq \"appRoles\" and attributeValue eq \"{{approleid}}\"]",
+									"raw": "{{HOST}}/admin/v1/Grants?filter=entitlement[attributeName eq \"appRoles\" and attributeValue eq \"{{approleid}}\"] ",
 									"host": [
 										"{{HOST}}"
 									],
@@ -6103,8 +5941,7 @@
 									"query": [
 										{
 											"key": "filter",
-											"value": "entitlement[attributeName eq \"appRoles\" and attributeValue eq \"{{approleid}}\"] ",
-											"equals": true
+											"value": "entitlement[attributeName eq \"appRoles\" and attributeValue eq \"{{approleid}}\"] "
 										}
 									]
 								},
@@ -6139,8 +5976,7 @@
 									"query": [
 										{
 											"key": "filter",
-											"value": "entitlement[attributeName eq \"appRoles\" and attributeValue eq \"{{approleid}}\"] and grantee.type eq \"Group\"",
-											"equals": true
+											"value": "entitlement[attributeName eq \"appRoles\" and attributeValue eq \"{{approleid}}\"] and grantee.type eq \"Group\""
 										}
 									]
 								},
@@ -6245,8 +6081,7 @@
 											"query": [
 												{
 													"key": "filter",
-													"value": "grantee[type eq \"Group\" and value eq \"{{groupid}}\"] and entitlement[attributeName=\"appRoles\" and attributeValue eq \"{{approleid}}\"]",
-													"equals": true
+													"value": "grantee[type eq \"Group\" and value eq \"{{groupid}}\"] and entitlement[attributeName=\"appRoles\" and attributeValue eq \"{{approleid}}\"]"
 												}
 											]
 										},
@@ -6348,18 +6183,15 @@
 											"query": [
 												{
 													"key": "filter",
-													"value": "grantee[value eq \"{{groupid}}\" and type eq \"Group\"]",
-													"equals": true
+													"value": "grantee[value eq \"{{groupid}}\" and type eq \"Group\"]"
 												},
 												{
 													"key": "entitlement[attributeName eq \"appRoles\"",
-													"value": "",
-													"equals": false
+													"value": null
 												},
 												{
 													"key": "attributeValue eq \"\n{{approlid}}\"]",
-													"value": "",
-													"equals": false
+													"value": null
 												}
 											]
 										},
@@ -6461,8 +6293,7 @@
 											"query": [
 												{
 													"key": "filter",
-													"value": "grantee[type eq \"Group\" and value eq \"{{groupid}}\"] and app.value eq \"{{appid}}\"",
-													"equals": true
+													"value": "grantee[type eq \"Group\" and value eq \"{{groupid}}\"] and app.value eq \"{{appid}}\""
 												}
 											]
 										},
@@ -6655,8 +6486,7 @@
 									"query": [
 										{
 											"key": "filter",
-											"value": "grantee.type eq \"Group\" and app.value eq \"{{appid}}\"",
-											"equals": true
+											"value": "grantee.type eq \"Group\" and app.value eq \"{{appid}}\""
 										}
 									]
 								},
@@ -6692,8 +6522,7 @@
 									"query": [
 										{
 											"key": "attributes",
-											"value": "urn:ietf:params:scim:schemas:oracle:idcs:extension:group:Group:grants",
-											"equals": true
+											"value": "urn:ietf:params:scim:schemas:oracle:idcs:extension:group:Group:grants"
 										}
 									]
 								},
@@ -6728,8 +6557,7 @@
 									"query": [
 										{
 											"key": "filter",
-											"value": "grantee[type eq \"Group\" and value eq \"{{groupid}}\"] and entitlement[attributeName eq \"appRoles\" and attributeValue eq \"{{approleid}}\"]",
-											"equals": true
+											"value": "grantee[type eq \"Group\" and value eq \"{{groupid}}\"] and entitlement[attributeName eq \"appRoles\" and attributeValue eq \"{{approleid}}\"]"
 										}
 									]
 								},
@@ -6764,13 +6592,11 @@
 									"query": [
 										{
 											"key": "filter",
-											"value": "grantee[value eq \"{{groupid}}\" and type eq \"Group\"] and app.value eq \"{{appid}}\"",
-											"equals": true
+											"value": "grantee[value eq \"{{groupid}}\" and type eq \"Group\"] and app.value eq \"{{appid}}\""
 										},
 										{
 											"key": "attributes",
-											"value": "entitlement[attributeName eq \"appRoles\"].attributeValue",
-											"equals": true
+											"value": "entitlement[attributeName eq \"appRoles\"].attributeValue"
 										}
 									]
 								},
@@ -6806,13 +6632,11 @@
 									"query": [
 										{
 											"key": "attributes",
-											"value": "urn:ietf:params:scim:schemas:oracle:idcs:extension:group:Group:grants.appId",
-											"equals": true
+											"value": "urn:ietf:params:scim:schemas:oracle:idcs:extension:group:Group:grants.appId"
 										},
 										{
 											"key": "distinct",
-											"value": "true",
-											"equals": true
+											"value": "true"
 										}
 									]
 								},
@@ -6847,8 +6671,7 @@
 									"query": [
 										{
 											"key": "attributes",
-											"value": "urn:ietf:params:scim:schemas:oracle:idcs:extension:group:Group:grants[appId eq \"{{appid}}\"]",
-											"equals": true
+											"value": "urn:ietf:params:scim:schemas:oracle:idcs:extension:group:Group:grants[appId eq \"{{appid}}\"]"
 										}
 									]
 								},
@@ -6920,8 +6743,7 @@
 											"query": [
 												{
 													"key": "filter",
-													"value": "grantee.value eq \"{{userid}}\" and entitlement[attributeName eq \"appRoles\" and attributeValue eq \"{{approleid}}\"]",
-													"equals": true
+													"value": "grantee.value eq \"{{userid}}\" and entitlement[attributeName eq \"appRoles\" and attributeValue eq \"{{approleid}}\"]"
 												}
 											]
 										},
@@ -7023,8 +6845,7 @@
 											"query": [
 												{
 													"key": "filter",
-													"value": "grantee[type eq \"User\" and value eq \"{{userid}}\"] and app eq \"{{appid}}\"",
-													"equals": true
+													"value": "grantee[type eq \"User\" and value eq \"{{userid}}\"] and app eq \"{{appid}}\""
 												}
 											]
 										},
@@ -7221,8 +7042,7 @@
 									"query": [
 										{
 											"key": "filter",
-											"value": "grantee[value eq \"{{userid}}\" and type eq \"User\"]",
-											"equals": true
+											"value": "grantee[value eq \"{{userid}}\" and type eq \"User\"]"
 										}
 									]
 								},
@@ -7261,8 +7081,7 @@
 									"query": [
 										{
 											"key": "filter",
-											"value": "grantee[type eq \"User\" and value eq \"{{userid}}\"] and app eq \"{{appid}}\"",
-											"equals": true
+											"value": "grantee[type eq \"User\" and value eq \"{{userid}}\"] and app eq \"{{appid}}\""
 										}
 									]
 								},
@@ -7301,8 +7120,7 @@
 									"query": [
 										{
 											"key": "filter",
-											"value": "grantee[value eq \"{{userid}}\" and type eq \"User\"] and entitlement[attributeName eq \"appRoles\" and attributeValue eq \"{{approleid}}\"]",
-											"equals": true
+											"value": "grantee[value eq \"{{userid}}\" and type eq \"User\"] and entitlement[attributeName eq \"appRoles\" and attributeValue eq \"{{approleid}}\"]"
 										}
 									]
 								},
@@ -7337,8 +7155,7 @@
 									"query": [
 										{
 											"key": "filter",
-											"value": "app.value eq \"{{appid}}\" and grantee.type eq \"User\" and grantMechanism ne \"GROUP_MEMBERSHIP\"",
-											"equals": true
+											"value": "app.value eq \"{{appid}}\" and grantee.type eq \"User\" and grantMechanism ne \"GROUP_MEMBERSHIP\""
 										}
 									]
 								},
@@ -7373,8 +7190,7 @@
 									"query": [
 										{
 											"key": "filter",
-											"value": "app.value eq \"{{appid}}\" and grantee.type eq \"User\" and grantMechanism eq \"GROUP_MEMBERSHIP\"",
-											"equals": true
+											"value": "app.value eq \"{{appid}}\" and grantee.type eq \"User\" and grantMechanism eq \"GROUP_MEMBERSHIP\""
 										}
 									]
 								},
@@ -7414,8 +7230,7 @@
 									"query": [
 										{
 											"key": "attributes",
-											"value": "urn:ietf:params:scim:schemas:oracle:idcs:extension:user:User:grants",
-											"equals": true
+											"value": "urn:ietf:params:scim:schemas:oracle:idcs:extension:user:User:grants"
 										}
 									]
 								},
@@ -7455,8 +7270,7 @@
 									"query": [
 										{
 											"key": "attributes",
-											"value": "urn:ietf:params:scim:schemas:oracle:idcs:extension:user:User:grants[appId eq \"{{appid}}\"]",
-											"equals": true
+											"value": "urn:ietf:params:scim:schemas:oracle:idcs:extension:user:User:grants[appId eq \"{{appid}}\"]"
 										}
 									]
 								},
@@ -7658,8 +7472,7 @@
 									"query": [
 										{
 											"key": "attributes",
-											"value": "members,displayName",
-											"equals": true
+											"value": "members,displayName"
 										}
 									]
 								},
@@ -7763,8 +7576,7 @@
 									"query": [
 										{
 											"key": "attributes",
-											"value": "members[type eq \"User\" and value eq \"{{userid}}\"]",
-											"equals": true
+											"value": "members[type eq \"User\" and value eq \"{{userid}}\"]"
 										}
 									]
 								},
@@ -7799,8 +7611,7 @@
 									"query": [
 										{
 											"key": "filter",
-											"value": "members[type eq \"User\" and value eq \"{{userid}}\"]",
-											"equals": true
+											"value": "members[type eq \"User\" and value eq \"{{userid}}\"]"
 										}
 									]
 								},
@@ -7835,13 +7646,11 @@
 									"query": [
 										{
 											"key": "attributes",
-											"value": "members.display",
-											"equals": true
+											"value": "members.display"
 										},
 										{
 											"key": "filter",
-											"value": "displayName sw \"PCI\"",
-											"equals": true
+											"value": "displayName sw \"PCI\""
 										}
 									]
 								},
@@ -7877,8 +7686,7 @@
 									"query": [
 										{
 											"key": "attributes",
-											"value": "members[value eq \"{{userid}}\"].display",
-											"equals": true
+											"value": "members[value eq \"{{userid}}\"].display"
 										}
 									]
 								},
@@ -7914,8 +7722,7 @@
 									"query": [
 										{
 											"key": "attributes",
-											"value": "urn:ietf:params:scim:schemas:oracle:idcs:extension:group:Group:appRoles[value eq \"{{approleid}}\"]",
-											"equals": true
+											"value": "urn:ietf:params:scim:schemas:oracle:idcs:extension:group:Group:appRoles[value eq \"{{approleid}}\"]"
 										}
 									]
 								},
@@ -7951,8 +7758,7 @@
 									"query": [
 										{
 											"key": "attributes",
-											"value": "urn:ietf:params:scim:schemas:oracle:idcs:extension:group:Group:appRoles",
-											"equals": true
+											"value": "urn:ietf:params:scim:schemas:oracle:idcs:extension:group:Group:appRoles"
 										}
 									]
 								},
@@ -7988,8 +7794,7 @@
 									"query": [
 										{
 											"key": "attributes",
-											"value": "members[type eq \"User\"]",
-											"equals": true
+											"value": "members[type eq \"User\"]"
 										}
 									]
 								},
@@ -8024,8 +7829,7 @@
 									"query": [
 										{
 											"key": "filter",
-											"value": "urn:ietf:params:scim:schemas:oracle:idcs:extension:group:Group:appRoles.value eq \"{{approleid}}\"",
-											"equals": true
+											"value": "urn:ietf:params:scim:schemas:oracle:idcs:extension:group:Group:appRoles.value eq \"{{approleid}}\""
 										}
 									]
 								},
@@ -8064,8 +7868,7 @@
 									"query": [
 										{
 											"key": "filter",
-											"value": "members[type eq \"User\" and value eq \"{{userid}}\"]",
-											"equals": true
+											"value": "members[type eq \"User\" and value eq \"{{userid}}\"]"
 										}
 									]
 								},
@@ -8129,8 +7932,7 @@
 									"query": [
 										{
 											"key": "filter",
-											"value": "displayName sw \"Emp\"",
-											"equals": true
+											"value": "displayName sw \"Emp\""
 										}
 									]
 								},
@@ -8201,8 +8003,7 @@
 										"Groups",
 										"{{groupid}}"
 									]
-								},
-								"description": ""
+								}
 							},
 							"response": []
 						},
@@ -8235,8 +8036,7 @@
 										"Groups",
 										"{{groupid}}"
 									]
-								},
-								"description": ""
+								}
 							},
 							"response": []
 						}
@@ -8275,12 +8075,10 @@
 									"query": [
 										{
 											"key": "attributes",
-											"value": "displayName",
-											"equals": true
+											"value": "displayName"
 										}
 									]
-								},
-								"description": ""
+								}
 							},
 							"response": []
 						},
@@ -8343,8 +8141,7 @@
 										"Groups",
 										"{{groupid}}"
 									]
-								},
-								"description": ""
+								}
 							},
 							"response": []
 						},
@@ -8375,8 +8172,7 @@
 									"query": [
 										{
 											"key": "filter",
-											"value": "displayName sw \"Emp\"",
-											"equals": true
+											"value": "displayName sw \"Emp\""
 										}
 									]
 								},
@@ -8411,8 +8207,7 @@
 									"query": [
 										{
 											"key": "attributes",
-											"value": "displayName",
-											"equals": true
+											"value": "displayName"
 										}
 									]
 								},
@@ -8447,13 +8242,11 @@
 									"query": [
 										{
 											"key": "count",
-											"value": "5",
-											"equals": true
+											"value": "5"
 										},
 										{
 											"key": "startIndex",
-											"value": "0",
-											"equals": true
+											"value": "0"
 										}
 									]
 								},
@@ -8518,8 +8311,7 @@
 									"query": [
 										{
 											"key": "attributes",
-											"value": "urn:ietf:params:scim:schemas:oracle:idcs:extension:group:Group:appRoles[appId eq \"{{appid}}\"",
-											"equals": true
+											"value": "urn:ietf:params:scim:schemas:oracle:idcs:extension:group:Group:appRoles[appId eq \"{{appid}}\""
 										}
 									]
 								},
@@ -8569,8 +8361,7 @@
 											"query": [
 												{
 													"key": "filter",
-													"value": "grantee[type eq \"Group\" and value eq \"{{groupid}}\"] and entitlement[attributeName=\"appRoles\" and attributeValue eq \"{{approleid}}\"]",
-													"equals": true
+													"value": "grantee[type eq \"Group\" and value eq \"{{groupid}}\"] and entitlement[attributeName=\"appRoles\" and attributeValue eq \"{{approleid}}\"]"
 												}
 											]
 										},
@@ -8672,18 +8463,15 @@
 											"query": [
 												{
 													"key": "filter",
-													"value": "grantee[value eq \"{{groupid}}\" and type eq \"Group\"]",
-													"equals": true
+													"value": "grantee[value eq \"{{groupid}}\" and type eq \"Group\"]"
 												},
 												{
 													"key": "entitlement[attributeName eq \"appRoles\"",
-													"value": "",
-													"equals": false
+													"value": null
 												},
 												{
 													"key": "attributeValue eq \"\n{{approlid}}\"]",
-													"value": "",
-													"equals": false
+													"value": null
 												}
 											]
 										},
@@ -8785,8 +8573,7 @@
 											"query": [
 												{
 													"key": "filter",
-													"value": "grantee[type eq \"Group\" and value eq \"{{groupid}}\"] and app.value eq \"{{appid}}\"",
-													"equals": true
+													"value": "grantee[type eq \"Group\" and value eq \"{{groupid}}\"] and app.value eq \"{{appid}}\""
 												}
 											]
 										},
@@ -8979,8 +8766,7 @@
 									"query": [
 										{
 											"key": "filter",
-											"value": "grantee.type eq \"Group\" and app.value eq \"{{appid}}\"",
-											"equals": true
+											"value": "grantee.type eq \"Group\" and app.value eq \"{{appid}}\""
 										}
 									]
 								},
@@ -9016,8 +8802,7 @@
 									"query": [
 										{
 											"key": "attributes",
-											"value": "urn:ietf:params:scim:schemas:oracle:idcs:extension:group:Group:grants",
-											"equals": true
+											"value": "urn:ietf:params:scim:schemas:oracle:idcs:extension:group:Group:grants"
 										}
 									]
 								},
@@ -9052,8 +8837,7 @@
 									"query": [
 										{
 											"key": "filter",
-											"value": "grantee[type eq \"Group\" and value eq \"{{groupid}}\"] and entitlement[attributeName eq \"appRoles\" and attributeValue eq \"{{approleid}}\"]",
-											"equals": true
+											"value": "grantee[type eq \"Group\" and value eq \"{{groupid}}\"] and entitlement[attributeName eq \"appRoles\" and attributeValue eq \"{{approleid}}\"]"
 										}
 									]
 								},
@@ -9088,13 +8872,11 @@
 									"query": [
 										{
 											"key": "filter",
-											"value": "grantee[value eq \"{{groupid}}\" and type eq \"Group\"] and app.value eq \"{{appid}}\"",
-											"equals": true
+											"value": "grantee[value eq \"{{groupid}}\" and type eq \"Group\"] and app.value eq \"{{appid}}\""
 										},
 										{
 											"key": "attributes",
-											"value": "entitlement[attributeName eq \"appRoles\"].attributeValue",
-											"equals": true
+											"value": "entitlement[attributeName eq \"appRoles\"].attributeValue"
 										}
 									]
 								},
@@ -9130,13 +8912,11 @@
 									"query": [
 										{
 											"key": "attributes",
-											"value": "urn:ietf:params:scim:schemas:oracle:idcs:extension:group:Group:grants.appId",
-											"equals": true
+											"value": "urn:ietf:params:scim:schemas:oracle:idcs:extension:group:Group:grants.appId"
 										},
 										{
 											"key": "distinct",
-											"value": "true",
-											"equals": true
+											"value": "true"
 										}
 									]
 								},
@@ -9171,8 +8951,7 @@
 									"query": [
 										{
 											"key": "attributes",
-											"value": "urn:ietf:params:scim:schemas:oracle:idcs:extension:group:Group:grants[appId eq \"{{appid}}\"]",
-											"equals": true
+											"value": "urn:ietf:params:scim:schemas:oracle:idcs:extension:group:Group:grants[appId eq \"{{appid}}\"]"
 										}
 									]
 								},
@@ -9270,8 +9049,7 @@
 												"v1",
 												"SecurityQuestions"
 											]
-										},
-										"description": ""
+										}
 									},
 									"response": []
 								}
@@ -9384,8 +9162,7 @@
 												"v1",
 												"SecurityQuestions"
 											]
-										},
-										"description": ""
+										}
 									},
 									"response": []
 								},
@@ -9445,8 +9222,7 @@
 												"v1",
 												"SecurityQuestionSettings"
 											]
-										},
-										"description": ""
+										}
 									},
 									"response": []
 								},
@@ -9493,7 +9269,7 @@
 										],
 										"body": {},
 										"url": {
-											"raw": "{{HOST}}//admin/v1/SecurityQuestions?count=5&startIndex=0&sortBy=type",
+											"raw": "{{HOST}}/admin/v1/SecurityQuestions?count=5&startIndex=0&sortBy=type",
 											"host": [
 												"{{HOST}}"
 											],
@@ -9506,22 +9282,18 @@
 											"query": [
 												{
 													"key": "count",
-													"value": "5",
-													"equals": true
+													"value": "5"
 												},
 												{
 													"key": "startIndex",
-													"value": "0",
-													"equals": true
+													"value": "0"
 												},
 												{
 													"key": "sortBy",
-													"value": "type",
-													"equals": true
+													"value": "type"
 												}
 											]
-										},
-										"description": ""
+										}
 									},
 									"response": []
 								},
@@ -9549,17 +9321,14 @@
 											"query": [
 												{
 													"key": "attributes",
-													"value": "type,id,value",
-													"equals": true
+													"value": "type,id,value"
 												},
 												{
 													"key": "filter",
-													"value": "type co \"default\"",
-													"equals": true
+													"value": "type co \"default\""
 												}
 											]
-										},
-										"description": ""
+										}
 									},
 									"response": []
 								},
@@ -9587,13 +9356,11 @@
 											"query": [
 												{
 													"key": "attributes",
-													"value": "id,value",
-													"equals": true
+													"value": "id,value"
 												},
 												{
 													"key": "filter",
-													"value": "id co \"MaidenName\"",
-													"equals": true
+													"value": "id co \"MaidenName\""
 												}
 											]
 										},
@@ -9625,8 +9392,7 @@
 											"query": [
 												{
 													"key": "filter",
-													"value": "questionText co \"dream\"",
-													"equals": true
+													"value": "questionText co \"dream\""
 												}
 											]
 										},
@@ -9659,8 +9425,7 @@
 											"query": [
 												{
 													"key": "attributes",
-													"value": "questionText",
-													"equals": true
+													"value": "questionText"
 												}
 											]
 										},
@@ -9693,8 +9458,7 @@
 											"query": [
 												{
 													"key": "attributes",
-													"value": "Value",
-													"equals": true
+													"value": "Value"
 												}
 											]
 										},
@@ -9726,13 +9490,11 @@
 											"query": [
 												{
 													"key": "attributes",
-													"value": "id,value",
-													"equals": true
+													"value": "id,value"
 												},
 												{
 													"key": "filter",
-													"value": "id co \"92bab3dd8d454fadb132b5513b22d6de\"",
-													"equals": true
+													"value": "id co \"92bab3dd8d454fadb132b5513b22d6de\""
 												}
 											]
 										},
@@ -9765,8 +9527,7 @@
 											"query": [
 												{
 													"key": "attributes",
-													"value": "questionText",
-													"equals": true
+													"value": "questionText"
 												}
 											]
 										},
@@ -9789,7 +9550,7 @@
 											"raw": ""
 										},
 										"url": {
-											"raw": "{{HOST}}//admin/v1/SecurityQuestions?filter=active eq true",
+											"raw": "{{HOST}}/admin/v1/SecurityQuestions?filter=active eq true",
 											"host": [
 												"{{HOST}}"
 											],
@@ -9802,12 +9563,10 @@
 											"query": [
 												{
 													"key": "filter",
-													"value": "active eq true",
-													"equals": true
+													"value": "active eq true"
 												}
 											]
-										},
-										"description": ""
+										}
 									},
 									"response": []
 								}
@@ -9883,8 +9642,7 @@
 												"SecurityQuestionSettings",
 												"{{securityquestionsettingsId}}"
 											]
-										},
-										"description": ""
+										}
 									},
 									"response": []
 								},
@@ -9918,8 +9676,7 @@
 												"SecurityQuestionSettings",
 												"{{securityquestionsettingsId}}"
 											]
-										},
-										"description": ""
+										}
 									},
 									"response": []
 								}
@@ -10266,8 +10023,7 @@
 											"query": [
 												{
 													"key": "attributes",
-													"value": "emailEnabled,totpSettings.emailOtpValidityDurationInMins,totpSettings.emailPasscodeLength",
-													"equals": true
+													"value": "emailEnabled,totpSettings.emailOtpValidityDurationInMins,totpSettings.emailPasscodeLength"
 												}
 											]
 										},
@@ -10391,8 +10147,7 @@
 												"v1",
 												"MyAuthenticationFactorInitiator"
 											]
-										},
-										"description": ""
+										}
 									},
 									"response": []
 								},
@@ -10424,8 +10179,7 @@
 												"v1",
 												"MyAuthenticationFactorValidator"
 											]
-										},
-										"description": ""
+										}
 									},
 									"response": []
 								}
@@ -11159,8 +10913,7 @@
 										"v1",
 										"introspect"
 									]
-								},
-								"description": ""
+								}
 							},
 							"response": []
 						},
@@ -11224,8 +10977,7 @@
 										"v1",
 										"token"
 									]
-								},
-								"description": ""
+								}
 							},
 							"response": []
 						},
@@ -11294,8 +11046,7 @@
 										"v1",
 										"token"
 									]
-								},
-								"description": ""
+								}
 							},
 							"response": []
 						},
@@ -11358,8 +11109,7 @@
 										"v1",
 										"token"
 									]
-								},
-								"description": ""
+								}
 							},
 							"response": []
 						}
@@ -11398,8 +11148,7 @@
 												"v1",
 												"OAuthConfig"
 											]
-										},
-										"description": ""
+										}
 									},
 									"response": []
 								},
@@ -11428,8 +11177,7 @@
 												"OAuthConfig",
 												"{{OAuthConfigId}}"
 											]
-										},
-										"description": ""
+										}
 									},
 									"response": []
 								},
@@ -11462,8 +11210,7 @@
 												"OAuthConfig",
 												".search"
 											]
-										},
-										"description": ""
+										}
 									},
 									"response": []
 								},
@@ -11495,12 +11242,10 @@
 											"query": [
 												{
 													"key": "attributes",
-													"value": "accessTokenExpirySeconds,refreshTokenExpirySeconds",
-													"equals": true
+													"value": "accessTokenExpirySeconds,refreshTokenExpirySeconds"
 												}
 											]
-										},
-										"description": ""
+										}
 									},
 									"response": []
 								},
@@ -11531,12 +11276,10 @@
 											"query": [
 												{
 													"key": "attributes",
-													"value": "accessTokenExpirySeconds,refreshTokenExpirySeconds",
-													"equals": true
+													"value": "accessTokenExpirySeconds,refreshTokenExpirySeconds"
 												}
 											]
-										},
-										"description": ""
+										}
 									},
 									"response": []
 								}
@@ -11576,8 +11319,7 @@
 												"OAuthConfig",
 												"OAuthConfig"
 											]
-										},
-										"description": ""
+										}
 									},
 									"response": []
 								},
@@ -11610,8 +11352,7 @@
 												"OAuthConfig",
 												"{{OAuthConfigId}}"
 											]
-										},
-										"description": ""
+										}
 									},
 									"response": []
 								}
@@ -11653,8 +11394,7 @@
 												"v1",
 												"EncryptionKeys"
 											]
-										},
-										"description": ""
+										}
 									},
 									"response": []
 								},
@@ -11683,8 +11423,7 @@
 												"SigningCert",
 												"jwk"
 											]
-										},
-										"description": ""
+										}
 									},
 									"response": []
 								}
@@ -11732,8 +11471,7 @@
 										"v1",
 										"Reports"
 									]
-								},
-								"description": ""
+								}
 							},
 							"response": []
 						},
@@ -11765,8 +11503,7 @@
 										"v1",
 										"Reports"
 									]
-								},
-								"description": ""
+								}
 							},
 							"response": []
 						},
@@ -11797,12 +11534,10 @@
 									"query": [
 										{
 											"key": "fileName",
-											"value": "{{filename}}",
-											"equals": true
+											"value": "{{filename}}"
 										}
 									]
-								},
-								"description": ""
+								}
 							},
 							"response": []
 						}
@@ -11837,8 +11572,7 @@
 								"v1",
 								"Reports"
 							]
-						},
-						"description": ""
+						}
 					},
 					"response": []
 				},
@@ -11870,8 +11604,7 @@
 								"v1",
 								"Reports"
 							]
-						},
-						"description": ""
+						}
 					},
 					"response": []
 				},
@@ -11903,8 +11636,7 @@
 								"v1",
 								"Reports"
 							]
-						},
-						"description": ""
+						}
 					},
 					"response": []
 				},
@@ -11936,8 +11668,7 @@
 								"v1",
 								"Reports"
 							]
-						},
-						"description": ""
+						}
 					},
 					"response": []
 				},
@@ -11969,8 +11700,7 @@
 								"v1",
 								"Reports"
 							]
-						},
-						"description": ""
+						}
 					},
 					"response": []
 				},
@@ -12002,8 +11732,7 @@
 								"v1",
 								"Reports"
 							]
-						},
-						"description": ""
+						}
 					},
 					"response": []
 				},
@@ -12035,8 +11764,7 @@
 								"v1",
 								"Reports"
 							]
-						},
-						"description": ""
+						}
 					},
 					"response": []
 				}
@@ -12078,8 +11806,7 @@
 												"v1",
 												"ServiceProviders"
 											]
-										},
-										"description": ""
+										}
 									},
 									"response": []
 								}
@@ -12118,8 +11845,7 @@
 												"v1",
 												"ServiceProviders"
 											]
-										},
-										"description": ""
+										}
 									},
 									"response": []
 								}
@@ -12165,12 +11891,10 @@
 											"query": [
 												{
 													"key": "attributes",
-													"value": "metadata",
-													"equals": true
+													"value": "metadata"
 												}
 											]
-										},
-										"description": ""
+										}
 									},
 									"response": []
 								},
@@ -12199,8 +11923,7 @@
 												"IdentityProviders",
 												"{{idpid}}"
 											]
-										},
-										"description": ""
+										}
 									},
 									"response": []
 								},
@@ -12232,12 +11955,10 @@
 											"query": [
 												{
 													"key": "attributes",
-													"value": "partnerName,partnerProviderId",
-													"equals": true
+													"value": "partnerName,partnerProviderId"
 												}
 											]
-										},
-										"description": ""
+										}
 									},
 									"response": []
 								},
@@ -12268,12 +11989,10 @@
 											"query": [
 												{
 													"key": "attributes",
-													"value": "partnerName,partnerProviderId",
-													"equals": true
+													"value": "partnerName,partnerProviderId"
 												}
 											]
-										},
-										"description": ""
+										}
 									},
 									"response": []
 								},
@@ -12301,8 +12020,7 @@
 												"v1",
 												"IdentityProviders"
 											]
-										},
-										"description": ""
+										}
 									},
 									"response": []
 								}
@@ -12342,8 +12060,7 @@
 												"IdentityProviders",
 												"{{idpid}}"
 											]
-										},
-										"description": ""
+										}
 									},
 									"response": []
 								},
@@ -12376,8 +12093,7 @@
 												"IdentityProviders",
 												"{{idpid}}"
 											]
-										},
-										"description": ""
+										}
 									},
 									"response": []
 								},
@@ -12410,8 +12126,7 @@
 												"IdentityProviders",
 												"{{idpid}}"
 											]
-										},
-										"description": ""
+										}
 									},
 									"response": []
 								}
@@ -12459,8 +12174,7 @@
 										"v1",
 										"Me"
 									]
-								},
-								"description": ""
+								}
 							},
 							"response": []
 						},
@@ -12492,8 +12206,7 @@
 										"v1",
 										"Me"
 									]
-								},
-								"description": ""
+								}
 							},
 							"response": []
 						},
@@ -12525,8 +12238,7 @@
 										"v1",
 										"Me"
 									]
-								},
-								"description": ""
+								}
 							},
 							"response": []
 						},
@@ -12709,8 +12421,7 @@
 									"query": [
 										{
 											"key": "filter",
-											"value": "userId co \"{{userId}}\"",
-											"equals": true
+											"value": "userId co \"{{userId}}\""
 										}
 									]
 								},
@@ -12857,8 +12568,7 @@
 									"query": [
 										{
 											"key": "filter",
-											"value": "userId co \"{{userId}}\"",
-											"equals": true
+											"value": "userId co \"{{userId}}\""
 										}
 									]
 								},
@@ -13045,7 +12755,7 @@
 					"response": []
 				},
 				{
-					"name": "My accesses",
+					"name": "Retrieve my accesses",
 					"request": {
 						"method": "GET",
 						"header": [
@@ -13072,13 +12782,12 @@
 								"v1",
 								"MyAccesses"
 							]
-						},
-						"description": "Use the testMe application."
+						}
 					},
 					"response": []
 				},
 				{
-					"name": "My apps",
+					"name": "Retrieve my apps",
 					"request": {
 						"method": "GET",
 						"header": [
@@ -13105,8 +12814,7 @@
 								"v1",
 								"MyApps"
 							]
-						},
-						"description": "Use the testMe app."
+						}
 					},
 					"response": []
 				}
@@ -13144,8 +12852,7 @@
 										"v1",
 										"Users"
 									]
-								},
-								"description": ""
+								}
 							},
 							"response": []
 						},
@@ -13176,13 +12883,11 @@
 									"query": [
 										{
 											"key": "count",
-											"value": "5",
-											"equals": true
+											"value": "5"
 										},
 										{
 											"key": "startIndex",
-											"value": "0",
-											"equals": true
+											"value": "0"
 										}
 									]
 								},
@@ -13217,8 +12922,7 @@
 									"query": [
 										{
 											"key": "attributes",
-											"value": "userName",
-											"equals": true
+											"value": "userName"
 										}
 									]
 								},
@@ -13253,8 +12957,7 @@
 									"query": [
 										{
 											"key": "filter",
-											"value": "userName sw \"csaladna\"",
-											"equals": true
+											"value": "userName sw \"csaladna\""
 										}
 									]
 								},
@@ -13287,8 +12990,7 @@
 										"Users",
 										"{{userid}}"
 									]
-								},
-								"description": ""
+								}
 							},
 							"response": []
 						},
@@ -13320,12 +13022,10 @@
 									"query": [
 										{
 											"key": "attributes",
-											"value": "userName",
-											"equals": true
+											"value": "userName"
 										}
 									]
-								},
-								"description": ""
+								}
 							},
 							"response": []
 						},
@@ -13391,8 +13091,7 @@
 									"query": [
 										{
 											"key": "attributes",
-											"value": "urn:ietf:params:scim:schemas:oracle:idcs:extension:user:User:accounts[appId+eq+\"{{appid}}\"]",
-											"equals": true
+											"value": "urn:ietf:params:scim:schemas:oracle:idcs:extension:user:User:accounts[appId+eq+\"{{appid}}\"]"
 										}
 									]
 								},
@@ -13428,8 +13127,7 @@
 									"query": [
 										{
 											"key": "attributes",
-											"value": "urn:ietf:params:scim:schemas:oracle:idcs:extension:user:User:accounts",
-											"equals": true
+											"value": "urn:ietf:params:scim:schemas:oracle:idcs:extension:user:User:accounts"
 										}
 									]
 								},
@@ -13472,8 +13170,7 @@
 										"v1",
 										"PasswordAuthenticator"
 									]
-								},
-								"description": ""
+								}
 							},
 							"response": []
 						},
@@ -13716,8 +13413,7 @@
 										"Users",
 										"{{userid}}"
 									]
-								},
-								"description": ""
+								}
 							},
 							"response": []
 						},
@@ -13750,8 +13446,7 @@
 										"Users",
 										"{{userid}}"
 									]
-								},
-								"description": ""
+								}
 							},
 							"response": []
 						},
@@ -13967,8 +13662,7 @@
 										"Users",
 										"{{userid}}"
 									]
-								},
-								"description": ""
+								}
 							},
 							"response": []
 						}
@@ -14007,8 +13701,7 @@
 										"v1",
 										"Users"
 									]
-								},
-								"description": ""
+								}
 							},
 							"response": []
 						},
@@ -14080,8 +13773,7 @@
 									"query": [
 										{
 											"key": "filter",
-											"value": "appRoles.value+eq+{{approleid}}",
-											"equals": true
+											"value": "appRoles.value+eq+{{approleid}}"
 										}
 									]
 								},
@@ -14121,8 +13813,7 @@
 									"query": [
 										{
 											"key": "attributes",
-											"value": "urn:ietf:params:scim:schemas:oracle:idcs:extension:user:User:appRoles[appId+eq+\"{{appid}}\"]",
-											"equals": true
+											"value": "urn:ietf:params:scim:schemas:oracle:idcs:extension:user:User:appRoles[appId+eq+\"{{appid}}\"]"
 										}
 									]
 								},
@@ -14158,8 +13849,7 @@
 									"query": [
 										{
 											"key": "attributes",
-											"value": "urn:ietf:params:scim:schemas:oracle:idcs:extension:user:User:appRoles",
-											"equals": true
+											"value": "urn:ietf:params:scim:schemas:oracle:idcs:extension:user:User:appRoles"
 										}
 									]
 								},
@@ -14194,8 +13884,7 @@
 									"query": [
 										{
 											"key": "filter",
-											"value": "urn:ietf:params:scim:schemas:oracle:idcs:extension:user:User:appRoles.value eq \"{{approleid}}\"",
-											"equals": true
+											"value": "urn:ietf:params:scim:schemas:oracle:idcs:extension:user:User:appRoles.value eq \"{{approleid}}\""
 										}
 									]
 								},
@@ -14230,8 +13919,7 @@
 									"query": [
 										{
 											"key": "filter",
-											"value": "urn:ietf:params:scim:schemas:oracle:idcs:extension:user:User:appRoles[value eq \"{{approleid}}\" and type eq \"direct\"]",
-											"equals": true
+											"value": "urn:ietf:params:scim:schemas:oracle:idcs:extension:user:User:appRoles[value eq \"{{approleid}}\" and type eq \"direct\"]"
 										}
 									]
 								},
@@ -14266,8 +13954,7 @@
 									"query": [
 										{
 											"key": "filter",
-											"value": "groups.value eq \"{{groupid}}\"",
-											"equals": true
+											"value": "groups.value eq \"{{groupid}}\""
 										}
 									]
 								},
@@ -14339,8 +14026,7 @@
 											"query": [
 												{
 													"key": "filter",
-													"value": "grantee.value eq \"{{userid}}\" and entitlement[attributeName eq \"appRoles\" and attributeValue eq \"{{approleid}}\"]",
-													"equals": true
+													"value": "grantee.value eq \"{{userid}}\" and entitlement[attributeName eq \"appRoles\" and attributeValue eq \"{{approleid}}\"]"
 												}
 											]
 										},
@@ -14442,8 +14128,7 @@
 											"query": [
 												{
 													"key": "filter",
-													"value": "grantee[type eq \"User\" and value eq \"{{userid}}\"] and app eq \"{{appid}}\"",
-													"equals": true
+													"value": "grantee[type eq \"User\" and value eq \"{{userid}}\"] and app eq \"{{appid}}\""
 												}
 											]
 										},
@@ -14640,8 +14325,7 @@
 									"query": [
 										{
 											"key": "filter",
-											"value": "grantee[value eq \"{{userid}}\" and type eq \"User\"]",
-											"equals": true
+											"value": "grantee[value eq \"{{userid}}\" and type eq \"User\"]"
 										}
 									]
 								},
@@ -14680,8 +14364,7 @@
 									"query": [
 										{
 											"key": "filter",
-											"value": "grantee[type eq \"User\" and value eq \"{{userid}}\"] and app eq \"{{appid}}\"",
-											"equals": true
+											"value": "grantee[type eq \"User\" and value eq \"{{userid}}\"] and app eq \"{{appid}}\""
 										}
 									]
 								},
@@ -14720,8 +14403,7 @@
 									"query": [
 										{
 											"key": "filter",
-											"value": "grantee[value eq \"{{userid}}\" and type eq \"User\"] and entitlement[attributeName eq \"appRoles\" and attributeValue eq \"{{approleid}}\"]",
-											"equals": true
+											"value": "grantee[value eq \"{{userid}}\" and type eq \"User\"] and entitlement[attributeName eq \"appRoles\" and attributeValue eq \"{{approleid}}\"]"
 										}
 									]
 								},
@@ -14756,8 +14438,7 @@
 									"query": [
 										{
 											"key": "filter",
-											"value": "app.value eq \"{{appid}}\" and grantee.type eq \"User\" and grantMechanism ne \"GROUP_MEMBERSHIP\"",
-											"equals": true
+											"value": "app.value eq \"{{appid}}\" and grantee.type eq \"User\" and grantMechanism ne \"GROUP_MEMBERSHIP\""
 										}
 									]
 								},
@@ -14792,8 +14473,7 @@
 									"query": [
 										{
 											"key": "filter",
-											"value": "app.value eq \"{{appid}}\" and grantee.type eq \"User\" and grantMechanism eq \"GROUP_MEMBERSHIP\"",
-											"equals": true
+											"value": "app.value eq \"{{appid}}\" and grantee.type eq \"User\" and grantMechanism eq \"GROUP_MEMBERSHIP\""
 										}
 									]
 								},
@@ -14833,8 +14513,7 @@
 									"query": [
 										{
 											"key": "attributes",
-											"value": "urn:ietf:params:scim:schemas:oracle:idcs:extension:user:User:grants",
-											"equals": true
+											"value": "urn:ietf:params:scim:schemas:oracle:idcs:extension:user:User:grants"
 										}
 									]
 								},
@@ -14874,8 +14553,7 @@
 									"query": [
 										{
 											"key": "attributes",
-											"value": "urn:ietf:params:scim:schemas:oracle:idcs:extension:user:User:grants[appId eq \"{{appid}}\"]",
-											"equals": true
+											"value": "urn:ietf:params:scim:schemas:oracle:idcs:extension:user:User:grants[appId eq \"{{appid}}\"]"
 										}
 									]
 								},
