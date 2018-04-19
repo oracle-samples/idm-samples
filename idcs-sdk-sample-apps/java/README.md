@@ -24,8 +24,7 @@ The Oracle Identity Cloud Service SDK for Java is depedent of the following libr
 
 The sample web application needs an application's Client ID and Secret to establish communication with Oracle Identity Cloud Service.  Follow the referenced tutorial to register an application.
 
-Access the Oracle Identity Cloud Service console and download the SDK for Java. Inside the downloaded zip file there is a file called **idcs-asserter.jar**. The name of the java sdk jar file may vary.
-Copy the file to the location pointed in the pom.xml file below.
+Access the Oracle Identity Cloud Service console and download the SDK for Java. Inside the downloaded zip file there is a file called **idcs-asserter.jar**. The name of the java sdk jar file may vary. Copy the file to the location pointed in the pom.xml file below.
 
 Access the Oracle Identity Cloud Service console, and add a trusted application with the following information:
 - Populate the Details pane as follows, and then click Next.
