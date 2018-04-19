@@ -89,8 +89,8 @@ The **AuthSevlet.java** file  class maps to the **/auth** URL. It uses the SDK t
 Four important parameters are used to generate the authorization code URL:
 - **redirectUrl**: After successfull sign in, Oracle Identity Cloud Service redirects the user browser to this URL. This URL must match the one configured in the trusted application in Oracle Identity Cloud Service console.
 - **scope**: The OAuth/OpenID Connect scope of authentication. This application requires only openid authentication to be handled by Oracle Identity Cloud Service.
-- **1234**: The state value is meant to be a code that the sample web application might use to check if the communication was made correctly to Oracle Identity Cloud Service. The state parameter is defined by the OAuth protocol.
-- **code**: Value required by the authorization code grant type.
+- **state**: The state value is meant to be a code that the sample web application might use to check if the communication was made correctly to Oracle Identity Cloud Service. The state parameter is defined by the OAuth protocol.
+- **response_type**: The value **code** is required by the authorization code grant type.
 
 Tthe **CallbackServlet.java** class maps to the **/callback** URL, and uses the authorization code parameter to request an access token. The access token is then stored in the user session, along with the userId and displayName values. Then, the servlet forwards the request to the **private/home.jsp** page.
 
