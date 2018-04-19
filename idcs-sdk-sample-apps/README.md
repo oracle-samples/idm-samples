@@ -10,8 +10,6 @@ The SDK wraps some Oracle Identity Cloud Service calls that are made by the appl
 
 The SDKs can be downloaded from the **Downloads** page of the Identity Cloud Service console, as zip files, for the following languages:
 - **Java**: The file you download contains a *jar* library file.
-- **JavaScript/Node.js**: The file you download contains a passport strategy library file (see http://passportjs.org/).
-- **Python**: The file you download contains two python files: *IdcsClient.py* and *Constants.py*.
 
 ## Tutorials and Sample Applications
 
