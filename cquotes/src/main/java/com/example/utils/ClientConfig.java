@@ -11,9 +11,9 @@ package com.example.utils;
 public class ClientConfig {
 
     //YOUR IDENTITY DOMAIN AND APPLICATION CREDENTIALS
-    public static final String CLIENT_ID = "";
-    public static final String CLIENT_SECRET = "";
-    public static final String IDCS_URL = "";
+    public static final String CLIENT_ID = "123456789abcdefghij";
+    public static final String CLIENT_SECRET = "abcde-12345-zyxvu-98765-qwerty";
+    public static final String IDCS_URL = "htps://idcs-abcd1234.identity.oraclecloud.com";
 
     //INFORMATION ABOUT THE CQUOTES APPLICATION
     private static final String APP_HOST = "https://localhost:8181";
@@ -27,7 +27,7 @@ public class ClientConfig {
     public static final String LOGOUT_SERVICE_URL = IDCS_URL + "/oauth2/v1/userlogout";
     static final String USERINFO_SERVICE_URL = IDCS_URL + "/oauth2/v1/userinfo";
     public static final String ADMIN_UI_URL = IDCS_URL + "/ui/v1/adminconsole";
-    public static final String MYCONSOLE_UI_URL = IDCS_URL + "/ui/v1/myconsole";
+    public static final String MYCONSOLE_UI_URL = IDCS_URL + "/ui/v1/myconsole?root=my-info";
     
     //SCOPES LEVERAGED BY YOUR APPLICATION
     public static final boolean IS_RESOURCE_SERVER_ACTIVE = false;
