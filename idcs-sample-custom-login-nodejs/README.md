@@ -1,6 +1,6 @@
 # IDCS Custom Login
 
-This is a sample application that hosts Custom Login interface for IDCS. This application leverages **Angular JS** front-end and **Node JS** middleware. 
+This is a sample application that hosts Custom Login interface for Oracle Identity Cloud Service. This application leverages **Angular JS** front-end and **Node JS** middleware. 
 
 **Phase 1:**
 
@@ -16,9 +16,9 @@ This is a sample application that hosts Custom Login interface for IDCS. This ap
 
 ### Setup:  
 
-#### Create a client App in IDCS:
+#### Create a client App in Oracle Identity Cloud Service:
 
-- Go the **IDCS admin console** and login using admin credentials
+- Go the **Oracle Identity Cloud Service console** and login using administrative credentials.
 
 - Go to the Applications tab and create  a trusted app. *Follow the directions on screenshots below*.
 
@@ -49,7 +49,7 @@ This is a sample application that hosts Custom Login interface for IDCS. This ap
 #### Run the custom app:
 
 <blockquote>
-The instructions below assume that you are running the custom login app in a local linux/Mac laptop/desktop with Node JS installed. If you are running in a Windows box, necessary steps need to be taken to run a Node JS app.
+The instructions below assume that you are running the custom login app in a local linux/Mac laptop/desktop with Node.js installed. If you are running in a Windows box, necessary steps need to be taken to run a Node.js app.
 </blockquote>
 
 - From command line, download the source from github - 
@@ -66,7 +66,7 @@ The instructions below assume that you are running the custom login app in a loc
     
 - Provide the **Client ID** and **Client Secret** values copied before.
 
-- Provide appropriate IDCS host and port values
+- Provide appropriate Oracle Identity Cloud Service host and port values
 
 ![](images/12.png)
 		
@@ -87,9 +87,9 @@ The instructions below assume that you are running the custom login app in a loc
 	cd <INSTALL-DIRECTORY>/Security-Assets/idcs/samples/SampleCustomLogin
 	nohup node server.js &
 	
-#### Configure IDCS to use the custom login page 
+#### Configure Oracle Identity Cloud Service to use the custom login page 
 
-- From **IDCS admin console**, access the **Session Settings** page
+- From **Oracle Identity Cloud Service console**, access the **Session Settings** page
 
 ![](images/13.png)
 
@@ -104,7 +104,7 @@ The instructions below assume that you are running the custom login app in a loc
 
 #### User name + Password login:
 
-- Go to IDCS login URL. It has the form - [https://idcs-xxxxxxxxxxxxx.identity.oraclecloud.com/ui/v1/myconsole]()
+- Go to Oracle Identity Cloud Service login URL. It has the form - [https://idcs-xxxxxxxxxxxxx.identity.oraclecloud.com/ui/v1/myconsole]()
 
 - Verify that you are redirected to the custom app login page. If you are running locally the URL will look like - [http://127.0.0.1:9088/#!/signin]()
 
@@ -114,13 +114,13 @@ The instructions below assume that you are running the custom login app in a loc
 
 ![](images/17.png)
 
-- Verify that on successful login, you are redirected to the IDCS MyApps page.
+- Verify that on successful login, you are redirected to the Oracle Identity Cloud Service MyApps page.
 
 ![](images/18.png)
 
 #### Logout:
 
-- Logout from IDCS
+- Logout from Oracle Identity Cloud Service
 
 ![](images/19.png)
 
@@ -131,7 +131,7 @@ The instructions below assume that you are running the custom login app in a loc
 #### Social registration:
 
 <blockquote>
-Pre-requisite for this use case is, IDCS is configured to use social login through Google. 
+Pre-requisite for this use case is, Oracle Identity Cloud Service is configured to use social login through Google. 
 </blockquote>
 
 - Verify that the custom login page shows the option for signing in with **Google**. Click on the link. 
@@ -152,7 +152,7 @@ Pre-requisite for this use case is, IDCS is configured to use social login throu
 
 ![](images/25.png)
 
-- Verify that you are redirected to the IDCS MyApps page.
+- Verify that you are redirected to the Oracle Identity Cloud Service MyApps page.
 
 ![](images/26.png)
 
@@ -169,7 +169,7 @@ Pre-requisite for this use case is, IDCS is configured to use social login throu
 #### Social login:
 
 <blockquote>
-Pre-requisites for this use case are -	1. IDCS is configured to use social login through Google. 2. The google account is already registered in IDCS.
+Pre-requisites for this use case are -	1. Oracle Identity Cloud Service is configured to use social login through Google. 2. The google account is already registered in Oracle Identity Cloud Service.
 </blockquote>
 
 - Initiate login using **Google** provider on the custom login page
@@ -182,7 +182,7 @@ Pre-requisites for this use case are -	1. IDCS is configured to use social login
 
 ![](images/23.png)
 
-- Verify that you are redirected to the IDCS MyApps page.
+- Verify that you are redirected to the Oracle Identity Cloud Service MyApps page.
 
 ![](images/26.png)
 
