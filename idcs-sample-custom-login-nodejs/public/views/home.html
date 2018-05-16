@@ -1,0 +1,47 @@
+<header class="jumbotron">
+        <div class="container">
+            <div class="row row-header">
+                <div class="col-xs-12 col-sm-8">
+                    <h2>Login to Identity System</h2>
+                </div>
+                <div class="col-xs-12 col-sm-2">
+                <img src="images/logo.png" class="img-responsive">
+                </div>
+            </div>
+        </div>
+</header>
+
+<div class="container" ng-controller="baseController">
+        <div class="row row-content">
+            <div class="col-md-6 col-md-offset-3">
+                <div ng-if="dosocialreg">
+                    <font color="red">You don't have an account. </font><a ng-click="initSocialRegister()">Click here to register.</a>
+                </div>
+                <div ng-if="error">
+                    <h4 style="color: red">{{uierrormessage}}</h4>
+                </div>
+                <h2>Login</h2>
+                <form name="form" ng-submit="login()" role="form">
+                    <div class="form-group" ng-class="{ 'has-error': form.username.$dirty && form.username.$error.required }">
+                        <label for="username">Username</label>
+                        <input type="text" name="username" id="username" class="form-control" ng-model="username" required />
+                        <span ng-show="form.username.$dirty && form.username.$error.required" class="help-block">Username is required</span>
+                    </div>
+                    <div class="form-group" ng-class="{ 'has-error': form.password.$dirty && form.password.$error.required }">
+                        <label for="password">Password</label>
+                        <input type="password" name="password" id="password" class="form-control" ng-model="password" required />
+                        <span ng-show="form.password.$dirty && form.password.$error.required" class="help-block">Password is required</span>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" ng-disabled="form.$invalid" class="btn btn-primary">Login</button>
+                    </div>
+                </form>
+            </div>
+            <div class="col-md-2 col-md-offset-1" ng-if="isIDP">
+                <h3>Sign in with</h3>
+                <ul ng-repeat="idp in idpList">
+                    <li><a ng-click="idpLogin(idp)">{{idp.idpName}}</a></li>
+                </ul>
+            </div>
+        </div>
+</div>

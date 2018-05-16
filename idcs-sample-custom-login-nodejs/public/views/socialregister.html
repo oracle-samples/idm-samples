@@ -1,0 +1,51 @@
+<header class="jumbotron">
+        <div class="container">
+            <div class="row row-header">
+                <div class="col-xs-12 col-sm-8">
+                    <h2>Create an account</h2>
+                    <h4>Please verify your information.</h4>
+                </div>
+                <div class="col-xs-12 col-sm-2">
+                <img src="images/logo.png" class="img-responsive">
+                </div>
+            </div>
+        </div>
+</header>
+
+<div class="container" ng-controller="socialregisterController">
+     <div class="row row-content">
+           <div class="col-xs-12">
+               <form class="form-horizontal" name="socialregisterForm" ng-submit="register()" novalidate>
+                   <div class="form-group">
+                        <label for="emailid" class="col-sm-2 control-label">Email</label>
+                        <div class="col-sm-4">
+                            <input type="email" class="form-control" id="emailid" name="emailid" ng-model="userdata.email" disabled="true" required>
+                        </div>
+                   </div>
+                   <div class="form-group" ng-class="{ 'has-error' : socialregisterForm.firstname.$error.required && !socialregisterForm.firstname.$pristine }">
+                        <label for="firstname" class="col-sm-2 control-label">First Name</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" id="firstname" name="firstname" placeholder="Enter First Name" ng-model="userdata.givenName" required>
+                            <span ng-show="socialregisterForm.firstname.$error.required && !socialregisterForm.firstname.$pristine" class="help-block">Your First name is required.</span>
+                        </div>
+                    </div>
+                    <div class="form-group" ng-class="{ 'has-error' : socialregisterForm.lastname.$error.required && !socialregisterForm.lastname.$pristine }">
+                        <label for="lastname" class="col-sm-2 control-label">Last Name</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" id="lastname" name="lastname" placeholder="Enter Last Name" ng-model="userdata.familyName" required>
+                            <span ng-show="socialregisterForm.lastname.$error.required && !socialregisterForm.lastname.$pristine" class="help-block">Your Last name is required.</span>
+                        </div>
+                    </div>
+                   
+                    <div class="form-group">
+                         <div class="col-sm-offset-2 col-sm-2">
+                            <button type="submit" class="btn btn-primary" ng-disabled="socialregisterForm.$invalid">Register</button>
+                        </div>
+                        <div class="col-sm-2">
+                            <button ng-click="cancel()" class="btn btn-primary">Cancel</button>
+                        </div>
+                    </div>
+               </form>
+        </div>
+    </div>
+</div>
