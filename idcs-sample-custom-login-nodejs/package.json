@@ -1,0 +1,14 @@
+{
+  "name": "IDCSCustomLogin",
+  "version": "1.0.0",
+  "description": "IDCS Custom Login Form",
+  "main": "server.js",
+  "author": "Indranil Jha",
+  "dependencies": {
+    "body-parser": "1.18.2",
+    "bytebuffer": "5.0.1",
+    "express": "4.16.3",
+    "express-session": "1.15.6",
+    "node-rest-client": "3.1.0"
+  }
+}
