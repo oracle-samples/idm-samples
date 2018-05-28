@@ -18,6 +18,8 @@ The Oracle Identity Cloud Service SDK for Java is depedent of the following libr
 - [Nimbus JOSE+JWT 4.39.1](https://mvnrepository.com/artifact/com.nimbusds/nimbus-jose-jwt)
 - [OAuth 2.0 SDK With OpenID Connect Extensions 5.30](https://mvnrepository.com/artifact/com.nimbusds/oauth2-oidc-sdk)
 
+**Note:** The sample application is built with Maven which automatically downloads the appropriate libraries and builds the war file.
+
 **Note:** Before deploying or using this sample application, it need to be updated following the instruction below:
 
 ## How to use the Sample Application:
@@ -32,13 +34,13 @@ Access the Oracle Identity Cloud Service console, and add a trusted application 
     Description: SDK Web Application
 
 - In the Client pane, select Configure this application as a client now, and then populate the fields of this pane, as follows:
-    Allowed Grant Types: Select **Authorization Code**.
+    Allowed Grant Types: Select **Client Credentials ** and **Authorization Code**.
     Allow non-HTTPS URLs: Select this check box. The sample application works in non-HTTPS mode.
     Redirect URL: http://localhost:8080/callback
     Logout URL: http://localhost:8080/logout
     Post Logout Redirect URL: http://localhost:8080
 
-- In the Client pane, scroll down, select Grant the client access to Identity Cloud Service Admin APIs., enter **Me**.  
+- In the Client pane, scroll down, select Grant the client access to Identity Cloud Service Admin APIs., enter **Me** and **Identity Domain Administrator**.
 - Finish, make a note of the **Client ID** and **Client Secret** values, and activate the application.
 
 Edit the **pom.xml** file, update the JAR file name in the following statement, and then save the file.
@@ -54,7 +56,7 @@ Edit the **pom.xml** file, update the JAR file name in the following statement, 
 ```
 **Note:** make sure the name of the idcs-asserter.jar file matches the name of the java SDK jar file downloaded from the Oracle Identity Cloud Service console.
 
-Edit the **ConnectionOptions.java** file and update the IDCS_HOST, IDCS_PORT, IDCS_CLIENT_ID, IDCS_CLIENT_SECRET,  IDCS_CLIENT_TENANT and AUDIENCE_SERVICE_URL variables.
+Edit the **ConnectionOptions.java** file and update the IDCS_HOST, IDCS_PORT, IDCS_CLIENT_ID, IDCS_CLIENT_SECRET,  IDCS_CLIENT_TENANT and AUDIENCE_SERVICE_URL variables with the correct values for your Oracle Identity Cloud Service environment.
 ```java
 public Map<String,Object> getOptions(){
         this.options.put(IDCSTokenAssertionConfiguration.IDCS_HOST, "identity.oraclecloud.com");

@@ -1,0 +1,10 @@
+{
+  "ClientId" : "123456789abcdefghij",
+  "ClientSecret" : "abcde-12345-zyxvu-98765-qwerty",
+  "BaseUrl" : "https://idcs-abcd1234.identity.oraclecloud.com",
+  "AudienceServiceUrl" : "https://idcs-abcd1234.identity.oraclecloud.com",
+  "scope" : "urn:opc:idm:t.user.me openid",
+  "TokenIssuer" : "https://identity.oraclecloud.com",
+  "redirectURL": "http://localhost:8000/callback",
+  "logoutSufix":"/sso/v1/user/logout"
+}  
