@@ -1,4 +1,4 @@
-# Oracle Identity Cloud Service's Software Development Kit (SDK) Sample Applications
+# Oracle Identity Cloud Service' SDK Node.js Sample Application
 
 You may not use the identified files except in compliance with the
 Universal Permissive License (UPL), Version 1.0 (the "License.")\
