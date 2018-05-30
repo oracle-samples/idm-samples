@@ -1,6 +1,6 @@
 # Oracle Identity Cloud Service's Authentication API
 
-This code contains a collection of sample REST API requests that can be used with clients such as [Postman](http://getpostman.com) to make test calls to Oracle Identity Cloud Service. 
+This code contains a collection of sample REST API requests that can be used with clients such as [Postman](http://getpostman.com) to make test calls to Oracle Identity Cloud Service's authentication API. The Authentication API enables you to develop your own customized sign-in page for Oracle Identity Cloud Service.
 
 This application is provided “AS IS” with no express or implied warranty for accuracy or accessibility. The sample code is intended for study purposes, doesn't represent the recommended approach, and isn't intended to be used in development or production environments.
 
