@@ -1,6 +1,6 @@
 # Oracle Identity Cloud Service's Authentication API Payload Contract Details
 
-The SSO Authentication APIs for Oracle Identity Cloud Service REST client samples contain a collection of sample REST API requests that can be used with clients such as [Postman](http://getpostman.com) to make test calls to Oracle Identity Cloud Service. 
+The SSO Authentication APIs for Oracle Identity Cloud Service REST client samples contain a collection of sample REST API requests that can be used with clients such as [Postman](http://getpostman.com) to make test calls to Oracle Identity Cloud Service's authentication API. The Authentication API enables you to develop your own customized sign-in page for Oracle Identity Cloud Service.
 
 This document describes the payload contract details for the Authentication APIS for Oracle Identity Cloud Service.
 
