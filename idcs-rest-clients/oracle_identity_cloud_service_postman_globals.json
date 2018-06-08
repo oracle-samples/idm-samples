@@ -1,6 +1,5 @@
 {
-  "id": "62aecf52-b971-ce3b-f0f4-c40820ae559e",
-  "name": "Postman Globals",
+  "id": "3c28f20b-843f-4100-8b23-bdc9d4978a63",
   "values": [
     {
       "key": "approleid",
@@ -125,33 +124,90 @@
     {
       "key": "tag1key",
       "value": "",
-      "description": "",
-      "type": "text",
-      "enabled": true
+      "enabled": true,
+      "type": "text"
     },
     {
       "key": "tag2key",
       "value": "",
-      "description": "",
-      "type": "text",
-      "enabled": true
+      "enabled": true,
+      "type": "text"
     },
     {
       "key": "tag1value",
       "value": "",
-      "description": "",
-      "type": "text",
-      "enabled": true
+      "enabled": true,
+      "type": "text"
     },
     {
       "key": "tag2value",
       "value": "",
-      "description": "",
-      "type": "text",
-      "enabled": true
+      "enabled": true,
+      "type": "text"
+    },
+    {
+      "key": "conditiongroupid",
+      "value": "",
+      "enabled": true,
+      "type": "text"
+    },
+    {
+      "key": "requestState",
+      "value": "",
+      "enabled": true,
+      "type": "text"
+    },
+    {
+      "key": "deviceId",
+      "value": "",
+      "enabled": true,
+      "type": "text"
+    },
+    {
+      "key": "questionId1",
+      "value": "",
+      "enabled": true,
+      "type": "text"
+    },
+    {
+      "key": "questionId2",
+      "value": "",
+      "enabled": true,
+      "type": "text"
+    },
+    {
+      "key": "questionId3",
+      "value": "",
+      "enabled": true,
+      "type": "text"
+    },
+    {
+      "key": "termsofusesid",
+      "value": "",
+      "enabled": true,
+      "type": "text"
+    },
+    {
+      "key": "termsofusestatementsid",
+      "value": "",
+      "enabled": true,
+      "type": "text"
+    },
+    {
+      "key": "conditionid1",
+      "value": "",
+      "enabled": true,
+      "type": "text"
+    },
+    {
+      "key": "conditionid2",
+      "value": "",
+      "enabled": true,
+      "type": "text"
     }
   ],
+  "name": "My Workspace Globals",
   "_postman_variable_scope": "globals",
-  "_postman_exported_at": "2018-02-22T23:41:15.450Z",
-  "_postman_exported_using": "Postman/5.5.3"
+  "_postman_exported_at": "2018-06-08T23:23:33.144Z",
+  "_postman_exported_using": "Postman/6.0.10"
 }
