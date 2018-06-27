@@ -1,7 +1,7 @@
 
-# How to modify the Sample Sign-In application layout
+# How to Modify the Sample Sign-In Application
 
-This sample sign-in application is based on Codepen # [Login/Registration Form Transition](https://codepen.io/suez/pen/RpNXOR). It contains HTML, CSS and JavaScript files that governs the look and feel of the page.
+This sample sign-in application is based on Codepen # [Login/Registration Form Transition](https://codepen.io/suez/pen/RpNXOR). It contains HTML, CSS and JavaScript files that governs the look-and-feel of the page.
 
 ## Basic layout changes
 
