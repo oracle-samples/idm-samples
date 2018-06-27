@@ -37,7 +37,7 @@ The text content presented in the screen rely on the browsers language configura
 
 To add other languages to the support list execute the following procedure:
 
-1. Under the public/resources folder of the application, create a file and name it as the language locale.
+1. Under the public/resources folder of the application, create a file and name it as the language locale prefix.
 For example, for japanese create the file name `ja.js`.
 See [List of ISO 639-1 codes](]https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes).
 
