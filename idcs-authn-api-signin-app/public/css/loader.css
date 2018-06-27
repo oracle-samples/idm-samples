@@ -1,0 +1,32 @@
+/*
+  For information on how to make other, similar loaders see the tutorial at
+  https://www.w3schools.com/howto/howto_css_loader.asp
+*/
+
+.loader {
+  border: 10px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 10px solid #fb0f0c;
+  width: 40px;
+  height: 40px;
+  text-indent: -9999em; /* scoot the text off where we can't see it */
+  -webkit-animation: spin 1s linear infinite; /* Safari */
+  animation: spin 1s linear infinite;
+  margin: 20px auto;
+  overflow: hidden;
+}
+
+/* Safari */
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  50% { -webkit-transform: rotate(90deg); }
+  80% { -webkit-transform: rotate(290deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  40% { transform: rotate(90deg); }
+  80% { transform: rotate(290deg); }
+  100% { transform: rotate(360deg); }
+}

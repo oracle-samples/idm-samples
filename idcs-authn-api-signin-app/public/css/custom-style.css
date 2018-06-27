@@ -1,0 +1,68 @@
+body {
+  font-family: 'Tahoma', Geneva, sans-serif;
+  background: #ededed;
+}
+
+.cont {
+  background: #e3e3e8;
+  box-shadow: -7px 7px 5px #aeaeb7;
+  border-radius: 0;
+}
+
+.sub-cont {
+  background: #e3e3e8;
+}
+
+button {
+  border-radius: 0;
+}
+
+.submit {
+  background: #1a1aff;
+  text-transform: none;
+  box-shadow: -2px 2px 2px #aeaeb7;
+}
+
+.submit:hover {
+  background: #0000e6;
+}
+
+.submit:click {
+  box-shadow: 0px;
+}
+
+h3 {
+  color: #003366;
+  text-shadow: -2px 2px 2px #aeaeb7;
+}
+
+label span {
+  color: #003366;
+  text-transform: none;
+  text-shadow: -2px 2px 2px #aeaeb7;
+}
+
+span.info {
+  color: #003366;
+  text-shadow: -2px 2px 2px #aeaeb7;
+}
+
+a {
+  color: #003366;
+  text-shadow: -2px 2px 2px #aeaeb7;
+}
+
+input {
+  border: 1px solid rgba(0, 0, 0, 0.4);
+  box-shadow: -2px 2px 2px #aeaeb7;
+}
+
+.img__btn:after {
+  border: 1px solid;
+  border-radius: 0;
+}
+
+.loader {
+  border: 10px solid #ababba;
+  border-top: 10px solid #1a1aff;
+}
