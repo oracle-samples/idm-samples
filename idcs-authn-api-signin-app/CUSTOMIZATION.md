@@ -24,10 +24,9 @@ You can change the font size and colors by changing the CSS files located under 
 The sample sign-in application is localized to support multiple languages such as:
 
 - English
-- Portuguese
+- Brazilian Portuguese
 - Spanish
 - German
-- French
 - Italian
 - Danish
 - Hindi
@@ -45,4 +44,4 @@ See [List of ISO 639-1 codes](]https://en.wikipedia.org/wiki/List_of_ISO_639-1_c
 
 3. Translate all the properties avaiable in the language file, and then save the file.
 
-4. Restart the application.
+Next time you call Oracle Identity Cloud Service and the custom sign-in page appears, it will handle the new language.
