@@ -21,10 +21,9 @@ The application implements the following Oracle Identity Cloud Service use cases
 The sample sign-in application is localized to support multiple languages such as:
 
 - English
-- Portuguese
+- Brazilian Portuguese
 - Spanish
 - German
-- French
 - Italian
 - Danish
 - Hindi
