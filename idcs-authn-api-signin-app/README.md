@@ -141,7 +141,7 @@ The sample sign-in application works independently from the integration method u
 
 The following sequence diagram explains the authentication flow between the custom sign-in application and Oracle Identity Cloud Service using the Authentication API endpoints.
 
-![Overview Diagram](images/AuthNAPIflow.png)
+![Overview Diagram](http://www.oracle.com/webfolder/technetwork/tutorials/obe/cloud/idcs/idcs_authn_api_obe/img/AuthNAPIflow.png)
 
 When you start the sample sign-in application, it calls Oracle Identity Cloud Service to request an access token. The sample sign-in application stores the access token, so that the token can be used as a bearer authorization header during the subsequent Authentication API calls.
 
