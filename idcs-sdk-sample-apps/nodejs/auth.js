@@ -4,7 +4,7 @@ var ids = {
     "ClientSecret": "abcde-12345-zyxvu-98765-qwerty",
 	"ClientTenant": "idcs-abcd1234",
     "IDCSHost": "https://%tenant%.identity.oraclecloud.com",
-    "AudienceServiceUrl" : "htps://idcs-abcd1234.identity.oraclecloud.com",
+    "AudienceServiceUrl" : "https://idcs-abcd1234.identity.oraclecloud.com",
     "TokenIssuer": "https://identity.oraclecloud.com/",
     "scope": "urn:opc:idm:t.user.me openid",
     "logoutSufix": "/oauth2/v1/userlogout",
