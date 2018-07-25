@@ -87,14 +87,22 @@ def myProfile(request):
 	
 # Definition of the /logout route
 def logout(request):
-    options = getOptions()
-    url = options["BaseUrl"]
-    url += options["logoutSufix"]
-    #Clear session attributes
-    del request.session['access_token']
-    del request.session['displayname']
-    #Redirect to Oracle Identity Cloud Service logout URL.
-    return HttpResponseRedirect(url)
+    #Getting the Access Token value from the session
+    access_token = request.session.get('access_token', 'none')
+    if access_token ==  'none':
+        #If the access token isn't present redirects to login page.
+        return render(request, 'sampleapp/login.html') 
+    else:
+        options = getOptions()
+        url = options["BaseUrl"]
+        url += options["logoutSufix"]
+        url += '?post_logout_redirect_uri=http%3A//localhost%3A8000&id_token_hint='
+        url += access_token
+        #Clear session attributes
+        del request.session['access_token']
+        del request.session['displayname']
+        #Redirect to Oracle Identity Cloud Service logout URL.
+        return HttpResponseRedirect(url)
 
 #Function used to load the configurations from the config.json file
 def getOptions():

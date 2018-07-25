@@ -6,5 +6,5 @@
   "scope" : "urn:opc:idm:t.user.me openid",
   "TokenIssuer" : "https://identity.oraclecloud.com",
   "redirectURL": "http://localhost:8000/callback",
-  "logoutSufix":"/sso/v1/user/logout"
+  "logoutSufix":"/oauth2/v1/userlogout"
 }  

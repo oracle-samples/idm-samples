@@ -36,9 +36,10 @@ public class LogoutServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session=request.getSession();
+        String access_token = (String)session.getAttribute("access_token");
         session.invalidate();
         Map options = new ConnectionOptions().getOptions();
-        String logoutURL = (String)options.get(Constants.AUDIENCE_SERVICE_URL) + (String)options.get("logoutSufix");
+        String logoutURL = (String)options.get(Constants.AUDIENCE_SERVICE_URL) + (String)options.get("logoutSufix") +"?post_logout_redirect_uri=http%3A//localhost%3A8080&id_token_hint="+ access_token;
         response.sendRedirect(logoutURL);
     }
 

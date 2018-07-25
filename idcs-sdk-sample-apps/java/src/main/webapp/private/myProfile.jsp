@@ -28,7 +28,7 @@
     <link href="../css/sample-app.css" rel="stylesheet" type="text/css">
   </head>
   <body>
-    <table style="width: 100%;border-spacing:0px;">
+    <table style="width: 100%;border-spacing:0px;table-layout:fixed;">
       <tbody>
         <tr class="header">
           <td style="width: 300px;" nowrap="nowrap">
@@ -79,7 +79,7 @@
               </tbody>
             </table>
           </td>
-          <td style="padding: 15px;vertical-align:top;"><font class="darkTextSmall">
+          <td style="padding: 15px;vertical-align:top;word-wrap:break-word;"><font class="darkTextSmall">
               <p>Your Profile:</p><p><%=jsonString%></p>
               <p><%=jsonString%></p>
             </font> </td>

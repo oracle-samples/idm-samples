@@ -72,7 +72,6 @@ passport.deserializeUser(function(obj, done) {
 
 passport.use(new OIDCStrategy(auth.oracle,
   (idToken, tenant, user, done) => {
-    // console.log('verify', user);
     done(null, user);
   }));
 
@@ -122,17 +121,18 @@ app.get('/fail', function(req, res){
 	res.render('fail', {title: 'Fail'});
   });
 
-//Route for /logout. Removing cookies and loggin the user out of the Node.js session.
-//Then redirects to Oracle Identity Cloud Service logout URL.
+//Route for /logout.
 //The Node.js express framework defines a mechanism to log the user out of the web application.
-//The handler of the /logout route uses the request.logout() express function to clear all of the cookies that have been set,
-//and then redirects the browser to Oracle Identity Cloud Service's log out URL.
+//The handler of the /logout route uses the res.clearCookie() express function to clear all of the cookies that have been set,
+//and then redirects the browser to Oracle Identity Cloud Service's log out URL sending parameters to redirect the user browser
+//back to the sample application after logging  out from Oracle Identity Cloud Service.
 app.get('/logout', function(req, res){
-  var assertion = res.getHeader('idcs_user_assertion');
+  var access_token = req.cookies.idcs_user_assertion;
+  var logouturl = auth.oracle.AudienceServiceUrl + auth.oracle.logoutSufix + '?post_logout_redirect_uri=http%3A//localhost%3A3000&id_token_hint='+ access_token;
+  console.log('logouturl: '+ logouturl);
   req.logout();
   res.clearCookie();
-  console.log(auth.oracle.AudienceServiceUrl + auth.oracle.logoutSufix);
-  res.redirect(auth.oracle.AudienceServiceUrl + auth.oracle.logoutSufix);
+  res.redirect(logouturl);
   });
 
 //Route for /oauth/oracle
