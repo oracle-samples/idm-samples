@@ -37,7 +37,6 @@ Access the Oracle Identity Cloud Service console, and add a trusted application 
     Allowed Grant Types: Select **Client Credentials ** and **Authorization Code**.
     Allow non-HTTPS URLs: Select this check box. The sample application works in non-HTTPS mode.
     Redirect URL: http://localhost:8080/callback
-    Logout URL: http://localhost:8080/logout
     Post Logout Redirect URL: http://localhost:8080
 
 - In the Client pane, scroll down, select Grant the client access to Identity Cloud Service Admin APIs., enter **Me** and **Identity Domain Administrator**.
