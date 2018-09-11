@@ -1,0 +1,3309 @@
+{
+	"info": {
+		"_postman_id": "7495a9c6-e2eb-43b2-afd3-0baeed5943af",
+		"name": "Oracle Identity Cloud Service Factor Verification",
+		"description": "This collection provides step-by-step REST calls to complete factor verification of the Default factor and the backup factor.\n\nFactor verification is a 2-step process. You need to ask Oracle Identity Cloud Service to \"initiate\" (for example, send an SMS with a time-based one-time passcode (TOTP), send an email with a TOTP code, or send a PUSH notification to the enrolled OMA app). After initiating, the client needs to \"verify\" by passing the otpCode or security answer or accepting the PUSH notification on the OMA app.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Authentication Factor Verification",
+			"item": [
+				{
+					"name": "Fetch Enrolled Factors of a User",
+					"item": [
+						{
+							"name": "Get Enrolled Factors for a User by userGUID",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"securityQuestions\": [\r\n        {\r\n            \"id\": \"FirstCar\",\r\n            \"answer\": \"car123\"\r\n        }\r\n    ]\r\n}"
+								},
+								"url": {
+									"raw": "{{HOST}}/mfa/v1/users/{{userGUID}}/factors",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"mfa",
+										"v1",
+										"users",
+										"{{userGUID}}",
+										"factors"
+									]
+								},
+								"description": "Get the list of factors enrolled by the user using the userGUID in the request.\n\nA user may not be aware of their GUID. To support such cases, a user can make a request to get their enrolled factors by using a \"filter\" with the user name. See the other request example included in this folder."
+							},
+							"response": [
+								{
+									"name": "Success Response to Get Enrolled Factors for a User by userGUID",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json",
+												"disabled": false
+											},
+											{
+												"key": "Authorization",
+												"value": "Bearer {{access_token}}",
+												"disabled": false
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"securityQuestions\": [\r\n        {\r\n            \"id\": \"FirstCar\",\r\n            \"answer\": \"car123\"\r\n        }\r\n    ]\r\n}"
+										},
+										"url": {
+											"raw": "{{HOST}}/mfa/v1/users/{{userGUID}}/factors",
+											"host": [
+												"{{HOST}}"
+											],
+											"path": [
+												"mfa",
+												"v1",
+												"users",
+												"{{userGUID}}",
+												"factors"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Cache-control",
+											"value": "no-cache, no-store, must-revalidate",
+											"name": "Cache-control",
+											"description": "Tells all caching mechanisms from server to client whether they may cache this object. It is measured in seconds"
+										},
+										{
+											"key": "Content-length",
+											"value": "478",
+											"name": "Content-length",
+											"description": "The length of the response body in octets (8-bit bytes)"
+										},
+										{
+											"key": "Content-type",
+											"value": "application/json",
+											"name": "Content-type",
+											"description": "The mime type of this content"
+										},
+										{
+											"key": "Date",
+											"value": "Fri, 07 Sep 2018 20:38:34 GMT",
+											"name": "Date",
+											"description": "The date and time that the message was sent"
+										},
+										{
+											"key": "Expires",
+											"value": "Sat, 01 Jan 2000 00:00:00 GMT",
+											"name": "Expires",
+											"description": "Gives the date/time after which the response is considered stale"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache",
+											"name": "Pragma",
+											"description": "Implementation-specific headers that may have various effects anywhere along the request-response chain."
+										},
+										{
+											"key": "Proxy-agent",
+											"value": "Oracle-Traffic-Director/11.1.1.9",
+											"name": "Proxy-agent",
+											"description": "Custom header"
+										},
+										{
+											"key": "Proxy-agent",
+											"value": "Oracle-Traffic-Director/11.1.1.9",
+											"name": "Proxy-agent",
+											"description": "Custom header"
+										},
+										{
+											"key": "Server",
+											"value": "Oracle-Traffic-Director/11.1.1.9",
+											"name": "Server",
+											"description": "A name for the server"
+										},
+										{
+											"key": "Via",
+											"value": "1.1 net-idcs-config, 1.1 net-idcs-dev-lbr",
+											"name": "Via",
+											"description": "Informs the client of proxies through which the response was sent."
+										},
+										{
+											"key": "X-content-type-options",
+											"value": "nosniff",
+											"name": "X-content-type-options",
+											"description": "The only defined value, \"nosniff\", prevents Internet Explorer from MIME-sniffing a response away from the declared content-type"
+										},
+										{
+											"key": "X-oracle-dms-ecid",
+											"value": "4BG4z0S9000000000",
+											"name": "X-oracle-dms-ecid",
+											"description": "Custom header"
+										},
+										{
+											"key": "X-oracle-dms-rid",
+											"value": "0:1:1",
+											"name": "X-oracle-dms-rid",
+											"description": "Custom header"
+										},
+										{
+											"key": "X-xss-protection",
+											"value": "1; mode=block",
+											"name": "X-xss-protection",
+											"description": "Cross-site scripting (XSS) filter"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"userGUID\": \"7b3d902ab05b4214bae6b2924ca6be21\",\n    \"status\": \"success\",\n    \"preferredFactorId\": \"b3e04149d958437b9b801fa70c33ca70\",\n    \"preferredMethod\": \"EMAIL\",\n    \"factors\": [\n        {\n            \"factorId\": \"SecurityQuestions\",\n            \"methods\": [\n                \"SECURITY_QUESTIONS\"\n            ]\n        },\n        {\n            \"displayName\": \"155XXXXX555\",\n            \"factorId\": \"83889faeacaf4592a964405f87506fc6\",\n            \"methods\": [\n                \"SMS\"\n            ]\n        },\n        {\n            \"displayName\": \"uxxr1@example.com\",\n            \"factorId\": \"b3e04149d958437b9b801fa70c33ca70\",\n            \"methods\": [\n                \"EMAIL\"\n            ]\n        },\n        {\n            \"factorId\": \"BypassCode\",\n            \"methods\": [\n                \"BYPASSCODE\"\n            ]\n        }\n    ]\n}"
+								}
+							]
+						},
+						{
+							"name": "Get Enrolled Factors for a User by User Name",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"securityQuestions\": [\r\n        {\r\n            \"id\": \"FirstCar\",\r\n            \"answer\": \"car123\"\r\n        }\r\n    ]\r\n}"
+								},
+								"url": {
+									"raw": "{{HOST}}/mfa/v1/users?userId=user1@example.com&userIdType=USER_NAME&attributes=factors",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"mfa",
+										"v1",
+										"users"
+									],
+									"query": [
+										{
+											"key": "userId",
+											"value": "user1@example.com"
+										},
+										{
+											"key": "userIdType",
+											"value": "USER_NAME"
+										},
+										{
+											"key": "attributes",
+											"value": "factors"
+										}
+									]
+								},
+								"description": "Get the list of factors enrolled by the user using the user name in the request.\n\nSince every user is uniquely identified in Oracle Identity Cloud Service using the GUID, the user needs to provide the GUID when getting their enrolled factors. However, a user may not be aware of their GUID. To support such cases, a user can make a request to get their enrolled factors by using a \"filter\" with the user name. The response is similar to the response of the GET using the userGUID. The response contains the userGUID and the enrolled factor details."
+							},
+							"response": [
+								{
+									"name": "Success Response to Get Enrolled Factors for a User by User Name",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json",
+												"disabled": false
+											},
+											{
+												"key": "Authorization",
+												"value": "Bearer {{access_token}}",
+												"disabled": false
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"securityQuestions\": [\r\n        {\r\n            \"id\": \"FirstCar\",\r\n            \"answer\": \"car123\"\r\n        }\r\n    ]\r\n}"
+										},
+										"url": {
+											"raw": "{{HOST}}/mfa/v1/users?userId=susan.harper@oracle.com&userIdType=USER_NAME&attributes=factors",
+											"host": [
+												"{{HOST}}"
+											],
+											"path": [
+												"mfa",
+												"v1",
+												"users"
+											],
+											"query": [
+												{
+													"key": "userId",
+													"value": "susan.harper@oracle.com"
+												},
+												{
+													"key": "userIdType",
+													"value": "USER_NAME"
+												},
+												{
+													"key": "attributes",
+													"value": "factors"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Cache-control",
+											"value": "no-cache, no-store, must-revalidate",
+											"name": "Cache-control",
+											"description": "Tells all caching mechanisms from server to client whether they may cache this object. It is measured in seconds"
+										},
+										{
+											"key": "Content-length",
+											"value": "411",
+											"name": "Content-length",
+											"description": "The length of the response body in octets (8-bit bytes)"
+										},
+										{
+											"key": "Content-type",
+											"value": "application/json",
+											"name": "Content-type",
+											"description": "The mime type of this content"
+										},
+										{
+											"key": "Date",
+											"value": "Fri, 10 Aug 2018 16:18:17 GMT",
+											"name": "Date",
+											"description": "The date and time that the message was sent"
+										},
+										{
+											"key": "Expires",
+											"value": "Sat, 01 Jan 2000 00:00:00 GMT",
+											"name": "Expires",
+											"description": "Gives the date/time after which the response is considered stale"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache",
+											"name": "Pragma",
+											"description": "Implementation-specific headers that may have various effects anywhere along the request-response chain."
+										},
+										{
+											"key": "Proxy-agent",
+											"value": "Oracle-Traffic-Director/11.1.1.9",
+											"name": "Proxy-agent",
+											"description": "Custom header"
+										},
+										{
+											"key": "Proxy-agent",
+											"value": "Oracle-Traffic-Director/11.1.1.9",
+											"name": "Proxy-agent",
+											"description": "Custom header"
+										},
+										{
+											"key": "Server",
+											"value": "Oracle-Traffic-Director/11.1.1.9",
+											"name": "Server",
+											"description": "A name for the server"
+										},
+										{
+											"key": "Via",
+											"value": "1.1 net-idcs-config, 1.1 net-idcs-dev-lbr",
+											"name": "Via",
+											"description": "Informs the client of proxies through which the response was sent."
+										},
+										{
+											"key": "X-content-type-options",
+											"value": "nosniff",
+											"name": "X-content-type-options",
+											"description": "The only defined value, \"nosniff\", prevents Internet Explorer from MIME-sniffing a response away from the declared content-type"
+										},
+										{
+											"key": "X-oracle-dms-ecid",
+											"value": "Gz8IJ0z3000000000",
+											"name": "X-oracle-dms-ecid",
+											"description": "Custom header"
+										},
+										{
+											"key": "X-oracle-dms-rid",
+											"value": "0:1:1",
+											"name": "X-oracle-dms-rid",
+											"description": "Custom header"
+										},
+										{
+											"key": "X-xss-protection",
+											"value": "1; mode=block",
+											"name": "X-xss-protection",
+											"description": "Cross-site scripting (XSS) filter"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"userGUID\": \"589879c55b7340518141eab82493f0cc\",\n    \"status\": \"success\",\n    \"preferredFactorId\": \"88178d80636a428393a5674ba46dc867\",\n    \"preferredMethod\": \"SMS\",\n    \"factors\": [\n        {\n            \"factorId\": \"BypassCode\",\n            \"methods\": [\n                \"BYPASSCODE\"\n            ]\n        },\n        {\n            \"displayName\": \"uxxr1@xample.com\",\n            \"factorId\": \"30db2274140043918edb033d9fe29ff3\",\n            \"methods\": [\n                \"EMAIL\"\n            ]\n        },\n        {\n            \"displayName\": \"+15XXXXXX555\",\n            \"factorId\": \"88178d80636a428393a5674ba46dc867\",\n            \"methods\": [\n                \"SMS\"\n            ]\n        }\n    ]\n}"
+								}
+							]
+						}
+					],
+					"description": "Since every user is uniquely identified in Oracle Identity Cloud Service using the GUID, the user needs to provide the GUID when getting their enrolled factors. However, a user may not be aware of their GUID. To support such cases, a user can make a request to get their enrolled factors by using a \"filter\" with the user name.\n\nThe response when providing the GUID to get enrolled factors contains the userGUID, the preferred factor, and the enrolled factor details.\n\nThe response when providing the username is similar to the response when providing the userGUID.",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "d055f3c1-ac10-4656-95c6-9c90d7755ee4",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "67b35c80-2d27-42a7-b717-fcd6f224c2eb",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Initiate & Verify the Preferred Factor",
+					"item": [
+						{
+							"name": "Step 1: Initiate Verification of the Preferred Factor",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n   \"userId\":\"{{userGUID}}\",\r\n   \"userIdType\": \"USER_GUID\"\r\n}"
+								},
+								"url": {
+									"raw": "{{HOST}}/mfa/v1/requests",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"mfa",
+										"v1",
+										"requests"
+									]
+								},
+								"description": "If you need to use the verify factor API without getting the user GUID, you can use it by providing any of the user unique ids such as username/email. This initiates the verification call for the default factor. For example, if the default factor is SMS, it initiates the SMS and the response contains the requestId.\n\nThe userIdType in the request indicates what type of credential the user is passing as the value for the userID. The following userIdType values are accepted:\n\n- USER_GUID\n- USER_NAME\n\nThe userId attribute contains the actual value of the user credential that is passed.\n\nThe response contains the requestId and the requestState needed for the next request."
+							},
+							"response": [
+								{
+									"name": "EMAIL Response to Step 1: Initiate Verification on the Default Factor",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json",
+												"disabled": false
+											},
+											{
+												"key": "Authorization",
+												"value": "Bearer {{access_token}}",
+												"disabled": false
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n   \"userId\":\"589879c55b7340518141eab82493f0cc\",\r\n   \"userIdType\": \"USER_GUID\"\r\n}"
+										},
+										"url": {
+											"raw": "{{HOST}}/mfa/v1/requests",
+											"host": [
+												"{{HOST}}"
+											],
+											"path": [
+												"mfa",
+												"v1",
+												"requests"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Cache-control",
+											"value": "no-cache, no-store, must-revalidate",
+											"name": "Cache-control",
+											"description": "Tells all caching mechanisms from server to client whether they may cache this object. It is measured in seconds"
+										},
+										{
+											"key": "Content-length",
+											"value": "517",
+											"name": "Content-length",
+											"description": "The length of the response body in octets (8-bit bytes)"
+										},
+										{
+											"key": "Content-type",
+											"value": "application/json",
+											"name": "Content-type",
+											"description": "The mime type of this content"
+										},
+										{
+											"key": "Date",
+											"value": "Fri, 10 Aug 2018 16:52:36 GMT",
+											"name": "Date",
+											"description": "The date and time that the message was sent"
+										},
+										{
+											"key": "Expires",
+											"value": "Sat, 01 Jan 2000 00:00:00 GMT",
+											"name": "Expires",
+											"description": "Gives the date/time after which the response is considered stale"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache",
+											"name": "Pragma",
+											"description": "Implementation-specific headers that may have various effects anywhere along the request-response chain."
+										},
+										{
+											"key": "Proxy-agent",
+											"value": "Oracle-Traffic-Director/11.1.1.9",
+											"name": "Proxy-agent",
+											"description": "Custom header"
+										},
+										{
+											"key": "Proxy-agent",
+											"value": "Oracle-Traffic-Director/11.1.1.9",
+											"name": "Proxy-agent",
+											"description": "Custom header"
+										},
+										{
+											"key": "Server",
+											"value": "Oracle-Traffic-Director/11.1.1.9",
+											"name": "Server",
+											"description": "A name for the server"
+										},
+										{
+											"key": "Via",
+											"value": "1.1 net-idcs-config, 1.1 net-idcs-dev-lbr",
+											"name": "Via",
+											"description": "Informs the client of proxies through which the response was sent."
+										},
+										{
+											"key": "X-content-type-options",
+											"value": "nosniff",
+											"name": "X-content-type-options",
+											"description": "The only defined value, \"nosniff\", prevents Internet Explorer from MIME-sniffing a response away from the declared content-type"
+										},
+										{
+											"key": "X-oracle-dms-ecid",
+											"value": "SWvmF0F4000000000",
+											"name": "X-oracle-dms-ecid",
+											"description": "Custom header"
+										},
+										{
+											"key": "X-oracle-dms-rid",
+											"value": "0:1:1",
+											"name": "X-oracle-dms-rid",
+											"description": "Custom header"
+										},
+										{
+											"key": "X-xss-protection",
+											"value": "1; mode=block",
+											"name": "X-xss-protection",
+											"description": "Cross-site scripting (XSS) filter"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": \"success\",\n    \"requestId\": \"ede6f855-a678-415b-930d-9b4d730df9cb\",\n    \"userGUID\": \"589879c55b7340518141eab82493f0cc\",\n    \"factorId\": \"30db2274140043918edb033d9fe29ff3\",\n    \"method\": \"EMAIL\",\n    \"displayName\": \"usXXXXXXXXX@example.com\",\n    \"requestState\": \"xcWIJP...d0oIOw\"\n}"
+								},
+								{
+									"name": "TOTP Reponse to Step 1: Initiate Verification on the Default Factor",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json",
+												"disabled": false
+											},
+											{
+												"key": "Authorization",
+												"value": "Bearer {{access_token}}",
+												"disabled": false
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n   \"userId\":\"589879c55b7340518141eab82493f0cc\",\r\n   \"userIdType\": \"USER_GUID\"\r\n}"
+										},
+										"url": {
+											"raw": "{{HOST}}/mfa/v1/requests",
+											"host": [
+												"{{HOST}}"
+											],
+											"path": [
+												"mfa",
+												"v1",
+												"requests"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Cache-control",
+											"value": "no-cache, no-store, must-revalidate",
+											"name": "Cache-control",
+											"description": "Tells all caching mechanisms from server to client whether they may cache this object. It is measured in seconds"
+										},
+										{
+											"key": "Content-length",
+											"value": "487",
+											"name": "Content-length",
+											"description": "The length of the response body in octets (8-bit bytes)"
+										},
+										{
+											"key": "Content-type",
+											"value": "application/json",
+											"name": "Content-type",
+											"description": "The mime type of this content"
+										},
+										{
+											"key": "Date",
+											"value": "Fri, 10 Aug 2018 17:26:04 GMT",
+											"name": "Date",
+											"description": "The date and time that the message was sent"
+										},
+										{
+											"key": "Expires",
+											"value": "Sat, 01 Jan 2000 00:00:00 GMT",
+											"name": "Expires",
+											"description": "Gives the date/time after which the response is considered stale"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache",
+											"name": "Pragma",
+											"description": "Implementation-specific headers that may have various effects anywhere along the request-response chain."
+										},
+										{
+											"key": "Proxy-agent",
+											"value": "Oracle-Traffic-Director/11.1.1.9",
+											"name": "Proxy-agent",
+											"description": "Custom header"
+										},
+										{
+											"key": "Proxy-agent",
+											"value": "Oracle-Traffic-Director/11.1.1.9",
+											"name": "Proxy-agent",
+											"description": "Custom header"
+										},
+										{
+											"key": "Server",
+											"value": "Oracle-Traffic-Director/11.1.1.9",
+											"name": "Server",
+											"description": "A name for the server"
+										},
+										{
+											"key": "Via",
+											"value": "1.1 net-idcs-config, 1.1 net-idcs-dev-lbr",
+											"name": "Via",
+											"description": "Informs the client of proxies through which the response was sent."
+										},
+										{
+											"key": "X-content-type-options",
+											"value": "nosniff",
+											"name": "X-content-type-options",
+											"description": "The only defined value, \"nosniff\", prevents Internet Explorer from MIME-sniffing a response away from the declared content-type"
+										},
+										{
+											"key": "X-oracle-dms-ecid",
+											"value": "Pc9j^1K4000000000",
+											"name": "X-oracle-dms-ecid",
+											"description": "Custom header"
+										},
+										{
+											"key": "X-oracle-dms-rid",
+											"value": "0:1:1",
+											"name": "X-oracle-dms-rid",
+											"description": "Custom header"
+										},
+										{
+											"key": "X-xss-protection",
+											"value": "1; mode=block",
+											"name": "X-xss-protection",
+											"description": "Cross-site scripting (XSS) filter"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": \"success\",\n    \"requestId\": \"62605b22-e52b-4571-9c5f-40e5e0515d0c\",\n    \"userGUID\": \"589879c55b7340518141eab82493f0cc\",\n    \"factorId\": \"287c0e1082564954b724e725a3ae5226\",\n    \"method\": \"TOTP\",\n    \"displayName\": \"Joe's Phone-1\",\n    \"requestState\": \"eBWAgT1MYSVPcg....dld3l2sYB/G4rpj4\"\n}"
+								},
+								{
+									"name": "Security Questions Response to Step 1: Initiate Verification on the Default Factor",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json",
+												"disabled": false
+											},
+											{
+												"key": "Authorization",
+												"value": "Bearer {{access_token}}",
+												"disabled": false
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n   \"userId\":\"589879c55b7340518141eab82493f0cc\",\r\n   \"userIdType\": \"USER_GUID\"\r\n}"
+										},
+										"url": {
+											"raw": "{{HOST}}/mfa/v1/requests",
+											"host": [
+												"{{HOST}}"
+											],
+											"path": [
+												"mfa",
+												"v1",
+												"requests"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Cache-control",
+											"value": "no-cache, no-store, must-revalidate",
+											"name": "Cache-control",
+											"description": "Tells all caching mechanisms from server to client whether they may cache this object. It is measured in seconds"
+										},
+										{
+											"key": "Content-length",
+											"value": "601",
+											"name": "Content-length",
+											"description": "The length of the response body in octets (8-bit bytes)"
+										},
+										{
+											"key": "Content-type",
+											"value": "application/json",
+											"name": "Content-type",
+											"description": "The mime type of this content"
+										},
+										{
+											"key": "Date",
+											"value": "Fri, 10 Aug 2018 17:15:24 GMT",
+											"name": "Date",
+											"description": "The date and time that the message was sent"
+										},
+										{
+											"key": "Expires",
+											"value": "Sat, 01 Jan 2000 00:00:00 GMT",
+											"name": "Expires",
+											"description": "Gives the date/time after which the response is considered stale"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache",
+											"name": "Pragma",
+											"description": "Implementation-specific headers that may have various effects anywhere along the request-response chain."
+										},
+										{
+											"key": "Proxy-agent",
+											"value": "Oracle-Traffic-Director/11.1.1.9",
+											"name": "Proxy-agent",
+											"description": "Custom header"
+										},
+										{
+											"key": "Proxy-agent",
+											"value": "Oracle-Traffic-Director/11.1.1.9",
+											"name": "Proxy-agent",
+											"description": "Custom header"
+										},
+										{
+											"key": "Server",
+											"value": "Oracle-Traffic-Director/11.1.1.9",
+											"name": "Server",
+											"description": "A name for the server"
+										},
+										{
+											"key": "Via",
+											"value": "1.1 net-idcs-config, 1.1 net-idcs-dev-lbr",
+											"name": "Via",
+											"description": "Informs the client of proxies through which the response was sent."
+										},
+										{
+											"key": "X-content-type-options",
+											"value": "nosniff",
+											"name": "X-content-type-options",
+											"description": "The only defined value, \"nosniff\", prevents Internet Explorer from MIME-sniffing a response away from the declared content-type"
+										},
+										{
+											"key": "X-oracle-dms-ecid",
+											"value": "vx7c61I5000000000",
+											"name": "X-oracle-dms-ecid",
+											"description": "Custom header"
+										},
+										{
+											"key": "X-oracle-dms-rid",
+											"value": "0:1:1",
+											"name": "X-oracle-dms-rid",
+											"description": "Custom header"
+										},
+										{
+											"key": "X-xss-protection",
+											"value": "1; mode=block",
+											"name": "X-xss-protection",
+											"description": "Cross-site scripting (XSS) filter"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": \"success\",\n    \"requestId\": \"031cf9ac-cc03-49a2-848e-751aad8b5db0\",\n    \"userGUID\": \"589879c55b7340518141eab82493f0cc\",\n    \"factorId\": \"SecurityQuestions\",\n    \"method\": \"SECURITY_QUESTIONS\",\n    \"requestState\": \"mNFUnEl9MYL0....prrIIrvX7cDCaF0mxQ\",\n    \"securityQuestions\": [\n        {\n            \"id\": \"FirstCar\",\n            \"hintText\": \"Found on road dead\",\n            \"localizedText\": \"What's the model of your first car?\"\n        }\n    ]\n}"
+								},
+								{
+									"name": "PUSH Success Response Step 1: Initiate Verification on the Default Factor",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json",
+												"disabled": false
+											},
+											{
+												"key": "Authorization",
+												"value": "Bearer {{access_token}}",
+												"disabled": false
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n   \"userId\":\"{{userGUID}}\",\r\n   \"userIdType\": \"USER_GUID\"\r\n}"
+										},
+										"url": {
+											"raw": "{{HOST}}/mfa/v1/requests",
+											"host": [
+												"{{HOST}}"
+											],
+											"path": [
+												"mfa",
+												"v1",
+												"requests"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Cache-control",
+											"value": "no-cache, no-store, must-revalidate",
+											"name": "Cache-control",
+											"description": "Tells all caching mechanisms from server to client whether they may cache this object. It is measured in seconds"
+										},
+										{
+											"key": "Content-length",
+											"value": "488",
+											"name": "Content-length",
+											"description": "The length of the response body in octets (8-bit bytes)"
+										},
+										{
+											"key": "Content-type",
+											"value": "application/json",
+											"name": "Content-type",
+											"description": "The mime type of this content"
+										},
+										{
+											"key": "Date",
+											"value": "Fri, 07 Sep 2018 21:11:44 GMT",
+											"name": "Date",
+											"description": "The date and time that the message was sent"
+										},
+										{
+											"key": "Expires",
+											"value": "Sat, 01 Jan 2000 00:00:00 GMT",
+											"name": "Expires",
+											"description": "Gives the date/time after which the response is considered stale"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache",
+											"name": "Pragma",
+											"description": "Implementation-specific headers that may have various effects anywhere along the request-response chain."
+										},
+										{
+											"key": "Proxy-agent",
+											"value": "Oracle-Traffic-Director/11.1.1.9",
+											"name": "Proxy-agent",
+											"description": "Custom header"
+										},
+										{
+											"key": "Proxy-agent",
+											"value": "Oracle-Traffic-Director/11.1.1.9",
+											"name": "Proxy-agent",
+											"description": "Custom header"
+										},
+										{
+											"key": "Server",
+											"value": "Oracle-Traffic-Director/11.1.1.9",
+											"name": "Server",
+											"description": "A name for the server"
+										},
+										{
+											"key": "Via",
+											"value": "1.1 net-idcs-config, 1.1 net-idcs-dev-lbr",
+											"name": "Via",
+											"description": "Informs the client of proxies through which the response was sent."
+										},
+										{
+											"key": "X-content-type-options",
+											"value": "nosniff",
+											"name": "X-content-type-options",
+											"description": "The only defined value, \"nosniff\", prevents Internet Explorer from MIME-sniffing a response away from the declared content-type"
+										},
+										{
+											"key": "X-oracle-dms-ecid",
+											"value": "^9vrr1SA000000000",
+											"name": "X-oracle-dms-ecid",
+											"description": "Custom header"
+										},
+										{
+											"key": "X-oracle-dms-rid",
+											"value": "0:1:1",
+											"name": "X-oracle-dms-rid",
+											"description": "Custom header"
+										},
+										{
+											"key": "X-xss-protection",
+											"value": "1; mode=block",
+											"name": "X-xss-protection",
+											"description": "Cross-site scripting (XSS) filter"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": \"success\",\n    \"requestId\": \"f1da6183-d305-4e1c-b645-57fce94c5ca8\",\n    \"userGUID\": \"7b3d902ab05b4214bae6b2924ca6be21\",\n    \"factorId\": \"77a33719a3d14833a2e3aa55ec01a2c9\",\n    \"method\": \"PUSH\",\n    \"displayName\": \"Joe's iPhone-2\",\n    \"requestState\": \"evthYnM56oTw....xOrSYoqEa4k\"\n}"
+								},
+								{
+									"name": "SMS Response to Step 1: Initiate Verification on the Default Factor",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json",
+												"disabled": false
+											},
+											{
+												"key": "Authorization",
+												"value": "Bearer {{access_token}}",
+												"disabled": false
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n   \"userId\":\"589879c55b7340518141eab82493f0cc\",\r\n   \"userIdType\": \"USER_GUID\"\r\n}"
+										},
+										"url": {
+											"raw": "{{HOST}}/mfa/v1/requests",
+											"host": [
+												"{{HOST}}"
+											],
+											"path": [
+												"mfa",
+												"v1",
+												"requests"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Cache-control",
+											"value": "no-cache, no-store, must-revalidate",
+											"name": "Cache-control",
+											"description": "Tells all caching mechanisms from server to client whether they may cache this object. It is measured in seconds"
+										},
+										{
+											"key": "Content-length",
+											"value": "504",
+											"name": "Content-length",
+											"description": "The length of the response body in octets (8-bit bytes)"
+										},
+										{
+											"key": "Content-type",
+											"value": "application/json",
+											"name": "Content-type",
+											"description": "The mime type of this content"
+										},
+										{
+											"key": "Date",
+											"value": "Fri, 10 Aug 2018 16:35:57 GMT",
+											"name": "Date",
+											"description": "The date and time that the message was sent"
+										},
+										{
+											"key": "Expires",
+											"value": "Sat, 01 Jan 2000 00:00:00 GMT",
+											"name": "Expires",
+											"description": "Gives the date/time after which the response is considered stale"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache",
+											"name": "Pragma",
+											"description": "Implementation-specific headers that may have various effects anywhere along the request-response chain."
+										},
+										{
+											"key": "Proxy-agent",
+											"value": "Oracle-Traffic-Director/11.1.1.9",
+											"name": "Proxy-agent",
+											"description": "Custom header"
+										},
+										{
+											"key": "Proxy-agent",
+											"value": "Oracle-Traffic-Director/11.1.1.9",
+											"name": "Proxy-agent",
+											"description": "Custom header"
+										},
+										{
+											"key": "Server",
+											"value": "Oracle-Traffic-Director/11.1.1.9",
+											"name": "Server",
+											"description": "A name for the server"
+										},
+										{
+											"key": "Via",
+											"value": "1.1 net-idcs-config, 1.1 net-idcs-dev-lbr",
+											"name": "Via",
+											"description": "Informs the client of proxies through which the response was sent."
+										},
+										{
+											"key": "X-content-type-options",
+											"value": "nosniff",
+											"name": "X-content-type-options",
+											"description": "The only defined value, \"nosniff\", prevents Internet Explorer from MIME-sniffing a response away from the declared content-type"
+										},
+										{
+											"key": "X-oracle-dms-ecid",
+											"value": "ydvoy1O1000000000",
+											"name": "X-oracle-dms-ecid",
+											"description": "Custom header"
+										},
+										{
+											"key": "X-oracle-dms-rid",
+											"value": "0:1:1",
+											"name": "X-oracle-dms-rid",
+											"description": "Custom header"
+										},
+										{
+											"key": "X-xss-protection",
+											"value": "1; mode=block",
+											"name": "X-xss-protection",
+											"description": "Cross-site scripting (XSS) filter"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": \"success\",\n    \"requestId\": \"f843736e-cbd8-4548-b41f-343b624a79fc\",\n    \"userGUID\": \"589879c55b7340518141eab82493f0cc\",\n    \"factorId\": \"88178d80636a428393a5674ba46dc867\",\n    \"method\": \"SMS\",\n    \"displayName\": \"+15XXXXXX555\",\n    \"requestState\": \"GwHJr3RvycjNEv.....MhQTLmWYzA/LVp0s\"\n}"
+								}
+							]
+						},
+						{
+							"name": "Step 1a: Resend TOTP (SMS and EMAIL)",
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"resendOtp\": true,\r\n    \"requestState\": \"{{requestState}}\"\r\n}"
+								},
+								"url": {
+									"raw": "{{HOST}}/mfa/v1/requests/{{requestID}}",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"mfa",
+										"v1",
+										"requests",
+										"{{requestID}}"
+									]
+								},
+								"description": "If the factor is SMS/EMAIL and the user hasn't received the TOTP, the client can request the server to send it again. Every SMS/EMAIL send increments the user's MFA login attempt count.\n\nAfter the user meets their maximum login attempts, the user account is locked if the user doesn't make a successful login after requesting the TOTP.\n\nThe response contains the requestId and the requestState needed for the next request."
+							},
+							"response": [
+								{
+									"name": "SMS and EMAIL Success Response to Step 1a: Resend TOTP",
+									"originalRequest": {
+										"method": "PATCH",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json",
+												"disabled": false
+											},
+											{
+												"key": "Authorization",
+												"value": "Bearer {{access_token}}",
+												"disabled": false
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"resendOtp\": true,\r\n    \"requestState\": \"NVo7HTkb6wBc+QKImOjL4ChHAYYAmUtg/adiI/XfK2adm6QyD2dV0JabpWSSHG27Q/L4I5lKa46/6nF5Da+4UGAXvAf74Zd/x3kO/5FJG+VmPEq3BfegQV5kcnvK07XB5sRuAhgFKQ6VVS7SbmFKO5xgjAMoXkByjE0kJqUY39Qvej/6kpdHTICqeupLgcdc2ddw8L9/9cYe7q3QnUQRL9H3r0+AtTwrU4eM+YF1bAM~TwYLD5WHZ3VeN0dZwadBMk6fxALoR494WmWDkMFbjmw\"\r\n}"
+										},
+										"url": {
+											"raw": "{{HOST}}/mfa/v1/requests/{{requestID}}",
+											"host": [
+												"{{HOST}}"
+											],
+											"path": [
+												"mfa",
+												"v1",
+												"requests",
+												"{{requestID}}"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Cache-control",
+											"value": "no-cache, no-store, must-revalidate",
+											"name": "Cache-control",
+											"description": "Tells all caching mechanisms from server to client whether they may cache this object. It is measured in seconds"
+										},
+										{
+											"key": "Content-length",
+											"value": "517",
+											"name": "Content-length",
+											"description": "The length of the response body in octets (8-bit bytes)"
+										},
+										{
+											"key": "Content-type",
+											"value": "application/json",
+											"name": "Content-type",
+											"description": "The mime type of this content"
+										},
+										{
+											"key": "Date",
+											"value": "Fri, 10 Aug 2018 18:15:32 GMT",
+											"name": "Date",
+											"description": "The date and time that the message was sent"
+										},
+										{
+											"key": "Expires",
+											"value": "Sat, 01 Jan 2000 00:00:00 GMT",
+											"name": "Expires",
+											"description": "Gives the date/time after which the response is considered stale"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache",
+											"name": "Pragma",
+											"description": "Implementation-specific headers that may have various effects anywhere along the request-response chain."
+										},
+										{
+											"key": "Proxy-agent",
+											"value": "Oracle-Traffic-Director/11.1.1.9",
+											"name": "Proxy-agent",
+											"description": "Custom header"
+										},
+										{
+											"key": "Proxy-agent",
+											"value": "Oracle-Traffic-Director/11.1.1.9",
+											"name": "Proxy-agent",
+											"description": "Custom header"
+										},
+										{
+											"key": "Server",
+											"value": "Oracle-Traffic-Director/11.1.1.9",
+											"name": "Server",
+											"description": "A name for the server"
+										},
+										{
+											"key": "Via",
+											"value": "1.1 net-idcs-config, 1.1 net-idcs-dev-lbr",
+											"name": "Via",
+											"description": "Informs the client of proxies through which the response was sent."
+										},
+										{
+											"key": "X-content-type-options",
+											"value": "nosniff",
+											"name": "X-content-type-options",
+											"description": "The only defined value, \"nosniff\", prevents Internet Explorer from MIME-sniffing a response away from the declared content-type"
+										},
+										{
+											"key": "X-oracle-dms-ecid",
+											"value": "D4Hsp1e4000000000",
+											"name": "X-oracle-dms-ecid",
+											"description": "Custom header"
+										},
+										{
+											"key": "X-oracle-dms-rid",
+											"value": "0:1:1",
+											"name": "X-oracle-dms-rid",
+											"description": "Custom header"
+										},
+										{
+											"key": "X-xss-protection",
+											"value": "1; mode=block",
+											"name": "X-xss-protection",
+											"description": "Cross-site scripting (XSS) filter"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": \"success\",\n    \"requestId\": \"e2746358-a077-41f8-8c16-269b61f3bd87\",\n    \"userGUID\": \"589879c55b7340518141eab82493f0cc\",\n    \"factorId\": \"30db2274140043918edb033d9fe29ff3\",\n    \"method\": \"EMAIL\",\n    \"displayName\": \"usXXXXXXXXX@example.com\",\n    \"requestState\": \"fMDFvxWtTWY....HHer0Rf/CUY\"\n}"
+								}
+							]
+						},
+						{
+							"name": "Step 2: Verify the SMS/EMAIL/TOTP Factor",
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"otpCode\": \"629084\",\r\n    \"requestState\": \"{{requestState}}\"\r\n}"
+								},
+								"url": {
+									"raw": "{{HOST}}/mfa/v1/requests/{{requestID}}",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"mfa",
+										"v1",
+										"requests",
+										"{{requestID}}"
+									]
+								},
+								"description": "Verify the factor by passing the otpCode or accepting the PUSH notification on the OMA app.\n\nIf the factor is SMS/EMAIL/TOTP, then the request payload contains the otpCode value.\n\nThe response contains the status of the verification and the cause if it fails."
+							},
+							"response": [
+								{
+									"name": "Success Response to Verify the SMS/EMAIL/TOTP/BYPASSCODE Factor",
+									"originalRequest": {
+										"method": "PATCH",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json",
+												"disabled": false
+											},
+											{
+												"key": "Authorization",
+												"value": "Bearer {{access_token}}",
+												"disabled": false
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"otpCode\": \"537613\",\r\n    \"requestState\": \"GwHJr3RvycjNEviqIianR443DKdGiYBus4cdhTEXFUFvxk0UkV4dY9Mtvw8BfhI/3OaF5tzrV+rrlzFqz7f4pMWBMhEGHV7tCTpxclboU6c6IZgjQATOEieY8+wAaxP/rO2pNfCLtONXluMXHTsY9mEK1ATLqkZ1T0lWnDwiD73KPVeaBCqPdjxVgDOILVRXuiLXwyq3Y/wVI5GMAfeWmTOIYL9rjw1xsNYqV54yt6U~StvSbranm06VQCWC8mq6dEyLOfHMhQTLmWYzA/LVp0s\"\r\n}"
+										},
+										"url": {
+											"raw": "{{HOST}}/mfa/v1/requests/{{requestID}}",
+											"host": [
+												"{{HOST}}"
+											],
+											"path": [
+												"mfa",
+												"v1",
+												"requests",
+												"{{requestID}}"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Cache-control",
+											"value": "no-cache, no-store, must-revalidate",
+											"name": "Cache-control",
+											"description": "Tells all caching mechanisms from server to client whether they may cache this object. It is measured in seconds"
+										},
+										{
+											"key": "Content-length",
+											"value": "20",
+											"name": "Content-length",
+											"description": "The length of the response body in octets (8-bit bytes)"
+										},
+										{
+											"key": "Content-type",
+											"value": "application/json",
+											"name": "Content-type",
+											"description": "The mime type of this content"
+										},
+										{
+											"key": "Date",
+											"value": "Fri, 10 Aug 2018 16:42:02 GMT",
+											"name": "Date",
+											"description": "The date and time that the message was sent"
+										},
+										{
+											"key": "Expires",
+											"value": "Sat, 01 Jan 2000 00:00:00 GMT",
+											"name": "Expires",
+											"description": "Gives the date/time after which the response is considered stale"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache",
+											"name": "Pragma",
+											"description": "Implementation-specific headers that may have various effects anywhere along the request-response chain."
+										},
+										{
+											"key": "Proxy-agent",
+											"value": "Oracle-Traffic-Director/11.1.1.9",
+											"name": "Proxy-agent",
+											"description": "Custom header"
+										},
+										{
+											"key": "Proxy-agent",
+											"value": "Oracle-Traffic-Director/11.1.1.9",
+											"name": "Proxy-agent",
+											"description": "Custom header"
+										},
+										{
+											"key": "Server",
+											"value": "Oracle-Traffic-Director/11.1.1.9",
+											"name": "Server",
+											"description": "A name for the server"
+										},
+										{
+											"key": "Via",
+											"value": "1.1 net-idcs-config, 1.1 net-idcs-dev-lbr",
+											"name": "Via",
+											"description": "Informs the client of proxies through which the response was sent."
+										},
+										{
+											"key": "X-content-type-options",
+											"value": "nosniff",
+											"name": "X-content-type-options",
+											"description": "The only defined value, \"nosniff\", prevents Internet Explorer from MIME-sniffing a response away from the declared content-type"
+										},
+										{
+											"key": "X-oracle-dms-ecid",
+											"value": "TjFjS1M1000000000",
+											"name": "X-oracle-dms-ecid",
+											"description": "Custom header"
+										},
+										{
+											"key": "X-oracle-dms-rid",
+											"value": "0:1:1",
+											"name": "X-oracle-dms-rid",
+											"description": "Custom header"
+										},
+										{
+											"key": "X-xss-protection",
+											"value": "1; mode=block",
+											"name": "X-xss-protection",
+											"description": "Cross-site scripting (XSS) filter"
+										}
+									],
+									"cookie": [],
+									"body": "{\"status\":\"success\"}"
+								}
+							]
+						},
+						{
+							"name": "Step 2: Verify the Security Question Factor",
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"securityQuestions\": [\r\n        {\r\n            \"id\": \"FirstCar\",\r\n            \"answer\": \"Ford Pinto\"\r\n        }\r\n    ],\r\n    \"requestState\": \"{{requestState}}\"\r\n}"
+								},
+								"url": {
+									"raw": "{{HOST}}/mfa/v1/requests/{{requestID}}",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"mfa",
+										"v1",
+										"requests",
+										"{{requestID}}"
+									]
+								},
+								"description": "When verifying the Security Questions factor, the request payload contains the securityQuestions id/answer map. This is an array since you can mandate that a user answer more than one question while verifying MFA.\n\nThe response contains the status of the verification and the cause in case of failure."
+							},
+							"response": [
+								{
+									"name": "Success Reponse to Step 2: Verify the Security Question Factor",
+									"originalRequest": {
+										"method": "PATCH",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json",
+												"disabled": false
+											},
+											{
+												"key": "Authorization",
+												"value": "Bearer {{access_token}}",
+												"disabled": false
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"securityQuestions\": [\r\n        {\r\n            \"id\": \"FirstCar\",\r\n            \"answer\": \"Ford Pinto\"\r\n        }\r\n    ],\r\n    \"requestState\": \"mNFUnEl9MYL0VpdLiS/3zIdv0dm02kr+q2ZwwhuJB8UQgPzPfkyL4cgf7C35xvnz07bMInAJtyhSZIybHuWyzG87J8fndr68a45R5jleRZaLqsRDCcOcvV+V63BakOrDaYGVRdAV/qMt0CGEOzIs1dHVPfw5bvAOoctNeWzXefOqgefK7QSTyuC1zf2RcAGtSj9I1Zh2zEBFF82PITPpBcgzzz4ELU9w8G32j49kGq0~vWbaYYks/GXLn8LxWFAP/WOU6prrIIrvX7cDCaF0mxQ\"\r\n}"
+										},
+										"url": {
+											"raw": "{{HOST}}/mfa/v1/requests/{{requestID}}",
+											"host": [
+												"{{HOST}}"
+											],
+											"path": [
+												"mfa",
+												"v1",
+												"requests",
+												"{{requestID}}"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Cache-control",
+											"value": "no-cache, no-store, must-revalidate",
+											"name": "Cache-control",
+											"description": "Tells all caching mechanisms from server to client whether they may cache this object. It is measured in seconds"
+										},
+										{
+											"key": "Content-length",
+											"value": "20",
+											"name": "Content-length",
+											"description": "The length of the response body in octets (8-bit bytes)"
+										},
+										{
+											"key": "Content-type",
+											"value": "application/json",
+											"name": "Content-type",
+											"description": "The mime type of this content"
+										},
+										{
+											"key": "Date",
+											"value": "Fri, 10 Aug 2018 17:17:58 GMT",
+											"name": "Date",
+											"description": "The date and time that the message was sent"
+										},
+										{
+											"key": "Expires",
+											"value": "Sat, 01 Jan 2000 00:00:00 GMT",
+											"name": "Expires",
+											"description": "Gives the date/time after which the response is considered stale"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache",
+											"name": "Pragma",
+											"description": "Implementation-specific headers that may have various effects anywhere along the request-response chain."
+										},
+										{
+											"key": "Proxy-agent",
+											"value": "Oracle-Traffic-Director/11.1.1.9",
+											"name": "Proxy-agent",
+											"description": "Custom header"
+										},
+										{
+											"key": "Proxy-agent",
+											"value": "Oracle-Traffic-Director/11.1.1.9",
+											"name": "Proxy-agent",
+											"description": "Custom header"
+										},
+										{
+											"key": "Server",
+											"value": "Oracle-Traffic-Director/11.1.1.9",
+											"name": "Server",
+											"description": "A name for the server"
+										},
+										{
+											"key": "Via",
+											"value": "1.1 net-idcs-config, 1.1 net-idcs-dev-lbr",
+											"name": "Via",
+											"description": "Informs the client of proxies through which the response was sent."
+										},
+										{
+											"key": "X-content-type-options",
+											"value": "nosniff",
+											"name": "X-content-type-options",
+											"description": "The only defined value, \"nosniff\", prevents Internet Explorer from MIME-sniffing a response away from the declared content-type"
+										},
+										{
+											"key": "X-oracle-dms-ecid",
+											"value": "EXcW50q4000000000",
+											"name": "X-oracle-dms-ecid",
+											"description": "Custom header"
+										},
+										{
+											"key": "X-oracle-dms-rid",
+											"value": "0:1:1",
+											"name": "X-oracle-dms-rid",
+											"description": "Custom header"
+										},
+										{
+											"key": "X-xss-protection",
+											"value": "1; mode=block",
+											"name": "X-xss-protection",
+											"description": "Cross-site scripting (XSS) filter"
+										}
+									],
+									"cookie": [],
+									"body": "{\"status\":\"success\"}"
+								}
+							]
+						},
+						{
+							"name": "Step 2: Verify the PUSH Factor",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"securityQuestions\": [\r\n        {\r\n            \"id\": \"FirstCar\",\r\n            \"answer\": \"car123\"\r\n        }\r\n    ]\r\n}"
+								},
+								"url": {
+									"raw": "{{HOST}}/mfa/v1/requests/{{requestID}}",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"mfa",
+										"v1",
+										"requests",
+										"{{requestID}}"
+									]
+								},
+								"description": "Use this example to poll for the Push Notification Verification Request\n\nSince the PUSH notification must be accepted/rejected by the user on the Oracle Mobile Authenticator App, we provide a \"polling\" api for the client to use if the user has acted on this notification."
+							},
+							"response": [
+								{
+									"name": "Pending Response to Step 2: Verify the PUSH Factor",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json",
+												"disabled": false
+											},
+											{
+												"key": "Authorization",
+												"value": "Bearer {{access_token}}",
+												"disabled": false
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"securityQuestions\": [\r\n        {\r\n            \"id\": \"FirstCar\",\r\n            \"answer\": \"car123\"\r\n        }\r\n    ]\r\n}"
+										},
+										"url": {
+											"raw": "{{HOST}}/mfa/v1/requests/{{requestID}}",
+											"host": [
+												"{{HOST}}"
+											],
+											"path": [
+												"mfa",
+												"v1",
+												"requests",
+												"{{requestID}}"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Cache-control",
+											"value": "no-cache, no-store, must-revalidate",
+											"name": "Cache-control",
+											"description": "Tells all caching mechanisms from server to client whether they may cache this object. It is measured in seconds"
+										},
+										{
+											"key": "Content-length",
+											"value": "102",
+											"name": "Content-length",
+											"description": "The length of the response body in octets (8-bit bytes)"
+										},
+										{
+											"key": "Content-type",
+											"value": "application/json",
+											"name": "Content-type",
+											"description": "The mime type of this content"
+										},
+										{
+											"key": "Date",
+											"value": "Fri, 07 Sep 2018 21:14:54 GMT",
+											"name": "Date",
+											"description": "The date and time that the message was sent"
+										},
+										{
+											"key": "Expires",
+											"value": "Sat, 01 Jan 2000 00:00:00 GMT",
+											"name": "Expires",
+											"description": "Gives the date/time after which the response is considered stale"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache",
+											"name": "Pragma",
+											"description": "Implementation-specific headers that may have various effects anywhere along the request-response chain."
+										},
+										{
+											"key": "Proxy-agent",
+											"value": "Oracle-Traffic-Director/11.1.1.9",
+											"name": "Proxy-agent",
+											"description": "Custom header"
+										},
+										{
+											"key": "Proxy-agent",
+											"value": "Oracle-Traffic-Director/11.1.1.9",
+											"name": "Proxy-agent",
+											"description": "Custom header"
+										},
+										{
+											"key": "Server",
+											"value": "Oracle-Traffic-Director/11.1.1.9",
+											"name": "Server",
+											"description": "A name for the server"
+										},
+										{
+											"key": "Via",
+											"value": "1.1 net-idcs-config, 1.1 net-idcs-dev-lbr",
+											"name": "Via",
+											"description": "Informs the client of proxies through which the response was sent."
+										},
+										{
+											"key": "X-content-type-options",
+											"value": "nosniff",
+											"name": "X-content-type-options",
+											"description": "The only defined value, \"nosniff\", prevents Internet Explorer from MIME-sniffing a response away from the declared content-type"
+										},
+										{
+											"key": "X-oracle-dms-ecid",
+											"value": "FaZ0B0gA000000000",
+											"name": "X-oracle-dms-ecid",
+											"description": "Custom header"
+										},
+										{
+											"key": "X-oracle-dms-rid",
+											"value": "0:1:1",
+											"name": "X-oracle-dms-rid",
+											"description": "Custom header"
+										},
+										{
+											"key": "X-xss-protection",
+											"value": "1; mode=block",
+											"name": "X-xss-protection",
+											"description": "Cross-site scripting (XSS) filter"
+										}
+									],
+									"cookie": [],
+									"body": "{\"status\":\"pending\",\"cause\":[{\"code\":\"AUTH-1108\",\"message\":\"Push Notification approval is pending.\"}]}"
+								},
+								{
+									"name": "Success Response to Step 2: Verify the PUSH Factor",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json",
+												"disabled": false
+											},
+											{
+												"key": "Authorization",
+												"value": "Bearer {{access_token}}",
+												"disabled": false
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"securityQuestions\": [\r\n        {\r\n            \"id\": \"FirstCar\",\r\n            \"answer\": \"car123\"\r\n        }\r\n    ]\r\n}"
+										},
+										"url": {
+											"raw": "{{HOST}}/mfa/v1/requests/{{requestID}}",
+											"host": [
+												"{{HOST}}"
+											],
+											"path": [
+												"mfa",
+												"v1",
+												"requests",
+												"{{requestID}}"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Cache-control",
+											"value": "no-cache, no-store, must-revalidate",
+											"name": "Cache-control",
+											"description": "Tells all caching mechanisms from server to client whether they may cache this object. It is measured in seconds"
+										},
+										{
+											"key": "Content-length",
+											"value": "20",
+											"name": "Content-length",
+											"description": "The length of the response body in octets (8-bit bytes)"
+										},
+										{
+											"key": "Content-type",
+											"value": "application/json",
+											"name": "Content-type",
+											"description": "The mime type of this content"
+										},
+										{
+											"key": "Date",
+											"value": "Fri, 07 Sep 2018 21:15:29 GMT",
+											"name": "Date",
+											"description": "The date and time that the message was sent"
+										},
+										{
+											"key": "Expires",
+											"value": "Sat, 01 Jan 2000 00:00:00 GMT",
+											"name": "Expires",
+											"description": "Gives the date/time after which the response is considered stale"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache",
+											"name": "Pragma",
+											"description": "Implementation-specific headers that may have various effects anywhere along the request-response chain."
+										},
+										{
+											"key": "Proxy-agent",
+											"value": "Oracle-Traffic-Director/11.1.1.9",
+											"name": "Proxy-agent",
+											"description": "Custom header"
+										},
+										{
+											"key": "Proxy-agent",
+											"value": "Oracle-Traffic-Director/11.1.1.9",
+											"name": "Proxy-agent",
+											"description": "Custom header"
+										},
+										{
+											"key": "Server",
+											"value": "Oracle-Traffic-Director/11.1.1.9",
+											"name": "Server",
+											"description": "A name for the server"
+										},
+										{
+											"key": "Via",
+											"value": "1.1 net-idcs-config, 1.1 net-idcs-dev-lbr",
+											"name": "Via",
+											"description": "Informs the client of proxies through which the response was sent."
+										},
+										{
+											"key": "X-content-type-options",
+											"value": "nosniff",
+											"name": "X-content-type-options",
+											"description": "The only defined value, \"nosniff\", prevents Internet Explorer from MIME-sniffing a response away from the declared content-type"
+										},
+										{
+											"key": "X-oracle-dms-ecid",
+											"value": "mrmtT1BB000000000",
+											"name": "X-oracle-dms-ecid",
+											"description": "Custom header"
+										},
+										{
+											"key": "X-oracle-dms-rid",
+											"value": "0:1:1",
+											"name": "X-oracle-dms-rid",
+											"description": "Custom header"
+										},
+										{
+											"key": "X-xss-protection",
+											"value": "1; mode=block",
+											"name": "X-xss-protection",
+											"description": "Cross-site scripting (XSS) filter"
+										}
+									],
+									"cookie": [],
+									"body": "{\"status\":\"success\"}"
+								}
+							]
+						}
+					],
+					"description": "Factor verification is a 2-step process. You need to ask Oracle Identity Cloud Service to \"initiate\" (for example, send an SMS with a time-based one-time passcode (TOTP), send an email with a TOTP code, or send a PUSH notification to the enrolled OMA app). After initiating, the client needs to \"verify\" by passing the otpCode or security answer or accepting the PUSH notification on the OMA app.\n\nUse the example requests in this folder to initiate and verify the preferred factor as well as verify the PUSH factor by polling for the Push Notification Verification Request\n\nSince the PUSH notification must be accepted/rejected by the user on the Oracle Mobile Authenticator App, we provide a \"polling\" API for the client to use if the user has acted on this notification.",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "c140c921-bcc4-4876-b198-1cd3fed76b1f",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "825ddb89-981c-4810-a895-1bb0621e7de6",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Initiate & Verify a Backup Factor",
+					"item": [
+						{
+							"name": "Step 1: Initiate Verification of Backup Factor (SMS,EMAIL,TOTP)",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"userId\":\"{{userGUID}}\",\r\n    \"userIdType\":\"USER_GUID\",\r\n    \"factorId\":\"{{factorID}}\",\r\n    \"method\":\"PUSH\"\r\n}"
+								},
+								"url": {
+									"raw": "{{HOST}}/mfa/v1/requests",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"mfa",
+										"v1",
+										"requests"
+									]
+								},
+								"description": "If the user doesn't want to use the default factor, the user has the option to provide the \"factorId\" and \"method\" to indicate that they want to use one of their backup factors.\n\nThe response contains the requestID and requestState that need to be used in the next request."
+							},
+							"response": [
+								{
+									"name": "PUSH Success Response Step 1: Initiate Verification of Backup Factor (SMS,EMAIL,TOTP, PUSH)",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json",
+												"disabled": false
+											},
+											{
+												"key": "Authorization",
+												"value": "Bearer {{access_token}}",
+												"disabled": false
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"userId\":\"{{userGUID}}\",\r\n    \"userIdType\":\"USER_GUID\",\r\n    \"factorId\":\"{{factorID}}\",\r\n    \"method\":\"PUSH\"\r\n}"
+										},
+										"url": {
+											"raw": "{{HOST}}/mfa/v1/requests",
+											"host": [
+												"{{HOST}}"
+											],
+											"path": [
+												"mfa",
+												"v1",
+												"requests"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Cache-control",
+											"value": "no-cache, no-store, must-revalidate",
+											"name": "Cache-control",
+											"description": "Tells all caching mechanisms from server to client whether they may cache this object. It is measured in seconds"
+										},
+										{
+											"key": "Content-length",
+											"value": "488",
+											"name": "Content-length",
+											"description": "The length of the response body in octets (8-bit bytes)"
+										},
+										{
+											"key": "Content-type",
+											"value": "application/json",
+											"name": "Content-type",
+											"description": "The mime type of this content"
+										},
+										{
+											"key": "Date",
+											"value": "Fri, 07 Sep 2018 21:32:58 GMT",
+											"name": "Date",
+											"description": "The date and time that the message was sent"
+										},
+										{
+											"key": "Expires",
+											"value": "Sat, 01 Jan 2000 00:00:00 GMT",
+											"name": "Expires",
+											"description": "Gives the date/time after which the response is considered stale"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache",
+											"name": "Pragma",
+											"description": "Implementation-specific headers that may have various effects anywhere along the request-response chain."
+										},
+										{
+											"key": "Proxy-agent",
+											"value": "Oracle-Traffic-Director/11.1.1.9",
+											"name": "Proxy-agent",
+											"description": "Custom header"
+										},
+										{
+											"key": "Proxy-agent",
+											"value": "Oracle-Traffic-Director/11.1.1.9",
+											"name": "Proxy-agent",
+											"description": "Custom header"
+										},
+										{
+											"key": "Server",
+											"value": "Oracle-Traffic-Director/11.1.1.9",
+											"name": "Server",
+											"description": "A name for the server"
+										},
+										{
+											"key": "Via",
+											"value": "1.1 net-idcs-config, 1.1 net-idcs-dev-lbr",
+											"name": "Via",
+											"description": "Informs the client of proxies through which the response was sent."
+										},
+										{
+											"key": "X-content-type-options",
+											"value": "nosniff",
+											"name": "X-content-type-options",
+											"description": "The only defined value, \"nosniff\", prevents Internet Explorer from MIME-sniffing a response away from the declared content-type"
+										},
+										{
+											"key": "X-oracle-dms-ecid",
+											"value": "p6WIa1R9000000000",
+											"name": "X-oracle-dms-ecid",
+											"description": "Custom header"
+										},
+										{
+											"key": "X-oracle-dms-rid",
+											"value": "0:1:1",
+											"name": "X-oracle-dms-rid",
+											"description": "Custom header"
+										},
+										{
+											"key": "X-xss-protection",
+											"value": "1; mode=block",
+											"name": "X-xss-protection",
+											"description": "Cross-site scripting (XSS) filter"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": \"success\",\n    \"requestId\": \"e01ca919-f88d-4bfd-93ef-0a3b8cb2e3ff\",\n    \"userGUID\": \"7b3d902ab05b4214bae6b2924ca6be21\",\n    \"factorId\": \"77a33719a3d14833a2e3aa55ec01a2c9\",\n    \"method\": \"PUSH\",\n    \"displayName\": \"Joe's iPhone-2\",\n    \"requestState\": \"J1T0bStvdDvm....4tErDXg+w\"\n}"
+								},
+								{
+									"name": "SMS Success Response to Initiate Verification of Backup Factor",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json",
+												"disabled": false
+											},
+											{
+												"key": "Authorization",
+												"value": "Bearer {{access_token}}",
+												"disabled": false
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"userId\":\"589879c55b7340518141eab82493f0cc\",\r\n    \"userIdType\":\"USER_GUID\",\r\n    \"factorId\":\"88178d80636a428393a5674ba46dc867\",\r\n    \"method\":\"SMS\"\r\n}"
+										},
+										"url": {
+											"raw": "{{HOST}}/mfa/v1/requests",
+											"host": [
+												"{{HOST}}"
+											],
+											"path": [
+												"mfa",
+												"v1",
+												"requests"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Cache-control",
+											"value": "no-cache, no-store, must-revalidate",
+											"name": "Cache-control",
+											"description": "Tells all caching mechanisms from server to client whether they may cache this object. It is measured in seconds"
+										},
+										{
+											"key": "Content-length",
+											"value": "504",
+											"name": "Content-length",
+											"description": "The length of the response body in octets (8-bit bytes)"
+										},
+										{
+											"key": "Content-type",
+											"value": "application/json",
+											"name": "Content-type",
+											"description": "The mime type of this content"
+										},
+										{
+											"key": "Date",
+											"value": "Fri, 10 Aug 2018 17:02:40 GMT",
+											"name": "Date",
+											"description": "The date and time that the message was sent"
+										},
+										{
+											"key": "Expires",
+											"value": "Sat, 01 Jan 2000 00:00:00 GMT",
+											"name": "Expires",
+											"description": "Gives the date/time after which the response is considered stale"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache",
+											"name": "Pragma",
+											"description": "Implementation-specific headers that may have various effects anywhere along the request-response chain."
+										},
+										{
+											"key": "Proxy-agent",
+											"value": "Oracle-Traffic-Director/11.1.1.9",
+											"name": "Proxy-agent",
+											"description": "Custom header"
+										},
+										{
+											"key": "Proxy-agent",
+											"value": "Oracle-Traffic-Director/11.1.1.9",
+											"name": "Proxy-agent",
+											"description": "Custom header"
+										},
+										{
+											"key": "Server",
+											"value": "Oracle-Traffic-Director/11.1.1.9",
+											"name": "Server",
+											"description": "A name for the server"
+										},
+										{
+											"key": "Via",
+											"value": "1.1 net-idcs-config, 1.1 net-idcs-dev-lbr",
+											"name": "Via",
+											"description": "Informs the client of proxies through which the response was sent."
+										},
+										{
+											"key": "X-content-type-options",
+											"value": "nosniff",
+											"name": "X-content-type-options",
+											"description": "The only defined value, \"nosniff\", prevents Internet Explorer from MIME-sniffing a response away from the declared content-type"
+										},
+										{
+											"key": "X-oracle-dms-ecid",
+											"value": "JcUfj1w3000000000",
+											"name": "X-oracle-dms-ecid",
+											"description": "Custom header"
+										},
+										{
+											"key": "X-oracle-dms-rid",
+											"value": "0:1:1",
+											"name": "X-oracle-dms-rid",
+											"description": "Custom header"
+										},
+										{
+											"key": "X-xss-protection",
+											"value": "1; mode=block",
+											"name": "X-xss-protection",
+											"description": "Cross-site scripting (XSS) filter"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": \"success\",\n    \"requestId\": \"61a35b3b-3ecd-4183-8c3c-e5f6941cbd88\",\n    \"userGUID\": \"589879c55b7340518141eab82493f0cc\",\n    \"factorId\": \"88178d80636a428393a5674ba46dc867\",\n    \"method\": \"SMS\",\n    \"displayName\": \"+15XXXXXX555\",\n    \"requestState\": \"M7w1Lqb1x9.......QuS/3AiopM\"\n}"
+								}
+							]
+						},
+						{
+							"name": "Step 2: Verify the Backup Factor (SMS,EMAIL,TOTP)",
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"otpCode\": \"050353\",\r\n    \"requestState\": \"{{requestState}}\"\r\n}"
+								},
+								"url": {
+									"raw": "{{HOST}}/mfa/v1/requests/{{requestID}}",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"mfa",
+										"v1",
+										"requests",
+										"{{requestID}}"
+									]
+								},
+								"description": "If the factor is SMS/EMAIL/TOTP, then the request payload contains the otpCode value.\n\nThe response contains the status of the verification and the cause if it fails."
+							},
+							"response": [
+								{
+									"name": "Response to Step 2: Verify the Backup Factor",
+									"originalRequest": {
+										"method": "PATCH",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json",
+												"disabled": false
+											},
+											{
+												"key": "Authorization",
+												"value": "Bearer {{access_token}}",
+												"disabled": false
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"otpCode\": \"050353\",\r\n    \"requestState\": \"M7w1Lqb1x9ZzOGxUWmjqoNCcfHHZ6d4/cQvEuMMt9zI8pBAK8Rb64S9sXIyQtFwljHh7wwu2mKCkjVX327QzstZ8m5nb+zXFVuif3arCKUEYbht0js0vRn5Tgh/FH5iB7m1Kre6az/p2FsyFgr4vU+kgZo42t6Wc9A1U3USBmkI6SyXm2NCSz+LQQsUiv0D8HALoiavuqTDaAqSr8BvfCTFQFMwX1fnPv3VTxicL/Z4~hIhy62LsJjNolX2Q/h2gY0Y20tNhP9JNPQuS/3AiopM\"\r\n}"
+										},
+										"url": {
+											"raw": "{{HOST}}/mfa/v1/requests/{{requestID}}",
+											"host": [
+												"{{HOST}}"
+											],
+											"path": [
+												"mfa",
+												"v1",
+												"requests",
+												"{{requestID}}"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Cache-control",
+											"value": "no-cache, no-store, must-revalidate",
+											"name": "Cache-control",
+											"description": "Tells all caching mechanisms from server to client whether they may cache this object. It is measured in seconds"
+										},
+										{
+											"key": "Content-length",
+											"value": "20",
+											"name": "Content-length",
+											"description": "The length of the response body in octets (8-bit bytes)"
+										},
+										{
+											"key": "Content-type",
+											"value": "application/json",
+											"name": "Content-type",
+											"description": "The mime type of this content"
+										},
+										{
+											"key": "Date",
+											"value": "Fri, 10 Aug 2018 17:04:22 GMT",
+											"name": "Date",
+											"description": "The date and time that the message was sent"
+										},
+										{
+											"key": "Expires",
+											"value": "Sat, 01 Jan 2000 00:00:00 GMT",
+											"name": "Expires",
+											"description": "Gives the date/time after which the response is considered stale"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache",
+											"name": "Pragma",
+											"description": "Implementation-specific headers that may have various effects anywhere along the request-response chain."
+										},
+										{
+											"key": "Proxy-agent",
+											"value": "Oracle-Traffic-Director/11.1.1.9",
+											"name": "Proxy-agent",
+											"description": "Custom header"
+										},
+										{
+											"key": "Proxy-agent",
+											"value": "Oracle-Traffic-Director/11.1.1.9",
+											"name": "Proxy-agent",
+											"description": "Custom header"
+										},
+										{
+											"key": "Server",
+											"value": "Oracle-Traffic-Director/11.1.1.9",
+											"name": "Server",
+											"description": "A name for the server"
+										},
+										{
+											"key": "Via",
+											"value": "1.1 net-idcs-config, 1.1 net-idcs-dev-lbr",
+											"name": "Via",
+											"description": "Informs the client of proxies through which the response was sent."
+										},
+										{
+											"key": "X-content-type-options",
+											"value": "nosniff",
+											"name": "X-content-type-options",
+											"description": "The only defined value, \"nosniff\", prevents Internet Explorer from MIME-sniffing a response away from the declared content-type"
+										},
+										{
+											"key": "X-oracle-dms-ecid",
+											"value": "zYe4J1r3000000000",
+											"name": "X-oracle-dms-ecid",
+											"description": "Custom header"
+										},
+										{
+											"key": "X-oracle-dms-rid",
+											"value": "0:1:1",
+											"name": "X-oracle-dms-rid",
+											"description": "Custom header"
+										},
+										{
+											"key": "X-xss-protection",
+											"value": "1; mode=block",
+											"name": "X-xss-protection",
+											"description": "Cross-site scripting (XSS) filter"
+										}
+									],
+									"cookie": [],
+									"body": "{\"status\":\"success\"}"
+								}
+							]
+						},
+						{
+							"name": "Step 1: Initiate Verification of Backup Factor (BypassCode)",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"userId\":\"{{userID}}\",\r\n    \"userIdType\":\"USER_GUID\",\r\n    \"factorId\":\"{{factorID}}\",\r\n    \"method\":\"BYPASSCODE\"\r\n}"
+								},
+								"url": {
+									"raw": "{{HOST}}/mfa/v1/requests",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"mfa",
+										"v1",
+										"requests"
+									]
+								},
+								"description": "If the user doesn't want to use the default factor or their backup factor, the user has the option to provide the \"factorId\" and \"method\" as BYPASS CODE to indicate that they want to use a previously generated BYPASS code as the factor.\n\nThe response contains the requestId and the requestState needed for the next request."
+							},
+							"response": [
+								{
+									"name": "Bypass Code Success Response to Initiate Verification of Backup Factor",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json",
+												"disabled": false
+											},
+											{
+												"key": "Authorization",
+												"value": "Bearer {{access_token}}",
+												"disabled": false
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"userId\":\"589879c55b7340518141eab82493f0cc\",\r\n    \"userIdType\":\"USER_GUID\",\r\n    \"factorId\":\"BypassCode\",\r\n    \"method\":\"BYPASSCODE\"\r\n}"
+										},
+										"url": {
+											"raw": "{{HOST}}/mfa/v1/requests",
+											"host": [
+												"{{HOST}}"
+											],
+											"path": [
+												"mfa",
+												"v1",
+												"requests"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Cache-control",
+											"value": "no-cache, no-store, must-revalidate",
+											"name": "Cache-control",
+											"description": "Tells all caching mechanisms from server to client whether they may cache this object. It is measured in seconds"
+										},
+										{
+											"key": "Content-length",
+											"value": "417",
+											"name": "Content-length",
+											"description": "The length of the response body in octets (8-bit bytes)"
+										},
+										{
+											"key": "Content-type",
+											"value": "application/json",
+											"name": "Content-type",
+											"description": "The mime type of this content"
+										},
+										{
+											"key": "Date",
+											"value": "Fri, 10 Aug 2018 17:33:16 GMT",
+											"name": "Date",
+											"description": "The date and time that the message was sent"
+										},
+										{
+											"key": "Expires",
+											"value": "Sat, 01 Jan 2000 00:00:00 GMT",
+											"name": "Expires",
+											"description": "Gives the date/time after which the response is considered stale"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache",
+											"name": "Pragma",
+											"description": "Implementation-specific headers that may have various effects anywhere along the request-response chain."
+										},
+										{
+											"key": "Proxy-agent",
+											"value": "Oracle-Traffic-Director/11.1.1.9",
+											"name": "Proxy-agent",
+											"description": "Custom header"
+										},
+										{
+											"key": "Proxy-agent",
+											"value": "Oracle-Traffic-Director/11.1.1.9",
+											"name": "Proxy-agent",
+											"description": "Custom header"
+										},
+										{
+											"key": "Server",
+											"value": "Oracle-Traffic-Director/11.1.1.9",
+											"name": "Server",
+											"description": "A name for the server"
+										},
+										{
+											"key": "Via",
+											"value": "1.1 net-idcs-config, 1.1 net-idcs-dev-lbr",
+											"name": "Via",
+											"description": "Informs the client of proxies through which the response was sent."
+										},
+										{
+											"key": "X-content-type-options",
+											"value": "nosniff",
+											"name": "X-content-type-options",
+											"description": "The only defined value, \"nosniff\", prevents Internet Explorer from MIME-sniffing a response away from the declared content-type"
+										},
+										{
+											"key": "X-oracle-dms-ecid",
+											"value": "05YQj164000000000",
+											"name": "X-oracle-dms-ecid",
+											"description": "Custom header"
+										},
+										{
+											"key": "X-oracle-dms-rid",
+											"value": "0:1:1",
+											"name": "X-oracle-dms-rid",
+											"description": "Custom header"
+										},
+										{
+											"key": "X-xss-protection",
+											"value": "1; mode=block",
+											"name": "X-xss-protection",
+											"description": "Cross-site scripting (XSS) filter"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": \"success\",\n    \"requestId\": \"97308b97-6529-4722-9f44-8c9652e8405c\",\n    \"userGUID\": \"589879c55b7340518141eab82493f0cc\",\n    \"factorId\": \"BypassCode\",\n    \"method\": \"BYPASSCODE\",\n    \"requestState\": \"jZPbQ5KMrDjBd.....CPLQtsWmclfik\"\n}"
+								}
+							]
+						},
+						{
+							"name": "Step 2: Verify the Backup Factor (BypassCode)",
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"bypassCode\": \"397541940949\",\r\n    \"requestState\": \"{{requestState}}\"\r\n}"
+								},
+								"url": {
+									"raw": "{{HOST}}/mfa/v1/requests/{{requestID}}",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"mfa",
+										"v1",
+										"requests",
+										"{{requestID}}"
+									]
+								},
+								"description": "If the factor is BYPASSCODE, then the request payload contains the bypassCode attribute.\n\nThe response contains the status of the verification and the cause if it fails."
+							},
+							"response": [
+								{
+									"name": "Bypass Code Success Response to Step 2: Verify the Backup Factor",
+									"originalRequest": {
+										"method": "PATCH",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json",
+												"disabled": false
+											},
+											{
+												"key": "Authorization",
+												"value": "Bearer {{access_token}}",
+												"disabled": false
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"bypassCode\": \"397541940949\",\r\n    \"requestState\": \"jZPbQ5KMrDjBdQzUCbhpTlS+qSrrWHZo/roJJT696ZwdwXHI+msJBNmVZE3oPz93EL/N8h452KbCM84g2rTZ7E2cgatQKGBEA9a/4S3fAcaoJ3xsfqpRdS0V5H26oP8jdfxMv7dKIuF2vdEj/H92LDS9AxT/RYs3B9p3EysIZJ3uTdcBkwOdV7GgapQNliVy~eEyP6z6tWSDn0XOmU/kgsyjkKZ6CiQCPLQtsWmclfik\"\r\n}"
+										},
+										"url": {
+											"raw": "{{HOST}}/mfa/v1/requests/{{requestID}}",
+											"host": [
+												"{{HOST}}"
+											],
+											"path": [
+												"mfa",
+												"v1",
+												"requests",
+												"{{requestID}}"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Cache-control",
+											"value": "no-cache, no-store, must-revalidate",
+											"name": "Cache-control",
+											"description": "Tells all caching mechanisms from server to client whether they may cache this object. It is measured in seconds"
+										},
+										{
+											"key": "Content-length",
+											"value": "20",
+											"name": "Content-length",
+											"description": "The length of the response body in octets (8-bit bytes)"
+										},
+										{
+											"key": "Content-type",
+											"value": "application/json",
+											"name": "Content-type",
+											"description": "The mime type of this content"
+										},
+										{
+											"key": "Date",
+											"value": "Fri, 10 Aug 2018 17:34:45 GMT",
+											"name": "Date",
+											"description": "The date and time that the message was sent"
+										},
+										{
+											"key": "Expires",
+											"value": "Sat, 01 Jan 2000 00:00:00 GMT",
+											"name": "Expires",
+											"description": "Gives the date/time after which the response is considered stale"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache",
+											"name": "Pragma",
+											"description": "Implementation-specific headers that may have various effects anywhere along the request-response chain."
+										},
+										{
+											"key": "Proxy-agent",
+											"value": "Oracle-Traffic-Director/11.1.1.9",
+											"name": "Proxy-agent",
+											"description": "Custom header"
+										},
+										{
+											"key": "Proxy-agent",
+											"value": "Oracle-Traffic-Director/11.1.1.9",
+											"name": "Proxy-agent",
+											"description": "Custom header"
+										},
+										{
+											"key": "Server",
+											"value": "Oracle-Traffic-Director/11.1.1.9",
+											"name": "Server",
+											"description": "A name for the server"
+										},
+										{
+											"key": "Via",
+											"value": "1.1 net-idcs-config, 1.1 net-idcs-dev-lbr",
+											"name": "Via",
+											"description": "Informs the client of proxies through which the response was sent."
+										},
+										{
+											"key": "X-content-type-options",
+											"value": "nosniff",
+											"name": "X-content-type-options",
+											"description": "The only defined value, \"nosniff\", prevents Internet Explorer from MIME-sniffing a response away from the declared content-type"
+										},
+										{
+											"key": "X-oracle-dms-ecid",
+											"value": "7NrLN0c4000000000",
+											"name": "X-oracle-dms-ecid",
+											"description": "Custom header"
+										},
+										{
+											"key": "X-oracle-dms-rid",
+											"value": "0:1:1",
+											"name": "X-oracle-dms-rid",
+											"description": "Custom header"
+										},
+										{
+											"key": "X-xss-protection",
+											"value": "1; mode=block",
+											"name": "X-xss-protection",
+											"description": "Cross-site scripting (XSS) filter"
+										}
+									],
+									"cookie": [],
+									"body": "{\"status\":\"success\"}"
+								}
+							]
+						},
+						{
+							"name": "Step 1: Initiate Verification of Backup Factor (Security Questions)",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"userId\":\"{{userID}}\",\r\n    \"userIdType\":\"USER_GUID\",\r\n    \"factorId\":\"{{factorID}}\",\r\n    \"method\":\"SECURITY_QUESTIONS\"\r\n}"
+								},
+								"url": {
+									"raw": "{{HOST}}/mfa/v1/requests",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"mfa",
+										"v1",
+										"requests"
+									]
+								},
+								"description": "If the user doesn't want to use the default factor, the user has the option to provide the \"factorId\" and \"method\" to indicate that they want to use one of their backup factors.\n\nThe response contains the requestId and the requestState needed for the next request."
+							},
+							"response": [
+								{
+									"name": "Security Questions Success Response to Initiate Verification of Backup Factor",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json",
+												"disabled": false
+											},
+											{
+												"key": "Authorization",
+												"value": "Bearer {{access_token}}",
+												"disabled": false
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"userId\":\"589879c55b7340518141eab82493f0cc\",\r\n    \"userIdType\":\"USER_GUID\",\r\n    \"factorId\":\"SecurityQuestions\",\r\n    \"method\":\"SECURITY_QUESTIONS\"\r\n}"
+										},
+										"url": {
+											"raw": "{{HOST}}/mfa/v1/requests",
+											"host": [
+												"{{HOST}}"
+											],
+											"path": [
+												"mfa",
+												"v1",
+												"requests"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Cache-control",
+											"value": "no-cache, no-store, must-revalidate",
+											"name": "Cache-control",
+											"description": "Tells all caching mechanisms from server to client whether they may cache this object. It is measured in seconds"
+										},
+										{
+											"key": "Content-length",
+											"value": "569",
+											"name": "Content-length",
+											"description": "The length of the response body in octets (8-bit bytes)"
+										},
+										{
+											"key": "Content-type",
+											"value": "application/json",
+											"name": "Content-type",
+											"description": "The mime type of this content"
+										},
+										{
+											"key": "Date",
+											"value": "Fri, 10 Aug 2018 17:38:40 GMT",
+											"name": "Date",
+											"description": "The date and time that the message was sent"
+										},
+										{
+											"key": "Expires",
+											"value": "Sat, 01 Jan 2000 00:00:00 GMT",
+											"name": "Expires",
+											"description": "Gives the date/time after which the response is considered stale"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache",
+											"name": "Pragma",
+											"description": "Implementation-specific headers that may have various effects anywhere along the request-response chain."
+										},
+										{
+											"key": "Proxy-agent",
+											"value": "Oracle-Traffic-Director/11.1.1.9",
+											"name": "Proxy-agent",
+											"description": "Custom header"
+										},
+										{
+											"key": "Proxy-agent",
+											"value": "Oracle-Traffic-Director/11.1.1.9",
+											"name": "Proxy-agent",
+											"description": "Custom header"
+										},
+										{
+											"key": "Server",
+											"value": "Oracle-Traffic-Director/11.1.1.9",
+											"name": "Server",
+											"description": "A name for the server"
+										},
+										{
+											"key": "Via",
+											"value": "1.1 net-idcs-config, 1.1 net-idcs-dev-lbr",
+											"name": "Via",
+											"description": "Informs the client of proxies through which the response was sent."
+										},
+										{
+											"key": "X-content-type-options",
+											"value": "nosniff",
+											"name": "X-content-type-options",
+											"description": "The only defined value, \"nosniff\", prevents Internet Explorer from MIME-sniffing a response away from the declared content-type"
+										},
+										{
+											"key": "X-oracle-dms-ecid",
+											"value": "zFVBI1q3000000000",
+											"name": "X-oracle-dms-ecid",
+											"description": "Custom header"
+										},
+										{
+											"key": "X-oracle-dms-rid",
+											"value": "0:1:1",
+											"name": "X-oracle-dms-rid",
+											"description": "Custom header"
+										},
+										{
+											"key": "X-xss-protection",
+											"value": "1; mode=block",
+											"name": "X-xss-protection",
+											"description": "Cross-site scripting (XSS) filter"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": \"success\",\n    \"requestId\": \"8da79411-5388-41ee-990e-935e74cb40f3\",\n    \"userGUID\": \"589879c55b7340518141eab82493f0cc\",\n    \"factorId\": \"SecurityQuestions\",\n    \"method\": \"SECURITY_QUESTIONS\",\n    \"requestState\": \"hBJIvkyfsXBv....movYarft8HlYANV3c+0\",\n    \"securityQuestions\": [\n        {\n            \"id\": \"MaidenName\",\n            \"localizedText\": \"What's your mother's maiden name?\"\n        }\n    ]\n}"
+								}
+							]
+						},
+						{
+							"name": "Step 2: Verify the Backup Factor (Security Questions)",
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n \"securityQuestions\":[\r\n        {\r\n            \"id\":\"MaidenName\",\r\n            \"answer\":\"Smith\"\r\n        }\r\n    ],\r\n\"requestState\": \"{{requestState}}\"\r\n\r\n }"
+								},
+								"url": {
+									"raw": "{{HOST}}/mfa/v1/requests/{{requestID}}",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"mfa",
+										"v1",
+										"requests",
+										"{{requestID}}"
+									]
+								},
+								"description": "Factor verification is a 2-step process. You need to ask Oracle Identity Cloud Service to \"initiate\" (for example, send an SMS with an OTP, send an email with an OTP code, or send a PUSH notification to the enrolled OMA app). After initiated, the client needs to \"verify\" by passing the otpCode or accepting the PUSH notification on the OMA app.\n\nIf the factor is SECURITY_QUESTIONS, then the request payload contains the bypassCode value.\n\nThe response contains the status of the verification and the cause if it fails."
+							},
+							"response": [
+								{
+									"name": "Security Questions Success Response to Step 2: Verify the Backup Factor",
+									"originalRequest": {
+										"method": "PATCH",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json",
+												"disabled": false
+											},
+											{
+												"key": "Authorization",
+												"value": "Bearer {{access_token}}",
+												"disabled": false
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n \"securityQuestions\":[\r\n        {\r\n            \"id\":\"MaidenName\",\r\n            \"answer\":\"Maddon\"\r\n        }\r\n    ],\r\n\"requestState\": \"hBJIvkyfsXBvZ2Q8Rxn7ro1vire8xjhSIMImcJK9N+pJQWvE26OeUm7sS86cG4f0lOuRIgS4UE2PmRLR11SFU+tz5xMBeiYp10UAHY7xMqWcWlnWKu179SiiyHjIPoIxqtz4Yy9qEO9/ecfFw1wsnsEfYqvYvo9XRP92TxcMiOZR2If4U2fYvuBRre3IzMZae9BDGXmLqWcQ/cPqqapPR6js09TEsUQtb9IgjbumA4k~F17NLW7Ih+zZrMfjgJILtBwRmovYarft8HlYANV3c+0\"\r\n\r\n }"
+										},
+										"url": {
+											"raw": "{{HOST}}/mfa/v1/requests/{{requestID}}",
+											"host": [
+												"{{HOST}}"
+											],
+											"path": [
+												"mfa",
+												"v1",
+												"requests",
+												"{{requestID}}"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Cache-control",
+											"value": "no-cache, no-store, must-revalidate",
+											"name": "Cache-control",
+											"description": "Tells all caching mechanisms from server to client whether they may cache this object. It is measured in seconds"
+										},
+										{
+											"key": "Content-length",
+											"value": "20",
+											"name": "Content-length",
+											"description": "The length of the response body in octets (8-bit bytes)"
+										},
+										{
+											"key": "Content-type",
+											"value": "application/json",
+											"name": "Content-type",
+											"description": "The mime type of this content"
+										},
+										{
+											"key": "Date",
+											"value": "Fri, 10 Aug 2018 17:40:49 GMT",
+											"name": "Date",
+											"description": "The date and time that the message was sent"
+										},
+										{
+											"key": "Expires",
+											"value": "Sat, 01 Jan 2000 00:00:00 GMT",
+											"name": "Expires",
+											"description": "Gives the date/time after which the response is considered stale"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache",
+											"name": "Pragma",
+											"description": "Implementation-specific headers that may have various effects anywhere along the request-response chain."
+										},
+										{
+											"key": "Proxy-agent",
+											"value": "Oracle-Traffic-Director/11.1.1.9",
+											"name": "Proxy-agent",
+											"description": "Custom header"
+										},
+										{
+											"key": "Proxy-agent",
+											"value": "Oracle-Traffic-Director/11.1.1.9",
+											"name": "Proxy-agent",
+											"description": "Custom header"
+										},
+										{
+											"key": "Server",
+											"value": "Oracle-Traffic-Director/11.1.1.9",
+											"name": "Server",
+											"description": "A name for the server"
+										},
+										{
+											"key": "Via",
+											"value": "1.1 net-idcs-config, 1.1 net-idcs-dev-lbr",
+											"name": "Via",
+											"description": "Informs the client of proxies through which the response was sent."
+										},
+										{
+											"key": "X-content-type-options",
+											"value": "nosniff",
+											"name": "X-content-type-options",
+											"description": "The only defined value, \"nosniff\", prevents Internet Explorer from MIME-sniffing a response away from the declared content-type"
+										},
+										{
+											"key": "X-oracle-dms-ecid",
+											"value": "KU2qR1D4000000000",
+											"name": "X-oracle-dms-ecid",
+											"description": "Custom header"
+										},
+										{
+											"key": "X-oracle-dms-rid",
+											"value": "0:1:1",
+											"name": "X-oracle-dms-rid",
+											"description": "Custom header"
+										},
+										{
+											"key": "X-xss-protection",
+											"value": "1; mode=block",
+											"name": "X-xss-protection",
+											"description": "Cross-site scripting (XSS) filter"
+										}
+									],
+									"cookie": [],
+									"body": "{\"status\":\"success\"}"
+								}
+							]
+						},
+						{
+							"name": "Step 2: Verify the Backup Factor (PUSH)",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"securityQuestions\": [\r\n        {\r\n            \"id\": \"FirstCar\",\r\n            \"answer\": \"car123\"\r\n        }\r\n    ]\r\n}"
+								},
+								"url": {
+									"raw": "{{HOST}}/mfa/v1/requests/{{requestID}}",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"mfa",
+										"v1",
+										"requests",
+										"{{requestID}}"
+									]
+								},
+								"description": "Use this example to poll for the Push Notification Verification Request.\n\nSince the PUSH notification must be accepted/rejected by the user on the Oracle Mobile Authenticator App, we provide a \"polling\" api for the client to use if the user has acted on this notification."
+							},
+							"response": [
+								{
+									"name": "Pending Response to Step 2: Verify the Backup Factor (PUSH)",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json",
+												"disabled": false
+											},
+											{
+												"key": "Authorization",
+												"value": "Bearer {{access_token}}",
+												"disabled": false
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"securityQuestions\": [\r\n        {\r\n            \"id\": \"FirstCar\",\r\n            \"answer\": \"car123\"\r\n        }\r\n    ]\r\n}"
+										},
+										"url": {
+											"raw": "{{HOST}}/mfa/v1/requests/{{requestID}}",
+											"host": [
+												"{{HOST}}"
+											],
+											"path": [
+												"mfa",
+												"v1",
+												"requests",
+												"{{requestID}}"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Cache-control",
+											"value": "no-cache, no-store, must-revalidate",
+											"name": "Cache-control",
+											"description": "Tells all caching mechanisms from server to client whether they may cache this object. It is measured in seconds"
+										},
+										{
+											"key": "Content-length",
+											"value": "102",
+											"name": "Content-length",
+											"description": "The length of the response body in octets (8-bit bytes)"
+										},
+										{
+											"key": "Content-type",
+											"value": "application/json",
+											"name": "Content-type",
+											"description": "The mime type of this content"
+										},
+										{
+											"key": "Date",
+											"value": "Fri, 07 Sep 2018 21:37:17 GMT",
+											"name": "Date",
+											"description": "The date and time that the message was sent"
+										},
+										{
+											"key": "Expires",
+											"value": "Sat, 01 Jan 2000 00:00:00 GMT",
+											"name": "Expires",
+											"description": "Gives the date/time after which the response is considered stale"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache",
+											"name": "Pragma",
+											"description": "Implementation-specific headers that may have various effects anywhere along the request-response chain."
+										},
+										{
+											"key": "Proxy-agent",
+											"value": "Oracle-Traffic-Director/11.1.1.9",
+											"name": "Proxy-agent",
+											"description": "Custom header"
+										},
+										{
+											"key": "Proxy-agent",
+											"value": "Oracle-Traffic-Director/11.1.1.9",
+											"name": "Proxy-agent",
+											"description": "Custom header"
+										},
+										{
+											"key": "Server",
+											"value": "Oracle-Traffic-Director/11.1.1.9",
+											"name": "Server",
+											"description": "A name for the server"
+										},
+										{
+											"key": "Via",
+											"value": "1.1 net-idcs-config, 1.1 net-idcs-dev-lbr",
+											"name": "Via",
+											"description": "Informs the client of proxies through which the response was sent."
+										},
+										{
+											"key": "X-content-type-options",
+											"value": "nosniff",
+											"name": "X-content-type-options",
+											"description": "The only defined value, \"nosniff\", prevents Internet Explorer from MIME-sniffing a response away from the declared content-type"
+										},
+										{
+											"key": "X-oracle-dms-ecid",
+											"value": "EKLuH0tA000000000",
+											"name": "X-oracle-dms-ecid",
+											"description": "Custom header"
+										},
+										{
+											"key": "X-oracle-dms-rid",
+											"value": "0:1:1",
+											"name": "X-oracle-dms-rid",
+											"description": "Custom header"
+										},
+										{
+											"key": "X-xss-protection",
+											"value": "1; mode=block",
+											"name": "X-xss-protection",
+											"description": "Cross-site scripting (XSS) filter"
+										}
+									],
+									"cookie": [],
+									"body": "{\"status\":\"pending\",\"cause\":[{\"code\":\"AUTH-1108\",\"message\":\"Push Notification approval is pending.\"}]}"
+								},
+								{
+									"name": "Success Response to Step 2: Verify the Backup Factor (PUSH)",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json",
+												"disabled": false
+											},
+											{
+												"key": "Authorization",
+												"value": "Bearer {{access_token}}",
+												"disabled": false
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"securityQuestions\": [\r\n        {\r\n            \"id\": \"FirstCar\",\r\n            \"answer\": \"car123\"\r\n        }\r\n    ]\r\n}"
+										},
+										"url": {
+											"raw": "{{HOST}}/mfa/v1/requests/{{requestID}}",
+											"host": [
+												"{{HOST}}"
+											],
+											"path": [
+												"mfa",
+												"v1",
+												"requests",
+												"{{requestID}}"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Cache-control",
+											"value": "no-cache, no-store, must-revalidate",
+											"name": "Cache-control",
+											"description": "Tells all caching mechanisms from server to client whether they may cache this object. It is measured in seconds"
+										},
+										{
+											"key": "Content-length",
+											"value": "20",
+											"name": "Content-length",
+											"description": "The length of the response body in octets (8-bit bytes)"
+										},
+										{
+											"key": "Content-type",
+											"value": "application/json",
+											"name": "Content-type",
+											"description": "The mime type of this content"
+										},
+										{
+											"key": "Date",
+											"value": "Fri, 07 Sep 2018 21:37:37 GMT",
+											"name": "Date",
+											"description": "The date and time that the message was sent"
+										},
+										{
+											"key": "Expires",
+											"value": "Sat, 01 Jan 2000 00:00:00 GMT",
+											"name": "Expires",
+											"description": "Gives the date/time after which the response is considered stale"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache",
+											"name": "Pragma",
+											"description": "Implementation-specific headers that may have various effects anywhere along the request-response chain."
+										},
+										{
+											"key": "Proxy-agent",
+											"value": "Oracle-Traffic-Director/11.1.1.9",
+											"name": "Proxy-agent",
+											"description": "Custom header"
+										},
+										{
+											"key": "Proxy-agent",
+											"value": "Oracle-Traffic-Director/11.1.1.9",
+											"name": "Proxy-agent",
+											"description": "Custom header"
+										},
+										{
+											"key": "Server",
+											"value": "Oracle-Traffic-Director/11.1.1.9",
+											"name": "Server",
+											"description": "A name for the server"
+										},
+										{
+											"key": "Via",
+											"value": "1.1 net-idcs-config, 1.1 net-idcs-dev-lbr",
+											"name": "Via",
+											"description": "Informs the client of proxies through which the response was sent."
+										},
+										{
+											"key": "X-content-type-options",
+											"value": "nosniff",
+											"name": "X-content-type-options",
+											"description": "The only defined value, \"nosniff\", prevents Internet Explorer from MIME-sniffing a response away from the declared content-type"
+										},
+										{
+											"key": "X-oracle-dms-ecid",
+											"value": "EKLuH0uA000000000",
+											"name": "X-oracle-dms-ecid",
+											"description": "Custom header"
+										},
+										{
+											"key": "X-oracle-dms-rid",
+											"value": "0:1:1",
+											"name": "X-oracle-dms-rid",
+											"description": "Custom header"
+										},
+										{
+											"key": "X-xss-protection",
+											"value": "1; mode=block",
+											"name": "X-xss-protection",
+											"description": "Cross-site scripting (XSS) filter"
+										}
+									],
+									"cookie": [],
+									"body": "{\"status\":\"success\"}"
+								}
+							]
+						}
+					],
+					"description": "Use the examples in this folder to initiate and verify a backup factor.\n\nIf the user doesn't want to use the default factor, the user has the option to provide the \"factorId\" and \"method\" to indicate that they want to use one of their backup factors. ",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "add68175-7160-4df8-a8da-5fe057da5705",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "6d77b07c-8643-4750-a4a8-27eaaf70a125",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					],
+					"_postman_isSubFolder": true
+				}
+			],
+			"description": "Factor verification is a 2-step process.\r\n\r\n1. You need to ask Oracle Identity Cloud Service to \"initiate\" (for example, send an SMS with a time-based one-time passcode (TOTP), send an email with a TOTP code, or send a PUSH notification to the enrolled OMA app). \r\n2. After initiating, the client needs to \"verify\" by passing the otpCode or security answer or accepting the PUSH notification on the OMA app.\r\n",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "2d5fb4ba-1c06-48ee-9188-c0cb8839cd36",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "47f8b744-6c01-4af2-9fbf-798bbea59082",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "45a40256-884c-4501-b74e-fdaadf429bcc",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "232bf610-b45b-49cc-89a9-340771362a33",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "d1b64a9d-e69b-40b7-8598-f789323727ac",
+			"key": "userGUID",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "23f83570-d835-4b0c-a9c6-f7ca77ca3ca1",
+			"key": "requestID",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "8fcc4271-5ba3-4d31-a052-a20145e5c950",
+			"key": "requestState",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "5a755342-7c31-4543-bd44-4bfc320f4d9c",
+			"key": "userID",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "9db1c551-64e5-4cec-861c-b479593bed9a",
+			"key": "factorID",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
