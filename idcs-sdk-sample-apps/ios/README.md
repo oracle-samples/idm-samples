@@ -13,13 +13,13 @@ To help you understand how to use the SDK, this tutorial uses a sample iOS appli
 
 -   Familiarity with the iOS platform and Xcode to understand the code logic presented in this tutorial.
 -   A MacOS based desktop and Xcode 9.2 or higher version installed.
--   The [iOS sample application](https://github.com/oracle/idm-samples/tree/master/idcs-sdk-sample-apps "Oracle's official repository for Identity Management (IDM) code samples and snippets") zip file downloaded and extracted to a folder on your local desktop.
+-   The [iOS sample application](https://github.com/oracle/idm-samples/tree/master/idcs-sdk-sample-apps/ios "Oracle's official repository for Identity Management (IDM) code samples and snippets") zip file downloaded and extracted to a folder on your local desktop.
 -   Access to an instance of Oracle Identity Cloud Service, and privileges to download the SDK from the console and to register a confidential application.
 
 ## How to Use the Sample Application:
 
 ### Download the SDK
--   In the Identity Cloud Service console, expand the **Navigation Drawer** ![](./img/navdrawer.png), click **Settings,** and then click **Downloads.** The list of files to download appears.
+-   In the Identity Cloud Service console, expand the **Navigation Drawer**, click **Settings,** and then click **Downloads.** The list of files to download appears.
 -   Click **Download** for the SDK for iOS Applications, and save the zip file on your local desktop.
 -   Open the **SDK for iOS Applications** zip file, and extract it to a temporary folder.
 
@@ -29,7 +29,7 @@ To help you understand how to use the SDK, this tutorial uses a sample iOS appli
 
 ### Register a Mobile Application in Oracle Identity Cloud Service
 
-1.  In the Identity Cloud Service console, expand the  **Navigation Drawer**  ![](./img/navdrawer.png), click  **Applications**.
+1.  In the Identity Cloud Service console, expand the  **Navigation Drawer**, click  **Applications**.
 2.  In the  **Applications**  page, click  **Add**.
 3.  In the  **Add Application**  dialog box, click  **Mobile Application**.
 4.  Enter the  **Details** as shown below, and then click  **Next**.
