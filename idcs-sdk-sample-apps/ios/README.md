@@ -62,9 +62,9 @@ https://MYTENANT.identity.oraclecloud.com/.well-known/idcs-configuration
 ## Run the Sample Web Application
 
 1. In the file manager, double-click the `IDCSSample.xcodeproj`, so that Xcode opens the sample application.
-   **Note**: Make sure you have copied the SDK framework folder into the sample application folder. See [Download the SDK in the Sample Mobile Application](#section_1)
+   **Note**: Make sure you have copied the SDK framework folder into the sample application folder.
 
-2. In Xcode, make sure **iPhone 8 Plus (11.2)** is selected as simulator, and then click the Play button (![](./img/XcodePlayButton.png)) to build and run the sample application.
+2. In Xcode, make sure **iPhone 8 Plus (11.2)** is selected as simulator, and then click the Play button to build and run the sample application.
 
 3. On the iOS virtual device home screen, click **My ID**, if the device doesn't launch the app automatically.
 
