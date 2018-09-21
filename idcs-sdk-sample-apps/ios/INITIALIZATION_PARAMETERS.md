@@ -1,0 +1,39 @@
+# Oracle Identity Cloud Service's Mobile Software Development Kit (SDK) for iOS  
+  
+## List of Initialization Parameters  
+
+| Property Name | Description  | Type  |  
+|-------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------|  
+| OM_PROP_AUTHSERVER_TYPE ("AuthServerType") | OM_PROP_AUTHSERVER_OAMMS ("OAMMSAuthentication") | NSString |  
+| OM_PROP_OAMMS_HOST ("OAMMSHost") | A valid host name passed as an NSString object. Alternatively, you can pass host, port, and port type details using the OM_PROP_OAMMS_URL object. | NSString |  
+| OM_PROP_OAMMS_PORT ("OAMMSPort") | A valid port number passed as an NSString object. Alternatively, you can pass host, port, and port type details using the OM_PROP_OAMMS_URL object | NSString |  
+| OM_PROP_OAMMS_PORT_IS_SSL ("OAMMSPortIsSSL") | Either true or false. Alternatively, you can pass host, port, and port type details using the OM_PROP_OAMMS_URL object. | NSString |  
+| OM_PROP_OAMMS_URL ("OAMMSURL") | An NSURL Object or a valid NSString object that can be used to create NSURL. If you do not use this property, specify the following properties: OM_PROP_OAMMS_HOST OM_PROP_OAMMS_PORT OM_PROP_OAMMS_PORT_IS_SSL | NSString or NSURL |  
+| OM_PROP_OAMMS_SERVICE_DOMAIN ("OAMMSServiceDomain") | Required property. Any valid Service Domain name passed as an NSString object. | NSString |  
+| OM_PROP_APPNAME ("ApplicationName") | Required property. A valid application name passed as an NSString object. | NSString |  
+| OM_PROP_OFFLINE_AUTH_ALLOWED ("OfflineAuthAllowed") | Either true or false. This is an optional property, however, if it is not specified, offline authentication is not allowed. The Mobile and Social server can also specify this property in the application profile. The server setting overrides the application setting. | NSString |  
+| OM_PROP_SESSION_TIMEOUT_VALUE ("SessionTimeOutValue") | A login session time-out value passed as an NSNumber object. The SDK only takes the integer value of the number. This is an optional property. If this property is not specified or if the value is zero, the login session is valid until the server invalidates the session. The Mobile and Social server can also specify this property in the application profile. The server setting overrides the application setting. | NSNumber |  
+| OM_PROP_IDLE_TIMEOUT_VALUE ("IdleTimeOutValue") | An idle connection time-out value passed as an NSNumber object. The SDK only takes the integer value of the number. This is an optional property. If this property is not specified or if the value is zero, the login session is valid until the server invalidates the session. The Mobile and Social server can also specify this property in the application profile. The server setting overrides the application setting. | NSNumber |  
+| OM_PROP_MAX_LOGIN_ATTEMPTS ("MaxLoginAttempts") | The maximum number of login attempts allowed by the user. This is an optional property. If this property is not specified, only one login attempt is allowed. The Mobile and Social server can also specify this property in the application profile. The server setting overrides the application setting. | NSNumber |  
+| OM_PROP_KEYCHAIN_DATA_PROTECTION ("KeychainDataProtection") | Use this property to specify the KeyChain Item protection level. Must be one of the following values: OM_KEYCHAIN_DATA_ACCESSIBLE_WHEN_UNLOCKED ("KeychainDataAccessibleWhenUnlocked") OM_KEYCHAIN_DATA_ACCESSIBLE_AFTER_FIRST_UNLOCK ("KeychainDataAccessibleAfterFirstUnlock") OM_KEYCHAIN_DATA_ACCESSIBLE_ALWAYS ("KeychainDataAccessibleAlways") OM_KEYCHAIN_DATA_ACCESSIBLE_WHEN_UNLOCKED_THIS_DEVICE_ONLY ("KeychainDataAccessibleWhenUnlockedThisDeviceOnly") OM_KEYCHAIN_DATA_ACCESSIBLE_AFTER_FIRST_UNLOCK_THIS_DEVICE_ONLY ("KeychainDataAccessibleAfterFirstUnlockThisDeviceOnly") OM_KEYCHAIN_DATA_ACCESSIBLE_ALWAYS_THIS_DEVICE_ONLY ("KeychainDataAccessibleAlwaysThisDeviceOnly") This is an optional property. If it is not specified, the property defaults to the highest level: OM_KEYCHAIN_DATA_ACCESSIBLE_WHEN_UNLOCKED_THIS_DEVICE_ONLY | NSString |  
+| OM_PROP_LOCATION_UPDATE_ENABLED ("LocationUpdateEnabled") | Either true or false. This is an optional property and the default value is false. Location update consumes battery on the device and should be enabled only when required. | NSString |  
+| OM_PROP_LOCATION_UPDATE_DISTANCE_FILTER ("LocationUpdateDistanceFilter") | Location update (when enabled) is sent only when the device moves beyond the specified distance in meters. Use this property to control the frequency of updates generated. The Mobile and Social server can also specify this property in the Mobile Custom Attributes section with the key LocationUpdateEnabled and a numeric value. The server setting overrides the application setting. When location update is enabled and the distance filter is not set or is invalid, the default distance filter is taken as 1000m. | NSNumber |  
+| OM_PROP_AUTO_LOGIN_ALLOWED ("AutoLoginAllowed") | Either true or false. This is an optional property, however, if it is not specified, auto login feature is disabled. | NSString |  
+| | | |  
+| OM_PROP_REMEMBER_CREDENTIALS_ALLOWED ("RememberCredentialsAllowed") | Either true or false. This is an optional property, however, if it is not specified, remember credentials feature is disabled. | NSString |  
+| OM_PROP_REMEMBER_USERNAME_ALLOWED ("RememberUsernameAllowed") | Either true or false. This is an optional property, however, if it is not specified, remember username feature is disabled. | NSString |  
+| OM_AUTO_LOGIN_DEFAULT ("AutoLoginDefault") | Either true or false. This is an optional property, however, if it is not specified, default value for auto login user preference is false. | NSString |  
+| OM_REMEMBER_CREDENTIALS_DEFAULT ("RememberCredentialDefaul t") | Either true or false. This is an optional property, however, if it is not specified, default value for remember credentials user preference is false. | NSString |  
+| OM_REMEMBER_USERNAME_DEFAULT ("RememberUsernameDefault") | Either true or false. This is an optional property, however, if it is not specified, default value for remember username user preference is false. | NSString |  
+  
+## License  
+  
+Copyright (c) 2018, Oracle and/or its affiliates. All rights reserved.  
+  
+You may not use the identified files except in compliance with the Universal Permissive License (UPL), Version 1.0 (the "License.")  
+  
+You may obtain a copy of the License at https://opensource.org/licenses/UPL.  
+  
+Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  
+  
+See the License for the specific language governing permissions and limitations under the License.
