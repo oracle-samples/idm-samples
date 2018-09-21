@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">My ID</string>
+    <string name="logout">Logout</string>
+    <string name="my_apps">My Apps</string>
+    <string name="my_groups">My Groups</string>
+    <string name="please_wait">Please wait ...</string>
+    <string name="response">Response</string>
+    <string name="ok">Ok</string>
+    <string name="unknown_error">Unknown error</string>
+    <string name="external_browser_npt_available">External browser not available</string>
+    <string name="completing_login">completing login</string>
+    <string name="finishing_logout">finishing logout</string>
+</resources>

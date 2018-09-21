@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="8dp"
+    android:layout_marginBottom="8dp"
+    xmlns:tools="http://schemas.android.com/tools">
+
+<RelativeLayout
+    android:layout_width="50dp"
+    android:id="@+id/id_item_layout"
+    android:layout_height="50dp">
+    <TextView
+        android:id="@+id/id_item_icon"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/background_textview_circular"
+        tools:text="JS"
+        android:gravity="center"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/black"
+        />
+    <ImageView
+        android:id="@+id/id_item_icon_image"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        tools:text="JS"
+        android:src="@drawable/ic_product_icon"
+        android:gravity="center"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:visibility="gone"
+        android:textColor="@android:color/black"
+        />
+</RelativeLayout>
+    <TextView
+        android:id="@+id/tv_item_name"
+        android:layout_width="310dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="24dp"
+        android:layout_marginTop="12dp"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:layout_toRightOf="@+id/id_item_layout"
+        android:text="TextView" />
+
+    <TextView
+        android:id="@+id/tv_item_description"
+        android:layout_width="286dp"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/tv_item_name"
+        android:layout_below="@+id/tv_item_name"
+        android:text="TextView" />
+    <View
+        android:layout_below="@+id/tv_item_description"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="58dp"
+        android:layout_alignParentRight="true"
+        android:background="#CCCCCC"/>
+
+</RelativeLayout>
