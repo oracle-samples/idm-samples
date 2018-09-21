@@ -13,7 +13,7 @@ To help you understand how to use the SDK, this tutorial uses a sample mobile An
 
 - Familiarity with Java programming language to understand the code logic presented in this tutorial.
 - [Android Studio](https://developer.android.com/studio/ "Android Studio")  installed, with API Level 24 and at least SDK Build-Tools 27.0.3.
-- The  [Android sample mobile application](https://github.com/oracle/idm-samples/tree/master/idcs-sdk-sample-apps "Oracle's official repository for Identity Management (IDM) code samples and snippets")  zip file downloaded and extracted to a folder in your local desktop.
+- The  [Android sample mobile application](https://github.com/oracle/idm-samples/tree/master/idcs-sdk-sample-apps/android "Oracle's official repository for Identity Management (IDM) code samples and snippets")  zip file downloaded and extracted to a folder in your local desktop.
 - Access to an instance of Oracle Identity Cloud Service, privileges to download the SDK from the console, and to register a confidential application.
 
 ## Dependent Third-party libraries
@@ -27,13 +27,13 @@ The sample application built with Gradle that automatically downloads the approp
 ## How to use the Sample Application:
 
 ### Download the SDK
-1.  In the Identity Cloud Service console, expand the  **Navigation Drawer**  ![](./img/navdrawer.png), click  **Settings**, and then click  **Downloads**. The list of files to download appears.
+1.  In the Identity Cloud Service console, expand the  **Navigation Drawer**, click  **Settings**, and then click  **Downloads**. The list of files to download appears.
 2.  Click  **Download**  to download the  **SDK for Android Applications**  zip file.
 3.  Open the  **SDK for Android Applications**  zip file, locate the  `IDCS-SDK-for-Android.aar`  file, and then extract this  file into the sample mobile application library folder (`[SAMPLE_APP_FOLDER]\app\libs`).
 
 ### Register the Mobile Application
 
-1.  In the Identity Cloud Service console, expand the  **Navigation Drawer**  ![](./img/navdrawer.png), click  **Applications**.
+1.  In the Identity Cloud Service console, expand the  **Navigation Drawer**, click  **Applications**.
 2.  In the  **Applications**  page, click  **Add**.
 3.  In the  **Add Application**  dialog box, click  **Mobile Application**.
 4.  Enter the  **Details** as shown below, and then click  **Next**.
