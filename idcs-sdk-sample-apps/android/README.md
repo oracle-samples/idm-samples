@@ -82,6 +82,7 @@ Android Studio starts to download all necessary components to build the applicat
 6.  After Oracle Identity Cloud Service successfully authenticates the user, the sample mobile application presents the home page and the list of Oracle Identity Cloud Service Apps the user is assigned to.
 7. Optionally, click  **My Groups**  and the mobile application shows the list of groups the user is assigned to.
 
+
 ## License
 
 Copyright (c) 2018, Oracle and/or its affiliates. All rights reserved.
