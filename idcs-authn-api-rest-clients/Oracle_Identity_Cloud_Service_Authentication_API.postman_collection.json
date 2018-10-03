@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "53304472-35ec-4830-a8c7-17c804975b73",
+		"_postman_id": "03a68c4e-c252-4259-a827-914c61b49511",
 		"name": "Oracle Identity Cloud Service Authentication API",
 		"description": "Customzing the log in experience with Oracle Identity Cloud Service has required that end users have 3-party cookies enabled in their browsers. This is a problem to many users, especially those providing B2C applications where they can't impose any controls on end-user behavior.\r\n\r\nOracle Identity Cloud Service has eliminated that dependency by introducing new authenticating APIs based on the concept of a state machine, where request responses inform an application client what has to be done next.\r\n\r\nThe requestState provided in each request response is used in the next request, providing the client with the information that it needs to process the request, and then provide the next set of operations allowed.",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
@@ -8,7 +8,6 @@
 	"item": [
 		{
 			"name": "Authentication Without MFA",
-			"description": "Test authentication using the user's credentials and the requestState without Multi-Factor Authentication.",
 			"item": [
 				{
 					"name": "Step 1: Authentication Request with AppName",
@@ -46,24 +45,21 @@
 								}
 							]
 						},
-						"description": "This step obtains the initial requestState to then continue with the authentication flow. The appName is optional, but is used in this step for testing purposes.\n\nThe user submits their credentials in Step 2 as the first factor, which is the username/password.\n\nThe requestState in the response received contains the following information:\n\n- creationTime\n- tenantName\n- appName\n- ecid (to keep track of the audit trail)\n\nFor the Next Step:\n- The client must pass the credentials, which are the username and password\n- The client must pass the requestState that was received in the Step 1 response (this step)."
+						"description": "This step obtains the initial requestState to then continue with the authentication flow. The appName is optional, but is used in this step for testing purposes.\n\nThe user submits their credentials in Step 2 as the first factor, which is the username/password.\n\nThe requestState in the response received contains the following information:\n\n- creationTime\n- tenantName\n- appName\n\nFor the Next Step:\n- The client must pass the credentials, which are the username and password\n- The client must pass the requestState that was received in the Step 1 response (this step)."
 					},
 					"response": [
 						{
-							"id": "3a765125-e9f8-4be5-8e3b-bc0589b1e782",
 							"name": "Response to initial /sso/v1/sdk/authenticate?appName=appname",
 							"originalRequest": {
 								"method": "GET",
 								"header": [
 									{
 										"key": "Content-Type",
-										"value": "application/json",
-										"disabled": false
+										"value": "application/json"
 									},
 									{
 										"key": "Authorization",
-										"value": "Bearer {{access_token}}",
-										"disabled": false
+										"value": "Bearer {{access_token}}"
 									}
 								],
 								"body": {
@@ -199,7 +195,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{  \r\n   \"op\":\"credSubmit\",\r\n   \"credentials\":{  \r\n      \"username\":\"username\",\r\n      \"password\":\"password\"\r\n   },\r\n\r\n   \"requestState\":\"{{requestState}}\"\r\n\r\n}"
+							"raw": "{  \r\n   \"op\":\"credSubmit\",\r\n   \"credentials\":{  \r\n      \"username\":\"{{username}}\",\r\n      \"password\":\"{{password}}\"\r\n   },\r\n\r\n   \"requestState\":\"{{requestState}}\"\r\n\r\n}"
 						},
 						"url": {
 							"raw": "{{HOST}}/sso/v1/sdk/authenticate",
@@ -213,24 +209,21 @@
 								"authenticate"
 							]
 						},
-						"description": "In the Request\r\nThe \"op\" attribute indicates to the server what kind of operation the client wants.\r\n\r\nThe \"authFactor\" attribute is included in the requestState and doesn't need to be sent again."
+						"description": "The following must be included in the request:\r\n\r\ncredentials: user name and password\r\nrequestState: received in the Step 1 response\r\nop: tells the server what kind of operation the client wants"
 					},
 					"response": [
 						{
-							"id": "2b14c557-f87f-4a7b-85f3-d455b6905c52",
 							"name": "Error Example: User Name Password Authentication Failure",
 							"originalRequest": {
 								"method": "POST",
 								"header": [
 									{
 										"key": "Content-Type",
-										"value": "application/json",
-										"disabled": false
+										"value": "application/json"
 									},
 									{
 										"key": "Authorization",
-										"value": "Bearer {{access_token}}",
-										"disabled": false
+										"value": "Bearer {{access_token}}"
 									}
 								],
 								"body": {
@@ -343,20 +336,17 @@
 							"body": "{\n    \"status\": \"failed\",\n    \"cause\": [\n        {\n            \"message\": \"You entered an incorrect user name or password.\",\n            \"code\": \"AUTH-3001\"\n        }\n    ],\n    \"requestState\": \"e5kwGYx57taQ.....jyg3nEDFya\"\n}"
 						},
 						{
-							"id": "c0b2ffac-7605-43bf-8325-a5494e7f967d",
 							"name": "Response to Step 2: Authn Token Issued (No MFA)",
 							"originalRequest": {
 								"method": "POST",
 								"header": [
 									{
 										"key": "Content-Type",
-										"value": "application/json",
-										"disabled": false
+										"value": "application/json"
 									},
 									{
 										"key": "Authorization",
-										"value": "Bearer {{access_token}}",
-										"disabled": false
+										"value": "Bearer {{access_token}}"
 									}
 								],
 								"body": {
@@ -471,6 +461,7 @@
 					]
 				}
 			],
+			"description": "Test authentication using the user's credentials and the requestState without Multi-Factor Authentication.",
 			"event": [
 				{
 					"listen": "prerequest",
@@ -496,11 +487,9 @@
 		},
 		{
 			"name": "Authentication Using User Name/Password + MFA Enrollment",
-			"description": "Test authentication using the user's credentials, requestState, and enrolling in Multi-Factor Authentication.",
 			"item": [
 				{
-					"name": "Offline TOTP Enrollment",
-					"description": "A mobile app uses either OTP or push notifications to prove that the user has possession of the mobile device. Only the mobile app that is in possession of the user's secret key can generate a valid OTP. Provisioning the secret key can be done online or offline. \r\n \r\nThis enrollment scenario is using the user's credentials, the requestState, and the offline MFA TOTP.\r\n \r\nIdentity Cloud Service users can use the OMA app or any supported third-party authenticator app that they want to generate OTPs. However, users must use the OMA app to receive push notifications. Use the Scan offline QR Code option to set up 3rd party authenticators.",
+					"name": "Offline Time-Based One-Time Passcode (TOTP) Enrollment",
 					"item": [
 						{
 							"name": "Step 1: Authentication Request with no Tokens/Session",
@@ -542,7 +531,6 @@
 							},
 							"response": [
 								{
-									"id": "a83dd408-8b39-40b2-8239-3933592da7e0",
 									"name": "Response to Step 1: Authentication Request with no Tokens/Session",
 									"originalRequest": {
 										"method": "GET",
@@ -689,7 +677,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n  \"op\": \"credSubmit\",\r\n  \r\n  \"credentials\": {\r\n    \"username\": \"username\",\r\n    \"password\": \"password\"\r\n  },\r\n  \"requestState\": \"{{requestState}}\"\r\n}"
+									"raw": "{\r\n  \"op\": \"credSubmit\",\r\n  \r\n  \"credentials\": {\r\n    \"username\": \"{{username}}\",\r\n    \"password\": \"{{password}}\"\r\n  },\r\n  \"requestState\": \"{{requestState}}\"\r\n}"
 								},
 								"url": {
 									"raw": "{{HOST}}/sso/v1/sdk/authenticate",
@@ -707,20 +695,17 @@
 							},
 							"response": [
 								{
-									"id": "31c76749-6b79-4fa7-b40f-632634152765",
 									"name": "Response to Step 2: User Name/Password Submission",
 									"originalRequest": {
 										"method": "POST",
 										"header": [
 											{
 												"key": "Content-Type",
-												"value": "application/json",
-												"disabled": false
+												"value": "application/json"
 											},
 											{
 												"key": "Authorization",
-												"value": "Bearer {{access_token}}",
-												"disabled": false
+												"value": "Bearer {{access_token}}"
 											}
 										],
 										"body": {
@@ -868,20 +853,17 @@
 							},
 							"response": [
 								{
-									"id": "fcfc3b0a-07a7-44b3-afcc-c282b6bc5eeb",
 									"name": "Response to Step 3: Offline TOTP Enrollment Request",
 									"originalRequest": {
 										"method": "POST",
 										"header": [
 											{
 												"key": "Content-Type",
-												"value": "application/json",
-												"disabled": false
+												"value": "application/json"
 											},
 											{
 												"key": "Authorization",
-												"value": "Bearer {{access_token}}",
-												"disabled": false
+												"value": "Bearer {{access_token}}"
 											}
 										],
 										"body": {
@@ -1029,20 +1011,17 @@
 							},
 							"response": [
 								{
-									"id": "7206891b-16a7-431e-84ee-f39547ad9e0a",
 									"name": "Response to Step 4: Offline TOTP Enrollment Submit Factor Credentials",
 									"originalRequest": {
 										"method": "POST",
 										"header": [
 											{
 												"key": "Content-Type",
-												"value": "application/json",
-												"disabled": false
+												"value": "application/json"
 											},
 											{
 												"key": "Authorization",
-												"value": "Bearer {{access_token}}",
-												"disabled": false
+												"value": "Bearer {{access_token}}"
 											}
 										],
 										"body": {
@@ -1190,20 +1169,17 @@
 							},
 							"response": [
 								{
-									"id": "909042ca-0faf-4b09-858e-c5c4b36925d9",
 									"name": "Response to Step 5: Create Token After Enrollment is Complete",
 									"originalRequest": {
 										"method": "POST",
 										"header": [
 											{
 												"key": "Content-Type",
-												"value": "application/json",
-												"disabled": false
+												"value": "application/json"
 											},
 											{
 												"key": "Authorization",
-												"value": "Bearer {{access_token}}",
-												"disabled": false
+												"value": "Bearer {{access_token}}"
 											}
 										],
 										"body": {
@@ -1318,6 +1294,7 @@
 							]
 						}
 					],
+					"description": "A mobile app uses either a one-time passcode (TOTP) or push notifications to prove that the user has possession of the mobile device. Only the mobile app that is in possession of the user's secret key can generate a valid OTP. Provisioning the secret key can be done online or offline. \r\n \r\nThis enrollment scenario is using the user's credentials, the requestState, and the offline MFA TOTP.\r\n \r\nIdentity Cloud Service users can use the OMA app or any supported third-party authenticator app that they want to generate OTPs. However, users must use the OMA app to receive push notifications. Use the Scan offline QR Code option to set up 3rd party authenticators.",
 					"event": [
 						{
 							"listen": "prerequest",
@@ -1343,8 +1320,7 @@
 					"_postman_isSubFolder": true
 				},
 				{
-					"name": "Online TOTP Enrollment",
-					"description": "A mobile app uses either OTP or push notifications to prove that the user has possession of the mobile device. Only the mobile app that is in possession of the user's secret key can generate a valid OTP. Provisioning the secret key can be done online or offline. \r\n \r\nThis enrollment scenario is using the user's credentials, the requestState, and the online MFA TOTP.",
+					"name": "Online Time-Based One-Time Passcode (TOTP) Enrollment",
 					"item": [
 						{
 							"name": "Step 1: Authentication Request with no Tokens/Session",
@@ -1382,24 +1358,21 @@
 										}
 									]
 								},
-								"description": "This step obtains the initial requestState to then continue with the authentication flow. The appName is optional, but is used in this step for testing purposes.\n\nThe user submits their credentials in Step 2 as the first factor, which is the username/password.\n\nThe requestState in the response received contains the following information:\n\n- creationTime\n- tenantName\n- appName\n- ecid (to keep track of the audit trail)\n\nFor the Next Step:\n- The client must pass the credentials, which are the username and password\n- The client must pass the requestState that was received in the Step 1 response (this step)."
+								"description": "This step obtains the initial requestState to then continue with the authentication flow. The appName is optional, but is used in this step for testing purposes.\n\nThe requestState in the response received contains the following information:\n\n- creationTime\n- tenantName\n- appName\n- ecid (to keep track of the audit trail)\n\nFor the Next Step:\n- The client must pass the credentials, which are the username and password\n- The client must pass the requestState that was received in the Step 1 response (this step)."
 							},
 							"response": [
 								{
-									"id": "72d432e0-6a0e-4d63-8733-44dadfc12486",
 									"name": "Response to Step 1: Authentication Request with no Tokens/Session",
 									"originalRequest": {
 										"method": "GET",
 										"header": [
 											{
 												"key": "Content-Type",
-												"value": "application/json",
-												"disabled": false
+												"value": "application/json"
 											},
 											{
 												"key": "Authorization",
-												"value": "Bearer {{access_token}}",
-												"disabled": false
+												"value": "Bearer {{access_token}}"
 											}
 										],
 										"body": {
@@ -1535,7 +1508,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n  \"op\": \"credSubmit\",\r\n  \r\n  \"credentials\": {\r\n    \"username\": \"username\",\r\n    \"password\": \"password\"\r\n  },\r\n  \"requestState\": \"{{requestState}}\"\r\n}"
+									"raw": "{\r\n  \"op\": \"credSubmit\",\r\n  \r\n  \"credentials\": {\r\n    \"username\": \"{{username}}\",\r\n    \"password\": \"{{password}}\"\r\n  },\r\n  \"requestState\": \"{{requestState}}\"\r\n}"
 								},
 								"url": {
 									"raw": "{{HOST}}/sso/v1/sdk/authenticate",
@@ -1549,24 +1522,21 @@
 										"authenticate"
 									]
 								},
-								"description": "This step sends the username and password and the requestState that was received in the Step 1 response.\r\n\r\nIn the response received during Step 2 \r\n\"nextOp\": \"enrollment\" indicates that the user should enroll in an MFA factor as the next step.\r\n\r\nNote that BYPASSCODE is missing in the response since the user can't enroll using a Bypass Code. The Bypass Code should be generated by the user using My Profile or by requesting that an administrator generate one for them.\r\n\r\nThe policy evaluation happens in the background and the next applicable operation (either enrollment or authentication) is sent in the response."
+								"description": "This step sends the username and password and the requestState that was received in the Step 1 response.\r\n\r\nIn the response received during Step 2 \r\n\"nextOp\": \"enrollment\" indicates that the user should enroll in an MFA factor as the next step.\r\n\r\nNote: This assumes that MFA is enabled and a sign-on policy is created for the environment.\r\n\r\nThe policy evaluation happens in the background and the next applicable operation (either enrollment or authentication) is sent in the response.\r\n\r\nNote that BYPASSCODE is missing in the response since the user can't enroll using a Bypass Code. The Bypass Code should be generated by the user using My Profile or by requesting that an administrator generate one for them.\r\n\r\n"
 							},
 							"response": [
 								{
-									"id": "3f0ee5a5-8677-4fc8-8c1b-981fdd8e6d27",
 									"name": "Response to Step 2: User Name/Password Submission",
 									"originalRequest": {
 										"method": "POST",
 										"header": [
 											{
 												"key": "Content-Type",
-												"value": "application/json",
-												"disabled": false
+												"value": "application/json"
 											},
 											{
 												"key": "Authorization",
-												"value": "Bearer {{access_token}}",
-												"disabled": false
+												"value": "Bearer {{access_token}}"
 											}
 										],
 										"body": {
@@ -1710,24 +1680,21 @@
 										"authenticate"
 									]
 								},
-								"description": "This step requests to enroll in an online TOTP. You must include in this request the requestState that was received in the Step 2 response. Note that there is no need to include credentials in the request, since the online TOTP is being used.\r\n\r\nIn the Response:\r\n\r\nThe requestState in the response contains the following information:\r\n- deviceId\r\n- creationTime\r\n- tenantName\r\n- appName\r\n\r\nNote that the value for \"content\" always begins with \"oraclemobileauthenticator//\"\r\n\r\nTo get a QR Code to scan for testing purposes:\r\n\r\nYou must copy the value of the qrCode \"content\" value and use an online QR Code Generator (such as: https://www.the-qrcode-generator.com) to generate a QR Code to scan using the Oracle Mobile Authenticator App to get the otpCode to use in Step 4."
+								"description": "This step makes the request to enroll in an online TOTP. You must include in this request the requestState that was received in the Step 2 response. \r\n\r\nIn the Response:\r\n\r\nThe requestState in the response contains the following information:\r\n- deviceId\r\n- creationTime\r\n- tenantName\r\n- appName\r\n\r\nNote that the value for \"content\" always begins with \"oraclemobileauthenticator//\"\r\n\r\nTo get a QR Code to scan for testing purposes:\r\n\r\nYou must copy the value of the qrCode \"content\" value and use an online QR Code Generator (such as: https://www.the-qrcode-generator.com) to generate a QR Code to scan using the Oracle Mobile Authenticator App to get the otpCode to use in Step 4."
 							},
 							"response": [
 								{
-									"id": "30ed9716-3dd3-4901-8746-a3976663e1c0",
 									"name": "Response to Step 3: Online TOTP Enrollment Request",
 									"originalRequest": {
 										"method": "POST",
 										"header": [
 											{
 												"key": "Content-Type",
-												"value": "application/json",
-												"disabled": false
+												"value": "application/json"
 											},
 											{
 												"key": "Authorization",
-												"value": "Bearer {{access_token}}",
-												"disabled": false
+												"value": "Bearer {{access_token}}"
 											}
 										],
 										"body": {
@@ -1875,20 +1842,17 @@
 							},
 							"response": [
 								{
-									"id": "9c0ebe49-80b9-4561-810e-157c3eb658df",
 									"name": "Response to Step 4: Online TOTP Enrollment Submit Factor Credentials",
 									"originalRequest": {
 										"method": "POST",
 										"header": [
 											{
 												"key": "Content-Type",
-												"value": "application/json",
-												"disabled": false
+												"value": "application/json"
 											},
 											{
 												"key": "Authorization",
-												"value": "Bearer {{access_token}}",
-												"disabled": false
+												"value": "Bearer {{access_token}}"
 											}
 										],
 										"body": {
@@ -2036,146 +2000,17 @@
 							},
 							"response": [
 								{
-									"id": "bd1092aa-3f7a-4b32-a768-c1e5eeccc1f6",
-									"name": "Success Response to Step 4a: Submit Factor Credentials",
-									"originalRequest": {
-										"method": "POST",
-										"header": [
-											{
-												"key": "Content-Type",
-												"value": "application/json",
-												"disabled": false
-											},
-											{
-												"key": "Authorization",
-												"value": "Bearer {{access_token}}",
-												"disabled": false
-											}
-										],
-										"body": {
-											"mode": "raw",
-											"raw": " {  \r\n   \"op\":\"credSubmit\",\r\n   \"requestState\":\"{{requestState}}\"\r\n}"
-										},
-										"url": {
-											"raw": "{{HOST}}/sso/v1/sdk/authenticate",
-											"host": [
-												"{{HOST}}"
-											],
-											"path": [
-												"sso",
-												"v1",
-												"sdk",
-												"authenticate"
-											]
-										}
-									},
-									"status": "OK",
-									"code": 200,
-									"_postman_previewlanguage": "json",
-									"header": [
-										{
-											"key": "Cache-control",
-											"value": "no-cache, no-store, must-revalidate",
-											"name": "Cache-control",
-											"description": "Tells all caching mechanisms from server to client whether they may cache this object. It is measured in seconds"
-										},
-										{
-											"key": "Content-length",
-											"value": "2045",
-											"name": "Content-length",
-											"description": "The length of the response body in octets (8-bit bytes)"
-										},
-										{
-											"key": "Content-type",
-											"value": "application/json;charset=utf-8",
-											"name": "Content-type",
-											"description": "The mime type of this content"
-										},
-										{
-											"key": "Date",
-											"value": "Mon, 04 Jun 2018 17:43:07 GMT",
-											"name": "Date",
-											"description": "The date and time that the message was sent"
-										},
-										{
-											"key": "Expires",
-											"value": "Sat, 01 Jan 2000 00:00:00 GMT",
-											"name": "Expires",
-											"description": "Gives the date/time after which the response is considered stale"
-										},
-										{
-											"key": "Pragma",
-											"value": "no-cache",
-											"name": "Pragma",
-											"description": "Implementation-specific headers that may have various effects anywhere along the request-response chain."
-										},
-										{
-											"key": "Proxy-agent",
-											"value": "Oracle-Traffic-Director/11.1.1.9",
-											"name": "Proxy-agent",
-											"description": "Custom header"
-										},
-										{
-											"key": "Proxy-agent",
-											"value": "Oracle-Traffic-Director/11.1.1.9",
-											"name": "Proxy-agent",
-											"description": "Custom header"
-										},
-										{
-											"key": "Server",
-											"value": "Oracle-Traffic-Director/11.1.1.9",
-											"name": "Server",
-											"description": "A name for the server"
-										},
-										{
-											"key": "Via",
-											"value": "1.1 net-idcs-config, 1.1 net-idcs-dev-lbr",
-											"name": "Via",
-											"description": "Informs the client of proxies through which the response was sent."
-										},
-										{
-											"key": "X-content-type-options",
-											"value": "nosniff",
-											"name": "X-content-type-options",
-											"description": "The only defined value, \"nosniff\", prevents Internet Explorer from MIME-sniffing a response away from the declared content-type"
-										},
-										{
-											"key": "X-oracle-dms-ecid",
-											"value": "N1hJZ1HB000000000",
-											"name": "X-oracle-dms-ecid",
-											"description": "Custom header"
-										},
-										{
-											"key": "X-oracle-dms-rid",
-											"value": "0:1:1",
-											"name": "X-oracle-dms-rid",
-											"description": "Custom header"
-										},
-										{
-											"key": "X-xss-protection",
-											"value": "1; mode=block",
-											"name": "X-xss-protection",
-											"description": "Cross-site scripting (XSS) filter"
-										}
-									],
-									"cookie": [],
-									"body": "{\n    \"status\": \"success\",\n    \"displayName\": \"Joe's iPhone\",\n    \"nextOp\": [\n        \"createToken\",\n        \"createSession\",\n        \"enrollment\"\n    ],\n    \"requestState\": \"nofIeqDqCO5S..........7tCGS0O0hwsJJ47IEcGqdXQ\"\n}"
-								},
-								{
-									"id": "bf68625f-b8b4-4611-8472-d3a8b64e3417",
 									"name": "Pending Response to Step 4: Submit Factor Credentials for Online TOTP Enrollment",
 									"originalRequest": {
 										"method": "POST",
 										"header": [
 											{
 												"key": "Content-Type",
-												"value": "application/json",
-												"disabled": false
+												"value": "application/json"
 											},
 											{
 												"key": "Authorization",
-												"value": "Bearer {{access_token}}",
-												"disabled": false
+												"value": "Bearer {{access_token}}"
 											}
 										],
 										"body": {
@@ -2286,6 +2121,129 @@
 									],
 									"cookie": [],
 									"body": "{\n    \"status\": \"pending\",\n    \"cause\": [\n        {\n            \"code\": \"AUTH-1109\",\n            \"message\": \"Enrollment in the One-Time Passcode authentication method is pending verification.\"\n        }\n    ],\n    \"nextOp\": [\n        \"credSubmit\",\n        \"createToken\",\n        \"createSession\",\n        \"enrollment\"\n    ],\n    \"mfaSettings\": {\n        \"enrollmentRequired\": false\n    },\n    \"requestState\": \"1bYZJeyi6bcp..........74RXYKmbdiZfVW8y7tNc\"\n}"
+								},
+								{
+									"name": "Success Response to Step 4a: Submit Factor Credentials",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "Authorization",
+												"value": "Bearer {{access_token}}"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": " {  \r\n   \"op\":\"credSubmit\",\r\n   \"requestState\":\"{{requestState}}\"\r\n}"
+										},
+										"url": {
+											"raw": "{{HOST}}/sso/v1/sdk/authenticate",
+											"host": [
+												"{{HOST}}"
+											],
+											"path": [
+												"sso",
+												"v1",
+												"sdk",
+												"authenticate"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Cache-control",
+											"value": "no-cache, no-store, must-revalidate",
+											"name": "Cache-control",
+											"description": "Tells all caching mechanisms from server to client whether they may cache this object. It is measured in seconds"
+										},
+										{
+											"key": "Content-length",
+											"value": "2045",
+											"name": "Content-length",
+											"description": "The length of the response body in octets (8-bit bytes)"
+										},
+										{
+											"key": "Content-type",
+											"value": "application/json;charset=utf-8",
+											"name": "Content-type",
+											"description": "The mime type of this content"
+										},
+										{
+											"key": "Date",
+											"value": "Mon, 04 Jun 2018 17:43:07 GMT",
+											"name": "Date",
+											"description": "The date and time that the message was sent"
+										},
+										{
+											"key": "Expires",
+											"value": "Sat, 01 Jan 2000 00:00:00 GMT",
+											"name": "Expires",
+											"description": "Gives the date/time after which the response is considered stale"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache",
+											"name": "Pragma",
+											"description": "Implementation-specific headers that may have various effects anywhere along the request-response chain."
+										},
+										{
+											"key": "Proxy-agent",
+											"value": "Oracle-Traffic-Director/11.1.1.9",
+											"name": "Proxy-agent",
+											"description": "Custom header"
+										},
+										{
+											"key": "Proxy-agent",
+											"value": "Oracle-Traffic-Director/11.1.1.9",
+											"name": "Proxy-agent",
+											"description": "Custom header"
+										},
+										{
+											"key": "Server",
+											"value": "Oracle-Traffic-Director/11.1.1.9",
+											"name": "Server",
+											"description": "A name for the server"
+										},
+										{
+											"key": "Via",
+											"value": "1.1 net-idcs-config, 1.1 net-idcs-dev-lbr",
+											"name": "Via",
+											"description": "Informs the client of proxies through which the response was sent."
+										},
+										{
+											"key": "X-content-type-options",
+											"value": "nosniff",
+											"name": "X-content-type-options",
+											"description": "The only defined value, \"nosniff\", prevents Internet Explorer from MIME-sniffing a response away from the declared content-type"
+										},
+										{
+											"key": "X-oracle-dms-ecid",
+											"value": "N1hJZ1HB000000000",
+											"name": "X-oracle-dms-ecid",
+											"description": "Custom header"
+										},
+										{
+											"key": "X-oracle-dms-rid",
+											"value": "0:1:1",
+											"name": "X-oracle-dms-rid",
+											"description": "Custom header"
+										},
+										{
+											"key": "X-xss-protection",
+											"value": "1; mode=block",
+											"name": "X-xss-protection",
+											"description": "Cross-site scripting (XSS) filter"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": \"success\",\n    \"displayName\": \"Joe's iPhone\",\n    \"nextOp\": [\n        \"createToken\",\n        \"createSession\",\n        \"enrollment\"\n    ],\n    \"requestState\": \"nofIeqDqCO5S..........7tCGS0O0hwsJJ47IEcGqdXQ\"\n}"
 								}
 							]
 						},
@@ -2323,20 +2281,17 @@
 							},
 							"response": [
 								{
-									"id": "b0090d67-c7c3-46ef-9eac-b4deba2cd5db",
 									"name": "Response to Step 5: Create Token After Enrollment is Complete",
 									"originalRequest": {
 										"method": "POST",
 										"header": [
 											{
 												"key": "Content-Type",
-												"value": "application/json",
-												"disabled": false
+												"value": "application/json"
 											},
 											{
 												"key": "Authorization",
-												"value": "Bearer {{access_token}}",
-												"disabled": false
+												"value": "Bearer {{access_token}}"
 											}
 										],
 										"body": {
@@ -2451,6 +2406,7 @@
 							]
 						}
 					],
+					"description": "A mobile app uses either OTP or push notifications to prove that the user has possession of the mobile device. Only the mobile app that is in possession of the user's secret key can generate a valid OTP. Provisioning the secret key can be done online or offline. \r\n \r\nThis enrollment scenario is using the user's credentials, the requestState, and the online MFA TOTP.",
 					"event": [
 						{
 							"listen": "prerequest",
@@ -2477,7 +2433,6 @@
 				},
 				{
 					"name": "SMS Enrollment",
-					"description": "",
 					"item": [
 						{
 							"name": "Step 1: Authentication Request with no Tokens/Session",
@@ -2519,7 +2474,6 @@
 							},
 							"response": [
 								{
-									"id": "42919973-753f-4160-a127-990400f70bd2",
 									"name": "Response to Step 1: Authentication Request with no Tokens/Session",
 									"originalRequest": {
 										"method": "GET",
@@ -2666,7 +2620,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n  \"op\": \"credSubmit\",\r\n  \r\n  \"credentials\": {\r\n    \"username\": \"username\",\r\n    \"password\": \"password\"\r\n  },\r\n  \"requestState\": \"{{requestState}}\"\r\n}"
+									"raw": "{\r\n  \"op\": \"credSubmit\",\r\n  \r\n  \"credentials\": {\r\n    \"username\": \"{{username}}\",\r\n    \"password\": \"{{password}}\"\r\n  },\r\n  \"requestState\": \"{{requestState}}\"\r\n}"
 								},
 								"url": {
 									"raw": "{{HOST}}/sso/v1/sdk/authenticate",
@@ -2684,20 +2638,17 @@
 							},
 							"response": [
 								{
-									"id": "a362e3d0-0cc8-425d-8e71-ed0f572aacb3",
 									"name": "Response to Step 2: User Name/Password Submission",
 									"originalRequest": {
 										"method": "POST",
 										"header": [
 											{
 												"key": "Content-Type",
-												"value": "application/json",
-												"disabled": false
+												"value": "application/json"
 											},
 											{
 												"key": "Authorization",
-												"value": "Bearer {{access_token}}",
-												"disabled": false
+												"value": "Bearer {{access_token}}"
 											}
 										],
 										"body": {
@@ -2845,7 +2796,6 @@
 							},
 							"response": [
 								{
-									"id": "fe9e49c4-6a25-407b-87dd-9e1b0ba10166",
 									"name": "Response to Step 3: SMS Enrollment Request",
 									"originalRequest": {
 										"method": "POST",
@@ -3004,20 +2954,17 @@
 							},
 							"response": [
 								{
-									"id": "8cbd72a3-6fcd-4117-bcc1-b9ecd5342db3",
 									"name": "Response to Step 3a: SMS Enrollment Request - Resend SMS",
 									"originalRequest": {
 										"method": "POST",
 										"header": [
 											{
 												"key": "Content-Type",
-												"value": "application/json",
-												"disabled": false
+												"value": "application/json"
 											},
 											{
 												"key": "Authorization",
-												"value": "Bearer {{access_token}}",
-												"disabled": false
+												"value": "Bearer {{access_token}}"
 											}
 										],
 										"body": {
@@ -3171,20 +3118,17 @@
 							},
 							"response": [
 								{
-									"id": "64bfafa7-0ea6-4424-bf64-7864f5334f3c",
 									"name": "Response to Step 4: SMS Enrollment Submit Factor Credentials",
 									"originalRequest": {
 										"method": "POST",
 										"header": [
 											{
 												"key": "Content-Type",
-												"value": "application/json",
-												"disabled": false
+												"value": "application/json"
 											},
 											{
 												"key": "Authorization",
-												"value": "Bearer {{access_token}}",
-												"disabled": false
+												"value": "Bearer {{access_token}}"
 											}
 										],
 										"body": {
@@ -3332,20 +3276,17 @@
 							},
 							"response": [
 								{
-									"id": "bb54cd07-3be6-45f4-94b7-85d90f418bcd",
 									"name": "Response to Step 5: Create Token After Enrollment is Complete",
 									"originalRequest": {
 										"method": "POST",
 										"header": [
 											{
 												"key": "Content-Type",
-												"value": "application/json",
-												"disabled": false
+												"value": "application/json"
 											},
 											{
 												"key": "Authorization",
-												"value": "Bearer {{access_token}}",
-												"disabled": false
+												"value": "Bearer {{access_token}}"
 											}
 										],
 										"body": {
@@ -3492,7 +3433,6 @@
 				},
 				{
 					"name": "EMAIL Enrollment",
-					"description": "",
 					"item": [
 						{
 							"name": "Step 1: Authentication Request with no Tokens/Session",
@@ -3534,20 +3474,17 @@
 							},
 							"response": [
 								{
-									"id": "5dba4616-9d5f-4403-b803-59100dfcb665",
 									"name": "Response to Step 1: Authentication Request with no Tokens/Session",
 									"originalRequest": {
 										"method": "GET",
 										"header": [
 											{
 												"key": "Content-Type",
-												"value": "application/json",
-												"disabled": false
+												"value": "application/json"
 											},
 											{
 												"key": "Authorization",
-												"value": "Bearer {{access_token}}",
-												"disabled": false
+												"value": "Bearer {{access_token}}"
 											}
 										],
 										"body": {
@@ -3683,7 +3620,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n  \"op\": \"credSubmit\",\r\n  \r\n  \"credentials\": {\r\n    \"username\": \"username\",\r\n    \"password\": \"password\"\r\n  },\r\n  \"requestState\": \"{{requestState}}\"\r\n}"
+									"raw": "{\r\n  \"op\": \"credSubmit\",\r\n  \r\n  \"credentials\": {\r\n    \"username\": \"{{username}}\",\r\n    \"password\": \"{{password}}\"\r\n  },\r\n  \"requestState\": \"{{requestState}}\"\r\n}"
 								},
 								"url": {
 									"raw": "{{HOST}}/sso/v1/sdk/authenticate",
@@ -3701,20 +3638,17 @@
 							},
 							"response": [
 								{
-									"id": "c085bcd4-c5ef-4691-adae-f7f79647f4bc",
 									"name": "Response to Step 2: User Name/Password Submission",
 									"originalRequest": {
 										"method": "POST",
 										"header": [
 											{
 												"key": "Content-Type",
-												"value": "application/json",
-												"disabled": false
+												"value": "application/json"
 											},
 											{
 												"key": "Authorization",
-												"value": "Bearer {{access_token}}",
-												"disabled": false
+												"value": "Bearer {{access_token}}"
 											}
 										],
 										"body": {
@@ -3868,7 +3802,6 @@
 							},
 							"response": [
 								{
-									"id": "51d7d6eb-4c34-4f48-9510-3cdfe852d013",
 									"name": "Response to Step 3: EMAIL Enrollment Request",
 									"originalRequest": {
 										"method": "POST",
@@ -3942,20 +3875,17 @@
 							},
 							"response": [
 								{
-									"id": "bd6b1280-e27a-44ed-aab4-090be13b0b6d",
 									"name": "Response to Step 3a: Email Enrollment Request - Resend OTP",
 									"originalRequest": {
 										"method": "POST",
 										"header": [
 											{
 												"key": "Content-Type",
-												"value": "application/json",
-												"disabled": false
+												"value": "application/json"
 											},
 											{
 												"key": "Authorization",
-												"value": "Bearer {{access_token}}",
-												"disabled": false
+												"value": "Bearer {{access_token}}"
 											}
 										],
 										"body": {
@@ -4103,20 +4033,17 @@
 							},
 							"response": [
 								{
-									"id": "e4ee10b2-0393-4ea2-8c6a-a1a7f7435ce3",
 									"name": "Response to Step 4: EMAIL Enrollment Submit Factor Credentials",
 									"originalRequest": {
 										"method": "POST",
 										"header": [
 											{
 												"key": "Content-Type",
-												"value": "application/json",
-												"disabled": false
+												"value": "application/json"
 											},
 											{
 												"key": "Authorization",
-												"value": "Bearer {{access_token}}",
-												"disabled": false
+												"value": "Bearer {{access_token}}"
 											}
 										],
 										"body": {
@@ -4264,20 +4191,17 @@
 							},
 							"response": [
 								{
-									"id": "b5e0ff62-3ead-484f-ac0b-5b7765331994",
 									"name": "Response to Step 5: Create Token After Enrollment is Complete",
 									"originalRequest": {
 										"method": "POST",
 										"header": [
 											{
 												"key": "Content-Type",
-												"value": "application/json",
-												"disabled": false
+												"value": "application/json"
 											},
 											{
 												"key": "Authorization",
-												"value": "Bearer {{access_token}}",
-												"disabled": false
+												"value": "Bearer {{access_token}}"
 											}
 										],
 										"body": {
@@ -4418,11 +4342,9 @@
 				},
 				{
 					"name": "Security Questions Enrollment",
-					"description": "",
 					"item": [
 						{
 							"name": "Security Questions Enrollment Using Accept-Language Header",
-							"description": "In this scenario, the user is enrolling in security questions with the client passing the Accept-Language Header.",
 							"item": [
 								{
 									"name": "Step 1: Authentication Request with no Tokens/Session",
@@ -4468,25 +4390,21 @@
 									},
 									"response": [
 										{
-											"id": "aa65f0e8-5455-43aa-96f3-1583a03e7f9d",
 											"name": "Response to Step 1: Authentication Request with no Tokens/Session",
 											"originalRequest": {
 												"method": "GET",
 												"header": [
 													{
 														"key": "Content-Type",
-														"value": "application/json",
-														"disabled": false
+														"value": "application/json"
 													},
 													{
 														"key": "Authorization",
-														"value": "Bearer {{access_token}}",
-														"disabled": false
+														"value": "Bearer {{access_token}}"
 													},
 													{
 														"key": "Accept-Language",
-														"value": "en-US, fr-CH",
-														"disabled": false
+														"value": "en-US, fr-CH"
 													}
 												],
 												"body": {
@@ -4626,7 +4544,7 @@
 										],
 										"body": {
 											"mode": "raw",
-											"raw": "{\r\n  \"op\": \"credSubmit\",\r\n  \r\n  \"credentials\": {\r\n    \"username\": \"username\",\r\n    \"password\": \"password\"\r\n  },\r\n  \"requestState\": \"{{requestState}}\"\r\n}"
+											"raw": "{\r\n  \"op\": \"credSubmit\",\r\n  \r\n  \"credentials\": {\r\n    \"username\": \"{{username}}\",\r\n    \"password\": \"{{password}}\"\r\n  },\r\n  \"requestState\": \"{{requestState}}\"\r\n}"
 										},
 										"url": {
 											"raw": "{{HOST}}/sso/v1/sdk/authenticate",
@@ -4644,7 +4562,6 @@
 									},
 									"response": [
 										{
-											"id": "0316491e-0de2-4ff0-8f8f-cdfa4da1d75c",
 											"name": "Response to Step 2: Username/Password Submisstion",
 											"originalRequest": {
 												"method": "POST",
@@ -4811,25 +4728,21 @@
 									},
 									"response": [
 										{
-											"id": "975c34bc-b026-4cfa-a22f-cd0758f7aa61",
 											"name": "Response to Step 3: Initiate Security Questions Enrollment Request",
 											"originalRequest": {
 												"method": "POST",
 												"header": [
 													{
 														"key": "Content-Type",
-														"value": "application/json",
-														"disabled": false
+														"value": "application/json"
 													},
 													{
 														"key": "Authorization",
-														"value": "Bearer {{access_token}}",
-														"disabled": false
+														"value": "Bearer {{access_token}}"
 													},
 													{
 														"key": "Accept-Language",
-														"value": "en-US, fr-CH",
-														"disabled": false
+														"value": "en-US, fr-CH"
 													}
 												],
 												"body": {
@@ -4981,25 +4894,21 @@
 									},
 									"response": [
 										{
-											"id": "9e549dfb-79ef-4157-aa58-cbd36f3cb4a5",
 											"name": "Response to Step 4: Submit Factor Credentials for Security Questions Enrollment",
 											"originalRequest": {
 												"method": "POST",
 												"header": [
 													{
 														"key": "Content-Type",
-														"value": "application/json",
-														"disabled": false
+														"value": "application/json"
 													},
 													{
 														"key": "Authorization",
-														"value": "Bearer {{access_token}}",
-														"disabled": false
+														"value": "Bearer {{access_token}}"
 													},
 													{
 														"key": "Accept-Language",
-														"value": "en-US, fr-CH",
-														"disabled": false
+														"value": "en-US, fr-CH"
 													}
 												],
 												"body": {
@@ -5151,25 +5060,21 @@
 									},
 									"response": [
 										{
-											"id": "79248975-f2a6-4309-b023-93da883a0de1",
 											"name": "Response to Step 5: Create Token After Enrollment is Complete",
 											"originalRequest": {
 												"method": "POST",
 												"header": [
 													{
 														"key": "Content-Type",
-														"value": "application/json",
-														"disabled": false
+														"value": "application/json"
 													},
 													{
 														"key": "Authorization",
-														"value": "Bearer {{access_token}}",
-														"disabled": false
+														"value": "Bearer {{access_token}}"
 													},
 													{
 														"key": "Accept-Language",
-														"value": "en-US, fr-CH",
-														"disabled": false
+														"value": "en-US, fr-CH"
 													}
 												],
 												"body": {
@@ -5284,6 +5189,7 @@
 									]
 								}
 							],
+							"description": "In this scenario, the user is enrolling in security questions with the client passing the Accept-Language Header.",
 							"_postman_isSubFolder": true
 						},
 						{
@@ -5326,20 +5232,17 @@
 							},
 							"response": [
 								{
-									"id": "a970b114-13a9-4e39-8f72-c34caf5e4e31",
 									"name": "Response to Step 1: Authentication Request with no Tokens/Session",
 									"originalRequest": {
 										"method": "GET",
 										"header": [
 											{
 												"key": "Content-Type",
-												"value": "application/json",
-												"disabled": false
+												"value": "application/json"
 											},
 											{
 												"key": "Authorization",
-												"value": "Bearer {{access_token}}",
-												"disabled": false
+												"value": "Bearer {{access_token}}"
 											}
 										],
 										"body": {
@@ -5475,7 +5378,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n  \"op\": \"credSubmit\",\r\n  \r\n  \"credentials\": {\r\n    \"username\": \"username\",\r\n    \"password\": \"password\"\r\n  },\r\n  \"requestState\": \"{{requestState}}\"\r\n}"
+									"raw": "{\r\n  \"op\": \"credSubmit\",\r\n  \r\n  \"credentials\": {\r\n    \"username\": \"{{username}}\",\r\n    \"password\": \"{{password}}\"\r\n  },\r\n  \"requestState\": \"{{requestState}}\"\r\n}"
 								},
 								"url": {
 									"raw": "{{HOST}}/sso/v1/sdk/authenticate",
@@ -5493,20 +5396,17 @@
 							},
 							"response": [
 								{
-									"id": "02d86421-4c4e-4917-b3a4-164bbe5febcc",
 									"name": "Response to Step 2: Username/Password Submisstion",
 									"originalRequest": {
 										"method": "POST",
 										"header": [
 											{
 												"key": "Content-Type",
-												"value": "application/json",
-												"disabled": false
+												"value": "application/json"
 											},
 											{
 												"key": "Authorization",
-												"value": "Bearer {{access_token}}",
-												"disabled": false
+												"value": "Bearer {{access_token}}"
 											}
 										],
 										"body": {
@@ -5654,20 +5554,17 @@
 							},
 							"response": [
 								{
-									"id": "8826e6cd-326a-4b81-a8b3-8b65ffa0a139",
 									"name": "Response to Step 3: Initiate Security Questions Enrollment Request",
 									"originalRequest": {
 										"method": "POST",
 										"header": [
 											{
 												"key": "Content-Type",
-												"value": "application/json",
-												"disabled": false
+												"value": "application/json"
 											},
 											{
 												"key": "Authorization",
-												"value": "Bearer {{access_token}}",
-												"disabled": false
+												"value": "Bearer {{access_token}}"
 											}
 										],
 										"body": {
@@ -5815,20 +5712,17 @@
 							},
 							"response": [
 								{
-									"id": "3dc9299f-fbd6-4ac6-9ca2-70a7ba932ef3",
 									"name": "Response to Step 4: Submit Factor Credentials for Security Questions Enrollment",
 									"originalRequest": {
 										"method": "POST",
 										"header": [
 											{
 												"key": "Content-Type",
-												"value": "application/json",
-												"disabled": false
+												"value": "application/json"
 											},
 											{
 												"key": "Authorization",
-												"value": "Bearer {{access_token}}",
-												"disabled": false
+												"value": "Bearer {{access_token}}"
 											}
 										],
 										"body": {
@@ -5976,20 +5870,17 @@
 							},
 							"response": [
 								{
-									"id": "a4a08690-4885-449a-9b3f-fc5a635f2535",
 									"name": "Response to Step 5: Create Token After Enrollment is Complete",
 									"originalRequest": {
 										"method": "POST",
 										"header": [
 											{
 												"key": "Content-Type",
-												"value": "application/json",
-												"disabled": false
+												"value": "application/json"
 											},
 											{
 												"key": "Authorization",
-												"value": "Bearer {{access_token}}",
-												"disabled": false
+												"value": "Bearer {{access_token}}"
 											}
 										],
 										"body": {
@@ -6130,7 +6021,6 @@
 				},
 				{
 					"name": "PUSH Notification Enrollment",
-					"description": "",
 					"item": [
 						{
 							"name": "Step 1: Authentication Request with no Tokens/Session",
@@ -6172,20 +6062,17 @@
 							},
 							"response": [
 								{
-									"id": "f7884173-20a1-4ece-a935-2cf1319eebe3",
 									"name": "Response to Step 1: Authentication Request with no Tokens/Session",
 									"originalRequest": {
 										"method": "GET",
 										"header": [
 											{
 												"key": "Content-Type",
-												"value": "application/json",
-												"disabled": false
+												"value": "application/json"
 											},
 											{
 												"key": "Authorization",
-												"value": "Bearer {{access_token}}",
-												"disabled": false
+												"value": "Bearer {{access_token}}"
 											}
 										],
 										"body": {
@@ -6321,7 +6208,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n  \"op\": \"credSubmit\",\r\n  \r\n  \"credentials\": {\r\n    \"username\": \"username\",\r\n    \"password\": \"password\"\r\n  },\r\n  \"requestState\": \"{{requestState}}\"\r\n}"
+									"raw": "{\r\n  \"op\": \"credSubmit\",\r\n  \r\n  \"credentials\": {\r\n    \"username\": \"{{username}}\",\r\n    \"password\": \"{{password}}\"\r\n  },\r\n  \"requestState\": \"{{requestState}}\"\r\n}"
 								},
 								"url": {
 									"raw": "{{HOST}}/sso/v1/sdk/authenticate",
@@ -6339,20 +6226,17 @@
 							},
 							"response": [
 								{
-									"id": "65cb9bbd-c7e5-419c-a373-98c672458c98",
 									"name": "Response to Step 2: User Name/Password Submission",
 									"originalRequest": {
 										"method": "POST",
 										"header": [
 											{
 												"key": "Content-Type",
-												"value": "application/json",
-												"disabled": false
+												"value": "application/json"
 											},
 											{
 												"key": "Authorization",
-												"value": "Bearer {{access_token}}",
-												"disabled": false
+												"value": "Bearer {{access_token}}"
 											}
 										],
 										"body": {
@@ -6500,20 +6384,17 @@
 							},
 							"response": [
 								{
-									"id": "dfb22d05-187a-4dcc-8000-78b6150f712d",
 									"name": "Response to Step 3: PUSH Notification Enrollment Request",
 									"originalRequest": {
 										"method": "POST",
 										"header": [
 											{
 												"key": "Content-Type",
-												"value": "application/json",
-												"disabled": false
+												"value": "application/json"
 											},
 											{
 												"key": "Authorization",
-												"value": "Bearer {{access_token}}",
-												"disabled": false
+												"value": "Bearer {{access_token}}"
 											}
 										],
 										"body": {
@@ -6661,20 +6542,17 @@
 							},
 							"response": [
 								{
-									"id": "0cc67354-3b68-420a-8d6d-709e22eb711f",
 									"name": "Response to Step 4: PUSH Notification Enrollment Submit Factor Credentials",
 									"originalRequest": {
 										"method": "POST",
 										"header": [
 											{
 												"key": "Content-Type",
-												"value": "application/json",
-												"disabled": false
+												"value": "application/json"
 											},
 											{
 												"key": "Authorization",
-												"value": "Bearer {{access_token}}",
-												"disabled": false
+												"value": "Bearer {{access_token}}"
 											}
 										],
 										"body": {
@@ -6822,146 +6700,17 @@
 							},
 							"response": [
 								{
-									"id": "419d24bc-04da-4f3a-a7c8-cc3231ae3a62",
-									"name": "Pending Response to Step 4: Submit Factor Credentials",
-									"originalRequest": {
-										"method": "POST",
-										"header": [
-											{
-												"key": "Content-Type",
-												"value": "application/json",
-												"disabled": false
-											},
-											{
-												"key": "Authorization",
-												"value": "Bearer {{access_token}}",
-												"disabled": false
-											}
-										],
-										"body": {
-											"mode": "raw",
-											"raw": "{  \r\n   \"op\":\"credSubmit\",\r\n   \"requestState\":\"{{requestState}}\"\r\n}"
-										},
-										"url": {
-											"raw": "{{HOST}}/sso/v1/sdk/authenticate",
-											"host": [
-												"{{HOST}}"
-											],
-											"path": [
-												"sso",
-												"v1",
-												"sdk",
-												"authenticate"
-											]
-										}
-									},
-									"status": "OK",
-									"code": 200,
-									"_postman_previewlanguage": "json",
-									"header": [
-										{
-											"key": "Cache-control",
-											"value": "no-cache, no-store, must-revalidate",
-											"name": "Cache-control",
-											"description": "Tells all caching mechanisms from server to client whether they may cache this object. It is measured in seconds"
-										},
-										{
-											"key": "Content-length",
-											"value": "2075",
-											"name": "Content-length",
-											"description": "The length of the response body in octets (8-bit bytes)"
-										},
-										{
-											"key": "Content-type",
-											"value": "application/json;charset=utf-8",
-											"name": "Content-type",
-											"description": "The mime type of this content"
-										},
-										{
-											"key": "Date",
-											"value": "Mon, 04 Jun 2018 17:58:13 GMT",
-											"name": "Date",
-											"description": "The date and time that the message was sent"
-										},
-										{
-											"key": "Expires",
-											"value": "Sat, 01 Jan 2000 00:00:00 GMT",
-											"name": "Expires",
-											"description": "Gives the date/time after which the response is considered stale"
-										},
-										{
-											"key": "Pragma",
-											"value": "no-cache",
-											"name": "Pragma",
-											"description": "Implementation-specific headers that may have various effects anywhere along the request-response chain."
-										},
-										{
-											"key": "Proxy-agent",
-											"value": "Oracle-Traffic-Director/11.1.1.9",
-											"name": "Proxy-agent",
-											"description": "Custom header"
-										},
-										{
-											"key": "Proxy-agent",
-											"value": "Oracle-Traffic-Director/11.1.1.9",
-											"name": "Proxy-agent",
-											"description": "Custom header"
-										},
-										{
-											"key": "Server",
-											"value": "Oracle-Traffic-Director/11.1.1.9",
-											"name": "Server",
-											"description": "A name for the server"
-										},
-										{
-											"key": "Via",
-											"value": "1.1 net-idcs-config, 1.1 net-idcs-dev-lbr",
-											"name": "Via",
-											"description": "Informs the client of proxies through which the response was sent."
-										},
-										{
-											"key": "X-content-type-options",
-											"value": "nosniff",
-											"name": "X-content-type-options",
-											"description": "The only defined value, \"nosniff\", prevents Internet Explorer from MIME-sniffing a response away from the declared content-type"
-										},
-										{
-											"key": "X-oracle-dms-ecid",
-											"value": "Arfkf1A2000000000",
-											"name": "X-oracle-dms-ecid",
-											"description": "Custom header"
-										},
-										{
-											"key": "X-oracle-dms-rid",
-											"value": "0:1:1",
-											"name": "X-oracle-dms-rid",
-											"description": "Custom header"
-										},
-										{
-											"key": "X-xss-protection",
-											"value": "1; mode=block",
-											"name": "X-xss-protection",
-											"description": "Cross-site scripting (XSS) filter"
-										}
-									],
-									"cookie": [],
-									"body": "{\n    \"status\": \"pending\",\n    \"displayName\": \"Joe's Phone\",\n    \"cause\": [\n        {\n            \"code\": \"AUTH-1108\",\n            \"message\": \"Push Notification approval is pending.\"\n        }\n    ],\n    \"nextOp\": [\n        \"credSubmit\",\n        \"createToken\",\n        \"createSession\",\n        \"enrollment\"\n    ],\n    \"mfaSettings\": {\n        \"enrollmentRequired\": false\n    },\n    \"requestState\": \"EEKexBOx5YiQ..........7YDCbtOBvgBkP2Ur4Akm4\"\n}"
-								},
-								{
-									"id": "fc98209e-abc4-45cc-bd15-e2d266d4735c",
 									"name": "Response to Step 4a: Submit Factor Credentials - Success After Pending",
 									"originalRequest": {
 										"method": "POST",
 										"header": [
 											{
 												"key": "Content-Type",
-												"value": "application/json",
-												"disabled": false
+												"value": "application/json"
 											},
 											{
 												"key": "Authorization",
-												"value": "Bearer {{access_token}}",
-												"disabled": false
+												"value": "Bearer {{access_token}}"
 											}
 										],
 										"body": {
@@ -7072,6 +6821,129 @@
 									],
 									"cookie": [],
 									"body": "{\n    \"status\": \"success\",\n    \"displayName\": \"Joe's iPhone\",\n    \"nextOp\": [\n        \"createToken\",\n        \"createSession\",\n        \"enrollment\"\n    ],\n    \"requestState\": \"0qAS0i3BwEJH..........nsof/BnMqeYatY\"\n}"
+								},
+								{
+									"name": "Pending Response to Step 4: Submit Factor Credentials",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "Authorization",
+												"value": "Bearer {{access_token}}"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{  \r\n   \"op\":\"credSubmit\",\r\n   \"requestState\":\"{{requestState}}\"\r\n}"
+										},
+										"url": {
+											"raw": "{{HOST}}/sso/v1/sdk/authenticate",
+											"host": [
+												"{{HOST}}"
+											],
+											"path": [
+												"sso",
+												"v1",
+												"sdk",
+												"authenticate"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Cache-control",
+											"value": "no-cache, no-store, must-revalidate",
+											"name": "Cache-control",
+											"description": "Tells all caching mechanisms from server to client whether they may cache this object. It is measured in seconds"
+										},
+										{
+											"key": "Content-length",
+											"value": "2075",
+											"name": "Content-length",
+											"description": "The length of the response body in octets (8-bit bytes)"
+										},
+										{
+											"key": "Content-type",
+											"value": "application/json;charset=utf-8",
+											"name": "Content-type",
+											"description": "The mime type of this content"
+										},
+										{
+											"key": "Date",
+											"value": "Mon, 04 Jun 2018 17:58:13 GMT",
+											"name": "Date",
+											"description": "The date and time that the message was sent"
+										},
+										{
+											"key": "Expires",
+											"value": "Sat, 01 Jan 2000 00:00:00 GMT",
+											"name": "Expires",
+											"description": "Gives the date/time after which the response is considered stale"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache",
+											"name": "Pragma",
+											"description": "Implementation-specific headers that may have various effects anywhere along the request-response chain."
+										},
+										{
+											"key": "Proxy-agent",
+											"value": "Oracle-Traffic-Director/11.1.1.9",
+											"name": "Proxy-agent",
+											"description": "Custom header"
+										},
+										{
+											"key": "Proxy-agent",
+											"value": "Oracle-Traffic-Director/11.1.1.9",
+											"name": "Proxy-agent",
+											"description": "Custom header"
+										},
+										{
+											"key": "Server",
+											"value": "Oracle-Traffic-Director/11.1.1.9",
+											"name": "Server",
+											"description": "A name for the server"
+										},
+										{
+											"key": "Via",
+											"value": "1.1 net-idcs-config, 1.1 net-idcs-dev-lbr",
+											"name": "Via",
+											"description": "Informs the client of proxies through which the response was sent."
+										},
+										{
+											"key": "X-content-type-options",
+											"value": "nosniff",
+											"name": "X-content-type-options",
+											"description": "The only defined value, \"nosniff\", prevents Internet Explorer from MIME-sniffing a response away from the declared content-type"
+										},
+										{
+											"key": "X-oracle-dms-ecid",
+											"value": "Arfkf1A2000000000",
+											"name": "X-oracle-dms-ecid",
+											"description": "Custom header"
+										},
+										{
+											"key": "X-oracle-dms-rid",
+											"value": "0:1:1",
+											"name": "X-oracle-dms-rid",
+											"description": "Custom header"
+										},
+										{
+											"key": "X-xss-protection",
+											"value": "1; mode=block",
+											"name": "X-xss-protection",
+											"description": "Cross-site scripting (XSS) filter"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": \"pending\",\n    \"displayName\": \"Joe's Phone\",\n    \"cause\": [\n        {\n            \"code\": \"AUTH-1108\",\n            \"message\": \"Push Notification approval is pending.\"\n        }\n    ],\n    \"nextOp\": [\n        \"credSubmit\",\n        \"createToken\",\n        \"createSession\",\n        \"enrollment\"\n    ],\n    \"mfaSettings\": {\n        \"enrollmentRequired\": false\n    },\n    \"requestState\": \"EEKexBOx5YiQ..........7YDCbtOBvgBkP2Ur4Akm4\"\n}"
 								}
 							]
 						},
@@ -7109,20 +6981,17 @@
 							},
 							"response": [
 								{
-									"id": "63f91b7b-1918-4836-9cf7-a6214d328ae6",
 									"name": "Response to Step 5: Create Token After Enrollment is Complete",
 									"originalRequest": {
 										"method": "POST",
 										"header": [
 											{
 												"key": "Content-Type",
-												"value": "application/json",
-												"disabled": false
+												"value": "application/json"
 											},
 											{
 												"key": "Authorization",
-												"value": "Bearer {{access_token}}",
-												"disabled": false
+												"value": "Bearer {{access_token}}"
 											}
 										],
 										"body": {
@@ -7269,7 +7138,6 @@
 				},
 				{
 					"name": "Enroll in More Than One Factor",
-					"description": "This example scenario walks through a user enrolling in one factor, and then enrolling in another factor before creating the token.",
 					"item": [
 						{
 							"name": "Step 1: Authentication Request with no Tokens/Session",
@@ -7311,20 +7179,17 @@
 							},
 							"response": [
 								{
-									"id": "88a67b77-48c0-48cf-ae41-4ac1f222bc88",
 									"name": "Response to Step 1: Authentication Request with no Tokens/Session",
 									"originalRequest": {
 										"method": "GET",
 										"header": [
 											{
 												"key": "Content-Type",
-												"value": "application/json",
-												"disabled": false
+												"value": "application/json"
 											},
 											{
 												"key": "Authorization",
-												"value": "Bearer {{access_token}}",
-												"disabled": false
+												"value": "Bearer {{access_token}}"
 											}
 										],
 										"body": {
@@ -7460,7 +7325,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n  \"op\": \"credSubmit\",\r\n  \r\n  \"credentials\": {\r\n    \"username\": \"username\",\r\n    \"password\": \"password\"\r\n  },\r\n  \"requestState\": \"{{requestState}}\"\r\n}"
+									"raw": "{\r\n  \"op\": \"credSubmit\",\r\n  \r\n  \"credentials\": {\r\n    \"username\": \"{{username}}\",\r\n    \"password\": \"{{password}}\"\r\n  },\r\n  \"requestState\": \"{{requestState}}\"\r\n}"
 								},
 								"url": {
 									"raw": "{{HOST}}/sso/v1/sdk/authenticate",
@@ -7478,20 +7343,17 @@
 							},
 							"response": [
 								{
-									"id": "80dbe2f8-fc70-49b0-b965-b0b07e450cc4",
 									"name": "Response to Step 2: Username/Password Submisstion",
 									"originalRequest": {
 										"method": "POST",
 										"header": [
 											{
 												"key": "Content-Type",
-												"value": "application/json",
-												"disabled": false
+												"value": "application/json"
 											},
 											{
 												"key": "Authorization",
-												"value": "Bearer {{access_token}}",
-												"disabled": false
+												"value": "Bearer {{access_token}}"
 											}
 										],
 										"body": {
@@ -7639,20 +7501,17 @@
 							},
 							"response": [
 								{
-									"id": "e44992aa-37a1-49ce-9ec9-d83f098beb4a",
 									"name": "Response to Step 3: Initiate EMAIL Enrollment Request",
 									"originalRequest": {
 										"method": "POST",
 										"header": [
 											{
 												"key": "Content-Type",
-												"value": "application/json",
-												"disabled": false
+												"value": "application/json"
 											},
 											{
 												"key": "Authorization",
-												"value": "Bearer {{access_token}}",
-												"disabled": false
+												"value": "Bearer {{access_token}}"
 											}
 										],
 										"body": {
@@ -7800,20 +7659,17 @@
 							},
 							"response": [
 								{
-									"id": "59500281-e57a-46ed-8b64-fd89b2dfc940",
 									"name": "Response to Step 4: Submit Factor Credentials for EMAIL Enrollment",
 									"originalRequest": {
 										"method": "POST",
 										"header": [
 											{
 												"key": "Content-Type",
-												"value": "application/json",
-												"disabled": false
+												"value": "application/json"
 											},
 											{
 												"key": "Authorization",
-												"value": "Bearer {{access_token}}",
-												"disabled": false
+												"value": "Bearer {{access_token}}"
 											}
 										],
 										"body": {
@@ -7961,7 +7817,6 @@
 							},
 							"response": [
 								{
-									"id": "d78f6d1b-8f45-438d-8fd2-4953f76b813d",
 									"name": "Response to Step 5: Initiate Next Factor Enrollment Request",
 									"originalRequest": {
 										"method": "POST",
@@ -8120,20 +7975,17 @@
 							},
 							"response": [
 								{
-									"id": "57e69509-826e-417c-bffe-1fac7e4e9dc6",
 									"name": "Response to Step 6: Initiate Next Factor Enrollment Request",
 									"originalRequest": {
 										"method": "POST",
 										"header": [
 											{
 												"key": "Content-Type",
-												"value": "application/json",
-												"disabled": false
+												"value": "application/json"
 											},
 											{
 												"key": "Authorization",
-												"value": "Bearer {{access_token}}",
-												"disabled": false
+												"value": "Bearer {{access_token}}"
 											}
 										],
 										"body": {
@@ -8281,20 +8133,17 @@
 							},
 							"response": [
 								{
-									"id": "0c38024e-f323-4036-a1db-e5adfd49e8b7",
 									"name": "Response to Step 7: Submit Factor Credentials for Next Factor Enrollment",
 									"originalRequest": {
 										"method": "POST",
 										"header": [
 											{
 												"key": "Content-Type",
-												"value": "application/json",
-												"disabled": false
+												"value": "application/json"
 											},
 											{
 												"key": "Authorization",
-												"value": "Bearer {{access_token}}",
-												"disabled": false
+												"value": "Bearer {{access_token}}"
 											}
 										],
 										"body": {
@@ -8442,20 +8291,17 @@
 							},
 							"response": [
 								{
-									"id": "3c85e932-93d2-4a7d-a16d-f23802c4b393",
 									"name": "Response to Step 8: Create Token After Enrollment is Complete",
 									"originalRequest": {
 										"method": "POST",
 										"header": [
 											{
 												"key": "Content-Type",
-												"value": "application/json",
-												"disabled": false
+												"value": "application/json"
 											},
 											{
 												"key": "Authorization",
-												"value": "Bearer {{access_token}}",
-												"disabled": false
+												"value": "Bearer {{access_token}}"
 											}
 										],
 										"body": {
@@ -8570,6 +8416,7 @@
 							]
 						}
 					],
+					"description": "This example scenario walks through a user enrolling in one factor, and then enrolling in another factor before creating the token.",
 					"event": [
 						{
 							"listen": "prerequest",
@@ -8596,7 +8443,6 @@
 				},
 				{
 					"name": "Skip MFA After Username and Password Log In",
-					"description": "This example scenario walks through the option of skipping MFA enrollment when this option has been enabled by the administrator. ",
 					"item": [
 						{
 							"name": "Step 1: Authentication Request with no Tokens/Session",
@@ -8638,20 +8484,17 @@
 							},
 							"response": [
 								{
-									"id": "ddff7059-ed7b-41bb-9c5c-223ef2d64f09",
 									"name": "Response to Step 1: Authentication Request with no Tokens/Session",
 									"originalRequest": {
 										"method": "GET",
 										"header": [
 											{
 												"key": "Content-Type",
-												"value": "application/json",
-												"disabled": false
+												"value": "application/json"
 											},
 											{
 												"key": "Authorization",
-												"value": "Bearer {{access_token}}",
-												"disabled": false
+												"value": "Bearer {{access_token}}"
 											}
 										],
 										"body": {
@@ -8787,7 +8630,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n  \"op\": \"credSubmit\",\r\n  \r\n  \"credentials\": {\r\n    \"username\": \"username\",\r\n    \"password\": \"password\"\r\n  },\r\n  \"requestState\": \"{{requestState}}\"\r\n}"
+									"raw": "{\r\n  \"op\": \"credSubmit\",\r\n  \r\n  \"credentials\": {\r\n    \"username\": \"{{username}}\",\r\n    \"password\": \"{{password}}\"\r\n  },\r\n  \"requestState\": \"{{requestState}}\"\r\n}"
 								},
 								"url": {
 									"raw": "{{HOST}}/sso/v1/sdk/authenticate",
@@ -8805,20 +8648,17 @@
 							},
 							"response": [
 								{
-									"id": "ef5c77f5-59bc-4838-8101-6ec49ecd1988",
 									"name": "Response to Step 2: User Name/Password Submission",
 									"originalRequest": {
 										"method": "POST",
 										"header": [
 											{
 												"key": "Content-Type",
-												"value": "application/json",
-												"disabled": false
+												"value": "application/json"
 											},
 											{
 												"key": "Authorization",
-												"value": "Bearer {{access_token}}",
-												"disabled": false
+												"value": "Bearer {{access_token}}"
 											}
 										],
 										"body": {
@@ -8966,20 +8806,17 @@
 							},
 							"response": [
 								{
-									"id": "020415a4-5bc4-463c-93d4-4d93e9ba516f",
 									"name": "Response to Step 3: Skip MFA After User Name and Password Log In",
 									"originalRequest": {
 										"method": "POST",
 										"header": [
 											{
 												"key": "Content-Type",
-												"value": "application/json",
-												"disabled": false
+												"value": "application/json"
 											},
 											{
 												"key": "Authorization",
-												"value": "Bearer {{access_token}}",
-												"disabled": false
+												"value": "Bearer {{access_token}}"
 											}
 										],
 										"body": {
@@ -9094,6 +8931,7 @@
 							]
 						}
 					],
+					"description": "This example scenario walks through the option of skipping MFA enrollment when this option has been enabled by the administrator. ",
 					"event": [
 						{
 							"listen": "prerequest",
@@ -9120,7 +8958,6 @@
 				},
 				{
 					"name": "Switch to Another Factor During Enrollment",
-					"description": "This example scenario walks through the steps of a user switching which factor they want to enroll in during enrollment.",
 					"item": [
 						{
 							"name": "Step 1: Authentication Request with no Tokens/Session",
@@ -9162,20 +8999,17 @@
 							},
 							"response": [
 								{
-									"id": "5321db46-e1e7-42ff-b243-5afda63008fd",
 									"name": "Response to Step 1: Authentication Request with no Tokens/Session",
 									"originalRequest": {
 										"method": "GET",
 										"header": [
 											{
 												"key": "Content-Type",
-												"value": "application/json",
-												"disabled": false
+												"value": "application/json"
 											},
 											{
 												"key": "Authorization",
-												"value": "Bearer {{access_token}}",
-												"disabled": false
+												"value": "Bearer {{access_token}}"
 											}
 										],
 										"body": {
@@ -9311,7 +9145,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n  \"op\": \"credSubmit\",\r\n  \r\n  \"credentials\": {\r\n    \"username\": \"username\",\r\n    \"password\": \"password\"\r\n  },\r\n  \"requestState\": \"{{requestState}}\"\r\n}"
+									"raw": "{\r\n  \"op\": \"credSubmit\",\r\n  \r\n  \"credentials\": {\r\n    \"username\": \"{{username}}\",\r\n    \"password\": \"{{password}}\"\r\n  },\r\n  \"requestState\": \"{{requestState}}\"\r\n}"
 								},
 								"url": {
 									"raw": "{{HOST}}/sso/v1/sdk/authenticate",
@@ -9329,20 +9163,17 @@
 							},
 							"response": [
 								{
-									"id": "b3d6ddb4-cb83-4428-8f34-2f92ee7be550",
 									"name": "Response to Step 2: User Name/Password Submission",
 									"originalRequest": {
 										"method": "POST",
 										"header": [
 											{
 												"key": "Content-Type",
-												"value": "application/json",
-												"disabled": false
+												"value": "application/json"
 											},
 											{
 												"key": "Authorization",
-												"value": "Bearer {{access_token}}",
-												"disabled": false
+												"value": "Bearer {{access_token}}"
 											}
 										],
 										"body": {
@@ -9490,20 +9321,17 @@
 							},
 							"response": [
 								{
-									"id": "a5903204-e910-41e8-9a2b-b03ffc9c8e52",
 									"name": "Response to Step 3: Initiate Factor Enrollment Request",
 									"originalRequest": {
 										"method": "POST",
 										"header": [
 											{
 												"key": "Content-Type",
-												"value": "application/json",
-												"disabled": false
+												"value": "application/json"
 											},
 											{
 												"key": "Authorization",
-												"value": "Bearer {{access_token}}",
-												"disabled": false
+												"value": "Bearer {{access_token}}"
 											}
 										],
 										"body": {
@@ -9651,20 +9479,17 @@
 							},
 							"response": [
 								{
-									"id": "51c9bd9e-a519-4f0f-9655-b02857db3cdc",
 									"name": "Response to Step 4: Switch to Another Factor During Enrollment",
 									"originalRequest": {
 										"method": "POST",
 										"header": [
 											{
 												"key": "Content-Type",
-												"value": "application/json",
-												"disabled": false
+												"value": "application/json"
 											},
 											{
 												"key": "Authorization",
-												"value": "Bearer {{access_token}}",
-												"disabled": false
+												"value": "Bearer {{access_token}}"
 											}
 										],
 										"body": {
@@ -9812,20 +9637,17 @@
 							},
 							"response": [
 								{
-									"id": "89c5e13a-5fcb-482b-9a8d-af876103339b",
 									"name": "Response to Step 5: Request a Different Factor During Enrollment",
 									"originalRequest": {
 										"method": "POST",
 										"header": [
 											{
 												"key": "Content-Type",
-												"value": "application/json",
-												"disabled": false
+												"value": "application/json"
 											},
 											{
 												"key": "Authorization",
-												"value": "Bearer {{access_token}}",
-												"disabled": false
+												"value": "Bearer {{access_token}}"
 											}
 										],
 										"body": {
@@ -9973,20 +9795,17 @@
 							},
 							"response": [
 								{
-									"id": "9dbb193c-e9c1-41ae-a298-498eb1cdf2f8",
 									"name": "Response to Step 6: Submit Factor Credentials",
 									"originalRequest": {
 										"method": "POST",
 										"header": [
 											{
 												"key": "Content-Type",
-												"value": "application/json",
-												"disabled": false
+												"value": "application/json"
 											},
 											{
 												"key": "Authorization",
-												"value": "Bearer {{access_token}}",
-												"disabled": false
+												"value": "Bearer {{access_token}}"
 											}
 										],
 										"body": {
@@ -10134,20 +9953,17 @@
 							},
 							"response": [
 								{
-									"id": "dd005ebe-32d3-4dbf-96df-b5b72125f431",
 									"name": "Response to Step 3a: SMS Enrollment Request - Resend SMS",
 									"originalRequest": {
 										"method": "POST",
 										"header": [
 											{
 												"key": "Content-Type",
-												"value": "application/json",
-												"disabled": false
+												"value": "application/json"
 											},
 											{
 												"key": "Authorization",
-												"value": "Bearer {{access_token}}",
-												"disabled": false
+												"value": "Bearer {{access_token}}"
 											}
 										],
 										"body": {
@@ -10301,20 +10117,17 @@
 							},
 							"response": [
 								{
-									"id": "48e4e01c-49fd-4919-af72-1deac0b0c69b",
 									"name": "Response to Step 7: Create Token After Enrollment is Complete",
 									"originalRequest": {
 										"method": "POST",
 										"header": [
 											{
 												"key": "Content-Type",
-												"value": "application/json",
-												"disabled": false
+												"value": "application/json"
 											},
 											{
 												"key": "Authorization",
-												"value": "Bearer {{access_token}}",
-												"disabled": false
+												"value": "Bearer {{access_token}}"
 											}
 										],
 										"body": {
@@ -10429,6 +10242,7 @@
 							]
 						}
 					],
+					"description": "This example scenario walks through the steps of a user switching which factor they want to enroll in during enrollment.",
 					"event": [
 						{
 							"listen": "prerequest",
@@ -10454,6 +10268,7 @@
 					"_postman_isSubFolder": true
 				}
 			],
+			"description": "Test authentication using the user's credentials, requestState, and enrolling in Multi-Factor Authentication.",
 			"event": [
 				{
 					"listen": "prerequest",
@@ -10479,15 +10294,12 @@
 		},
 		{
 			"name": "Authentication Using User Name/Password + MFA Authentication",
-			"description": "Test using the user's credentials, requestState, and Multi-Factor Authentication.",
 			"item": [
 				{
 					"name": "Security Questions",
-					"description": "",
 					"item": [
 						{
 							"name": "Authentication With Security Questions Set as the Default Method",
-							"description": "These steps describe the authentication flow when the user has security questions set as the default factor. After the user submits their username/password, in the response the client is sent the questions that the user needs to answer. ",
 							"item": [
 								{
 									"name": "Step 1: Authentication Request with no Tokens/Session",
@@ -10529,20 +10341,17 @@
 									},
 									"response": [
 										{
-											"id": "80d20402-1bc2-4709-9c59-ee789b512285",
 											"name": "Response to Step 1: Authentication Request with no Tokens/Session",
 											"originalRequest": {
 												"method": "GET",
 												"header": [
 													{
 														"key": "Content-Type",
-														"value": "application/json",
-														"disabled": false
+														"value": "application/json"
 													},
 													{
 														"key": "Authorization",
-														"value": "Bearer {{access_token}}",
-														"disabled": false
+														"value": "Bearer {{access_token}}"
 													}
 												],
 												"body": {
@@ -10678,7 +10487,7 @@
 										],
 										"body": {
 											"mode": "raw",
-											"raw": "{  \r\n   \"op\":\"credSubmit\",\r\n  \"authFactor\":\"USERNAME_PASSWORD\",\r\n   \"credentials\":{  \r\n      \"username\":\"username\",\r\n      \"password\":\"password\"\r\n   },\r\n   \"requestState\":\"{{requestState}}\"\r\n}"
+											"raw": "{  \r\n   \"op\":\"credSubmit\",\r\n  \"authFactor\":\"USERNAME_PASSWORD\",\r\n   \"credentials\":{  \r\n      \"username\":\"{{username}}\",\r\n      \"password\":\"{{password}}\"\r\n   },\r\n   \"requestState\":\"{{requestState}}\"\r\n}"
 										},
 										"url": {
 											"raw": "{{HOST}}/sso/v1/sdk/authenticate",
@@ -10696,20 +10505,17 @@
 									},
 									"response": [
 										{
-											"id": "f98167c4-7626-4f4c-9a91-8682eb190e0f",
 											"name": "Response to Step 2: User Name/Password Submission",
 											"originalRequest": {
 												"method": "POST",
 												"header": [
 													{
 														"key": "Content-Type",
-														"value": "application/json",
-														"disabled": false
+														"value": "application/json"
 													},
 													{
 														"key": "Authorization",
-														"value": "Bearer {{access_token}}",
-														"disabled": false
+														"value": "Bearer {{access_token}}"
 													}
 												],
 												"body": {
@@ -10857,20 +10663,17 @@
 									},
 									"response": [
 										{
-											"id": "1d31b072-6a6a-4fd7-af34-8ea7c24f0f55",
 											"name": "Response to Step 3: Security Questions Factor Authentication",
 											"originalRequest": {
 												"method": "POST",
 												"header": [
 													{
 														"key": "Content-Type",
-														"value": "application/json",
-														"disabled": false
+														"value": "application/json"
 													},
 													{
 														"key": "Authorization",
-														"value": "Bearer {{access_token}}",
-														"disabled": false
+														"value": "Bearer {{access_token}}"
 													}
 												],
 												"body": {
@@ -10985,6 +10788,7 @@
 									]
 								}
 							],
+							"description": "These steps describe the authentication flow when the user has security questions set as the default factor. After the user submits their username/password, in the response the client is sent the questions that the user needs to answer. ",
 							"event": [
 								{
 									"listen": "prerequest",
@@ -11011,7 +10815,6 @@
 						},
 						{
 							"name": "Authentication With Security Questions & Setting Trusted Device",
-							"description": "These steps describe the authentication flow when the user has security questions set as the default factor. After the user submits their user name/password, the client is sent the questions that the user needs to answer.  \n\nAnd in the response with the security question answer, the trusted device attribute is set to true: \"trustedDevice\": true",
 							"item": [
 								{
 									"name": "Step 1: Authentication Request with no Tokens/Session",
@@ -11053,20 +10856,17 @@
 									},
 									"response": [
 										{
-											"id": "d6a3876b-9db3-4a5e-9f68-9ac4b6ac0e46",
 											"name": "Response to Step 1: Authentication Request with no Tokens/Session",
 											"originalRequest": {
 												"method": "GET",
 												"header": [
 													{
 														"key": "Content-Type",
-														"value": "application/json",
-														"disabled": false
+														"value": "application/json"
 													},
 													{
 														"key": "Authorization",
-														"value": "Bearer {{access_token}}",
-														"disabled": false
+														"value": "Bearer {{access_token}}"
 													}
 												],
 												"body": {
@@ -11202,7 +11002,7 @@
 										],
 										"body": {
 											"mode": "raw",
-											"raw": "{  \r\n   \"op\":\"credSubmit\",\r\n  \"authFactor\":\"USERNAME_PASSWORD\",\r\n   \"credentials\":{  \r\n      \"username\":\"username\",\r\n      \"password\":\"password\"\r\n   },\r\n   \"requestState\":\"{{requestState}}\"\r\n}"
+											"raw": "{  \r\n   \"op\":\"credSubmit\",\r\n  \"authFactor\":\"USERNAME_PASSWORD\",\r\n   \"credentials\":{  \r\n      \"username\":\"{{username}}\",\r\n      \"password\":\"{{password}}\"\r\n   },\r\n   \"requestState\":\"{{requestState}}\"\r\n}"
 										},
 										"url": {
 											"raw": "{{HOST}}/sso/v1/sdk/authenticate",
@@ -11220,20 +11020,17 @@
 									},
 									"response": [
 										{
-											"id": "b79b3029-0447-4ae0-80f4-867ecb02dedc",
 											"name": "Responset to Step 2: User Name/Password Submission",
 											"originalRequest": {
 												"method": "POST",
 												"header": [
 													{
 														"key": "Content-Type",
-														"value": "application/json",
-														"disabled": false
+														"value": "application/json"
 													},
 													{
 														"key": "Authorization",
-														"value": "Bearer {{access_token}}",
-														"disabled": false
+														"value": "Bearer {{access_token}}"
 													}
 												],
 												"body": {
@@ -11381,20 +11178,17 @@
 									},
 									"response": [
 										{
-											"id": "65a9921b-3ca6-4c4b-8783-140e228f67ab",
 											"name": "Response to Step 3: Security Questions Factor Authentication & Setting Trusted Device",
 											"originalRequest": {
 												"method": "POST",
 												"header": [
 													{
 														"key": "Content-Type",
-														"value": "application/json",
-														"disabled": false
+														"value": "application/json"
 													},
 													{
 														"key": "Authorization",
-														"value": "Bearer {{access_token}}",
-														"disabled": false
+														"value": "Bearer {{access_token}}"
 													}
 												],
 												"body": {
@@ -11509,6 +11303,7 @@
 									]
 								}
 							],
+							"description": "These steps describe the authentication flow when the user has security questions set as the default factor. After the user submits their user name/password, the client is sent the questions that the user needs to answer.  \n\nAnd in the response with the security question answer, the trusted device attribute is set to true: \"trustedDevice\": true",
 							"event": [
 								{
 									"listen": "prerequest",
@@ -11535,7 +11330,6 @@
 						},
 						{
 							"name": "Authentication Using Security Questions When It Isn't the Default Method",
-							"description": "If a user wants to use Security Questions to log in, and if Security Questions aren't the default method, the user is required to make an additional request to complete the authentication.\n \nStep 3\nThe additional request is to obtain the backup methods available and the requestState.\n\nIn the response, locate the question to use as the security question backup method and the requestState.\n \nStep 4\nFor security questions, use the question provided in the response from the request to obtain the backup methods, and then provide the answer and the requestState to get the access token.\n ",
 							"item": [
 								{
 									"name": "Step 1: Authentication Request with no Tokens/Session",
@@ -11577,20 +11371,17 @@
 									},
 									"response": [
 										{
-											"id": "23ce0bbf-bdc6-4392-951c-c81dd2b8a8c0",
 											"name": "Response to Step 1: Authentication Request with no Tokens/Session",
 											"originalRequest": {
 												"method": "GET",
 												"header": [
 													{
 														"key": "Content-Type",
-														"value": "application/json",
-														"disabled": false
+														"value": "application/json"
 													},
 													{
 														"key": "Authorization",
-														"value": "Bearer {{access_token}}",
-														"disabled": false
+														"value": "Bearer {{access_token}}"
 													}
 												],
 												"body": {
@@ -11726,7 +11517,7 @@
 										],
 										"body": {
 											"mode": "raw",
-											"raw": "{  \r\n   \"op\":\"credSubmit\",\r\n  \"authFactor\":\"USERNAME_PASSWORD\",\r\n   \"credentials\":{  \r\n      \"username\":\"username\",\r\n      \"password\":\"password\"\r\n   },\r\n   \"requestState\":\"{{requestState}}\"\r\n}"
+											"raw": "{  \r\n   \"op\":\"credSubmit\",\r\n  \"authFactor\":\"USERNAME_PASSWORD\",\r\n   \"credentials\":{  \r\n      \"username\":\"{{username}}\",\r\n      \"password\":\"{{password}}\"\r\n   },\r\n   \"requestState\":\"{{requestState}}\"\r\n}"
 										},
 										"url": {
 											"raw": "{{HOST}}/sso/v1/sdk/authenticate",
@@ -11744,20 +11535,17 @@
 									},
 									"response": [
 										{
-											"id": "432084e2-6956-4ead-9618-66bdb6a99efb",
 											"name": "Response to Step 2: User Name/Password Submission",
 											"originalRequest": {
 												"method": "POST",
 												"header": [
 													{
 														"key": "Content-Type",
-														"value": "application/json",
-														"disabled": false
+														"value": "application/json"
 													},
 													{
 														"key": "Authorization",
-														"value": "Bearer {{access_token}}",
-														"disabled": false
+														"value": "Bearer {{access_token}}"
 													}
 												],
 												"body": {
@@ -11905,20 +11693,17 @@
 									},
 									"response": [
 										{
-											"id": "544f7eea-0a36-4fd0-afd2-4cfe43ab53a2",
 											"name": "Response to Step 3: Get Backup Factors",
 											"originalRequest": {
 												"method": "POST",
 												"header": [
 													{
 														"key": "Content-Type",
-														"value": "application/json",
-														"disabled": false
+														"value": "application/json"
 													},
 													{
 														"key": "Authorization",
-														"value": "Bearer {{access_token}}",
-														"disabled": false
+														"value": "Bearer {{access_token}}"
 													}
 												],
 												"body": {
@@ -12066,20 +11851,17 @@
 									},
 									"response": [
 										{
-											"id": "dc03a773-f214-46f3-ade4-821be50eb1ec",
 											"name": "Response to Step 4: Provide Security Question Credentials to Authenticate",
 											"originalRequest": {
 												"method": "POST",
 												"header": [
 													{
 														"key": "Content-Type",
-														"value": "application/json",
-														"disabled": false
+														"value": "application/json"
 													},
 													{
 														"key": "Authorization",
-														"value": "Bearer {{access_token}}",
-														"disabled": false
+														"value": "Bearer {{access_token}}"
 													}
 												],
 												"body": {
@@ -12192,20 +11974,17 @@
 											"body": "{\n    \"authnToken\": \"eyJraWQiOiJT.....yzMAiqkF40fA\",\n    \"status\": \"success\"\n}"
 										},
 										{
-											"id": "1f3767f3-3f55-4965-927a-06d3f80613fb",
 											"name": "Error Example: Security Question Authentication Failure",
 											"originalRequest": {
 												"method": "POST",
 												"header": [
 													{
 														"key": "Content-Type",
-														"value": "application/json",
-														"disabled": false
+														"value": "application/json"
 													},
 													{
 														"key": "Authorization",
-														"value": "Bearer {{access_token}}",
-														"disabled": false
+														"value": "Bearer {{access_token}}"
 													}
 												],
 												"body": {
@@ -12320,6 +12099,7 @@
 									]
 								}
 							],
+							"description": "If a user wants to use Security Questions to log in, and if Security Questions aren't the default method, the user is required to make an additional request to complete the authentication.\n \nStep 3\nThe additional request is to obtain the backup methods available and the requestState.\n\nIn the response, locate the question to use as the security question backup method and the requestState.\n \nStep 4\nFor security questions, use the question provided in the response from the request to obtain the backup methods, and then provide the answer and the requestState to get the access token.\n ",
 							"event": [
 								{
 									"listen": "prerequest",
@@ -12349,11 +12129,9 @@
 				},
 				{
 					"name": "EMAIL",
-					"description": "",
 					"item": [
 						{
 							"name": "Authentication With Email Set as the Default Method",
-							"description": "These steps describe the authentication flow when the user has Email set as the default factor. After the user submits their username/password, the user must send the TOTP that is sent to their email. ",
 							"item": [
 								{
 									"name": "Step 1: Authentication Request with no Tokens/Session",
@@ -12395,20 +12173,17 @@
 									},
 									"response": [
 										{
-											"id": "a452d2ea-70bd-43a4-81c0-d83b6fb792ef",
 											"name": "Response to Step 1: Authentication Request with no Tokens/Session",
 											"originalRequest": {
 												"method": "GET",
 												"header": [
 													{
 														"key": "Content-Type",
-														"value": "application/json",
-														"disabled": false
+														"value": "application/json"
 													},
 													{
 														"key": "Authorization",
-														"value": "Bearer {{access_token}}",
-														"disabled": false
+														"value": "Bearer {{access_token}}"
 													}
 												],
 												"body": {
@@ -12544,7 +12319,7 @@
 										],
 										"body": {
 											"mode": "raw",
-											"raw": "{  \r\n   \"op\":\"credSubmit\",\r\n  \"authFactor\":\"USERNAME_PASSWORD\",\r\n   \"credentials\":{  \r\n      \"username\":\"username\",\r\n      \"password\":\"password\"\r\n   },\r\n   \"requestState\":\"{{requestState}}\"\r\n}"
+											"raw": "{  \r\n   \"op\":\"credSubmit\",\r\n  \"authFactor\":\"USERNAME_PASSWORD\",\r\n   \"credentials\":{  \r\n      \"username\":\"{{username}}\",\r\n      \"password\":\"{{password}}\"\r\n   },\r\n   \"requestState\":\"{{requestState}}\"\r\n}"
 										},
 										"url": {
 											"raw": "{{HOST}}/sso/v1/sdk/authenticate",
@@ -12562,20 +12337,17 @@
 									},
 									"response": [
 										{
-											"id": "ab21767d-6947-461a-8731-cc8239a77728",
 											"name": "Response to Step 2: User Name/Password Submission",
 											"originalRequest": {
 												"method": "POST",
 												"header": [
 													{
 														"key": "Content-Type",
-														"value": "application/json",
-														"disabled": false
+														"value": "application/json"
 													},
 													{
 														"key": "Authorization",
-														"value": "Bearer {{access_token}}",
-														"disabled": false
+														"value": "Bearer {{access_token}}"
 													}
 												],
 												"body": {
@@ -12723,20 +12495,17 @@
 									},
 									"response": [
 										{
-											"id": "24afefbf-57a2-46e8-9339-29c4bd81730f",
 											"name": "Response to Step 3: Email Factor Authentication",
 											"originalRequest": {
 												"method": "POST",
 												"header": [
 													{
 														"key": "Content-Type",
-														"value": "application/json",
-														"disabled": false
+														"value": "application/json"
 													},
 													{
 														"key": "Authorization",
-														"value": "Bearer {{access_token}}",
-														"disabled": false
+														"value": "Bearer {{access_token}}"
 													}
 												],
 												"body": {
@@ -12884,20 +12653,17 @@
 									},
 									"response": [
 										{
-											"id": "e169c45e-ce02-4870-af91-fbadcfc37504",
 											"name": "Response to Step 3a: Email Factor Authentication - Resend OTP",
 											"originalRequest": {
 												"method": "POST",
 												"header": [
 													{
 														"key": "Content-Type",
-														"value": "application/json",
-														"disabled": false
+														"value": "application/json"
 													},
 													{
 														"key": "Authorization",
-														"value": "Bearer {{access_token}}",
-														"disabled": false
+														"value": "Bearer {{access_token}}"
 													}
 												],
 												"body": {
@@ -13012,6 +12778,7 @@
 									]
 								}
 							],
+							"description": "These steps describe the authentication flow when the user has Email set as the default factor. After the user submits their username/password, the user must send the TOTP that is sent to their email. ",
 							"event": [
 								{
 									"listen": "prerequest",
@@ -13038,7 +12805,6 @@
 						},
 						{
 							"name": "Authentication With Email & Setting Trusted Device",
-							"description": "These steps describe the authentication flow when the user has Email set as the default factor. After the user submits their user name/password, the user must send the TOTP that is sent to their email. \n\nAnd in the response with the TOTP, the trusted device attribute is set to true: \"trustedDevice\": true",
 							"item": [
 								{
 									"name": "Step 1: Authentication Request with no Tokens/Session",
@@ -13080,20 +12846,17 @@
 									},
 									"response": [
 										{
-											"id": "0a32994a-3d08-49a6-859b-24621bd455ff",
 											"name": "Response to Step 1: Authentication Request with no Tokens/Session",
 											"originalRequest": {
 												"method": "GET",
 												"header": [
 													{
 														"key": "Content-Type",
-														"value": "application/json",
-														"disabled": false
+														"value": "application/json"
 													},
 													{
 														"key": "Authorization",
-														"value": "Bearer {{access_token}}",
-														"disabled": false
+														"value": "Bearer {{access_token}}"
 													}
 												],
 												"body": {
@@ -13229,7 +12992,7 @@
 										],
 										"body": {
 											"mode": "raw",
-											"raw": "{  \r\n   \"op\":\"credSubmit\",\r\n  \"authFactor\":\"USERNAME_PASSWORD\",\r\n   \"credentials\":{  \r\n      \"username\":\"username\",\r\n      \"password\":\"password\"\r\n   },\r\n   \"requestState\":\"{{requestState}}\"\r\n}"
+											"raw": "{  \r\n   \"op\":\"credSubmit\",\r\n  \"authFactor\":\"USERNAME_PASSWORD\",\r\n   \"credentials\":{  \r\n      \"username\":\"{{username}}\",\r\n      \"password\":\"{{password}}\"\r\n   },\r\n   \"requestState\":\"{{requestState}}\"\r\n}"
 										},
 										"url": {
 											"raw": "{{HOST}}/sso/v1/sdk/authenticate",
@@ -13247,20 +13010,17 @@
 									},
 									"response": [
 										{
-											"id": "223a4f84-faae-4e64-b1a8-05ef045a8a7b",
 											"name": "Response to Step 2: User Name/Password Submission",
 											"originalRequest": {
 												"method": "POST",
 												"header": [
 													{
 														"key": "Content-Type",
-														"value": "application/json",
-														"disabled": false
+														"value": "application/json"
 													},
 													{
 														"key": "Authorization",
-														"value": "Bearer {{access_token}}",
-														"disabled": false
+														"value": "Bearer {{access_token}}"
 													}
 												],
 												"body": {
@@ -13408,20 +13168,17 @@
 									},
 									"response": [
 										{
-											"id": "cb4ec760-2533-4487-8223-ff272c304489",
 											"name": "Response to Step 3: Email Factor Authentication & Setting Trusted Device",
 											"originalRequest": {
 												"method": "POST",
 												"header": [
 													{
 														"key": "Content-Type",
-														"value": "application/json",
-														"disabled": false
+														"value": "application/json"
 													},
 													{
 														"key": "Authorization",
-														"value": "Bearer {{access_token}}",
-														"disabled": false
+														"value": "Bearer {{access_token}}"
 													}
 												],
 												"body": {
@@ -13536,6 +13293,7 @@
 									]
 								}
 							],
+							"description": "These steps describe the authentication flow when the user has Email set as the default factor. After the user submits their user name/password, the user must send the TOTP that is sent to their email. \n\nAnd in the response with the TOTP, the trusted device attribute is set to true: \"trustedDevice\": true",
 							"event": [
 								{
 									"listen": "prerequest",
@@ -13562,7 +13320,6 @@
 						},
 						{
 							"name": "Authentication Using Email When It Isn't the Default Method",
-							"description": "If a user wants to use EMAIL to log in, and if EMAIL is not the default method, the user is required to make two requests to complete the authentication.\n \nStep 3\nThe first request is to obtain the backup methods available.\n\nFor email, locate the deviceId for Email provided in the response and the requestState.\n \nStep 4 \nThe second request includes the OTP that the user receives through email. (This information can be extracted from the getBackupFactors call).\n\nWhen the SDK receives a credSubmit on EMAIL, with the deviceId, it understands that it first needs to send an EMAIL with the OTP code.",
 							"item": [
 								{
 									"name": "Step 1: Authentication Request with no Tokens/Session",
@@ -13604,20 +13361,17 @@
 									},
 									"response": [
 										{
-											"id": "6b6f6ca9-8de7-4e4b-a195-cecbd805c4c4",
 											"name": "Response to Step 1: Authentication Request with no Tokens/Session",
 											"originalRequest": {
 												"method": "GET",
 												"header": [
 													{
 														"key": "Content-Type",
-														"value": "application/json",
-														"disabled": false
+														"value": "application/json"
 													},
 													{
 														"key": "Authorization",
-														"value": "Bearer {{access_token}}",
-														"disabled": false
+														"value": "Bearer {{access_token}}"
 													}
 												],
 												"body": {
@@ -13753,7 +13507,7 @@
 										],
 										"body": {
 											"mode": "raw",
-											"raw": "{  \r\n   \"op\":\"credSubmit\",\r\n  \"authFactor\":\"USERNAME_PASSWORD\",\r\n   \"credentials\":{  \r\n      \"username\":\"username\",\r\n      \"password\":\"password\"\r\n   },\r\n   \"requestState\":\"{{requestState}}\"\r\n}"
+											"raw": "{  \r\n   \"op\":\"credSubmit\",\r\n  \"authFactor\":\"USERNAME_PASSWORD\",\r\n   \"credentials\":{  \r\n      \"username\":\"{{username}}\",\r\n      \"password\":\"{{password}}\"\r\n   },\r\n   \"requestState\":\"{{requestState}}\"\r\n}"
 										},
 										"url": {
 											"raw": "{{HOST}}/sso/v1/sdk/authenticate",
@@ -13771,20 +13525,17 @@
 									},
 									"response": [
 										{
-											"id": "5516ac65-a022-4eaf-9da8-710bed7473c4",
 											"name": "Response to Step 2: User Name/Password Submission",
 											"originalRequest": {
 												"method": "POST",
 												"header": [
 													{
 														"key": "Content-Type",
-														"value": "application/json",
-														"disabled": false
+														"value": "application/json"
 													},
 													{
 														"key": "Authorization",
-														"value": "Bearer {{access_token}}",
-														"disabled": false
+														"value": "Bearer {{access_token}}"
 													}
 												],
 												"body": {
@@ -13932,20 +13683,17 @@
 									},
 									"response": [
 										{
-											"id": "9c3d471e-9877-479e-b0ef-dc80278139db",
 											"name": "Response to Step 3: Get Backup Factors",
 											"originalRequest": {
 												"method": "POST",
 												"header": [
 													{
 														"key": "Content-Type",
-														"value": "application/json",
-														"disabled": false
+														"value": "application/json"
 													},
 													{
 														"key": "Authorization",
-														"value": "Bearer {{access_token}}",
-														"disabled": false
+														"value": "Bearer {{access_token}}"
 													}
 												],
 												"body": {
@@ -14093,20 +13841,17 @@
 									},
 									"response": [
 										{
-											"id": "39443d91-61c7-45f9-8a30-94f97a3374ee",
 											"name": "Response to Step 4: Provide the DeviceID to Authenticate",
 											"originalRequest": {
 												"method": "POST",
 												"header": [
 													{
 														"key": "Content-Type",
-														"value": "application/json",
-														"disabled": false
+														"value": "application/json"
 													},
 													{
 														"key": "Authorization",
-														"value": "Bearer {{access_token}}",
-														"disabled": false
+														"value": "Bearer {{access_token}}"
 													}
 												],
 												"body": {
@@ -14254,20 +13999,17 @@
 									},
 									"response": [
 										{
-											"id": "fc9a09c5-411e-4cc3-9a88-230118190402",
 											"name": "Response to Step 5: Provide Device ID and OTP Code to Authenticate",
 											"originalRequest": {
 												"method": "POST",
 												"header": [
 													{
 														"key": "Content-Type",
-														"value": "application/json",
-														"disabled": false
+														"value": "application/json"
 													},
 													{
 														"key": "Authorization",
-														"value": "Bearer {{access_token}}",
-														"disabled": false
+														"value": "Bearer {{access_token}}"
 													}
 												],
 												"body": {
@@ -14382,6 +14124,7 @@
 									]
 								}
 							],
+							"description": "If a user wants to use EMAIL to log in, and if EMAIL is not the default method, the user is required to make two requests to complete the authentication.\n \nStep 3\nThe first request is to obtain the backup methods available.\n\nFor email, locate the deviceId for Email provided in the response and the requestState.\n \nStep 4 \nThe second request includes the OTP that the user receives through email. (This information can be extracted from the getBackupFactors call).\n\nWhen the SDK receives a credSubmit on EMAIL, with the deviceId, it understands that it first needs to send an EMAIL with the OTP code.",
 							"event": [
 								{
 									"listen": "prerequest",
@@ -14410,12 +14153,10 @@
 					"_postman_isSubFolder": true
 				},
 				{
-					"name": "Offline TOTP",
-					"description": "",
+					"name": "Offline One-Time Passcode (TOTP)",
 					"item": [
 						{
 							"name": "Authentication With Offline TOTP Set as the Default Method",
-							"description": "These steps describe the authentication flow when the user has TOTP set as the default factor. After the user submits their username/password, the user must send the TOTP. ",
 							"item": [
 								{
 									"name": "Step 1: Authentication Request with no Tokens/Session",
@@ -14457,20 +14198,17 @@
 									},
 									"response": [
 										{
-											"id": "ea319845-0f1b-40ec-9b29-27af516b089d",
 											"name": "Response to Step 1: Authentication Request with no Tokens/Session",
 											"originalRequest": {
 												"method": "GET",
 												"header": [
 													{
 														"key": "Content-Type",
-														"value": "application/json",
-														"disabled": false
+														"value": "application/json"
 													},
 													{
 														"key": "Authorization",
-														"value": "Bearer {{access_token}}",
-														"disabled": false
+														"value": "Bearer {{access_token}}"
 													}
 												],
 												"body": {
@@ -14606,7 +14344,7 @@
 										],
 										"body": {
 											"mode": "raw",
-											"raw": "{  \r\n   \"op\":\"credSubmit\",\r\n  \"authFactor\":\"USERNAME_PASSWORD\",\r\n   \"credentials\":{  \r\n      \"username\":\"username\",\r\n      \"password\":\"password\"\r\n   },\r\n   \"requestState\":\"{{requestState}}\"\r\n}"
+											"raw": "{  \r\n   \"op\":\"credSubmit\",\r\n  \"authFactor\":\"USERNAME_PASSWORD\",\r\n   \"credentials\":{  \r\n      \"username\":\"{{username}}\",\r\n      \"password\":\"{{password}}\"\r\n   },\r\n   \"requestState\":\"{{requestState}}\"\r\n}"
 										},
 										"url": {
 											"raw": "{{HOST}}/sso/v1/sdk/authenticate",
@@ -14624,20 +14362,17 @@
 									},
 									"response": [
 										{
-											"id": "c5d5da28-4829-4ef4-aecd-631454b92de6",
 											"name": "Response to Step 2: User Name/Password Submission",
 											"originalRequest": {
 												"method": "POST",
 												"header": [
 													{
 														"key": "Content-Type",
-														"value": "application/json",
-														"disabled": false
+														"value": "application/json"
 													},
 													{
 														"key": "Authorization",
-														"value": "Bearer {{access_token}}",
-														"disabled": false
+														"value": "Bearer {{access_token}}"
 													}
 												],
 												"body": {
@@ -14785,20 +14520,17 @@
 									},
 									"response": [
 										{
-											"id": "5df586d5-5cfc-48d6-be25-39869ad0246a",
 											"name": "Response to Step 3: Offline TOTP Factor Authentication",
 											"originalRequest": {
 												"method": "POST",
 												"header": [
 													{
 														"key": "Content-Type",
-														"value": "application/json",
-														"disabled": false
+														"value": "application/json"
 													},
 													{
 														"key": "Authorization",
-														"value": "Bearer {{access_token}}",
-														"disabled": false
+														"value": "Bearer {{access_token}}"
 													}
 												],
 												"body": {
@@ -14913,6 +14645,7 @@
 									]
 								}
 							],
+							"description": "These steps describe the authentication flow when the user has TOTP set as the default factor. After the user submits their username/password, the user must send the TOTP. ",
 							"event": [
 								{
 									"listen": "prerequest",
@@ -14939,7 +14672,6 @@
 						},
 						{
 							"name": "Authentication With Offline TOTP & Setting Trusted Device",
-							"description": "These steps describe the authentication flow when the user has TOTP set as the default factor. After the user submits their user name/password, the user must send the TOTP. \n\nAnd in the response with the TOTP, the trusted device attribute is set to true: \"trustedDevice\": true",
 							"item": [
 								{
 									"name": "Step 1: Authentication Request with no Tokens/Session",
@@ -14981,20 +14713,17 @@
 									},
 									"response": [
 										{
-											"id": "cae445b4-2b97-4bd8-b79d-37022d1ebfd6",
 											"name": "Response to Step 1: Authentication Request with no Tokens/Session",
 											"originalRequest": {
 												"method": "GET",
 												"header": [
 													{
 														"key": "Content-Type",
-														"value": "application/json",
-														"disabled": false
+														"value": "application/json"
 													},
 													{
 														"key": "Authorization",
-														"value": "Bearer {{access_token}}",
-														"disabled": false
+														"value": "Bearer {{access_token}}"
 													}
 												],
 												"body": {
@@ -15130,7 +14859,7 @@
 										],
 										"body": {
 											"mode": "raw",
-											"raw": "{  \r\n   \"op\":\"credSubmit\",\r\n  \"authFactor\":\"USERNAME_PASSWORD\",\r\n   \"credentials\":{  \r\n      \"username\":\"username\",\r\n      \"password\":\"password\"\r\n   },\r\n   \"requestState\":\"{{requestState}}\"\r\n}"
+											"raw": "{  \r\n   \"op\":\"credSubmit\",\r\n  \"authFactor\":\"USERNAME_PASSWORD\",\r\n   \"credentials\":{  \r\n      \"username\":\"{{username}}\",\r\n      \"password\":\"{{password}}\"\r\n   },\r\n   \"requestState\":\"{{requestState}}\"\r\n}"
 										},
 										"url": {
 											"raw": "{{HOST}}/sso/v1/sdk/authenticate",
@@ -15148,20 +14877,17 @@
 									},
 									"response": [
 										{
-											"id": "9d84ec47-88b1-43a0-b46b-cf438041d739",
 											"name": "Response to Step 2: User Name/Password Submission",
 											"originalRequest": {
 												"method": "POST",
 												"header": [
 													{
 														"key": "Content-Type",
-														"value": "application/json",
-														"disabled": false
+														"value": "application/json"
 													},
 													{
 														"key": "Authorization",
-														"value": "Bearer {{access_token}}",
-														"disabled": false
+														"value": "Bearer {{access_token}}"
 													}
 												],
 												"body": {
@@ -15309,20 +15035,17 @@
 									},
 									"response": [
 										{
-											"id": "0c675ab8-4e5f-496d-b076-47f40f3e0786",
 											"name": "Response to Step 3: Offline TOTP Authentication & Setting Trusted Device",
 											"originalRequest": {
 												"method": "POST",
 												"header": [
 													{
 														"key": "Content-Type",
-														"value": "application/json",
-														"disabled": false
+														"value": "application/json"
 													},
 													{
 														"key": "Authorization",
-														"value": "Bearer {{access_token}}",
-														"disabled": false
+														"value": "Bearer {{access_token}}"
 													}
 												],
 												"body": {
@@ -15437,6 +15160,7 @@
 									]
 								}
 							],
+							"description": "These steps describe the authentication flow when the user has TOTP set as the default factor. After the user submits their user name/password, the user must send the TOTP. \n\nAnd in the response with the TOTP, the trusted device attribute is set to true: \"trustedDevice\": true",
 							"event": [
 								{
 									"listen": "prerequest",
@@ -15463,7 +15187,6 @@
 						},
 						{
 							"name": "Authenticating Using Offline TOTP When It Isn't the Default Method",
-							"description": "If a user wants to use TOTP to log in, and if TOTP isn't the default method, the user is required to make additional requests to complete the authentication.\n \nStep 3\nThis request is to obtain the backup methods available.\n\nFor TOTP, locate the deviceId for TOTP provided in the response and the requestState.\n \nStep 4 \nThis request includes the deviceID, the otpCode (TOTP), and the requestState to authenticate.",
 							"item": [
 								{
 									"name": "Step 1: Authentication Request with no Tokens/Session",
@@ -15505,20 +15228,17 @@
 									},
 									"response": [
 										{
-											"id": "5e708370-0c23-4aba-a5e9-b5762817bc02",
 											"name": "Response to Step 1: Authentication Request with no Tokens/Session",
 											"originalRequest": {
 												"method": "GET",
 												"header": [
 													{
 														"key": "Content-Type",
-														"value": "application/json",
-														"disabled": false
+														"value": "application/json"
 													},
 													{
 														"key": "Authorization",
-														"value": "Bearer {{access_token}}",
-														"disabled": false
+														"value": "Bearer {{access_token}}"
 													}
 												],
 												"body": {
@@ -15654,7 +15374,7 @@
 										],
 										"body": {
 											"mode": "raw",
-											"raw": "{  \r\n   \"op\":\"credSubmit\",\r\n  \"authFactor\":\"USERNAME_PASSWORD\",\r\n   \"credentials\":{  \r\n      \"username\":\"username\",\r\n      \"password\":\"password\"\r\n   },\r\n   \"requestState\":\"{{requestState}}\"\r\n}"
+											"raw": "{  \r\n   \"op\":\"credSubmit\",\r\n  \"authFactor\":\"USERNAME_PASSWORD\",\r\n   \"credentials\":{  \r\n      \"username\":\"{{username}}\",\r\n      \"password\":\"{{password}}\"\r\n   },\r\n   \"requestState\":\"{{requestState}}\"\r\n}"
 										},
 										"url": {
 											"raw": "{{HOST}}/sso/v1/sdk/authenticate",
@@ -15672,20 +15392,17 @@
 									},
 									"response": [
 										{
-											"id": "e221b6f2-bd8c-4ddb-8f5a-d6bb35998d82",
 											"name": "Response to Step 2: User Name/Password Submission",
 											"originalRequest": {
 												"method": "POST",
 												"header": [
 													{
 														"key": "Content-Type",
-														"value": "application/json",
-														"disabled": false
+														"value": "application/json"
 													},
 													{
 														"key": "Authorization",
-														"value": "Bearer {{access_token}}",
-														"disabled": false
+														"value": "Bearer {{access_token}}"
 													}
 												],
 												"body": {
@@ -15833,20 +15550,17 @@
 									},
 									"response": [
 										{
-											"id": "fee39319-3af8-4018-bc39-655132f51300",
 											"name": "Response to Step 3: Get Backup Factors",
 											"originalRequest": {
 												"method": "POST",
 												"header": [
 													{
 														"key": "Content-Type",
-														"value": "application/json",
-														"disabled": false
+														"value": "application/json"
 													},
 													{
 														"key": "Authorization",
-														"value": "Bearer {{access_token}}",
-														"disabled": false
+														"value": "Bearer {{access_token}}"
 													}
 												],
 												"body": {
@@ -15994,20 +15708,17 @@
 									},
 									"response": [
 										{
-											"id": "f4002a42-0e6f-4274-bf6c-a0071e9345f7",
 											"name": "Error Example: TOTP Authentication Failure",
 											"originalRequest": {
 												"method": "POST",
 												"header": [
 													{
 														"key": "Content-Type",
-														"value": "application/json",
-														"disabled": false
+														"value": "application/json"
 													},
 													{
 														"key": "Authorization",
-														"value": "Bearer {{access_token}}",
-														"disabled": false
+														"value": "Bearer {{access_token}}"
 													}
 												],
 												"body": {
@@ -16120,20 +15831,17 @@
 											"body": "{\"status\":\"failed\",\"cause\":[{\"message\":\"Invalid passcode.\",\"code\":\"AUTH-1105\"}],\"TOTP\":{\"credentials\":[\"otpCode\"]},\"SMS\":{\"credentials\":[\"otpCode\"]},\"nextOp\":[\"credSubmit\",\"getBackupFactors\"],\"BYPASSCODE\":{\"credentials\":[\"bypassCode\"]},\"SECURITY_QUESTIONS\":{\"credentials\":[\"questionId\",\"answer\"],\"questions\":[{\"hint\":\"Cinco\",\"questionId\":\"FavoriteFood\",\"text\":\"What's your favorite food?\"}]},\"nextAuthFactors\":[\"TOTP\",\"SMS\",\"BYPASSCODE\",\"SECURITY_QUESTIONS\"],\"trustedDeviceSettings\":{\"trustDurationInDays\":15},\"requestState\":\"fm3hOQVCqh167qMNOcttEfPKDY/5shTqhtjlpD8cNtNp0IUJZGfOhF7AiHxlqZjbwdJF+UoU4kKJdHBbd/Sj4AC86LPLu9QtL5RFtnwj4kQfUlO2TG2FXykEtXZPA75YDW8AIRohyDd5kKczoGnioERS5QPAY9av712pToilW2CpURd4ZO13SBYISJ0Qx9Iea19Q/wFsC2KeJHhSMn05mt5nv0+MWIHRWATBxMM60tL32AyRSV8pv7mFUt0c1+oRD5i4IFV1YLVXJYjPqRtfWnDzieoOYrg6DDyv8oJfXD4B+K1GFRsxt6mOlLdkizDrPO8EfEUqIOBIuy/2wgrtFEbHIvFK+ZBtI5iXgndgrmI5H+ZASJ/tTE2HPdhULzy5P4ljoD7mkoftsgqi12Fpzk8BkgJ4naSQSyx/QRGPMN++LW1gkmEGJJ46q2V7l611iziiVhs4FurpA5E4lYb45oF0LhfXOJp8sK1X5syJkVqsNH6E+N1A8G4VXk9Z9tpuY2MKLyAprfinfNpT8rzyUyglegNoQtQH01Xe9IbfMGfNY9LaiT+NmuuHFHGvxV9fpOqcsX8/5HZJQsj3gf7SLZScACGxh3xcmrF8GQbnP/mu6JRdLqblOAy7zPN+JKZFFi1nvJL8MMbe4KUPnlgNNdECntVEAtKasCtJZQTyZyAqeIydD/YY0S/Uq5ZFFXB5mnGRyUXqRmfXpNwhrj5jxNIiESuwRIHcrFeyBvFgWt9RX36hxuSf4EJhiynzvAyjarO30+/I8rdLrRcZCCKbEWi5UyUQ8R4DVMLbcfUAmm9UcEKOJ9lvFiOvGxTl2OLX5QsPVCJCTcR1IzFquXSciZ/MZRfsKpHXGEOQkuCF5mUj6+iv22SgQDpSXvdh6e39wjE0EWCCgfra97tFCghczgUxz/Vrj6g8WOrZErKuNj8a40xspnlwfwwEo+I5itd1aDwwvOnXswRt7cOG652XfQrkt4yvw9TqhaIriOcPoILfZau0Cq8Qa+/8UvwUqGuzY1qdx1WCEmzliYY2SKhgjFA3seIvxwZJfAWu1ZZDIJvAqUCdvspiRlAp1Bjf/km+L/GUvVhmHqyGNAcqhL+e6rIyK2fcYFLjb1ifP99B0esQluSiSljAVtUelhV1QfUh+EIPZ8814VhMY2d/NZNuI6/Gp+/5Jx6k60tqAjsuZssbWi1PX+jIMeJUp89uV+3Q6+SWlfsSgpepgbegcJwrNSu41x9afZJ6i6CZ7r7lE9ZVXJtLca0nFtEkbB+VAWT2K4IuAjBL015Dyawb1y42VcOq2v97m4jUJTGrVp6fotZHMwZmrZMFNBlgkfjRRX/lvIeNAVliAEl2J/l83kQZHpdlgeM0z9OVpXNcjKTPll8RfaBmJplDKzogQG/4aEYIPZK9XfnqtrSGOrzVHyiTUEmst29dVOnWqziuCqOKCb6WQ02QqXDIhlGfK6qFpbgLQq5UGfHGb0PETW/Jw9ppHNQ2NLST0ybJdTYIiN8aOxuw+4NT9Qf4tBlnbtDMFCrZGRtz2mn4Cb4Vt5hZtjkTGJRYc1yAGoqLIvnbm9A193cAeGh1daxhN0HgtM9ozw8hU5YvxgEXc9/ALXZJEWi2JY88bMqRjuz5YuC7tyV8uoA~jZ4nI6zGB4iHcOnX2QV+aMdsMWRGB3pkO4pB++/IciM\"}"
 										},
 										{
-											"id": "34d29f81-8059-46b9-8a76-27e85568b8ab",
 											"name": "Response to Step 4: Provide Device ID and OTP Code to Authenticate",
 											"originalRequest": {
 												"method": "POST",
 												"header": [
 													{
 														"key": "Content-Type",
-														"value": "application/json",
-														"disabled": false
+														"value": "application/json"
 													},
 													{
 														"key": "Authorization",
-														"value": "Bearer {{access_token}}",
-														"disabled": false
+														"value": "Bearer {{access_token}}"
 													}
 												],
 												"body": {
@@ -16248,6 +15956,7 @@
 									]
 								}
 							],
+							"description": "If a user wants to use TOTP to log in, and if TOTP isn't the default method, the user is required to make additional requests to complete the authentication.\n \nStep 3\nThis request is to obtain the backup methods available.\n\nFor TOTP, locate the deviceId for TOTP provided in the response and the requestState.\n \nStep 4 \nThis request includes the deviceID, the otpCode (TOTP), and the requestState to authenticate.",
 							"event": [
 								{
 									"listen": "prerequest",
@@ -16298,12 +16007,10 @@
 					"_postman_isSubFolder": true
 				},
 				{
-					"name": "Online TOTP",
-					"description": "",
+					"name": "Online One-Time Passcode (TOTP)",
 					"item": [
 						{
 							"name": "Authentication With Online TOTP Set as the Default Method",
-							"description": "These steps describe the authentication flow when the user has TOTP set as the default factor. After the user submits their username/password, the user must send the TOTP. ",
 							"item": [
 								{
 									"name": "Step 1: Authentication Request with no Tokens/Session",
@@ -16345,20 +16052,17 @@
 									},
 									"response": [
 										{
-											"id": "c28f8a9a-34f4-430e-a319-1f9607429066",
 											"name": "Response to Step 1: Authentication Request with no Tokens/Session",
 											"originalRequest": {
 												"method": "GET",
 												"header": [
 													{
 														"key": "Content-Type",
-														"value": "application/json",
-														"disabled": false
+														"value": "application/json"
 													},
 													{
 														"key": "Authorization",
-														"value": "Bearer {{access_token}}",
-														"disabled": false
+														"value": "Bearer {{access_token}}"
 													}
 												],
 												"body": {
@@ -16494,7 +16198,7 @@
 										],
 										"body": {
 											"mode": "raw",
-											"raw": "{  \r\n   \"op\":\"credSubmit\",\r\n  \"authFactor\":\"USERNAME_PASSWORD\",\r\n   \"credentials\":{  \r\n      \"username\":\"username\",\r\n      \"password\":\"password\"\r\n   },\r\n   \"requestState\":\"{{requestState}}\"\r\n}"
+											"raw": "{  \r\n   \"op\":\"credSubmit\",\r\n  \"authFactor\":\"USERNAME_PASSWORD\",\r\n   \"credentials\":{  \r\n      \"username\":\"{{username}}\",\r\n      \"password\":\"{{password}}\"\r\n   },\r\n   \"requestState\":\"{{requestState}}\"\r\n}"
 										},
 										"url": {
 											"raw": "{{HOST}}/sso/v1/sdk/authenticate",
@@ -16512,20 +16216,17 @@
 									},
 									"response": [
 										{
-											"id": "d9af572c-d5f3-406a-9581-c7ff2bcb34b6",
 											"name": "Response to Step 2: User Name/Password Submission",
 											"originalRequest": {
 												"method": "POST",
 												"header": [
 													{
 														"key": "Content-Type",
-														"value": "application/json",
-														"disabled": false
+														"value": "application/json"
 													},
 													{
 														"key": "Authorization",
-														"value": "Bearer {{access_token}}",
-														"disabled": false
+														"value": "Bearer {{access_token}}"
 													}
 												],
 												"body": {
@@ -16673,20 +16374,17 @@
 									},
 									"response": [
 										{
-											"id": "fa6db53c-d5d1-4b74-b288-a210da7cdcdc",
 											"name": "Response to Step 3: Online TOTP Factor Authentication",
 											"originalRequest": {
 												"method": "POST",
 												"header": [
 													{
 														"key": "Content-Type",
-														"value": "application/json",
-														"disabled": false
+														"value": "application/json"
 													},
 													{
 														"key": "Authorization",
-														"value": "Bearer {{access_token}}",
-														"disabled": false
+														"value": "Bearer {{access_token}}"
 													}
 												],
 												"body": {
@@ -16801,6 +16499,7 @@
 									]
 								}
 							],
+							"description": "These steps describe the authentication flow when the user has TOTP set as the default factor. After the user submits their username/password, the user must send the TOTP. ",
 							"event": [
 								{
 									"listen": "prerequest",
@@ -16827,7 +16526,6 @@
 						},
 						{
 							"name": "Authentication With Online TOTP & Setting Trusted Device",
-							"description": "These steps describe the authentication flow when the user has TOTP set as the default factor. After the user submits their user name/password, the user must send the TOTP.\n\nAnd in the response with the TOTP, the trusted device attribute is set to true: \"trustedDevice\": true",
 							"item": [
 								{
 									"name": "Step 1: Authentication Request with no Tokens/Session",
@@ -16869,20 +16567,17 @@
 									},
 									"response": [
 										{
-											"id": "6985a419-5546-49fa-8e7e-d3b80b3e1762",
 											"name": "Response to Step 1: Authentication Request with no Tokens/Session",
 											"originalRequest": {
 												"method": "GET",
 												"header": [
 													{
 														"key": "Content-Type",
-														"value": "application/json",
-														"disabled": false
+														"value": "application/json"
 													},
 													{
 														"key": "Authorization",
-														"value": "Bearer {{access_token}}",
-														"disabled": false
+														"value": "Bearer {{access_token}}"
 													}
 												],
 												"body": {
@@ -17018,7 +16713,7 @@
 										],
 										"body": {
 											"mode": "raw",
-											"raw": "{  \r\n   \"op\":\"credSubmit\",\r\n  \"authFactor\":\"USERNAME_PASSWORD\",\r\n   \"credentials\":{  \r\n      \"username\":\"username\",\r\n      \"password\":\"password\"\r\n   },\r\n   \"requestState\":\"{{requestState}}\"\r\n}"
+											"raw": "{  \r\n   \"op\":\"credSubmit\",\r\n  \"authFactor\":\"USERNAME_PASSWORD\",\r\n   \"credentials\":{  \r\n      \"username\":\"{{username}}\",\r\n      \"password\":\"{{password}}\"\r\n   },\r\n   \"requestState\":\"{{requestState}}\"\r\n}"
 										},
 										"url": {
 											"raw": "{{HOST}}/sso/v1/sdk/authenticate",
@@ -17036,20 +16731,17 @@
 									},
 									"response": [
 										{
-											"id": "3b6e73be-8c17-4408-b887-cf0334afa554",
 											"name": "Response to Step 2: User Name/Password Submission",
 											"originalRequest": {
 												"method": "POST",
 												"header": [
 													{
 														"key": "Content-Type",
-														"value": "application/json",
-														"disabled": false
+														"value": "application/json"
 													},
 													{
 														"key": "Authorization",
-														"value": "Bearer {{access_token}}",
-														"disabled": false
+														"value": "Bearer {{access_token}}"
 													}
 												],
 												"body": {
@@ -17197,20 +16889,17 @@
 									},
 									"response": [
 										{
-											"id": "4a517ef4-96be-4d57-8bfa-0a1e60220c69",
 											"name": "Response to Step 3: Online TOTP Authentication & Setting Trusted Device",
 											"originalRequest": {
 												"method": "POST",
 												"header": [
 													{
 														"key": "Content-Type",
-														"value": "application/json",
-														"disabled": false
+														"value": "application/json"
 													},
 													{
 														"key": "Authorization",
-														"value": "Bearer {{access_token}}",
-														"disabled": false
+														"value": "Bearer {{access_token}}"
 													}
 												],
 												"body": {
@@ -17325,6 +17014,7 @@
 									]
 								}
 							],
+							"description": "These steps describe the authentication flow when the user has TOTP set as the default factor. After the user submits their user name/password, the user must send the TOTP.\n\nAnd in the response with the TOTP, the trusted device attribute is set to true: \"trustedDevice\": true",
 							"event": [
 								{
 									"listen": "prerequest",
@@ -17351,7 +17041,6 @@
 						},
 						{
 							"name": "Authenticating Using Online TOTP When It Isn't the Default Method",
-							"description": "If a user wants to use TOTP to log in, and if TOTP isn't the default method, the user is required to make additional requests to complete the authentication.\n \nStep 3\nThis request is to obtain the backup methods available.\n\nFor TOTP, locate the deviceId for TOTP provided in the response and the requestState.\n \nStep 4 \nThis request includes the deviceID, the otpCode (TOTP), and the requestState to authenticate.",
 							"item": [
 								{
 									"name": "Step 1: Authentication Request with no Tokens/Session",
@@ -17393,20 +17082,17 @@
 									},
 									"response": [
 										{
-											"id": "da65bfa1-1d53-49e0-a608-b93f61d7cf01",
 											"name": "Response to Step 1: Authentication Request with no Tokens/Session",
 											"originalRequest": {
 												"method": "GET",
 												"header": [
 													{
 														"key": "Content-Type",
-														"value": "application/json",
-														"disabled": false
+														"value": "application/json"
 													},
 													{
 														"key": "Authorization",
-														"value": "Bearer {{access_token}}",
-														"disabled": false
+														"value": "Bearer {{access_token}}"
 													}
 												],
 												"body": {
@@ -17542,7 +17228,7 @@
 										],
 										"body": {
 											"mode": "raw",
-											"raw": "{  \r\n   \"op\":\"credSubmit\",\r\n  \"authFactor\":\"USERNAME_PASSWORD\",\r\n   \"credentials\":{  \r\n      \"username\":\"username\",\r\n      \"password\":\"password\"\r\n   },\r\n   \"requestState\":\"{{requestState}}\"\r\n}"
+											"raw": "{  \r\n   \"op\":\"credSubmit\",\r\n  \"authFactor\":\"USERNAME_PASSWORD\",\r\n   \"credentials\":{  \r\n      \"username\":\"{{username}}\",\r\n      \"password\":\"{{password}}\"\r\n   },\r\n   \"requestState\":\"{{requestState}}\"\r\n}"
 										},
 										"url": {
 											"raw": "{{HOST}}/sso/v1/sdk/authenticate",
@@ -17560,20 +17246,17 @@
 									},
 									"response": [
 										{
-											"id": "a8c47ca5-33ac-4868-8895-b1e204af7bdb",
 											"name": "Response to Step 2: User Name/Password Submission",
 											"originalRequest": {
 												"method": "POST",
 												"header": [
 													{
 														"key": "Content-Type",
-														"value": "application/json",
-														"disabled": false
+														"value": "application/json"
 													},
 													{
 														"key": "Authorization",
-														"value": "Bearer {{access_token}}",
-														"disabled": false
+														"value": "Bearer {{access_token}}"
 													}
 												],
 												"body": {
@@ -17721,20 +17404,17 @@
 									},
 									"response": [
 										{
-											"id": "a94313c3-fb0c-40af-92e4-16ae92637d1d",
 											"name": "Response to Step 3: Get Backup Factors",
 											"originalRequest": {
 												"method": "POST",
 												"header": [
 													{
 														"key": "Content-Type",
-														"value": "application/json",
-														"disabled": false
+														"value": "application/json"
 													},
 													{
 														"key": "Authorization",
-														"value": "Bearer {{access_token}}",
-														"disabled": false
+														"value": "Bearer {{access_token}}"
 													}
 												],
 												"body": {
@@ -17882,20 +17562,17 @@
 									},
 									"response": [
 										{
-											"id": "cfdbba75-f326-40ae-a76b-ba590f129745",
 											"name": "Error Example: TOTP Authentication Failure",
 											"originalRequest": {
 												"method": "POST",
 												"header": [
 													{
 														"key": "Content-Type",
-														"value": "application/json",
-														"disabled": false
+														"value": "application/json"
 													},
 													{
 														"key": "Authorization",
-														"value": "Bearer {{access_token}}",
-														"disabled": false
+														"value": "Bearer {{access_token}}"
 													}
 												],
 												"body": {
@@ -18008,20 +17685,17 @@
 											"body": "{\n    \"status\": \"failed\",\n    \"cause\": [\n        {\n            \"message\": \"Invalid passcode.\",\n            \"code\": \"AUTH-1105\"\n        }\n    ],\n    \"TOTP\": {\n        \"credentials\": [\n            \"otpCode\"\n        ]\n    },\n    \"SMS\": {\n        \"credentials\": [\n            \"otpCode\"\n        ]\n    },\n    \"nextOp\": [\n        \"credSubmit\",\n        \"getBackupFactors\"\n    ],\n    \"BYPASSCODE\": {\n        \"credentials\": [\n            \"bypassCode\"\n        ]\n    },\n    \"SECURITY_QUESTIONS\": {\n        \"credentials\": [\n            \"questionId\",\n            \"answer\"\n        ],\n        \"questions\": [\n            {\n                \"hint\": \"Cinco\",\n                \"questionId\": \"FavoriteFood\",\n                \"text\": \"What's your favorite food?\"\n            }\n        ]\n    },\n    \"nextAuthFactors\": [\n        \"TOTP\",\n        \"SMS\",\n        \"BYPASSCODE\",\n        \"SECURITY_QUESTIONS\"\n    ],\n    \"trustedDeviceSettings\": {\n        \"trustDurationInDays\": 15\n    },\n    \"requestState\": \"fm3hOQVCqh16.....kO4pB++/IciM\"\n}"
 										},
 										{
-											"id": "a7452b0e-8145-4757-99db-b73826bd4a4b",
 											"name": "Response to Step 4: Provide Device ID and OTP Code to Authenticate",
 											"originalRequest": {
 												"method": "POST",
 												"header": [
 													{
 														"key": "Content-Type",
-														"value": "application/json",
-														"disabled": false
+														"value": "application/json"
 													},
 													{
 														"key": "Authorization",
-														"value": "Bearer {{access_token}}",
-														"disabled": false
+														"value": "Bearer {{access_token}}"
 													}
 												],
 												"body": {
@@ -18136,6 +17810,7 @@
 									]
 								}
 							],
+							"description": "If a user wants to use TOTP to log in, and if TOTP isn't the default method, the user is required to make additional requests to complete the authentication.\n \nStep 3\nThis request is to obtain the backup methods available.\n\nFor TOTP, locate the deviceId for TOTP provided in the response and the requestState.\n \nStep 4 \nThis request includes the deviceID, the otpCode (TOTP), and the requestState to authenticate.",
 							"event": [
 								{
 									"listen": "prerequest",
@@ -18187,11 +17862,9 @@
 				},
 				{
 					"name": "SMS",
-					"description": "",
 					"item": [
 						{
 							"name": "Authentication With SMS Set as the Default Method",
-							"description": "These steps describe the authentication flow when the user has SMS set as the default factor. After the user submits their username/password, the user must send the OTP. ",
 							"item": [
 								{
 									"name": "Step 1: Authentication Request with no Tokens/Session",
@@ -18233,20 +17906,17 @@
 									},
 									"response": [
 										{
-											"id": "d1c60962-67a9-49b6-ab6c-c95be5900d9f",
 											"name": "Response to Step 1: Authentication Request with no Tokens/Session",
 											"originalRequest": {
 												"method": "GET",
 												"header": [
 													{
 														"key": "Content-Type",
-														"value": "application/json",
-														"disabled": false
+														"value": "application/json"
 													},
 													{
 														"key": "Authorization",
-														"value": "Bearer {{access_token}}",
-														"disabled": false
+														"value": "Bearer {{access_token}}"
 													}
 												],
 												"body": {
@@ -18382,7 +18052,7 @@
 										],
 										"body": {
 											"mode": "raw",
-											"raw": "{  \r\n   \"op\":\"credSubmit\",\r\n  \"authFactor\":\"USERNAME_PASSWORD\",\r\n   \"credentials\":{  \r\n      \"username\":\"username\",\r\n      \"password\":\"password\"\r\n   },\r\n   \"requestState\":\"{{requestState}}\"\r\n}"
+											"raw": "{  \r\n   \"op\":\"credSubmit\",\r\n  \"authFactor\":\"USERNAME_PASSWORD\",\r\n   \"credentials\":{  \r\n      \"username\":\"{{username}}\",\r\n      \"password\":\"{{password}}\"\r\n   },\r\n   \"requestState\":\"{{requestState}}\"\r\n}"
 										},
 										"url": {
 											"raw": "{{HOST}}/sso/v1/sdk/authenticate",
@@ -18400,146 +18070,17 @@
 									},
 									"response": [
 										{
-											"id": "a64fcd67-4d9f-41e6-860c-83ca022f71df",
-											"name": "Error Example: Invalid or expired requestState",
-											"originalRequest": {
-												"method": "POST",
-												"header": [
-													{
-														"key": "Content-Type",
-														"value": "application/json",
-														"disabled": false
-													},
-													{
-														"key": "Authorization",
-														"value": "Bearer {{access_token}}",
-														"disabled": false
-													}
-												],
-												"body": {
-													"mode": "raw",
-													"raw": "{  \r\n   \"op\":\"credSubmit\",\r\n  \"authFactor\":\"USERNAME_PASSWORD\",\r\n   \"credentials\":{  \r\n      \"username\":\"sdh\",\r\n      \"password\":\"TwoIggys2\"\r\n   },\r\n   \"requestState\":\"VhSLC1gHddhn0Ts0Wa6NgHTspgXK06o+VuTuxxoUvJpw0L2s5L5NbnvHo6JtMLAYarxzsZXvPfXkNnBCAtqoZUddiLoG9fOBwizr9kKMvwxF7tKx07MRAh7HmApMon6WQ1XOyylC1eduSbzuCpw89WF4xprDAaUVnlyeFatNinV1jBupR7JDTa5ZiraaWRsF3BqpBq5SXba29BAdAFMtDsq78PnnQmysL6E6HLSGejn2dc5JaP9l8IcDIgWuvEZzXvBmj6KTY1rFyWb5IQgLcnzHOTyDL2Tv8AhdzQO4ZUlzuxWI1KKASpRPeCh38cWzCxp72obP59lwSJ/cG9wNjFCQ+7VRZketZrZeE~MEI4nMnfvHQX4/EimA/yb4PE8M8WmBYkenWlsDLuvgE\"\r\n}"
-												},
-												"url": {
-													"raw": "{{HOST}}/sso/v1/sdk/authenticate",
-													"host": [
-														"{{HOST}}"
-													],
-													"path": [
-														"sso",
-														"v1",
-														"sdk",
-														"authenticate"
-													]
-												}
-											},
-											"status": "Unauthorized",
-											"code": 401,
-											"_postman_previewlanguage": "json",
-											"header": [
-												{
-													"key": "Cache-control",
-													"value": "no-cache, no-store, must-revalidate",
-													"name": "Cache-control",
-													"description": "Tells all caching mechanisms from server to client whether they may cache this object. It is measured in seconds"
-												},
-												{
-													"key": "Content-length",
-													"value": "574",
-													"name": "Content-length",
-													"description": "The length of the response body in octets (8-bit bytes)"
-												},
-												{
-													"key": "Content-type",
-													"value": "application/json;charset=utf-8",
-													"name": "Content-type",
-													"description": "The mime type of this content"
-												},
-												{
-													"key": "Date",
-													"value": "Wed, 23 May 2018 01:11:32 GMT",
-													"name": "Date",
-													"description": "The date and time that the message was sent"
-												},
-												{
-													"key": "Expires",
-													"value": "Sat, 01 Jan 2000 00:00:00 GMT",
-													"name": "Expires",
-													"description": "Gives the date/time after which the response is considered stale"
-												},
-												{
-													"key": "Pragma",
-													"value": "no-cache",
-													"name": "Pragma",
-													"description": "Implementation-specific headers that may have various effects anywhere along the request-response chain."
-												},
-												{
-													"key": "Proxy-agent",
-													"value": "Oracle-Traffic-Director/11.1.1.9",
-													"name": "Proxy-agent",
-													"description": "Custom header"
-												},
-												{
-													"key": "Proxy-agent",
-													"value": "Oracle-Traffic-Director/11.1.1.9",
-													"name": "Proxy-agent",
-													"description": "Custom header"
-												},
-												{
-													"key": "Server",
-													"value": "Oracle-Traffic-Director/11.1.1.9",
-													"name": "Server",
-													"description": "A name for the server"
-												},
-												{
-													"key": "Via",
-													"value": "1.1 net-idcs-config, 1.1 net-idcs-dev-lbr",
-													"name": "Via",
-													"description": "Informs the client of proxies through which the response was sent."
-												},
-												{
-													"key": "X-content-type-options",
-													"value": "nosniff",
-													"name": "X-content-type-options",
-													"description": "The only defined value, \"nosniff\", prevents Internet Explorer from MIME-sniffing a response away from the declared content-type"
-												},
-												{
-													"key": "X-oracle-dms-ecid",
-													"value": "8s_^F0_5000000000",
-													"name": "X-oracle-dms-ecid",
-													"description": "Custom header"
-												},
-												{
-													"key": "X-oracle-dms-rid",
-													"value": "0:1:1",
-													"name": "X-oracle-dms-rid",
-													"description": "Custom header"
-												},
-												{
-													"key": "X-xss-protection",
-													"value": "1; mode=block",
-													"name": "X-xss-protection",
-													"description": "Cross-site scripting (XSS) filter"
-												}
-											],
-											"cookie": [],
-											"body": "{\"status\":\"failed\",\"cause\":[{\"message\":\"The requestState provided is either invalid or expired. Please provide a valid requestState.\",\"code\":\"AUTH-1120\"}],\"requestState\":\"VhSLC1gHddhn0Ts0Wa6NgHTspgXK06o+VuTuxxoUvJpw0L2s5L5NbnvHo6JtMLAYarxzsZXvPfXkNnBCAtqoZUddiLoG9fOBwizr9kKMvwxF7tKx07MRAh7HmApMon6WQ1XOyylC1eduSbzuCpw89WF4xprDAaUVnlyeFatNinV1jBupR7JDTa5ZiraaWRsF3BqpBq5SXba29BAdAFMtDsq78PnnQmysL6E6HLSGejn2dc5JaP9l8IcDIgWuvEZzXvBmj6KTY1rFyWb5IQgLcnzHOTyDL2Tv8AhdzQO4ZUlzuxWI1KKASpRPeCh38cWzCxp72obP59lwSJ/cG9wNjFCQ+7VRZketZrZeE~MEI4nMnfvHQX4/EimA/yb4PE8M8WmBYkenWlsDLuvgE\"}"
-										},
-										{
-											"id": "6bec5313-1f5a-49fc-9a71-1ffac71f8f83",
 											"name": "Response to Step 2: User Name/Password Submission",
 											"originalRequest": {
 												"method": "POST",
 												"header": [
 													{
 														"key": "Content-Type",
-														"value": "application/json",
-														"disabled": false
+														"value": "application/json"
 													},
 													{
 														"key": "Authorization",
-														"value": "Bearer {{access_token}}",
-														"disabled": false
+														"value": "Bearer {{access_token}}"
 													}
 												],
 												"body": {
@@ -18650,6 +18191,129 @@
 											],
 											"cookie": [],
 											"body": "{\n    \"status\": \"success\",\n    \"displayName\": \"Joe's iPhone\",\n    \"nextAuthFactors\": [\n        \"SMS\"\n    ],\n    \"SMS\": {\n        \"credentials\": [\n            \"otpCode\"\n        ]\n    },\n    \"nextOp\": [\n        \"credSubmit\",\n        \"getBackupFactors\",\n        \"resendCode\"\n    ],\n    \"requestState\": \"QjyV3ueFrGQCO.....84gQw2UUm2V7s\",\n    \"trustedDeviceSettings\": {\n        \"trustDurationInDays\": 15\n    }\n}"
+										},
+										{
+											"name": "Error Example: Invalid or expired requestState",
+											"originalRequest": {
+												"method": "POST",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/json"
+													},
+													{
+														"key": "Authorization",
+														"value": "Bearer {{access_token}}"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{  \r\n   \"op\":\"credSubmit\",\r\n  \"authFactor\":\"USERNAME_PASSWORD\",\r\n   \"credentials\":{  \r\n      \"username\":\"sdh\",\r\n      \"password\":\"TwoIggys2\"\r\n   },\r\n   \"requestState\":\"VhSLC1gHddhn0Ts0Wa6NgHTspgXK06o+VuTuxxoUvJpw0L2s5L5NbnvHo6JtMLAYarxzsZXvPfXkNnBCAtqoZUddiLoG9fOBwizr9kKMvwxF7tKx07MRAh7HmApMon6WQ1XOyylC1eduSbzuCpw89WF4xprDAaUVnlyeFatNinV1jBupR7JDTa5ZiraaWRsF3BqpBq5SXba29BAdAFMtDsq78PnnQmysL6E6HLSGejn2dc5JaP9l8IcDIgWuvEZzXvBmj6KTY1rFyWb5IQgLcnzHOTyDL2Tv8AhdzQO4ZUlzuxWI1KKASpRPeCh38cWzCxp72obP59lwSJ/cG9wNjFCQ+7VRZketZrZeE~MEI4nMnfvHQX4/EimA/yb4PE8M8WmBYkenWlsDLuvgE\"\r\n}"
+												},
+												"url": {
+													"raw": "{{HOST}}/sso/v1/sdk/authenticate",
+													"host": [
+														"{{HOST}}"
+													],
+													"path": [
+														"sso",
+														"v1",
+														"sdk",
+														"authenticate"
+													]
+												}
+											},
+											"status": "Unauthorized",
+											"code": 401,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Cache-control",
+													"value": "no-cache, no-store, must-revalidate",
+													"name": "Cache-control",
+													"description": "Tells all caching mechanisms from server to client whether they may cache this object. It is measured in seconds"
+												},
+												{
+													"key": "Content-length",
+													"value": "574",
+													"name": "Content-length",
+													"description": "The length of the response body in octets (8-bit bytes)"
+												},
+												{
+													"key": "Content-type",
+													"value": "application/json;charset=utf-8",
+													"name": "Content-type",
+													"description": "The mime type of this content"
+												},
+												{
+													"key": "Date",
+													"value": "Wed, 23 May 2018 01:11:32 GMT",
+													"name": "Date",
+													"description": "The date and time that the message was sent"
+												},
+												{
+													"key": "Expires",
+													"value": "Sat, 01 Jan 2000 00:00:00 GMT",
+													"name": "Expires",
+													"description": "Gives the date/time after which the response is considered stale"
+												},
+												{
+													"key": "Pragma",
+													"value": "no-cache",
+													"name": "Pragma",
+													"description": "Implementation-specific headers that may have various effects anywhere along the request-response chain."
+												},
+												{
+													"key": "Proxy-agent",
+													"value": "Oracle-Traffic-Director/11.1.1.9",
+													"name": "Proxy-agent",
+													"description": "Custom header"
+												},
+												{
+													"key": "Proxy-agent",
+													"value": "Oracle-Traffic-Director/11.1.1.9",
+													"name": "Proxy-agent",
+													"description": "Custom header"
+												},
+												{
+													"key": "Server",
+													"value": "Oracle-Traffic-Director/11.1.1.9",
+													"name": "Server",
+													"description": "A name for the server"
+												},
+												{
+													"key": "Via",
+													"value": "1.1 net-idcs-config, 1.1 net-idcs-dev-lbr",
+													"name": "Via",
+													"description": "Informs the client of proxies through which the response was sent."
+												},
+												{
+													"key": "X-content-type-options",
+													"value": "nosniff",
+													"name": "X-content-type-options",
+													"description": "The only defined value, \"nosniff\", prevents Internet Explorer from MIME-sniffing a response away from the declared content-type"
+												},
+												{
+													"key": "X-oracle-dms-ecid",
+													"value": "8s_^F0_5000000000",
+													"name": "X-oracle-dms-ecid",
+													"description": "Custom header"
+												},
+												{
+													"key": "X-oracle-dms-rid",
+													"value": "0:1:1",
+													"name": "X-oracle-dms-rid",
+													"description": "Custom header"
+												},
+												{
+													"key": "X-xss-protection",
+													"value": "1; mode=block",
+													"name": "X-xss-protection",
+													"description": "Cross-site scripting (XSS) filter"
+												}
+											],
+											"cookie": [],
+											"body": "{\"status\":\"failed\",\"cause\":[{\"message\":\"The requestState provided is either invalid or expired. Please provide a valid requestState.\",\"code\":\"AUTH-1120\"}],\"requestState\":\"VhSLC1gHddhn0Ts0Wa6NgHTspgXK06o+VuTuxxoUvJpw0L2s5L5NbnvHo6JtMLAYarxzsZXvPfXkNnBCAtqoZUddiLoG9fOBwizr9kKMvwxF7tKx07MRAh7HmApMon6WQ1XOyylC1eduSbzuCpw89WF4xprDAaUVnlyeFatNinV1jBupR7JDTa5ZiraaWRsF3BqpBq5SXba29BAdAFMtDsq78PnnQmysL6E6HLSGejn2dc5JaP9l8IcDIgWuvEZzXvBmj6KTY1rFyWb5IQgLcnzHOTyDL2Tv8AhdzQO4ZUlzuxWI1KKASpRPeCh38cWzCxp72obP59lwSJ/cG9wNjFCQ+7VRZketZrZeE~MEI4nMnfvHQX4/EimA/yb4PE8M8WmBYkenWlsDLuvgE\"}"
 										}
 									]
 								},
@@ -18687,20 +18351,17 @@
 									},
 									"response": [
 										{
-											"id": "3ef952d4-af05-4a04-9c00-3902f0b1e0e7",
 											"name": "Response to Step 3: SMS Factor Authentication",
 											"originalRequest": {
 												"method": "POST",
 												"header": [
 													{
 														"key": "Content-Type",
-														"value": "application/json",
-														"disabled": false
+														"value": "application/json"
 													},
 													{
 														"key": "Authorization",
-														"value": "Bearer {{access_token}}",
-														"disabled": false
+														"value": "Bearer {{access_token}}"
 													}
 												],
 												"body": {
@@ -18813,20 +18474,17 @@
 											"body": "{\n    \"authnToken\": \"eyJraWQiOiJTS.....QXZ_NP9eH385A\",\n    \"status\": \"success\"\n}"
 										},
 										{
-											"id": "c32ba046-7352-4ea5-813c-604951423dae",
 											"name": "Error Example: MFA Authentication Failure",
 											"originalRequest": {
 												"method": "POST",
 												"header": [
 													{
 														"key": "Content-Type",
-														"value": "application/json",
-														"disabled": false
+														"value": "application/json"
 													},
 													{
 														"key": "Authorization",
-														"value": "Bearer {{access_token}}",
-														"disabled": false
+														"value": "Bearer {{access_token}}"
 													}
 												],
 												"body": {
@@ -18941,6 +18599,7 @@
 									]
 								}
 							],
+							"description": "These steps describe the authentication flow when the user has SMS set as the default factor. After the user submits their username/password, the user must send the OTP. ",
 							"event": [
 								{
 									"listen": "prerequest",
@@ -18967,7 +18626,6 @@
 						},
 						{
 							"name": "Authentication With SMS & Setting Trusted Device",
-							"description": "These steps describe the authentication flow when the user has SMS set as the default factor. After the user submits their user name/password, the user must send the OTP. \n\nAnd in the response that includes the OTP that is sent to the user, the trusted device attribute is set to true: \"trustedDevice\": true",
 							"item": [
 								{
 									"name": "Step 1: Authentication Request with no Tokens/Session",
@@ -19009,20 +18667,17 @@
 									},
 									"response": [
 										{
-											"id": "33309a88-a941-453d-9627-dbc30f1e84bf",
 											"name": "Response to Step 1: Authentication Request with no Tokens/Session",
 											"originalRequest": {
 												"method": "GET",
 												"header": [
 													{
 														"key": "Content-Type",
-														"value": "application/json",
-														"disabled": false
+														"value": "application/json"
 													},
 													{
 														"key": "Authorization",
-														"value": "Bearer {{access_token}}",
-														"disabled": false
+														"value": "Bearer {{access_token}}"
 													}
 												],
 												"body": {
@@ -19158,7 +18813,7 @@
 										],
 										"body": {
 											"mode": "raw",
-											"raw": "{  \r\n   \"op\":\"credSubmit\",\r\n  \"authFactor\":\"USERNAME_PASSWORD\",\r\n   \"credentials\":{  \r\n      \"username\":\"username\",\r\n      \"password\":\"password\"\r\n   },\r\n   \"requestState\":\"{{requestState}}\"\r\n}"
+											"raw": "{  \r\n   \"op\":\"credSubmit\",\r\n  \"authFactor\":\"USERNAME_PASSWORD\",\r\n   \"credentials\":{  \r\n      \"username\":\"{{username}}\",\r\n      \"password\":\"{{password}}\"\r\n   },\r\n   \"requestState\":\"{{requestState}}\"\r\n}"
 										},
 										"url": {
 											"raw": "{{HOST}}/sso/v1/sdk/authenticate",
@@ -19176,20 +18831,17 @@
 									},
 									"response": [
 										{
-											"id": "5b2734e9-e49c-4212-ac9a-b5d42787ced6",
 											"name": "Response to Step 2: User Name/Password Submission",
 											"originalRequest": {
 												"method": "POST",
 												"header": [
 													{
 														"key": "Content-Type",
-														"value": "application/json",
-														"disabled": false
+														"value": "application/json"
 													},
 													{
 														"key": "Authorization",
-														"value": "Bearer {{access_token}}",
-														"disabled": false
+														"value": "Bearer {{access_token}}"
 													}
 												],
 												"body": {
@@ -19337,20 +18989,17 @@
 									},
 									"response": [
 										{
-											"id": "107fe299-fd42-461a-8593-ac525e76fd9e",
 											"name": "Response to Step 3: SMS Authentication & Setting Trusted Device",
 											"originalRequest": {
 												"method": "POST",
 												"header": [
 													{
 														"key": "Content-Type",
-														"value": "application/json",
-														"disabled": false
+														"value": "application/json"
 													},
 													{
 														"key": "Authorization",
-														"value": "Bearer {{access_token}}",
-														"disabled": false
+														"value": "Bearer {{access_token}}"
 													}
 												],
 												"body": {
@@ -19465,6 +19114,7 @@
 									]
 								}
 							],
+							"description": "These steps describe the authentication flow when the user has SMS set as the default factor. After the user submits their user name/password, the user must send the OTP. \n\nAnd in the response that includes the OTP that is sent to the user, the trusted device attribute is set to true: \"trustedDevice\": true",
 							"event": [
 								{
 									"listen": "prerequest",
@@ -19491,7 +19141,6 @@
 						},
 						{
 							"name": "Authenticating Using SMS When It Isn't the Default Method",
-							"description": "If a user wants to use SMS to log in, and if SMS is not the default method, the user is required to make additional requests to complete the authentication.\n \nStep 3\nThis request is to obtain the backup methods available and the requestState.\n\nIn the response, locate the deviceId for SMS to use and the requestState.\n\nStep 4\nThis request includes deviceId and the requestState to initate SMS. When the SDK receives a credSubmit on SMS, with the deviceId, it understands that it first needs to send an SMS with the OTP code.\n\nStep 5\nThis request includes the OTP that the user received on their device in response to Step 4. Since a user account can have many phone numbers enrolled, the user needs to provide the deviceId when requesting access.\n\n\n ",
 							"item": [
 								{
 									"name": "Step 1: Authentication Request with no Tokens/Session",
@@ -19533,20 +19182,17 @@
 									},
 									"response": [
 										{
-											"id": "a6b59d69-4147-470f-9ded-b4a2261a7679",
 											"name": "Response to Step 1: Authentication Request with no Tokens/Session",
 											"originalRequest": {
 												"method": "GET",
 												"header": [
 													{
 														"key": "Content-Type",
-														"value": "application/json",
-														"disabled": false
+														"value": "application/json"
 													},
 													{
 														"key": "Authorization",
-														"value": "Bearer {{access_token}}",
-														"disabled": false
+														"value": "Bearer {{access_token}}"
 													}
 												],
 												"body": {
@@ -19682,7 +19328,7 @@
 										],
 										"body": {
 											"mode": "raw",
-											"raw": "{  \r\n   \"op\":\"credSubmit\",\r\n  \"authFactor\":\"USERNAME_PASSWORD\",\r\n   \"credentials\":{  \r\n      \"username\":\"username\",\r\n      \"password\":\"password\"\r\n   },\r\n   \"requestState\":\"{{requestState}}\"\r\n}"
+											"raw": "{  \r\n   \"op\":\"credSubmit\",\r\n  \"authFactor\":\"USERNAME_PASSWORD\",\r\n   \"credentials\":{  \r\n      \"username\":\"{{username}}\",\r\n      \"password\":\"{{password}}\"\r\n   },\r\n   \"requestState\":\"{{requestState}}\"\r\n}"
 										},
 										"url": {
 											"raw": "{{HOST}}/sso/v1/sdk/authenticate",
@@ -19700,20 +19346,17 @@
 									},
 									"response": [
 										{
-											"id": "2ff05023-f78b-4b7b-b6ca-56953fad4af2",
 											"name": "Response to Step 2: User Name/Password Submission",
 											"originalRequest": {
 												"method": "POST",
 												"header": [
 													{
 														"key": "Content-Type",
-														"value": "application/json",
-														"disabled": false
+														"value": "application/json"
 													},
 													{
 														"key": "Authorization",
-														"value": "Bearer {{access_token}}",
-														"disabled": false
+														"value": "Bearer {{access_token}}"
 													}
 												],
 												"body": {
@@ -19861,20 +19504,17 @@
 									},
 									"response": [
 										{
-											"id": "7cb905cb-18ed-46dc-9960-d4a37d365833",
 											"name": "Response to Step 3: Get Backup Factors",
 											"originalRequest": {
 												"method": "POST",
 												"header": [
 													{
 														"key": "Content-Type",
-														"value": "application/json",
-														"disabled": false
+														"value": "application/json"
 													},
 													{
 														"key": "Authorization",
-														"value": "Bearer {{access_token}}",
-														"disabled": false
+														"value": "Bearer {{access_token}}"
 													}
 												],
 												"body": {
@@ -20022,20 +19662,17 @@
 									},
 									"response": [
 										{
-											"id": "d1102b2b-7974-435d-9305-d8cc2fe97bc0",
 											"name": "Response to Step 4: Provide the Device ID to Obtain Factor Credentials",
 											"originalRequest": {
 												"method": "POST",
 												"header": [
 													{
 														"key": "Content-Type",
-														"value": "application/json",
-														"disabled": false
+														"value": "application/json"
 													},
 													{
 														"key": "Authorization",
-														"value": "Bearer {{access_token}}",
-														"disabled": false
+														"value": "Bearer {{access_token}}"
 													}
 												],
 												"body": {
@@ -20183,20 +19820,17 @@
 									},
 									"response": [
 										{
-											"id": "0bf63df3-0b86-49e1-b376-789e2a916ba3",
 											"name": "Responset to Step 5: Provide Device ID and OTP Code to Authenticate",
 											"originalRequest": {
 												"method": "POST",
 												"header": [
 													{
 														"key": "Content-Type",
-														"value": "application/json",
-														"disabled": false
+														"value": "application/json"
 													},
 													{
 														"key": "Authorization",
-														"value": "Bearer {{access_token}}",
-														"disabled": false
+														"value": "Bearer {{access_token}}"
 													}
 												],
 												"body": {
@@ -20311,6 +19945,7 @@
 									]
 								}
 							],
+							"description": "If a user wants to use SMS to log in, and if SMS is not the default method, the user is required to make additional requests to complete the authentication.\n \nStep 3\nThis request is to obtain the backup methods available and the requestState.\n\nIn the response, locate the deviceId for SMS to use and the requestState.\n\nStep 4\nThis request includes deviceId and the requestState to initate SMS. When the SDK receives a credSubmit on SMS, with the deviceId, it understands that it first needs to send an SMS with the OTP code.\n\nStep 5\nThis request includes the OTP that the user received on their device in response to Step 4. Since a user account can have many phone numbers enrolled, the user needs to provide the deviceId when requesting access.\n\n\n ",
 							"event": [
 								{
 									"listen": "prerequest",
@@ -20340,11 +19975,9 @@
 				},
 				{
 					"name": "PUSH Notification",
-					"description": "",
 					"item": [
 						{
 							"name": "Authentication With Push Notification Set as the Default Method",
-							"description": "These steps describe the authentication flow when the user has PUSH notifications set as the default factor. After the user submits their username/password, the user must send the OTP. ",
 							"item": [
 								{
 									"name": "Step 1: Authentication Request with no Tokens/Session",
@@ -20386,7 +20019,6 @@
 									},
 									"response": [
 										{
-											"id": "cb8eb1a4-8f98-4c24-a1ad-ac3eb5540cae",
 											"name": "Response to Step 1: Authentication Request with no Tokens/Session",
 											"originalRequest": {
 												"method": "GET",
@@ -20533,7 +20165,7 @@
 										],
 										"body": {
 											"mode": "raw",
-											"raw": "{  \r\n   \"op\":\"credSubmit\",\r\n  \"authFactor\":\"USERNAME_PASSWORD\",\r\n   \"credentials\":{  \r\n      \"username\":\"username\",\r\n      \"password\":\"password\"\r\n   },\r\n   \"requestState\":\"{{requestState}}\"\r\n}"
+											"raw": "{  \r\n   \"op\":\"credSubmit\",\r\n  \"authFactor\":\"USERNAME_PASSWORD\",\r\n   \"credentials\":{  \r\n      \"username\":\"{{username}}\",\r\n      \"password\":\"{{password}}\"\r\n   },\r\n   \"requestState\":\"{{requestState}}\"\r\n}"
 										},
 										"url": {
 											"raw": "{{HOST}}/sso/v1/sdk/authenticate",
@@ -20551,20 +20183,17 @@
 									},
 									"response": [
 										{
-											"id": "4af9df98-abbc-4246-be64-1929478f530e",
 											"name": "Pending Response to Step 2: User Name/Password Submission",
 											"originalRequest": {
 												"method": "POST",
 												"header": [
 													{
 														"key": "Content-Type",
-														"value": "application/json",
-														"disabled": false
+														"value": "application/json"
 													},
 													{
 														"key": "Authorization",
-														"value": "Bearer {{access_token}}",
-														"disabled": false
+														"value": "Bearer {{access_token}}"
 													}
 												],
 												"body": {
@@ -20708,11 +20337,10 @@
 												"authenticate"
 											]
 										},
-										"description": "This step sends the factor credentials for the user's preferred method and the requestState that was received in the previous response.\r\n\r\nIf the factor credentials are correct, an access token is received in the response."
+										"description": "This step sends the op:credSubmit value and the requestState that was received in the previous response.\r\n\r\nFor PUSH Notifications, the user must tap Allow or Deny on their device to initiate the final request.\r\n\r\nIf the factor credentials that are sent are correct, an access token is received in the response."
 									},
 									"response": [
 										{
-											"id": "969f5ea2-a4ab-4a8c-882b-9a7ec01a6aaf",
 											"name": "Response to Step 3: PUSH Factor Authentication",
 											"originalRequest": {
 												"method": "POST",
@@ -20838,6 +20466,7 @@
 									]
 								}
 							],
+							"description": "These steps describe the authentication flow when the user has PUSH notifications set as the default factor. After the user submits their username/password, the user must send the OTP. ",
 							"event": [
 								{
 									"listen": "prerequest",
@@ -20864,7 +20493,6 @@
 						},
 						{
 							"name": "Authentication With Push Notification & Setting Trusted Device",
-							"description": "These steps describe the authentication flow when the user has PUSH notifications set as the default factor. After the user submits their user name/password, the user must send the OTP. \n\nIn the response with the OTP, the trusted device attribute is set to true: \"trustedDevice\": true",
 							"item": [
 								{
 									"name": "Step 1: Authentication Request with no Tokens/Session",
@@ -20906,20 +20534,17 @@
 									},
 									"response": [
 										{
-											"id": "f0db5729-a427-44cd-9499-9be43c8c492c",
 											"name": "Response to Step 1: Authentication Request with no Tokens/Session",
 											"originalRequest": {
 												"method": "GET",
 												"header": [
 													{
 														"key": "Content-Type",
-														"value": "application/json",
-														"disabled": false
+														"value": "application/json"
 													},
 													{
 														"key": "Authorization",
-														"value": "Bearer {{access_token}}",
-														"disabled": false
+														"value": "Bearer {{access_token}}"
 													}
 												],
 												"body": {
@@ -21055,7 +20680,7 @@
 										],
 										"body": {
 											"mode": "raw",
-											"raw": "{  \r\n   \"op\":\"credSubmit\",\r\n  \"authFactor\":\"USERNAME_PASSWORD\",\r\n   \"credentials\":{  \r\n      \"username\":\"username\",\r\n      \"password\":\"password\"\r\n   },\r\n   \"requestState\":\"{{requestState}}\"\r\n}"
+											"raw": "{  \r\n   \"op\":\"credSubmit\",\r\n  \"authFactor\":\"USERNAME_PASSWORD\",\r\n   \"credentials\":{  \r\n      \"username\":\"{{username}}\",\r\n      \"password\":\"{{password}}\"\r\n   },\r\n   \"requestState\":\"{{requestState}}\"\r\n}"
 										},
 										"url": {
 											"raw": "{{HOST}}/sso/v1/sdk/authenticate",
@@ -21073,20 +20698,17 @@
 									},
 									"response": [
 										{
-											"id": "3c935b78-1118-45a1-b7c3-c5e440d9686c",
 											"name": "Pending Response to Step 2: Username/Password Submisstion",
 											"originalRequest": {
 												"method": "POST",
 												"header": [
 													{
 														"key": "Content-Type",
-														"value": "application/json",
-														"disabled": false
+														"value": "application/json"
 													},
 													{
 														"key": "Authorization",
-														"value": "Bearer {{access_token}}",
-														"disabled": false
+														"value": "Bearer {{access_token}}"
 													}
 												],
 												"body": {
@@ -21234,20 +20856,17 @@
 									},
 									"response": [
 										{
-											"id": "4f495d34-1978-45f9-980b-0278a0158e8c",
 											"name": "Success Response to Step 3: PUSH Authentication & Setting Trusted Device - Success After Pending",
 											"originalRequest": {
 												"method": "POST",
 												"header": [
 													{
 														"key": "Content-Type",
-														"value": "application/json",
-														"disabled": false
+														"value": "application/json"
 													},
 													{
 														"key": "Authorization",
-														"value": "Bearer {{access_token}}",
-														"disabled": false
+														"value": "Bearer {{access_token}}"
 													}
 												],
 												"body": {
@@ -21360,20 +20979,17 @@
 											"body": "{\"authnToken\":\"eyJraWQiOiJTSUdOSU5HX0tFWSIsInR5cCI6IkpXVCIsImFsZyI6IlJTMjU2In0.eyJzZXNzaW9uIjoiQ2szZWpNWlh2KzRjM09SdXR0dmcxODVNYTBWbGNSNmlWRXB1RGRuZDM4cm9DR0FMSjhSaU5OV3d4MjNoSFV3ZXkrbVAzc3crREJMVXVNSjA1UXVmRmViMUhQNzI2NjZTRHFQWlhzUkpDeUkyQ1FDbytSYURmdTR4V0xQck5xSzhhczcwTzF4VmVSRHBKSUtXbkVSWUJBY1IyVDgzbHVNa3VrXC9JTU9uRzh4VDBsWFk4YnZyVDFMYUF6UkFuYVFnQndXYWNPMlBEUVJIeUVVbjJQdXB4RmU2RjhwV3BcL1hkK0J6UjFJbk5zK1o3WFpMT1FMZVdTSFwvd0pOb05KRTI3V0w4N3VDcVlzVm1cL0xyYjBYYlJyOEhGZ3Rlam85Q2NmT1JpSVQrSmNDV3lNOTdBM2dJTEkxWG5ORXF5elltWkhBSXRJXC9SKzNIS2ltQ2tKNXh4b0wydFZNXC9oWmtkUkgwZGtpOUxZQitpaGRuTm4rOVI5QTNDYnJmWTRUMnl2WExQazVldzZkTVRYN3hpQUNLK3owbHc0MG1kRE1wSVgzQVBydnNMb24rM1RycGZiMDNjUjJiN0UrRTF6cjFQZFJFQ3ZvTXJSaUF0SE9TN3cxOWxRamo1RXFDWlRnRHBZNXQ3czNrK2hRKzRNd29oRWdNRXhEM1ZzazZKeUhhYmU1VVNHVlE5Z0NCRzZpRWZ4K2VBeDlVOHBTVWxiVDRSM1dEMDAzbXNEcVplSm1HRHRTd3BKRkxFclpvQzNaMjlMeEVsWVVHZlhqVTc2c3NQMG1VVUNyNTRHejNiQzMrQjFiMUVJSEVCYzdPNnVZVTJ1R0NncHpkNUs0bGJDeWR4aDdVaUE4NlZTZVJWVGlFV1V6aDY3dm9TTWdoV0pmWXJWbWRqTWR1UHVudmluTmVsVE94MW9tcEppdUltRWpcL05RR09tRytxR3FzYkt6T0cySmlNN0dcL3BXVTdTTndJakN5RHhGd0I1K3ZIcHZXYm80N3BETHpzOGlBc2VoSW1JV0RhV0tvSDg0a2Q1cXZyeTFac3Y3Tm5TSnBYSGpUOWpoZVpMRmdoREhZSkhEUUwyQ0V4dFp0UTdabW1wMU94S2lkYWVzREk3eG5Xa1ZITEJzQ2h3SEZBNVdOUUZxWFNxZ0hGRzlJcFNoRDdnYmRCaUc0N1lcLzhyb3dKbVwvUGhSdExHcWk4TzhvTjdsSjVCbmFJWWkwbG52S0FXUVhQenZEa081K0tnU3JQVkt2ZlN6Uys4V1dkUFNqdFwvbXlwOFlwUVlCS0hoQ1kxU3dpNEM2MzdrYjFTMENqb0VxUW9IWWRMUmNtb0RXVUhcL1k0NnNtblVLTW82WUEyTE1BbXVDd2ozSmt0TlBvTmx6S0I3WWYrSWlCamc4U3I0aTA1QzJRRzdFTVFuNXUyRzVZQkZycHVTQ1FHbDhaQU5aVWZWQXdBYzhnMU5hYjhDSmVpT2N4aStnZ2xFdVgxc0hVM29nUlQ0czRLZzZzUkJCVEUxSmk4YVdIcmZkRXhwcnVvQUxSR3RIOVpwNlJZRzlaSm5lTTF0QTFGeG5YbEZtMXBBRVpLUDNvZk1mTlFsdjVRQ3dsc35GdDRzZ3l3V3o3cXQrWThxUWN4VEs2eE1NaXgxaGFuQzRTOEg2bjNDaFlVIiwiaXNzIjoiYXV0aHNkayIsImV4cCI6MTUyODEzNjE0MSwiaWF0IjoxNTI4MTM2MTEyLCJ0ZW5hbnQiOiJ0ZW5hbnQxIn0.DSqsodQV-RplXuY9sq1D5zCNUWNHRF5z-PKpgZ3mozRuNhefwKkxG58GJBqybUYzsYuNs2eKEOBPzOPMdaX3U3bjQcq6id-ZMyBBzKCdv4wtBmYruJ_-Vca_hObOJQGbJJSy2JemQitaPs2GiL6GwDxDqKDU4m-14FUqQrTLFtZp9LSVjFiJAHSD0qCROUEN3to0jCDoBw7Y4onDSWPNIH-MbQviP9y72Osht4RmxO3fqdfLnBdkJ0bvLu_CY3MUXPZDUAmDJ9uOxUabTT7zizuIKaIinLPWKcEc89k4nXhjwQiCzX1N1wWKGvJ2TM5sjB5sjEXiqkzC2YPeqaG7KQ\",\"trustToken\":\"JTwV8RRjLeN+kXfHOCN1U/QkgjQ7PSRTaJJdVPaNK88899fZrAdD6llZ+pu8quBvUPEA0o3E4coTwB2vv7TIl+P4cuG+6Z9qGfKTbHnjE5rb66PW+Hq6OT0mAv6A3Mg+aNqng6QTe6L7WZqxMIsfX5fugu3R2c+KrEXDvib50n5iel+ZR37Us9QVp8jUKEo5~2HTWZeVLqQckVJoXOz2kkJTQ4NM+/aOD3H1wPKHAdyc\",\"status\":\"success\"}"
 										},
 										{
-											"id": "70f8da12-6d6a-4566-94cb-da0ac412983e",
 											"name": "Failed Response to Step 3: PUSH Authentication & Setting Trusted Device - Auth Failed",
 											"originalRequest": {
 												"method": "POST",
 												"header": [
 													{
 														"key": "Content-Type",
-														"value": "application/json",
-														"disabled": false
+														"value": "application/json"
 													},
 													{
 														"key": "Authorization",
-														"value": "Bearer {{access_token}}",
-														"disabled": false
+														"value": "Bearer {{access_token}}"
 													}
 												],
 												"body": {
@@ -21486,20 +21102,17 @@
 											"body": "{\n    \"status\": \"failed\",\n    \"cause\": [\n        {\n            \"message\": \"Authentication failed.\",\n            \"code\": \"AUTH-1007\"\n        }\n    ],\n    \"nextAuthFactors\": [\n        \"PUSH\"\n    ],\n    \"nextOp\": [\n        \"credSubmit\",\n        \"getBackupFactors\"\n    ],\n    \"trustedDeviceSettings\": {\n        \"trustDurationInDays\": 15\n    },\n    \"displayName\": \"Joe's iPhone\",\n    \"requestState\": \"XwmBqeeVr91a..........19UAGSkTZ7hqbIZinQ\"\n}"
 										},
 										{
-											"id": "13d25c0d-e6a4-405c-ac7b-fb8a3afa4998",
 											"name": "Pending Response to Step 3: PUSH Authentication & Setting Trusted Device",
 											"originalRequest": {
 												"method": "POST",
 												"header": [
 													{
 														"key": "Content-Type",
-														"value": "application/json",
-														"disabled": false
+														"value": "application/json"
 													},
 													{
 														"key": "Authorization",
-														"value": "Bearer {{access_token}}",
-														"disabled": false
+														"value": "Bearer {{access_token}}"
 													}
 												],
 												"body": {
@@ -21614,6 +21227,7 @@
 									]
 								}
 							],
+							"description": "These steps describe the authentication flow when the user has PUSH notifications set as the default factor. After the user submits their user name/password, the user must send the OTP. \n\nIn the response with the OTP, the trusted device attribute is set to true: \"trustedDevice\": true",
 							"event": [
 								{
 									"listen": "prerequest",
@@ -21640,7 +21254,6 @@
 						},
 						{
 							"name": "Authenticating Using PUSH When It Isn't the Default Method",
-							"description": "If a user wants to use PUSH to log in, and if PUSH isn't the default method, the user is required to make additional requests to complete the authentication.\n \nStep 3\nThis request is to obtain the backup methods available.\n\nFor TOTP, locate the deviceId for PUSH provided in the response and the requestState.\n \nStep 4 \nThis request includes the deviceID, the otpCode (PUSH), and the requestState to authenticate.",
 							"item": [
 								{
 									"name": "Step 1: Authentication Request with no Tokens/Session",
@@ -21682,20 +21295,17 @@
 									},
 									"response": [
 										{
-											"id": "e963f189-de37-4072-9e69-c441112e77df",
 											"name": "Response to Step 1: Authentication Request with no Tokens/Session",
 											"originalRequest": {
 												"method": "GET",
 												"header": [
 													{
 														"key": "Content-Type",
-														"value": "application/json",
-														"disabled": false
+														"value": "application/json"
 													},
 													{
 														"key": "Authorization",
-														"value": "Bearer {{access_token}}",
-														"disabled": false
+														"value": "Bearer {{access_token}}"
 													}
 												],
 												"body": {
@@ -21831,7 +21441,7 @@
 										],
 										"body": {
 											"mode": "raw",
-											"raw": "{  \r\n   \"op\":\"credSubmit\",\r\n  \"authFactor\":\"USERNAME_PASSWORD\",\r\n   \"credentials\":{  \r\n      \"username\":\"username\",\r\n      \"password\":\"password\"\r\n   },\r\n   \"requestState\":\"{{requestState}}\"\r\n}"
+											"raw": "{  \r\n   \"op\":\"credSubmit\",\r\n  \"authFactor\":\"USERNAME_PASSWORD\",\r\n   \"credentials\":{  \r\n      \"username\":\"{{username}}\",\r\n      \"password\":\"{{password}}\"\r\n   },\r\n   \"requestState\":\"{{requestState}}\"\r\n}"
 										},
 										"url": {
 											"raw": "{{HOST}}/sso/v1/sdk/authenticate",
@@ -21849,20 +21459,17 @@
 									},
 									"response": [
 										{
-											"id": "0d1ddc14-a230-4575-9e0b-22e523dfc784",
 											"name": "Response to Step 2: User Name/Password Submission",
 											"originalRequest": {
 												"method": "POST",
 												"header": [
 													{
 														"key": "Content-Type",
-														"value": "application/json",
-														"disabled": false
+														"value": "application/json"
 													},
 													{
 														"key": "Authorization",
-														"value": "Bearer {{access_token}}",
-														"disabled": false
+														"value": "Bearer {{access_token}}"
 													}
 												],
 												"body": {
@@ -22010,20 +21617,17 @@
 									},
 									"response": [
 										{
-											"id": "bf42ee87-5add-4e9d-82c6-320ebcdcb59d",
 											"name": "Response to Step 3: Get Backup Factors",
 											"originalRequest": {
 												"method": "POST",
 												"header": [
 													{
 														"key": "Content-Type",
-														"value": "application/json",
-														"disabled": false
+														"value": "application/json"
 													},
 													{
 														"key": "Authorization",
-														"value": "Bearer {{access_token}}",
-														"disabled": false
+														"value": "Bearer {{access_token}}"
 													}
 												],
 												"body": {
@@ -22171,20 +21775,17 @@
 									},
 									"response": [
 										{
-											"id": "63f6af08-f13b-41c5-b985-ec803b1bcd77",
 											"name": "Polling Response to Step 4: Provide Device ID to Authenticate",
 											"originalRequest": {
 												"method": "POST",
 												"header": [
 													{
 														"key": "Content-Type",
-														"value": "application/json",
-														"disabled": false
+														"value": "application/json"
 													},
 													{
 														"key": "Authorization",
-														"value": "Bearer {{access_token}}",
-														"disabled": false
+														"value": "Bearer {{access_token}}"
 													}
 												],
 												"body": {
@@ -22332,20 +21933,17 @@
 									},
 									"response": [
 										{
-											"id": "54b13ab1-c539-46a8-a9c8-4986809d1e25",
 											"name": "Response to Step 5: Submit Factor Credentials",
 											"originalRequest": {
 												"method": "POST",
 												"header": [
 													{
 														"key": "Content-Type",
-														"value": "application/json",
-														"disabled": false
+														"value": "application/json"
 													},
 													{
 														"key": "Authorization",
-														"value": "Bearer {{access_token}}",
-														"disabled": false
+														"value": "Bearer {{access_token}}"
 													}
 												],
 												"body": {
@@ -22460,6 +22058,7 @@
 									]
 								}
 							],
+							"description": "If a user wants to use PUSH to log in, and if PUSH isn't the default method, the user is required to make additional requests to complete the authentication.\n \nStep 3\nThis request is to obtain the backup methods available.\n\nFor TOTP, locate the deviceId for PUSH provided in the response and the requestState.\n \nStep 4 \nThis request includes the deviceID, the otpCode (PUSH), and the requestState to authenticate.",
 							"event": [
 								{
 									"listen": "prerequest",
@@ -22511,7 +22110,6 @@
 				},
 				{
 					"name": "Get Backup Factors",
-					"description": "This example scenario describes how to obtain available backup factors.",
 					"item": [
 						{
 							"name": "Step 1: Authentication Request with no Tokens/Session",
@@ -22553,20 +22151,17 @@
 							},
 							"response": [
 								{
-									"id": "82257ad6-6ec0-43a5-b3e7-744d48d72bda",
 									"name": "Response to Step 1: Authentication Request with no Tokens/Session",
 									"originalRequest": {
 										"method": "GET",
 										"header": [
 											{
 												"key": "Content-Type",
-												"value": "application/json",
-												"disabled": false
+												"value": "application/json"
 											},
 											{
 												"key": "Authorization",
-												"value": "Bearer {{access_token}}",
-												"disabled": false
+												"value": "Bearer {{access_token}}"
 											}
 										],
 										"body": {
@@ -22702,7 +22297,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n  \"op\": \"credSubmit\",\r\n  \r\n  \"credentials\": {\r\n    \"username\": \"username\",\r\n    \"password\": \"password\"\r\n  },\r\n  \"requestState\": \"{{requestState}}\"\r\n}"
+									"raw": "{\r\n  \"op\": \"credSubmit\",\r\n  \r\n  \"credentials\": {\r\n    \"username\": \"{{username}}\",\r\n    \"password\": \"{{password}}\"\r\n  },\r\n  \"requestState\": \"{{requestState}}\"\r\n}"
 								},
 								"url": {
 									"raw": "{{HOST}}/sso/v1/sdk/authenticate",
@@ -22720,20 +22315,17 @@
 							},
 							"response": [
 								{
-									"id": "fbdf6632-b30c-47ce-af1c-f7a1da0ccbaa",
 									"name": "Response to Step 2: User Name/Password Submission",
 									"originalRequest": {
 										"method": "POST",
 										"header": [
 											{
 												"key": "Content-Type",
-												"value": "application/json",
-												"disabled": false
+												"value": "application/json"
 											},
 											{
 												"key": "Authorization",
-												"value": "Bearer {{access_token}}",
-												"disabled": false
+												"value": "Bearer {{access_token}}"
 											}
 										],
 										"body": {
@@ -22881,20 +22473,17 @@
 							},
 							"response": [
 								{
-									"id": "a8fb479d-1bd0-4086-b43e-89ebe2257f66",
 									"name": "Response to Step 3: Get Backup Factors",
 									"originalRequest": {
 										"method": "POST",
 										"header": [
 											{
 												"key": "Content-Type",
-												"value": "application/json",
-												"disabled": false
+												"value": "application/json"
 											},
 											{
 												"key": "Authorization",
-												"value": "Bearer {{access_token}}",
-												"disabled": false
+												"value": "Bearer {{access_token}}"
 											}
 										],
 										"body": {
@@ -23009,6 +22598,7 @@
 							]
 						}
 					],
+					"description": "This example scenario describes how to obtain available backup factors.",
 					"event": [
 						{
 							"listen": "prerequest",
@@ -23035,7 +22625,6 @@
 				},
 				{
 					"name": "Bypass Code Authentication",
-					"description": "These steps describe the authentication flow when the user wants to use a bypass code to authenticate. After the user submits their username/password, the user must provide a bypass code that they have previously generated or a bypass code that an administrator has generated for them. ",
 					"item": [
 						{
 							"name": "Step 1: Authentication Request with no Tokens/Session",
@@ -23077,20 +22666,17 @@
 							},
 							"response": [
 								{
-									"id": "0082e48a-db4c-41a5-ab36-20aabd26965f",
 									"name": "Response to Step 1: Authentication Request with no Tokens/Session",
 									"originalRequest": {
 										"method": "GET",
 										"header": [
 											{
 												"key": "Content-Type",
-												"value": "application/json",
-												"disabled": false
+												"value": "application/json"
 											},
 											{
 												"key": "Authorization",
-												"value": "Bearer {{access_token}}",
-												"disabled": false
+												"value": "Bearer {{access_token}}"
 											}
 										],
 										"body": {
@@ -23226,7 +22812,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{  \r\n   \"op\":\"credSubmit\",\r\n  \"authFactor\":\"USERNAME_PASSWORD\",\r\n   \"credentials\":{  \r\n      \"username\":\"username\",\r\n      \"password\":\"password\"\r\n   },\r\n   \"requestState\":\"{{requestState}}\"\r\n}"
+									"raw": "{  \r\n   \"op\":\"credSubmit\",\r\n  \"authFactor\":\"USERNAME_PASSWORD\",\r\n   \"credentials\":{  \r\n      \"username\":\"{{username}}\",\r\n      \"password\":\"{{password}}\"\r\n   },\r\n   \"requestState\":\"{{requestState}}\"\r\n}"
 								},
 								"url": {
 									"raw": "{{HOST}}/sso/v1/sdk/authenticate",
@@ -23244,20 +22830,17 @@
 							},
 							"response": [
 								{
-									"id": "03848179-3903-4023-aac1-607f2a3cd9c7",
 									"name": "Response to Step 2: User Name/Password Submission",
 									"originalRequest": {
 										"method": "POST",
 										"header": [
 											{
 												"key": "Content-Type",
-												"value": "application/json",
-												"disabled": false
+												"value": "application/json"
 											},
 											{
 												"key": "Authorization",
-												"value": "Bearer {{access_token}}",
-												"disabled": false
+												"value": "Bearer {{access_token}}"
 											}
 										],
 										"body": {
@@ -23405,20 +22988,17 @@
 							},
 							"response": [
 								{
-									"id": "25917530-ea4a-4816-8dd5-a926476f1d2f",
 									"name": "Response to Step 3: Get Backup Factors",
 									"originalRequest": {
 										"method": "POST",
 										"header": [
 											{
 												"key": "Content-Type",
-												"value": "application/json",
-												"disabled": false
+												"value": "application/json"
 											},
 											{
 												"key": "Authorization",
-												"value": "Bearer {{access_token}}",
-												"disabled": false
+												"value": "Bearer {{access_token}}"
 											}
 										],
 										"body": {
@@ -23566,20 +23146,17 @@
 							},
 							"response": [
 								{
-									"id": "031b009f-43d1-421a-94ee-c99c1827b19e",
 									"name": "Error Example: Bypass Code Failure Response",
 									"originalRequest": {
 										"method": "POST",
 										"header": [
 											{
 												"key": "Content-Type",
-												"value": "application/json",
-												"disabled": false
+												"value": "application/json"
 											},
 											{
 												"key": "Authorization",
-												"value": "Bearer {{access_token}}",
-												"disabled": false
+												"value": "Bearer {{access_token}}"
 											}
 										],
 										"body": {
@@ -23698,20 +23275,17 @@
 									"body": "{\"status\":\"failed\",\"cause\":[{\"message\":\"Invalid passcode.\",\"code\":\"AUTH-1105\"}],\"TOTP\":{\"credentials\":[\"otpCode\"]},\"SMS\":{\"credentials\":[\"otpCode\"]},\"nextOp\":[\"credSubmit\",\"getBackupFactors\"],\"BYPASSCODE\":{\"credentials\":[\"bypassCode\"]},\"SECURITY_QUESTIONS\":{\"credentials\":[\"questionId\",\"answer\"],\"questions\":[{\"hint\":\"Meg Ryan Billy Crystal\",\"questionId\":\"FavoriteMovie\",\"text\":\"What's your favorite movie?\"}]},\"nextAuthFactors\":[\"TOTP\",\"SMS\",\"BYPASSCODE\",\"SECURITY_QUESTIONS\"],\"trustedDeviceSettings\":{\"trustDurationInDays\":15},\"requestState\":\"3Sx+M0ePVvnL0EXS6JBWUrx1N4qTlFW9eF/iCTKez60HmV3St14eXGMbPtevek2BDajt0mH/bv1N+KQS6Eji+4NnWBnsYa+1nEg2UUYJ07e4itRHUkVa9j4UPuiYZo+5no6PJi6XjyZ6s8/eV4tDWelTzOjsm01riOOPJadYNyEDIvDSXx/+BGF7n7++lwtGG2dVgfky16pBkOO+uUIvguQcn+q0I7P8RgjOr4ILPiZxEWcj+gNl7PY00+6q71nXHkugvJ+s+9cqJO93GvaACngAsRsUbC3L3tpPcxiXBg+zfLCmBUetFk5ucuAgGpJvxn5ywM8TBarxaSOWEPoG9K+vN7gkjvM+JJlLp0VEm8s2i/ZB/XztEQTOnuVVodr+23ZV53jOfSk1qDTP7K7KZqgPZxc2YXOMUfJ+rIiNDf41lKAfvviVz4/+5pF4Twu2OUZg438OR27mUZrGeOJpNgiYAN+iifKGA5o3PYS5XRxzd01+4YnzFWl2naEOIYHLwXxSJyt6FvKntifF+Dpj9ks3TWTDJgzfz3kmOLct7L6FYAi+T0heQCIT0yeHq8ZRUcq4gMqmjicVl0+pHLCPeSWFnCG645N+av14KaQ0UfWjP/WyYKM/9AYJi16ZMAzJ9m0ArkosKL1mYMozQ/36AfpEeQQR1NH9MBr3+P9TVcY9BroKYBbqolHr1ZQq8WLDE0zwZgL8QCW8qz5fPgzmi7ObDEmVjUAD46YrfJJdpsN4oH/cXuZFT1175DSQr5GSGziG9aYsp+c+BBBCkH1dD47OMkHhPwl2fSw7L65EpZkKk/1T4xF7bsrNEtbvJ4ydDYP84iNHU3EJ7B1Xe5u7jqz/xQm5zGh8Qsibu6Z3E0gxvx0HnH04NDZc+2gX8xFO2xL5YBfM5aZG/uakBrC03D8Ez4JEgxJowV1BeWVYaP+krE0ejxDESZDzH5697BQQvka6YP7t2af1HyWPcVJztH7Dcp5Qx9LaI0oOUabpOQe9ya9lK1A+NFKgK3rvuCrMRelyZQZjU7MGI1tS5rJnc/81LtYkQ9ogwGO3MunuORgQJ42qa/CkmAR8OnJQAcrodbvLik5aUEnrs6VdTLWLct5xR1HTtF//tS0Q5CWwxl+dytpil1cyrkblFYQ7R0vQDQ6yCEvnrwDnNsyjuDvEPmFeBzUqzKHtSwCol+ARcGm1WNUCBnzRThvqCcdh0OAyxfjSxFV0h1/zy52+OiaJLW42ypJWU/QdqQUoVnMv8b6lWZbA0oCvNS2SQ9TALHOajvpXOo5YPeS9Ujpjleof/+tCcmzOLv/EpVEexcQurWAaJ6Qa5Q3MIITuAJg0F+WNWvpIHoZsoIrb5Br7ukuEKIw94/Hc3nLsEWckisySxEN9ltNEvq454vpG4ivgC+XAM0/41EFF9W2eKcAWfmi15TRIzeSqcAAIpwXIaVZBo8W0CExpnxkl9Zvz6rCqHYl6C0bw68PMEsoEICF5ZYwA7qZuvgRNWbky7g0ysk5q4htliU4gxFTnm87wSiMBg5Gr152LlpcM5+0kDrL8R89FwMWCs9KASYHFIWb6WV3eQiR+h7u9Ti+/CTvWhIWT71TRtQj8GH2J/7G1HpYMAp/ti4vsOpp/dHAR9otaWE7XryRdFDstNWp6Al0gZDCsbkQdDrm5jIrNKkORjOjzeV7+9V0A/CKGSeS8eCXJU35yFYd2M7dWRdLsGbUpnVMW2Dmfr9SiNbUUrj30K9th4bPzuM0GLE17rHKdnEUptw8QFOE~5OfPdCrLp1bwG56aayIRUJTpXCkqKdDDQ9X+YpNycKM\"}"
 								},
 								{
-									"id": "8402649e-30be-413f-8363-ecabbadf6f3a",
 									"name": "Response to Step 4: BypassCode Authentication",
 									"originalRequest": {
 										"method": "POST",
 										"header": [
 											{
 												"key": "Content-Type",
-												"value": "application/json",
-												"disabled": false
+												"value": "application/json"
 											},
 											{
 												"key": "Authorization",
-												"value": "Bearer {{access_token}}",
-												"disabled": false
+												"value": "Bearer {{access_token}}"
 											}
 										],
 										"body": {
@@ -23826,6 +23400,7 @@
 							]
 						}
 					],
+					"description": "These steps describe the authentication flow when the user wants to use a bypass code to authenticate. After the user submits their username/password, the user must provide a bypass code that they have previously generated or a bypass code that an administrator has generated for them. ",
 					"event": [
 						{
 							"listen": "prerequest",
@@ -23852,7 +23427,6 @@
 				},
 				{
 					"name": "Setting the Default Factor Method",
-					"description": "These steps describe the authentication flow when the user wants to set a specific factor as the default factor. After the user submits their username/password, all available backup factors are requested, and then the factor to be set as the default is sent in the request with the appropriate factor credentials.",
 					"item": [
 						{
 							"name": "Step 1: Authentication Request with no Tokens/Session",
@@ -23894,7 +23468,6 @@
 							},
 							"response": [
 								{
-									"id": "37f69b81-5e76-4744-93dd-a658fd59a2fa",
 									"name": "Response to Step 1: Authentication Request with no Tokens/Session",
 									"originalRequest": {
 										"method": "GET",
@@ -24041,7 +23614,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{  \r\n   \"op\":\"credSubmit\",\r\n  \"authFactor\":\"USERNAME_PASSWORD\",\r\n   \"credentials\":{  \r\n      \"username\":\"username\",\r\n      \"password\":\"password\"\r\n   },\r\n   \"requestState\":\"{{requestState}}\"\r\n}"
+									"raw": "{  \r\n   \"op\":\"credSubmit\",\r\n  \"authFactor\":\"USERNAME_PASSWORD\",\r\n   \"credentials\":{  \r\n      \"username\":\"{{username}}\",\r\n      \"password\":\"{{password}}\"\r\n   },\r\n   \"requestState\":\"{{requestState}}\"\r\n}"
 								},
 								"url": {
 									"raw": "{{HOST}}/sso/v1/sdk/authenticate",
@@ -24059,20 +23632,17 @@
 							},
 							"response": [
 								{
-									"id": "c3e0f1cb-c3e0-4b9c-a683-1168d0607c65",
 									"name": "Response to Step 2: User Name/Password Submission",
 									"originalRequest": {
 										"method": "POST",
 										"header": [
 											{
 												"key": "Content-Type",
-												"value": "application/json",
-												"disabled": false
+												"value": "application/json"
 											},
 											{
 												"key": "Authorization",
-												"value": "Bearer {{access_token}}",
-												"disabled": false
+												"value": "Bearer {{access_token}}"
 											}
 										],
 										"body": {
@@ -24220,20 +23790,17 @@
 							},
 							"response": [
 								{
-									"id": "e653aa84-b3d6-4485-8db5-4e7b0461921c",
 									"name": "Response to Step 3: Get Backup Factors",
 									"originalRequest": {
 										"method": "POST",
 										"header": [
 											{
 												"key": "Content-Type",
-												"value": "application/json",
-												"disabled": false
+												"value": "application/json"
 											},
 											{
 												"key": "Authorization",
-												"value": "Bearer {{access_token}}",
-												"disabled": false
+												"value": "Bearer {{access_token}}"
 											}
 										],
 										"body": {
@@ -24381,20 +23948,17 @@
 							},
 							"response": [
 								{
-									"id": "b3e69080-9e5c-43ec-aff1-097acfd9d63e",
 									"name": "Response to Step 4: Setting Device as the Default Method",
 									"originalRequest": {
 										"method": "POST",
 										"header": [
 											{
 												"key": "Content-Type",
-												"value": "application/json",
-												"disabled": false
+												"value": "application/json"
 											},
 											{
 												"key": "Authorization",
-												"value": "Bearer {{access_token}}",
-												"disabled": false
+												"value": "Bearer {{access_token}}"
 											}
 										],
 										"body": {
@@ -24509,6 +24073,7 @@
 							]
 						}
 					],
+					"description": "These steps describe the authentication flow when the user wants to set a specific factor as the default factor. After the user submits their username/password, all available backup factors are requested, and then the factor to be set as the default is sent in the request with the appropriate factor credentials.",
 					"event": [
 						{
 							"listen": "prerequest",
@@ -24534,6 +24099,7 @@
 					"_postman_isSubFolder": true
 				}
 			],
+			"description": "Test using the user's credentials, requestState, and Multi-Factor Authentication.",
 			"event": [
 				{
 					"listen": "prerequest",
@@ -24578,6 +24144,56 @@
 					""
 				]
 			}
+		}
+	],
+	"variable": [
+		{
+			"id": "e175f63c-ab17-4945-9fb1-8f328438e1c0",
+			"key": "requestState",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "fb1fa54f-5657-4ea0-94c5-ebce8715ce24",
+			"key": "app_name",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "43997600-37a5-49c2-8595-cb4436e98b43",
+			"key": "questionId1",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "bd571b7e-08df-458e-b6f6-62df96348183",
+			"key": "questionId2",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "0fd331aa-b7c3-4a50-a00b-c1c4dab811af",
+			"key": "questionId3",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "26eff3bb-1191-4211-8098-7c9679598f4d",
+			"key": "deviceId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "9f0e2077-c8ff-4e9a-a189-d218ae1819dd",
+			"key": "username",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "5f360a95-2a3a-4545-9b09-642fc10e0179",
+			"key": "password",
+			"value": "",
+			"type": "string"
 		}
 	]
 }
