@@ -1,8 +1,8 @@
 {
 	"info": {
 		"_postman_id": "7495a9c6-e2eb-43b2-afd3-0baeed5943af",
-		"name": "Oracle Identity Cloud Service Factor Verification",
-		"description": "This collection provides step-by-step REST calls to complete factor verification of the Default factor and the backup factor.\n\nFactor verification is a 2-step process. You need to ask Oracle Identity Cloud Service to \"initiate\" (for example, send an SMS with a time-based one-time passcode (TOTP), send an email with a TOTP code, or send a PUSH notification to the enrolled OMA app). After initiating, the client needs to \"verify\" by passing the otpCode or security answer or accepting the PUSH notification on the OMA app.",
+		"name": "Oracle Identity Cloud Service Factor Verification API",
+		"description": "This collection provides step-by-step REST calls to complete factor verification of the Default factor and the backup factor.\n\nFactor verification is a 2-step process. You first need to ask Oracle Identity Cloud Service to initiate the verification of the factor. After initiating, the client needs to then verify the factor by passing the otpCode, security answer, by accepting the PUSH notification on the OMA app, or using a bypass code.",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -43,7 +43,7 @@
 										"factors"
 									]
 								},
-								"description": "Get the list of factors enrolled by the user using the userGUID in the request.\n\nA user may not be aware of their GUID. To support such cases, a user can make a request to get their enrolled factors by using a \"filter\" with the user name. See the other request example included in this folder."
+								"description": "You may need to first get a list of factors that the user in enrolled in before initiating factor enrollment. You can search for this information two ways: by specifying the userGUID or using a filter with the user name.\n\nThis example shows you how to get the list of factors enrolled by the user using the userGUID in the request.\n\nSince every user is uniquely identified in Oracle Identity Cloud Service using the userGUID, the user needs to provide the userGUID when getting their enrolled factors.\n\nHowever, a user may not be aware of their userGUID. To support such cases, a user can make a request to get their enrolled factors by using a filter with the user name.\n\nSee the other request example included in this folder for an example of filter using the user name.\n\nThe response contains the userGUID, the preferred factor, and the enrolled factor details."
 							},
 							"response": [
 								{
@@ -217,7 +217,7 @@
 										}
 									]
 								},
-								"description": "Get the list of factors enrolled by the user using the user name in the request.\n\nSince every user is uniquely identified in Oracle Identity Cloud Service using the GUID, the user needs to provide the GUID when getting their enrolled factors. However, a user may not be aware of their GUID. To support such cases, a user can make a request to get their enrolled factors by using a \"filter\" with the user name. The response is similar to the response of the GET using the userGUID. The response contains the userGUID and the enrolled factor details."
+								"description": "You may need to first get a list of factors that the user in enrolled in before initiating factor enrollment. You can search for this information two ways: by specifying the userGUID or using a filter with the user name.\n\nThis example shows you how to get the list of factors enrolled by the user using the user name in the request.\n\nSince every user is uniquely identified in Oracle Identity Cloud Service using the userGUID, the user needs to provide the userGUID when getting their enrolled factors.\n\nHowever, a user may not be aware of their userGUID. To support such cases, a user can make a request to get their enrolled factors by using a filter with the user name.\n\nThe response contains the userGUID, the preferred factor, and the enrolled factor details."
 							},
 							"response": [
 								{
@@ -361,7 +361,7 @@
 							]
 						}
 					],
-					"description": "Since every user is uniquely identified in Oracle Identity Cloud Service using the GUID, the user needs to provide the GUID when getting their enrolled factors. However, a user may not be aware of their GUID. To support such cases, a user can make a request to get their enrolled factors by using a \"filter\" with the user name.\n\nThe response when providing the GUID to get enrolled factors contains the userGUID, the preferred factor, and the enrolled factor details.\n\nThe response when providing the username is similar to the response when providing the userGUID.",
+					"description": "Since every user is uniquely identified in Oracle Identity Cloud Service using the userGUID, the user needs to provide the userGUID when getting their enrolled factors.\n\nHowever, a user may not be aware of their userGUID. To support such cases, a user can make a request to get their enrolled factors by using a filter with the user name.\n\nThe response contains the userGUID, the preferred factor, and the enrolled factor details.",
 					"event": [
 						{
 							"listen": "prerequest",
@@ -418,7 +418,7 @@
 										"requests"
 									]
 								},
-								"description": "If you need to use the verify factor API without getting the user GUID, you can use it by providing any of the user unique ids such as username/email. This initiates the verification call for the default factor. For example, if the default factor is SMS, it initiates the SMS and the response contains the requestId.\n\nThe userIdType in the request indicates what type of credential the user is passing as the value for the userID. The following userIdType values are accepted:\n\n- USER_GUID\n- USER_NAME\n\nThe userId attribute contains the actual value of the user credential that is passed.\n\nThe response contains the requestId and the requestState needed for the next request."
+								"description": "This step initiates the verification of a user's preferred factor. If you need to use the verify factor API without getting the userGUID, you can provide a user unique id such as user name as the userId. The userIdType in the request indicates what type of credential the user is passing as the value for the userId. The following userIdType values are accepted:\n\n    USER_GUID\n\n    USER_NAME\n\nThe userId attribute contains the actual value of the user credential that is passed. \n\nIn the response, the requestId value is the unique identifier generated for this request. Include the requestId in every subsequent call to complete factor verification. The requestState contains contextual data needed to process the request. "
 							},
 							"response": [
 								{
@@ -1073,7 +1073,7 @@
 										"{{requestID}}"
 									]
 								},
-								"description": "If the factor is SMS/EMAIL and the user hasn't received the TOTP, the client can request the server to send it again. Every SMS/EMAIL send increments the user's MFA login attempt count.\n\nAfter the user meets their maximum login attempts, the user account is locked if the user doesn't make a successful login after requesting the TOTP.\n\nThe response contains the requestId and the requestState needed for the next request."
+								"description": "If the factor is SMS/EMAIL/TOTP and the user hasn't received the TOTP, the client can request that the server to send it again. Every SMS/EMAIL/TOTP sent increments the user's MFA login attempt count.\n\nAfter the user meets their maximum login attempts, the user account is locked if the user doesn't make a successful login after requesting the TOTP.\n\nThe response contains the requestId and the requestState needed for the next request."
 							},
 							"response": [
 								{
@@ -1233,7 +1233,7 @@
 										"{{requestID}}"
 									]
 								},
-								"description": "Verify the factor by passing the otpCode or accepting the PUSH notification on the OMA app.\n\nIf the factor is SMS/EMAIL/TOTP, then the request payload contains the otpCode value.\n\nThe response contains the status of the verification and the cause if it fails."
+								"description": "This step verifies the factor by passing the otpCode or accepting a PUSH notification on the Oracle Mobile Authenticator app. If the factor is SMS/EMAIL/TOTP, then the client must include the following attributes:\n\n    otpCode: the code received by the user on their device\n\n    requestState: received in the Step 1 response\n\n    requestID: received in the Step 1 response\n\nThe response contains the status of the verification and the cause if it fails.\n"
 							},
 							"response": [
 								{
@@ -1393,7 +1393,7 @@
 										"{{requestID}}"
 									]
 								},
-								"description": "When verifying the Security Questions factor, the request payload contains the securityQuestions id/answer map. This is an array since you can mandate that a user answer more than one question while verifying MFA.\n\nThe response contains the status of the verification and the cause in case of failure."
+								"description": "This step verifies the factor by passing the securityQuestions id/answer map. This is an array since you can mandate that a user answer more than one question while verifying MFA. The client must include the following in the request:\n\n    requestState: received in the Step 1 response\n\n    securityQuestions id/answers: defined by the user during enrollment\n\nThe response contains the status of the verification and the cause if it fails.\n\n"
 							},
 							"response": [
 								{
@@ -1809,7 +1809,7 @@
 							]
 						}
 					],
-					"description": "Factor verification is a 2-step process. You need to ask Oracle Identity Cloud Service to \"initiate\" (for example, send an SMS with a time-based one-time passcode (TOTP), send an email with a TOTP code, or send a PUSH notification to the enrolled OMA app). After initiating, the client needs to \"verify\" by passing the otpCode or security answer or accepting the PUSH notification on the OMA app.\n\nUse the example requests in this folder to initiate and verify the preferred factor as well as verify the PUSH factor by polling for the Push Notification Verification Request\n\nSince the PUSH notification must be accepted/rejected by the user on the Oracle Mobile Authenticator App, we provide a \"polling\" API for the client to use if the user has acted on this notification.",
+					"description": "Factor verification is a 2-step process. You first need to ask Oracle Identity Cloud Service to initiate the verification of the factor. After initiating, the client needs to then verify the factor by passing the otpCode, security answer, by accepting the PUSH notification on the OMA app, or using a bypass code.\n\nUse the example requests in this folder to initiate and verify the preferred factor as well as verify the PUSH factor by polling for the Push Notification Verification Request.\n\nSince the PUSH notification must be accepted/rejected by the user on the Oracle Mobile Authenticator App, there is a \"polling\" API for the client to use if the user has acted on this notification.",
 					"event": [
 						{
 							"listen": "prerequest",
@@ -1866,7 +1866,7 @@
 										"requests"
 									]
 								},
-								"description": "If the user doesn't want to use the default factor, the user has the option to provide the \"factorId\" and \"method\" to indicate that they want to use one of their backup factors.\n\nThe response contains the requestID and requestState that need to be used in the next request."
+								"description": "This step initiates the verification of a user's backup factor. \nIn the request, if you need to use the verify factor API without getting the userGUID, you can provide a user unique id such as user name as the userId. The userIdType in the request indicates what type of credential the user is passing as the value for the userId. The following userIdType values are accepted:\n\n    USER_GUID\n\n    USER_NAME\n\nThe userId attribute contains the actual value of the user credential that is passed.\n\nThe client must provide both the factorId and the method in the request. To obtain a list of enrolled factors and their IDs for a user, see the Fetch Enrolled Factors for a User folder.\n\nIn the response, the requestId value is the unique identifier generated for this request. Include the requestId in every subsequent call to complete factor verification. The requestState contains contextual data needed to process the request. \n"
 							},
 							"response": [
 								{
@@ -2149,7 +2149,7 @@
 										"{{requestID}}"
 									]
 								},
-								"description": "If the factor is SMS/EMAIL/TOTP, then the request payload contains the otpCode value.\n\nThe response contains the status of the verification and the cause if it fails."
+								"description": "This step verifies the backup factor. The client must include the following attributes:\n\n    otpCode: the code received by the user on their device\n\n    requestState: received in the Step 1 response\n\n    requestID: received in the Step 1 response\n\n\nThe response contains the status of the verification and the cause if it fails."
 							},
 							"response": [
 								{
@@ -2308,7 +2308,7 @@
 										"requests"
 									]
 								},
-								"description": "If the user doesn't want to use the default factor or their backup factor, the user has the option to provide the \"factorId\" and \"method\" as BYPASS CODE to indicate that they want to use a previously generated BYPASS code as the factor.\n\nThe response contains the requestId and the requestState needed for the next request."
+								"description": "This step initiates the verification of a user's BYPASS CODE as the backup factor.\n\nIf the user doesn't want to use the default factor or their backup factor, the user has the option to provide the \"factorId\" and \"method\" as BYPASS CODE to indicate that they want to use a previously generated BYPASS code as the factor.\n\nIn the request, if you need to use the verify factor API without getting the userGUID, you can provide a user unique id such as user name as the userId. The userIdType in the request indicates what type of credential the user is passing as the value for the userId. The following userIdType values are accepted:\n\n    USER_GUID\n\n    USER_NAME\n\nThe userId attribute contains the actual value of the user credential that is passed.\n\nThe client must provide both the factorId and the method (BYPASSCODE) in the request. To obtain a list of enrolled factors and their IDs for a user, see the Fetch Enrolled Factors for a User folder.\n\nIn the response, the requestId value is the unique identifier generated for this request. Include the requestId in every subsequent call to complete factor verification. The requestState contains contextual data needed to process the request. \n\n"
 							},
 							"response": [
 								{
@@ -2467,7 +2467,7 @@
 										"{{requestID}}"
 									]
 								},
-								"description": "If the factor is BYPASSCODE, then the request payload contains the bypassCode attribute.\n\nThe response contains the status of the verification and the cause if it fails."
+								"description": "This step verifies BYPASS CODE as the backup factor. The client must include the following attributes:\n\n    requestState: received in the Step 1 response\n\n    bypassCode: a code previously generated by either the user or an administrator on the user's behalf.\n\nThe response contains the status of the verification and the cause if it fails."
 							},
 							"response": [
 								{
@@ -2626,7 +2626,7 @@
 										"requests"
 									]
 								},
-								"description": "If the user doesn't want to use the default factor, the user has the option to provide the \"factorId\" and \"method\" to indicate that they want to use one of their backup factors.\n\nThe response contains the requestId and the requestState needed for the next request."
+								"description": "This step initiates the verification of a user's backup factor (Security Questions). \n\nIn the request, if you need to use the verify factor API without getting the userGUID, you can provide a user unique id such as user name as the userId. The userIdType in the request indicates what type of credential the user is passing as the value for the userId. The following userIdType values are accepted:\n\n    USER_GUID\n\n    USER_NAME\n\nThe userId attribute contains the actual value of the user credential that is passed.\n\nThe client must provide both the factorId and the method (SECURITY_QUESTIONS) in the request. To obtain a list of enrolled factors and their IDs for a user, see the Fetch Enrolled Factors for a User folder.\n\nIn the response, the requestId value is the unique identifier generated for this request. Include the requestId in every subsequent call to complete factor verification. The requestState contains contextual data needed to process the request. "
 							},
 							"response": [
 								{
@@ -2785,7 +2785,7 @@
 										"{{requestID}}"
 									]
 								},
-								"description": "Factor verification is a 2-step process. You need to ask Oracle Identity Cloud Service to \"initiate\" (for example, send an SMS with an OTP, send an email with an OTP code, or send a PUSH notification to the enrolled OMA app). After initiated, the client needs to \"verify\" by passing the otpCode or accepting the PUSH notification on the OMA app.\n\nIf the factor is SECURITY_QUESTIONS, then the request payload contains the bypassCode value.\n\nThe response contains the status of the verification and the cause if it fails."
+								"description": "This step verifies the backup factor (SECURITY_QUESTIONS). The client must include the following attributes:\n\n    requestState: received in the Step 1 response\n\n     securityQuestions id/answers: defined by the user during enrollment\n\nThe response contains the status of the verification and the cause if it fails."
 							},
 							"response": [
 								{
@@ -3227,7 +3227,7 @@
 					"_postman_isSubFolder": true
 				}
 			],
-			"description": "Factor verification is a 2-step process.\r\n\r\n1. You need to ask Oracle Identity Cloud Service to \"initiate\" (for example, send an SMS with a time-based one-time passcode (TOTP), send an email with a TOTP code, or send a PUSH notification to the enrolled OMA app). \r\n2. After initiating, the client needs to \"verify\" by passing the otpCode or security answer or accepting the PUSH notification on the OMA app.\r\n",
+			"description": "Factor verification is a 2-step process.\r\n\r\n1. You need to ask Oracle Identity Cloud Service to initiate the verification of the factor. \r\n2. After initiating, the client needs to then verify the factor by passing the otpCode, security answer, or accepting a PUSH notification on the OMA app, or using a bypasss code.\r\n",
 			"event": [
 				{
 					"listen": "prerequest",
@@ -3276,31 +3276,31 @@
 	],
 	"variable": [
 		{
-			"id": "d1b64a9d-e69b-40b7-8598-f789323727ac",
+			"id": "357db4c1-0c45-4ef5-9fe8-d1b13bfa5a14",
 			"key": "userGUID",
 			"value": "",
 			"type": "string"
 		},
 		{
-			"id": "23f83570-d835-4b0c-a9c6-f7ca77ca3ca1",
+			"id": "3119392b-4837-460d-8bc4-be5f57a61634",
 			"key": "requestID",
 			"value": "",
 			"type": "string"
 		},
 		{
-			"id": "8fcc4271-5ba3-4d31-a052-a20145e5c950",
+			"id": "049c6f1e-99a1-4eb1-81c2-6087b97f2b1a",
 			"key": "requestState",
 			"value": "",
 			"type": "string"
 		},
 		{
-			"id": "5a755342-7c31-4543-bd44-4bfc320f4d9c",
+			"id": "5ba49f23-535e-4b5b-b35d-84fdcba7e466",
 			"key": "userID",
 			"value": "",
 			"type": "string"
 		},
 		{
-			"id": "9db1c551-64e5-4cec-861c-b479593bed9a",
+			"id": "0dd31c36-7945-46a0-8f04-db698dd2b1d8",
 			"key": "factorID",
 			"value": "",
 			"type": "string"
