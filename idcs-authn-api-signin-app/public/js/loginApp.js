@@ -554,7 +554,7 @@ this.removeBtnAndShowSpinner = function(btn) {
             formDiv.insertBefore(trustedDeviceDiv, formDiv.querySelector("#submit-btn"));
           }
 
-          if (payload.nextOp.indexOf("getBackupFactors")) {
+          if (payload.nextOp.indexOf("getBackupFactors") > 0) {
             // add the alternative button
 
             var divHr = document.createElement('div');
@@ -604,37 +604,60 @@ this.removeBtnAndShowSpinner = function(btn) {
 
   }
 
-  // Builds the main form, allowing username/password posting
+  // Builds the main form, allowing username/password posting + IDP selection
+  // Logic has been moved into buildFirstForm
   this.buildUidPwForm = function(formDiv,IDPdata) {
+    this.buildFirstForm(formDiv,true,IDPdata);
+  }
+  
+  // Builds the main form, allowing IDP selection
+  this.buildIdpChooserForm = function(formDiv,IDPdata) {
+    this.buildFirstForm(formDiv,false,IDPdata);
+  }
+  
+  // this function builds both the UID + PW and/or the IDP chooser form
+  // this is all in one function to avoid duplicating code or comments
+  // the boolean showUidPw determines whether to show the uid+pw portion
+  this.buildFirstForm = function(formDiv,showUidPw,IDPdata) {
     const self = this;
-
+    
+    // always show the header message
     formDiv.innerHTML =
-        '<h3 data-res="signin-hdr">Welcome</h3>' +
+        '<h3 data-res="signin-hdr">Welcome</h3>';
+
+    // then show the UID + PW form if needed
+    if ( showUidPw ) {
+      formDiv.innerHTML +=
         '<label><span data-res="signin-username-fld">Username</span><input type="text" id="userid" value="" required></label>' +
         '<label><span data-res="signin-password-fld">Password</span><input type="password" id="password" value="" required></label>' +
         '<label class="error-msg" id="login-error-msg"></label>' +
         '<button type="button" class="submit" id="submit-btn" data-res="signin-submit-btn">Sign In</button>' +
         '<div class="sameline"><a href="#" class="info" id="signin-forgot-pass" data-res="forgot-pw-btn">Forgot password?</a></div>';
+    }
 
-    if ( IDPdata ) {
-
+    // if both UID+PW and an IDP list are being shown then add the "OR" bit
+    if ( showUidPw && IDPdata ) {
       formDiv.innerHTML += '<div class="hr"><hr class="left"><span class="hr-text" data-res="or-msg">OR</span><hr class="right"></div>';
-
+    }
+    
+    // and finally build the IDP list
+    if ( IDPdata ) {
       formDiv.innerHTML += '<label class="error-msg" id="social-login-error-msg"></label>';
       var idpDiv = document.createElement('div');
       idpDiv.align = 'center';
       IDPdata.configuredIDPs.forEach(function(idp) {
 
-        //exclude external SAML IDPs for now.. will be available in 18.2.6
-        //this line should be COMMENTED OUT once 18.2.6 is out...
-        if (idp.idpType.toLowerCase() === 'saml') return;
+        // Bug #28769680
+        if ( idp.iconUrl === "null" ) {
+          idp.iconUrl = undefined;
+        }
 
         this.logMsg("Adding IDP to login page:");
         this.logMsg(JSON.stringify(idp))
 
         var btn = document.createElement('img');
         btn.title = idp.idpName;
-        btn.url = idp.iconUrl;
+        btn.src = idp.iconUrl;
         btn.className = 'external-idp-btn';
 
         if (!idp.iconUrl) {
@@ -650,7 +673,15 @@ this.removeBtnAndShowSpinner = function(btn) {
                             btn.src = '../images/default-external-idp-icons/idcs-' + idp.idpName.toLowerCase() + '-icon.png';
                         }
                         else {
-                            btn.src='../images/default-external-idp-icons/external-identity-provider-large-gray-82.png';
+                            if ( idp.idpType === "Saml") {
+                              btn.src='../images/default-external-idp-icons/idcs-saml-icon.png';
+                            }
+                            else if ( idp.idpType === "Social") {
+                              btn.src='../images/default-external-idp-icons/idcs-oidc-icon.png';
+                            }
+                            else {
+                              btn.src='../images/default-external-idp-icons/external-identity-provider-large-gray-82.png';
+                            }
                         }
                     }
                     xhr_.open('HEAD', '../images/default-external-idp-icons/idcs-' + idp.idpName.toLowerCase() + '-icon.png');
@@ -670,7 +701,7 @@ this.removeBtnAndShowSpinner = function(btn) {
                 'idpName': idp.idpName,
                 'idpId': idp.idpId,
                 'clientId': self.getClientId(),
-                'idpType': 'SOCIAL'
+                'idpType': idp.idpType
             };
             self.sdk.chooseIDP(payload);
         });
@@ -679,13 +710,16 @@ this.removeBtnAndShowSpinner = function(btn) {
       formDiv.appendChild(idpDiv);
     }
 
-    this.handleClickToSubmitEvent(formDiv,this,'postCreds');
-    this.handleKeyPressToSubmitEvent(formDiv,formDiv.querySelector("#password"),this,'postCreds');
-    this.handleClickEvent(formDiv,this);
+    // and now that we're done updating the HTML of that div we can
+    // attach the event handlers for clicking or hitting enter
+    if ( showUidPw ) {
+      this.handleClickToSubmitEvent(formDiv,this,'postCreds');
+      this.handleKeyPressToSubmitEvent(formDiv,formDiv.querySelector("#password"),this,'postCreds');
+      this.handleClickEvent(formDiv,this);
+    }
 
     return formDiv;
-
-  }; // this.displaySigninForm
+  }; // this.buildFirstForm
 
   // Builds the OTP form
   this.buildOtpForm = function(formDiv,payload) {
@@ -1530,6 +1564,12 @@ this.removeBtnAndShowSpinner = function(btn) {
       // this one is only used for the initial login screen
       label: "Username and password",
       loginFormFunction: function (formdiv,payload) { self.buildUidPwForm(formdiv,payload);},
+    },
+    IDP: {
+      // If the admin removes "local IDP" in the IDP Policies then IDCS asks custom login app
+      // to display only the IDP chooser on the intiial form
+      label: "Select an IDP",
+      loginFormFunction: function (formdiv,payload) { self.buildIdpChooserForm(formdiv,payload.IDP);},
     },
     EMAIL: {
       label: "Email",
