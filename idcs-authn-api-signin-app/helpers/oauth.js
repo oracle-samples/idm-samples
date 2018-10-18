@@ -178,8 +178,7 @@ function getSigningKey(accessToken) {
         if ((response) &&
             (200 == response.statusCode)) {
           var bodydata = JSON.parse(body);
-          console.log(JSON.stringify(bodydata, null, 2));
-          console.log("\n\n");
+          logger.log(JSON.stringify(bodydata, null, 2));
           // we need the first (and probably only) cert from there
           if (( bodydata.keys )        &&
               ( bodydata.keys[0] )     &&

@@ -665,7 +665,7 @@ function IdcsAuthnSDK(app) {
     addInput(myForm, 'requestState', payload.requestState);
     addInput(myForm, 'idpName', payload.idpName);
     addInput(myForm, 'idpId', payload.idpId);
-    addInput(myForm, 'idpType', 'SOCIAL');
+    addInput(myForm, 'idpType', payload.idpType);
     addInput(myForm, 'clientId', payload.clientId);
     document.body.appendChild(myForm);
     myForm.submit();

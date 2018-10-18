@@ -47,7 +47,7 @@ function redirectBrowser( req, res, url, payload ) {
 
     // then add on everything from the payload
     for ( var field in payload ) {
-      res.write('sessionStorage.setItem("' + field + '",\'' + payload[field] + '\');\n');
+      res.write('sessionStorage.setItem("' + field + '",\'' + payload[field].replace(/'/g, "\\'") + '\');\n');
     }
     // finally send the user to the requested URL
     res.write('window.location = "' + url + '";\n');
@@ -82,7 +82,7 @@ router.get('/', function (req, res, next) {
 });
 
 // TODO: pull common stuff (i.e. sessionStorage.setItem() and the JS to window.location)
-//       up into a single utility function
+// up into a single utility function
 
 /* POST to "/" */
 router.post("/", function (req, res, next) {
@@ -91,7 +91,15 @@ router.post("/", function (req, res, next) {
 
   logger.log("POST body:\n" + JSON.stringify(req.body,null,2));
 
-  if ( req.body.loginCtx && req.body.signature ) {
+  // in 18.3.+ /social/callback sends us back here
+  // social user is in IDCS and no MFA
+  if (req.body.authnToken) {
+      redirectBrowser( req, res, "../../signin.html", {
+         "IDPAuthnToken": req.body.authnToken
+      });
+  }
+
+  else if ( req.body.loginCtx && req.body.signature ) {
     // only proceed if we have BOTH a loginCtx and a signature
 
     // then verify the signature
@@ -130,7 +138,7 @@ router.post("/", function (req, res, next) {
       // logger.log('login Context: ' + JSON.stringify(loginContext).replace(/'/g, "\\'"));
 
       redirectBrowser( req, res, "signin.html", {
-        "initialState": JSON.stringify(loginContext).replace(/'/g, "\\'")
+        "initialState": JSON.stringify(loginContext)
       });
     }
   }
@@ -142,11 +150,13 @@ router.post("/", function (req, res, next) {
 
 
 // TODO: can router.get and .post on /u1/v1/error be collapsed into a single function
-//       or is their functionality too different?
+// or is their functionality too different?
+// MAH: no GET and POST require separate endpoints...
 
-// /u1/v1/error gets triggered in a number of cases
+// in 18.2.4+, /u1/v1/error POST endpoint is triggered in a number of cases
+// 1. when the external IDP is successful and the a/c exists in IDCS
+// 2. when the external IDP is successful and the a/c does not exist in IDCS
 
-// POST when the external IDP is successful and the a/c exists in IDCS */
 router.post('/ui/v1/error', function (req, res, next) {
     // take loginCtx from the the GET data and decode it
     logger.log("POST received.")
@@ -157,7 +167,7 @@ router.post('/ui/v1/error', function (req, res, next) {
         "IDPAuthnToken": req.body.authnToken
       });
     }
-    // social user needs to be registered in IDCS
+    // social user needs to be registered in IDCS, using SAME id as social provider's
     else if (req.body.userData) {
       var decrypted = idcsCrypto.decryptSocial(req.body.userData, process.env.IDCS_CLIENT_SECRET);
       var userData = JSON.parse(decrypted);
@@ -169,20 +179,17 @@ router.post('/ui/v1/error', function (req, res, next) {
         "social.needToRegister": "true"
       });
     }
-    // social user successfully authenticated in IDCS; but needs to go through MFA...
     else {
       res.statusCode = 500;
       res.end("Something has gone terribly wrong!");
     }
 });
 
-/* MAH -- this gets triggered when the external IDP is successful and the a/c doesn't exist in IDCS
-*  still tentative...
-*  // TODO: still more work here....
-*  we end up here if either:
-*  social idp login fails and user cancels...
-*  or if social login succeeds and and user is already provisioned in IDCS BUT deactivated!
-*  */
+
+// we end up here if either:
+// 1. social idp login fails and user cancels...
+// 2. if social login succeeds and and user is already provisioned in IDCS BUT deactivated!
+
 router.get('/ui/v1/error', function (req, res, next) {
   var encrypted = req.query.errorCtx;
 
@@ -192,14 +199,16 @@ router.get('/ui/v1/error', function (req, res, next) {
 
   logger.log("errorCtx decrypted: " + decrypted);
   var errCtx = JSON.parse(decrypted);
-  logger.log("First error:" + errCtx.errors[0]);
+  logger.log("First error:" + JSON.stringify(errCtx.errors[0]));
 
   var errorType = 'login';
 
   if (errCtx.errors[0].code === 'SSO-1003' || errCtx.errors[0].code === 'SSO-1002') {
+    logger.log("errorType is not social");
     errorType = 'social';
   }
 
+  logger.log("Redirecting browser with error context info.")
   redirectBrowser( req, res, "../../signin.html", {
     "isIDPUserInIDCS": "false",
     "backendError": JSON.stringify({type:errorType, code:errCtx.errors[0].code, msg:errCtx.errors[0].message})

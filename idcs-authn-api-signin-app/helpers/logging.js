@@ -1,8 +1,6 @@
 
 
-// var debugEnabled = process.env.DEBUG_LOGIN;
-
-const isDebugEnabled = process.env.DEBUG_LOGIN;
+const isDebugEnabled =  process.env.DEBUG_LOGIN ? process.env.DEBUG_LOGIN.toLowerCase() === 'true': false;
 
 function debugEnabled() {
   return isDebugEnabled;
