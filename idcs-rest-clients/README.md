@@ -23,7 +23,7 @@ The [Using the Oracle Identity Cloud Service REST APIs with Postman](https://ape
 
 ## Set Up
 1. Open the Postman native app, and then click **Import.** The Import window appears.
-2. Click **Import from Link**, paste the URL to the Oracle Identity Cloud Service example environment: `https://github.com/oracle/idm-samples/raw/master/idcs-rest-clients/Oracle_Identity_Cloud_Service_Example_Environment_with_Variables.postman_environment.json`, and then click **Import**.
+2. Click **Import from Link**, paste the URL to the Oracle Identity Cloud Service example environment: `https://github.com/oracle/idm-samples/raw/master/idcs-rest-clients/example_environment.json`, and then click **Import**.
 3. Click **Import,** **Import from Link,** paste the URL to the global variables file: `https://github.com/oracle/idm-samples/raw/master/idcs-rest-clients/oracle_identity_cloud_service_postman_globals.json`, and then click **Import.**
 4. Click **Environment options** (gear icon), and then select **Manage Environments**.
 5. Click the **Duplicate Environment** icon next to the **example.identity.oraclecloud.com** environment, and then click the **example.identity.oraclecloud.com copy** that appears.
