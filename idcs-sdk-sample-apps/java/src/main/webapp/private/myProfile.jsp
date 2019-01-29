@@ -10,16 +10,16 @@
   java.util.Map<String, Object> options = new sampleapp.util.ConnectionOptions().getOptions();
   //Configuration object instance with the parameters loaded.
   oracle.security.jps.idcsbinding.shared.IDCSTokenAssertionConfiguration configuration = new oracle.security.jps.idcsbinding.shared.IDCSTokenAssertionConfiguration(options);
- 
-  String access_token = session.getAttribute("access_token").toString();
-  //User Manager loaded with the configurations
-  oracle.security.jps.idcsbinding.shared.IDCSUserManager um = new oracle.security.jps.idcsbinding.shared.IDCSUserManagerImpl(configuration);
-  //Using the access_token value to get an object instance representing the User Profile.
-  oracle.security.jps.idcsbinding.api.IDCSUser user = um.getAuthenticatedUser(access_token);
-  //Getting the user details in json object format.
-  net.minidev.json.JSONObject json = user.getUser();
-  //User information can now be accessed and printed in the page.
-  String jsonString = json.toString();
+  oracle.security.jps.idcsbinding.shared.AuthenticationManager am = oracle.security.jps.idcsbinding.shared.AuthenticationManagerFactory.getInstance(configuration);
+  
+  //Getting the Access Token and the Id Token from the session object
+  String access_token_string = (String)session.getAttribute("access_token");
+  String id_token_string = (String)session.getAttribute("id_token");
+
+  //Validating the ID Token to get user information, groups and app roles associated with the user.
+  oracle.security.jps.idcsbinding.api.AccessToken access_token_validated = am.validateAccessToken(access_token_string);
+  oracle.security.jps.idcsbinding.api.IdToken id_token_validated = am.validateIdToken(id_token_string);
+
 %>
 <html>
   <head>
@@ -71,17 +71,37 @@
                   <td><font class="notSelectedTextLarge">My Profile</font></td>
                 </tr>
                 <tr>
-                  <td><a href="/private/appDetails.jsp"><font class="darkTextLarge">App Details</font></a> </td>
-                </tr>
-                <tr>
                   <td>&nbsp;</td>
                 </tr>
               </tbody>
             </table>
           </td>
           <td style="padding: 15px;vertical-align:top;word-wrap:break-word;"><font class="darkTextSmall">
-              <p>Your Profile:</p><p><%=jsonString%></p>
-              <p><%=jsonString%></p>
+              <p><b>Information from the Identity Token:</b></p><p><%
+              out.println("DisplayName = "+ id_token_validated.getDisplayName() +"<br>");
+              out.println("IdentityDomain = "+ id_token_validated.getIdentityDomain() +"<br>");
+              out.println("UserName = "+ id_token_validated.getUserName()+"<br>");
+              out.println("UserId = "+ id_token_validated.getUserId()+"<br>");
+              out.println("Issuer = "+ id_token_validated.getIssuer()+"<br>");
+
+              java.util.List<oracle.security.jps.idcsbinding.api.IDCSAppRole> appRoles = id_token_validated.getAppRoles();
+              if(!appRoles.isEmpty()){
+                out.println("App Roles:<br>");
+                for(oracle.security.jps.idcsbinding.api.IDCSAppRole appRole: appRoles){
+                    out.println("&nbsp;appRole = "+ appRole.getName() +"<br>");
+                }//for
+              }//if
+
+              java.util.List<oracle.security.jps.idcsbinding.api.IDCSGroup> groups = id_token_validated.getGroupMembership();
+              if(!groups.isEmpty()){
+                out.println("Groups:<br>");
+                for(oracle.security.jps.idcsbinding.api.IDCSGroup group: groups){
+                    out.println("&nbsp;group = "+ group.getName() +"<br>");
+                }//for
+              }//if
+              %>
+              </p>
+              <p><b>Access Token:</b></p><p><%=access_token_string%></p>
             </font> </td>
           <td style="width: 300px;">&nbsp; <span style="font-family: &quot;Source Sans Pro&quot;,sans-serif;"><br>
             </span></td>
@@ -89,7 +109,7 @@
         <tr class="footer">
           <td colspan="3" style="text-align: center;" nowrap="nowrap"><a
 
-              class="lightTextSmall" href="http://www.oracle.com/pls/topic/lookup?ctx=cpyr&amp;id=en">Copyright © 2018, Oracle and/or its affiliates. All rights reserved.</a></td>
+              class="lightTextSmall" href="http://www.oracle.com/pls/topic/lookup?ctx=cpyr&amp;id=en">Copyright &copy; 2019, Oracle and/or its affiliates. All rights reserved.</a></td>
         </tr>
       </tbody>
     </table>

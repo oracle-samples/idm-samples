@@ -39,7 +39,7 @@ Access the Oracle Identity Cloud Service console, and add a trusted application 
     Redirect URL: http://localhost:8080/callback
     Post Logout Redirect URL: http://localhost:8080
 
-- In the Client pane, scroll down, select Grant the client access to Identity Cloud Service Admin APIs., enter **Me** and **Identity Domain Administrator**.
+- In the Client pane, scroll down, select Grant the client access to Identity Cloud Service Admin APIs., enter **Me** and **Authenticator Client**.
 - Finish, make a note of the **Client ID** and **Client Secret** values, and activate the application.
 
 Edit the **pom.xml** file, update the JAR file name in the following statement, and then save the file.
@@ -64,7 +64,7 @@ public Map<String,Object> getOptions(){
         this.options.put(IDCSTokenAssertionConfiguration.IDCS_CLIENT_SECRET, "abcde-12345-zyxvu-98765-qwerty");
         this.options.put(IDCSTokenAssertionConfiguration.IDCS_CLIENT_TENANT, "idcs-abcd1234");
         this.options.put(Constants.AUDIENCE_SERVICE_URL, "https://idcs-abcd1234.identity.oraclecloud.com");
-        this.options.put(Constants.TOKEN_ISSUER, "https://identity.oraclecloud.com");
+        this.options.put(Constants.TOKEN_ISSUER, "https://identity.oraclecloud.com/");
         this.options.put(Constants.TOKEN_CLAIM_SCOPE, "urn:opc:idm:t.user.me openid");
         this.options.put("SSLEnabled", "true");
         this.options.put("redirectURL", "http://localhost:8080/callback");

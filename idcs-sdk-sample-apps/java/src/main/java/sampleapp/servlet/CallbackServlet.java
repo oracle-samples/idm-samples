@@ -14,10 +14,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import oracle.security.jps.idcsbinding.api.AccessToken;
+import oracle.security.jps.idcsbinding.api.IdToken;
 import oracle.security.jps.idcsbinding.api.AuthenticationResult;
 import oracle.security.jps.idcsbinding.api.IDCSAppRole;
 import oracle.security.jps.idcsbinding.api.IDCSGroup;
 import oracle.security.jps.idcsbinding.api.IDCSUser;
+import oracle.security.jps.idcsbinding.api.OAuthToken;
 import oracle.security.jps.idcsbinding.shared.*;
 
 /**
@@ -47,25 +50,28 @@ public class CallbackServlet extends HttpServlet {
         //callback URL, implemented as a Servlet.
         IDCSTokenAssertionConfiguration config = new IDCSTokenAssertionConfiguration(options);
         //Authentication Manager loaded with the configurations.
-        AuthenticationManager am = new AuthenticationManagerImpl(config);
+        AuthenticationManager am = AuthenticationManagerFactory.getInstance(config);
         //Getting the authorization code from the "code" parameter
         String authzCode = request.getParameter("code");
+        
         //Using the Authentication Manager to exchange the Authorization Code to an Access Token.
         AuthenticationResult ar = am.authorizationCode(authzCode);
-        //Getting the Access Token Value.
-        String access_token = ar.getAccessToken();
-        //The application then creates a User Session.
-        IDCSUserManager um = new IDCSUserManagerImpl(config);
-        IDCSUser user = um.getAuthenticatedUser(access_token);
-        net.minidev.json.JSONObject json = user.getUser();
+        //Getting the Access Token object and its String value.
+        AccessToken access_token = ar.getToken(OAuthToken.TokenType.ACCESS_TOKEN);
+        String access_token_string = access_token.getToken();
+        //Getting the ID Token object and its String value.
+        IdToken id_token = ar.getToken(OAuthToken.TokenType.ID_TOKEN);
+        String id_token_string = id_token.getToken();
+        //Validating both Tokens to acquire information for User such as UserID, 
+        //DisplayName, list of groups and AppRoles assigned to the user.
+        IdToken id_token_validated = am.validateIdToken(id_token_string);
         //Storing information into the HTTP Session.
         HttpSession session=request.getSession();
-        session.setAttribute("access_token", access_token);
-        session.setAttribute("userId", user.getId());
-		//Getting information from within the JSON object.
-        String displayName = json.getAsString("displayName");
-        session.setAttribute("displayName", displayName);
-		//Forwarding the request to the Home page.
+        session.setAttribute("access_token", access_token_string);
+        session.setAttribute("id_token", id_token_string);
+        session.setAttribute("userId", id_token_validated.getUserId());
+        session.setAttribute("displayName", id_token_validated.getDisplayName());
+	//Forwarding the request to the Home page.
         request.getRequestDispatcher("private/home.jsp").forward(request, response);
      }
 

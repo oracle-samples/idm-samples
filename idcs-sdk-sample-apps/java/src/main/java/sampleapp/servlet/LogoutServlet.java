@@ -27,7 +27,8 @@ public class LogoutServlet extends HttpServlet {
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
-     *
+     * Log the user out from Oracle Identity Cloud Service and redirect back to this
+     * application home page.
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
@@ -36,10 +37,10 @@ public class LogoutServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session=request.getSession();
-        String access_token = (String)session.getAttribute("access_token");
+        String id_token = (String)session.getAttribute("id_token");
         session.invalidate();
         Map options = new ConnectionOptions().getOptions();
-        String logoutURL = (String)options.get(Constants.AUDIENCE_SERVICE_URL) + (String)options.get("logoutSufix") +"?post_logout_redirect_uri=http%3A//localhost%3A8080&id_token_hint="+ access_token;
+        String logoutURL = (String)options.get(Constants.AUDIENCE_SERVICE_URL) + (String)options.get("logoutSufix") +"?post_logout_redirect_uri=http%3A//localhost%3A8080&id_token_hint="+ id_token;
         response.sendRedirect(logoutURL);
     }
 
