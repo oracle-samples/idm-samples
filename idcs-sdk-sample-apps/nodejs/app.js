@@ -127,13 +127,21 @@ app.get('/fail', function(req, res){
 //and then redirects the browser to Oracle Identity Cloud Service's log out URL sending parameters to redirect the user browser
 //back to the sample application after logging  out from Oracle Identity Cloud Service.
 app.get('/logout', function(req, res){
-  var access_token = req.cookies.idcs_user_assertion;
-  var logouturl = auth.oracle.AudienceServiceUrl + auth.oracle.logoutSufix + '?post_logout_redirect_uri=http%3A//localhost%3A3000&id_token_hint='+ access_token;
-  console.log('logouturl: '+ logouturl);
-  req.logout();
-  res.clearCookie();
-  res.redirect(logouturl);
-  });
+  console.log('\n---Resource: /logout -- Logging out ----------------------------------');
+  var id_token = req.session.id_token;
+  var logouturl = auth.oracle.AudienceServiceUrl + auth.oracle.logoutSufix + '?post_logout_redirect_uri=http%3A//localhost%3A3000&id_token_hint='+ id_token;
+  console.log('\nlogouturl: '+ logouturl);
+  req.session.destroy(function(err) {
+    if(err) {
+      console.log(err);
+    } else {
+      console.log('logging out...');
+      req.logout();
+      res.clearCookie();
+      res.redirect(logouturl);
+    }
+  })
+});
 
 //Route for /oauth/oracle
 //The handler of the /auth/oracle route uses the IdcsAuthenticationManager.getAuthorizationCodeUrl() SDK's function to generate the authorization URL.
@@ -169,6 +177,8 @@ app.get("/callback", function(req,res){
   am.authorizationCode(authZcode)
     .then(function(result){
        //Getting the Access Token Value.
+       req.session.access_token = result.access_token;
+       req.session.id_token = result.id_token;
        res.cookie(config.IDCS_COOKIE_NAME, result.access_token);
        console.log('result.access_token='+ result.access_token);
        res.redirect('/auth.html');
