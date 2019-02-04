@@ -44,6 +44,7 @@ def callback(request):
     displayname = u.getDisplayName()
     #The application then adds these information to the User Session.
     request.session['access_token'] = access_token
+    request.session['id_token'] = id_token
     request.session['displayname'] = displayname
     #Rendering the home page and adding displayname to be printed in the page.
     return render(request, 'sampleapp/home.html', {'displayname': displayname})
@@ -97,9 +98,10 @@ def logout(request):
         url = options["BaseUrl"]
         url += options["logoutSufix"]
         url += '?post_logout_redirect_uri=http%3A//localhost%3A8000&id_token_hint='
-        url += access_token
+        url += request.session.get('id_token', 'none')
         #Clear session attributes
         del request.session['access_token']
+        del request.session['id_token']
         del request.session['displayname']
         #Redirect to Oracle Identity Cloud Service logout URL.
         return HttpResponseRedirect(url)
