@@ -1,3 +1,4 @@
+
 # Oracle Identity Cloud Service' SDK Node.js Sample Application
 
 Oracle Identity Cloud Service provides a Software Development Kit (SDK) that you can use to integrate Node.js web applications with Oracle Identity Cloud Service.
@@ -14,7 +15,7 @@ This Sample Code is used in the following tutorial: [Use Oracle Identity Cloud S
 
 The sample web application needs an application's Client ID and Secret to establish communication with Oracle Identity Cloud Service.  Follow the referenced tutorial to register an application.
 
-Access the Oracle Identity Cloud Service console, and add a trusted application with the following information:
+Access the Oracle Identity Cloud Service console, and add a Confidential Application with the following information:
 - Populate the Details pane as follows, and then click Next.
     Name: SDK Web Application
     Description: SDK Web Application
@@ -25,7 +26,7 @@ Access the Oracle Identity Cloud Service console, and add a trusted application 
     Redirect URL: http://localhost:3000/callback
     Post Logout Redirect URL: http://localhost:3000
 
-- In the Client pane, scroll down, select Grant the client access to Identity Cloud Service Admin APIs., enter **Me** and **Identity Domain Administrator**.  
+- In the Client pane, scroll down, select Grant the client access to Identity Cloud Service Admin APIs., enter **Me** and **Authenticator Client**.  
 - Finish, make a note of the **Client ID** and **Client Secret** values, and activate the application.
 
 Access the Oracle Identity Cloud Service console, ddownload the SDK for Node.js, open the downloaded zip file, and extract the **passport-idcs** folder into the web application source code's node_modules folder.
@@ -66,12 +67,11 @@ Four important parameters are used to generate the authorization code URL:
 - **state**: The state value is meant to be a code that the sample web application might use to check if the communication was made correctly to Oracle Identity Cloud Service. The state parameter is defined by the OAuth protocol.
 - **response_type**: The value **code** is required by the authorization code grant type.
 
+The sample application handles the **/callback** route, and uses the authorization code, sent as a query parameter, to request an access token and id token. Both tokens are stored in the application's user session,  the access token is stored as a cookie, and then sent to the browser for future use.
 
-The sample application handles the **/callback** route, and uses the authorization code, sent as a query parameter, to request an access token. The access token is stored as a cookie, and then sent to the browser for future use.
+The **IdcsAuthenticationManager.authorizationCode()** SDK's function also uses promise (then/catch statement) to set the access token as cookie, and to redirect the browser to the **/auth.html** page.
 
-The **IdcsAuthenticationManager.authorizationCode()** SDK's function also uses promise (then/catch statement) to set the access token as a cookie, and to redirect the browser to the **/auth.html** page.
-
-The **/home**, **/appDetails**, and **/userInfo** URLs are protected resources. The sample web application uses the ensureAuthenticated function to handle these protected resources. 
+The **/home** and **/myProfile** URLs are protected resources. The sample web application uses the ensureAuthenticated function to handle these protected resources.
 
 The **/myProfile** route's handler calls the **IdcsUserManager.getUser()** SDK's function to get the JSON object, which represents the user profile, and sends it to the **myProfile.handlebars** file to be rendered in the browser.
 
@@ -79,12 +79,12 @@ The **/logout** route's handler clears all the cookie previously set up, calls *
 
 ## Run the Sample Web Application
 
-- Open a command prompt, navigate to the **nodejs folder**, and enter `npm install` to install all of the necessary modules, which are specified in the **package.json** file. 
+- Open a command prompt, navigate to the **nodejs folder**, and enter `npm install` to install all of the necessary modules, which are specified in the **package.json** file.
 
 - Extract the **passport-idcs** folder of the SDK zip file into the sample web application source code's **node_modules** folder.
 
-- In the command prompt, run the `node app.js` command to start the application
- 
+- In the command prompt, run the `npm start` command to start the application
+
 - Open a browser window, access the http://localhost:3000 URL, click **Log in**, and then click the Oracle red icon.
 
 - The Oracle Identity Cloud Service Sign In page appears.
@@ -95,7 +95,7 @@ Copyright (c) 2018, Oracle and/or its affiliates. All rights reserved.
 
 You may not use the identified files except in compliance with the Universal Permissive License (UPL), Version 1.0 (the "License.")
 
-You may obtain a copy of the License at https://opensource.org/licenses/UPL. 
+You may obtain a copy of the License at https://opensource.org/licenses/UPL.
 
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 

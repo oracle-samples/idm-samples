@@ -22,7 +22,7 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 var auth = require('./auth.js');
 var config = require('./config.js');
 
-console.log('Using ClientId='+ auth.oracle.ClientId);
+console.log('\nUsing ClientId='+ auth.oracle.ClientId);
 
 //Init app for express framework.
 var app = express();
@@ -110,16 +110,13 @@ app.use(passport.session());
 //Public acess
 app.get('/', function(req, res){
 	res.render('index', {title: 'Index'});
-  });
+});
 app.get('/login', function(req, res){
 	res.render('login', {title: 'Login'});
-  });
+});
 app.get('/about', function(req, res){
 	res.render('about', {title: 'About'});
-  });
-app.get('/fail', function(req, res){
-	res.render('fail', {title: 'Fail'});
-  });
+});
 
 //Route for /logout.
 //The Node.js express framework defines a mechanism to log the user out of the web application.
@@ -146,6 +143,7 @@ app.get('/logout', function(req, res){
 //Route for /oauth/oracle
 //The handler of the /auth/oracle route uses the IdcsAuthenticationManager.getAuthorizationCodeUrl() SDK's function to generate the authorization URL.
 app.get("/auth/oracle", function(req, res){
+  console.log('\n---Resource: /auth/oracle -- Logging in ----------------------------------');
   //Authentication Manager loaded with the configurations.
   am = new IdcsAuthenticationManager(auth.oracle);
   //Using Authentication Manager to generate the Authorization Code URL, passing the
@@ -154,92 +152,81 @@ app.get("/auth/oracle", function(req, res){
   //generation of the authorization code URL, or to render an error instead
   am.getAuthorizationCodeUrl(auth.oracle.redirectURL, auth.oracle.scope, "1234", "code")
     .then(function(authZurl){
-      console.log('authZurl='+ authZurl);
+      console.log('\nauthZurl='+ authZurl);
        //Redirecting the browser to the Oracle Identity Cloud Service Authorization URL.
         res.redirect(authZurl);
     }).catch(function(err){
       res.end(err);
     })
-  });
+});
 
 //Route for /callback
 //The sample application handles the /callback route, and uses the authorization code, sent as a query parameter,
 //to request an access token. The access token is stored as a cookie, and then sent to the browser for future use.
 app.get("/callback", function(req,res){
+  console.log('\n---Resource: /callback -- Exchanging authzcode for a token ---------------------');
   //Authentication Manager loaded with the configurations.
   var am = new IdcsAuthenticationManager(auth.oracle);
   //Getting the authorization code from the "code" parameter
   var authZcode = req.query.code;
-  console.log('authZcode='+ authZcode);
+  console.log('\nauthZcode='+ authZcode);
   //Using the Authentication Manager to exchange the Authorization Code to an Access Token.
-  //The IdcsAuthenticationManager.authorizationCode() SDK's function also uses promise (then/catch statement) to set
+  //The IdcsAuthenticationManager.authorizationCode() SDK's function uses promise (then/catch statement) to set
   //the access token as a cookie, and to redirect the browser to the /auth.html page.
   am.authorizationCode(authZcode)
     .then(function(result){
        //Getting the Access Token Value.
+       console.log('result.access_token = '+ result.access_token);
+       console.log('result.id_token = '+ result.id_token);
        req.session.access_token = result.access_token;
        req.session.id_token = result.id_token;
        res.cookie(config.IDCS_COOKIE_NAME, result.access_token);
-       console.log('result.access_token='+ result.access_token);
+       res.header('idcs_user_assertion', result.access_token)
        res.redirect('/auth.html');
     }).catch(function(err){
       res.end(err);
     })
-  });
+});
+
 
 //Uses passport to create a User Session in Node.js.
 //Passport sets a user attribute in the request as a json object.
 //The /auth route's handler calls the passport.authenticate() function, with Oracle Identity Cloud Service's strategy
 //name as a parameter to set up the user session, and then redirects the browser to the /home URL.
 app.get('/auth', passport.authenticate(config.IDCS_STRATEGY_NAME, {}), function(req, res) {
-    res.redirect('/home');
+  console.log('\n---Resource: /auth -- passport.authenticate ---------------------');
+  res.redirect('/home');
 });
 
-//The /home, /appDetails, and /userInfo URLs are protected resources.
+//The /home URL is a protected resource.
 //The sample web application uses the ensureAuthenticated function to handle these protected resources.
 //Protected route. Uses ensureAuthenticated function.
 app.get('/home', ensureAuthenticated, function(req, res) {
+  console.log('\n---Resource: /home -- Rendering home ---------------------');
   res.render('home', {
     layout: 'privateLayout',
     title: 'Home',
     user: req.user,
   });
 });
-//Protected route. Uses ensureAuthenticated function.
-app.get('/appDetails', ensureAuthenticated, function(req, res) {
-  res.render('appDetails', {
-    layout: 'privateLayout',
-    title: 'App Details',
-    user: req.user
-  });
-});
-//Protected route. Uses ensureAuthenticated function.
-app.get('/userInfo', ensureAuthenticated, function(req, res) {
-  res.render('userInfo', {
-    layout: 'privateLayout',
-    title: 'User Info',
-    user: req.user,
-    userInfo: JSON.stringify(req.user, null, 2)
-  });
-});
 //Protected route. Uses ensureAuthenticated function. Diplays user information in the screen.
 //The /myProfile route's handler calls the IdcsUserManager.getUser() SDK's function to get the JSON object,
 //hich represents the user profile, and sends it to the myProfile.handlebars file to be rendered in the browser.
 app.get("/myProfile", ensureAuthenticated, function(req,res){
-  //User Manager loaded with the configurations
-  var um = new IdcsUserManager(auth.oracle);
-  //Using the user id in the request attribute to render the user json in the screen.
-  um.getUser(req.user.id)
-    .then(function(user){
+  console.log('\n---Resource: /myProfile -- Listing user information ---------------------');
+  var am = new IdcsAuthenticationManager(auth.oracle);
+  //Validating id token to acquire information such as UserID, DisplayName, list of groups and AppRoles assigned to the user.
+  am.validateIdToken(req.session['id_token'])
+    .then(function(idToken){
       res.render('myProfile', {
-        layout: 'privateLayout',
-        title: 'My Profile',
-        user: req.user,
-        userInfo: JSON.stringify(user, null, 2)
-      });
+         layout: 'privateLayout',
+         title: 'My Profile',
+         user: req.user,
+         userInfo: JSON.stringify(idToken, null, 2)
+         });
     }).catch(function(err1){
-      res.end(err1);
-    })
+       res.end(err1);
+   })
 });
 
 // Set Port
@@ -250,7 +237,8 @@ app.listen(app.get('port'), function(){
 
 //Function to help verify if the user is authenticated in Passwport.
 function ensureAuthenticated(req, res, next) {
-  console.log('\nensureAuthenticated req.user='+ JSON.stringify(req.user));
+  console.log('\n---function ensureAuthenticated() -- Validating user logged in ---------------------');
+  console.log('req.user='+ JSON.stringify(req.user));
   if (req.isAuthenticated()) {
     return next();
   }

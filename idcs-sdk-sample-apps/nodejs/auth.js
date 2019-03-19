@@ -8,7 +8,9 @@ var ids = {
     "TokenIssuer": "https://identity.oraclecloud.com/",
     "scope": "urn:opc:idm:t.user.me openid",
     "logoutSufix": "/oauth2/v1/userlogout",
-    "redirectURL": "http://localhost:3000/callback"
+    "redirectURL": "http://localhost:3000/callback",
+    "LogLevel":"warn",
+    "ConsoleLog":"True"
   }
 };
 
