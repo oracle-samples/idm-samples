@@ -4,7 +4,9 @@
   "BaseUrl" : "https://idcs-abcd1234.identity.oraclecloud.com",
   "AudienceServiceUrl" : "https://idcs-abcd1234.identity.oraclecloud.com",
   "scope" : "urn:opc:idm:t.user.me openid",
-  "TokenIssuer" : "https://identity.oraclecloud.com",
+  "TokenIssuer" : "https://identity.oraclecloud.com/",
   "redirectURL": "http://localhost:8000/callback",
-  "logoutSufix":"/oauth2/v1/userlogout"
+  "logoutSufix":"/oauth2/v1/userlogout",
+  "LogLevel":"INFO",
+  "ConsoleLog":"True"
 }  
