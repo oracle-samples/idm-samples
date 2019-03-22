@@ -1,0 +1,75 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta content="text/html; charset=UTF-8" http-equiv="content-type">
+    <title>@ViewBag.Title - Sample App</title>
+    @Styles.Render("~/Content/css")
+</head>
+<body>
+    <table style="width: 100%;border-spacing:0px;">
+        <tbody>
+            <tr class="header">
+                <td style="width: 300px;" nowrap="nowrap">
+                    <table style="width: 100%;padding:5px;border:0px solid white;">
+                        <tbody>
+                            <tr>
+                                <td>&nbsp;</td>
+                            </tr>
+                            <tr>
+                                <td nowrap="nowrap">&nbsp;<font class="lightTextLarge">.NET Sample Application</font>&nbsp;</td>
+                            </tr>
+                            <tr>
+                                <td>&nbsp;</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+                <td>&nbsp;</td>
+                <td style="width: 300px;">
+                    <table style="width: 100%;padding:5px;border:0px solid white;text-align:center">
+                        <tbody>
+                            <tr>
+                                @if (ViewBag.Title == "Index")
+                                {
+                                    <td><a href="/Home/Login"><font class="lightTextLarge">Log in</font></a></td>
+                                    <td><font class="lightTextLarge">|</font></td>
+                                    <td><a href="/Home/About"><font class="lightTextLarge">About</font></a></td>
+
+                                }
+                                else if (ViewBag.Title == "Login")
+                                {
+                                    <td><a href="/Home/Index"><font class="lightTextLarge">Index</font></a></td>
+                                    <td><font class="lightTextLarge">|</font></td>
+                                    <td><a href="/Home/About"><font class="lightTextLarge">About</font></a></td>
+                                }
+                                else if (ViewBag.Title == "About")
+                                {
+                                    <td><a href="/Home/Login"><font class="lightTextLarge">Log in</font></a></td>
+                                    <td><font class="lightTextLarge">|</font></td>
+                                    <td><a href="/Home/Index"><font class="lightTextLarge">Index</font></a></td>
+                                }
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+            <tr class="center">
+                <td style="width: 300px;">&nbsp; </td>
+                <td style="padding: 15px;vertical-align:top;">
+                    @RenderBody()
+                </td>
+                <td style="width: 300px;">
+                    &nbsp; <span style="font-family: Source Sans Pro,sans-serif;">
+                        <br>
+                    </span>
+                </td>
+            </tr>
+            <tr class="footer">
+                <td colspan="3" style="text-align: center;" nowrap="nowrap">
+                    <a class="lightTextSmall" href="http://www.oracle.com/pls/topic/lookup?ctx=cpyr&amp;id=en">Copyright © 2019, Oracle and/or its affiliates. All rights reserved.</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

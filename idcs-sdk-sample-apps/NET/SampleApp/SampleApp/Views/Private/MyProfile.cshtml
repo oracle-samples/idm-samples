@@ -1,0 +1,13 @@
+﻿@{
+    Layout = "~/Views/Shared/PrivateLayout.cshtml";
+}
+<font class="darkTextSmall">
+    <p>Your Oracle Identity Cloud Service profile information:</p>
+    <pre>
+    DisplayName: @Model.DisplayName
+    IdDomain: @Model.IdDomain
+    UserID: @Model.UserID
+    Issuer: @Model.Issuer
+    ID Token: @Model.Token
+    </pre>
+</font>
