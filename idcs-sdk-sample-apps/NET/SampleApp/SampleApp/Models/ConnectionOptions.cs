@@ -13,10 +13,10 @@ namespace SampleApp.Models
         {
             this.options = new System.Collections.Generic.Dictionary<String, String>
             {
-                { "ClientId", "123456789abcdefghij" },
-                { "ClientSecret", "abcde-12345-zyxvu-98765-qwerty" },
-                { "BaseUrl", "https://idcs-abcd1234.identity.oraclecloud.com" },
-                { "AudienceServiceUrl", "https://idcs-abcd1234.identity.oraclecloud.com" },
+                { "ClientId", "585e8d4843714cc38e806880459b93e2" },
+                { "ClientSecret", "d9950134-8d7e-40fd-9040-a20338719b1c" },
+                { "BaseUrl", "https://idcs-35e8456d2e6544e7846d14ffa9866e83.identity.oraclecloud.com" },
+                { "AudienceServiceUrl", "https://idcs-35e8456d2e6544e7846d14ffa9866e83.identity.oraclecloud.com" },
                 { "TokenIssuer", "https://identity.oraclecloud.com/" },
                 { "scope", "urn:opc:idm:t.user.me openid" },
                 { "redirectURL", "http://localhost:3001/Home/Callback" },
