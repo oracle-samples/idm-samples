@@ -31,10 +31,10 @@ public class ConnectionOptions {
         //Adding Oracle Identity Cloud Service connection parameters to the HashMap instance.
         this.options.put(IDCSTokenAssertionConfiguration.IDCS_HOST, "identity.oraclecloud.com");
         this.options.put(IDCSTokenAssertionConfiguration.IDCS_PORT, "443");
-        this.options.put(IDCSTokenAssertionConfiguration.IDCS_CLIENT_ID, "48648924cc9244368ccaa9b70596927a");
-        this.options.put(IDCSTokenAssertionConfiguration.IDCS_CLIENT_SECRET, "2cf07a19-7568-4491-a91f-a4dc97f97d97");
-        this.options.put(IDCSTokenAssertionConfiguration.IDCS_CLIENT_TENANT, "idcs-35e8456d2e6544e7846d14ffa9866e83");
-        this.options.put(Constants.AUDIENCE_SERVICE_URL, "https://idcs-35e8456d2e6544e7846d14ffa9866e83.identity.oraclecloud.com");
+        this.options.put(IDCSTokenAssertionConfiguration.IDCS_CLIENT_ID, "123456789abcdefghij");
+        this.options.put(IDCSTokenAssertionConfiguration.IDCS_CLIENT_SECRET, "abcde-12345-zyxvu-98765-qwerty");
+        this.options.put(IDCSTokenAssertionConfiguration.IDCS_CLIENT_TENANT, "idcs-abcd1234");
+        this.options.put(Constants.AUDIENCE_SERVICE_URL, "https://idcs-abcd1234.identity.oraclecloud.com");
         this.options.put(Constants.TOKEN_ISSUER, "https://identity.oraclecloud.com/");
         this.options.put(Constants.TOKEN_CLAIM_SCOPE, "urn:opc:idm:t.user.me openid");
         this.options.put("SSLEnabled", "true");
