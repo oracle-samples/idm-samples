@@ -6,7 +6,7 @@
 3. Use the ID value and the access token from step 1 to execute a PATCH request to the following endpoint: https://yourtenant.identity.oraclecloud.com/admin/v1/Apps/ID"
    Replace the ID value at the end of the URL, set header Content-type as application/json, and body message as follows:
 
-   '''
+```script
    {
   "schemas": [
     "urn:ietf:params:scim:api:messages:2.0:PatchOp"
@@ -34,4 +34,4 @@
     }
   ]
 }
-'''
+```
