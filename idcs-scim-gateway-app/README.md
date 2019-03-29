@@ -58,6 +58,8 @@ var app = express();
 var bodyParser = require('body-parser');
 app.use(bodyParser.json());
 var config = require('./config.js');
+
+require('./routes/users.js')(app);
 ```
 The **routes/users.js** file defines the SCIM REST API endpoints, and maps each endpoint to the corresponding JavaScript function:
 ```javascript
