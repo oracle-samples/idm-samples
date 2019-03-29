@@ -1,0 +1,50 @@
+{
+  "resources": [
+    {
+      "schemas": [
+        "urn:ietf:params:scim:schemas:core:2.0:User"
+      ],
+      "id": "1",
+      "externalId": "1",
+      "userName": "user1@example.com",
+      "name": {
+        "formatted": "User 1 Name",
+        "familyName": "Name",
+        "givenName": "User 1"
+      },
+      "displayName": "User 1 DisplayName",
+      "active": true,
+      "password": "User1Password",
+      "emails": [
+        {
+          "value": "user1@example.com",
+          "type": "work",
+          "primary": true
+        }
+      ]
+    },
+    {
+      "schemas": [
+        "urn:ietf:params:scim:schemas:core:2.0:User"
+      ],
+      "userName": "user2@example.com",
+      "name": {
+        "formatted": "User 2 Name",
+        "familyName": "Name",
+        "givenName": "User 2"
+      },
+      "displayName": "User 2 DisplayName",
+      "active": true,
+      "password": "User2Password",
+      "emails": [
+        {
+          "value": "user2@example.com",
+          "type": "work",
+          "primary": true
+        }
+      ],
+      "id": "2",
+      "externalId": "2"
+    }
+  ]
+}

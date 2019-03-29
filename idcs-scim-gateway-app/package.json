@@ -1,0 +1,21 @@
+{
+  "name": "sample-scim-gateway-app",
+  "version": "1.0.0",
+  "description": "Sample SCIM Gateway Application",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "1.18.3",
+    "basic-auth": "2.0.1",
+    "express": "4.16.4",
+    "graceful-fs": "4.1.15"
+  },
+  "devDependencies": {
+  }
+}

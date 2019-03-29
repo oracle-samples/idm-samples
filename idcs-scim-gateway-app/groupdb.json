@@ -1,0 +1,28 @@
+{
+  "resources": [
+    {
+      "schemas": [
+        "urn:ietf:params:scim:schemas:core:2.0:Group"
+      ],
+      "id": "1",
+      "externalId": "1",
+      "displayName": "Group 1"
+    },
+    {
+      "schemas": [
+        "urn:ietf:params:scim:schemas:core:2.0:Group"
+      ],
+      "id": "2",
+      "externalId": "2",
+      "displayName": "Group 2"
+    },
+    {
+      "schemas": [
+        "urn:ietf:params:scim:schemas:core:2.0:Group"
+      ],
+      "id": "3",
+      "externalId": "3",
+      "displayName": "Group 3"
+    }
+  ]
+}
