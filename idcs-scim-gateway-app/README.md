@@ -146,7 +146,6 @@ Make sure the hostname of this sample application is reachable through the Inter
 | HTTP Operation Types   | \_\_ACCOUNT\_\_.Update=PUT                                                                                                   |
 
 **Note**: You need to use Oracle Identity Cloud Service's API to change the Port, SSL Enabled, Content-Type and Response-Type parameter to be able to use this Sample Application integrated with Oracle Identity Cloud Service.
-See [Update the Custom SCIM Gateway Application Using REST API](http://st-doc.us.oracle.com/id_common/review/docbuilder/html/E55882_37/GUID-FFBCF8FC-D131-4863-B8EB-1EF7A496A731.htm#GUID-EE2B8F40-0171-47FA-AAAF-9BED2BA13723) and [Make Your First REST API Call](https://apexapps.oracle.com/pls/apex/f?p=44785:112:0::::P112_CONTENT_ID:13480).
 
 **Note**: Use the parameter table below to update the fields with the corresponding values using REST API:
 
@@ -164,7 +163,7 @@ After you update these parameters you can test connectivity between the applicat
 **Note**: Make sure you run the SCIM gateway sample application before testing the connectivity.
 3. In the **Provisioning** pane, click **Finish**, and then click **Activate** to activate the application.  
 
-For more information about the fields of the **Configure Connectivity** section, see [Enable and Configure Connectivity for Provisioning for Your Application](http://st-doc.us.oracle.com/id_common/review/docbuilder/html/E55882_37/GUID-FFBCF8FC-D131-4863-B8EB-1EF7A496A731.htm#GUID-6306934D-EDB2-4EDF-8D25-DD5356E6A03A)
+
 
 ### Test Your SCIM Gateway Sample Application
 
