@@ -149,6 +149,7 @@ Make sure the hostname of this sample application is reachable through the Inter
 See [Update the Custom SCIM Gateway Application Using REST API](http://st-doc.us.oracle.com/id_common/review/docbuilder/html/E55882_37/GUID-FFBCF8FC-D131-4863-B8EB-1EF7A496A731.htm#GUID-EE2B8F40-0171-47FA-AAAF-9BED2BA13723) and [Make Your First REST API Call](https://apexapps.oracle.com/pls/apex/f?p=44785:112:0::::P112_CONTENT_ID:13480).
 
 **Note**: Use the parameter table below to update the fields with the corresponding values using REST API:
+
 |  Parameter    | Value             |
 |---------------|-------------------|
 | Port          | 6355              |
