@@ -131,6 +131,8 @@ Make sure the hostname of this sample application is reachable through the Inter
 
 ### Register the Custom SCIM Gateway Sample Application
 
+**Note**: If you can't find Generic SCIM Templates in your Oracle Identity Cloud Service, contact your identity domain administrator.
+
 1. In the Identity Cloud Service console, expand the **Navigation Drawer**, click **Applications**, click **Add**, and then select **App Catalog**.
 2. In the **Type of Integration** section, click **Provisioning**, locate the **GenericScim - Basic**, and then click **Add**.  
 3. In the **Details** pane of the **Add GenericScim - Basic** page, enter `SCIM Gateway Application` for both the name and description of your application, and then click **Next**.  
