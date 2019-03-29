@@ -1,4 +1,5 @@
 
+
 # Sample SCIM Gateway Application
 
 The System for Cross-domain Identity Management (SCIM) specification is designed to make managing user identities in cloud-based applications and services easier.
@@ -46,8 +47,6 @@ Oracle also recommends you to deploy your custom SCIM Gateway to accept only HTT
 Oracle provides a sample Node.js application that conforms to SCIM specifications, and which you can use to help you develop your own custom SCIM gateway to integrate it with your application.
 
 This custom SCIM gateway application exposes HTTP endpoints to enable operations such as searching, creating, updating, and deleting users. The custom gateway stores information about the users locally in the userdb.json file. This file uses the JSON format, and contain an array of users.
-
-This Sample Code is used in the following tutorial: [Understand Application Integration](http://st-doc.us.oracle.com/id_common/review/docbuilder/html/E55882_37/GUID-FFBCF8FC-D131-4863-B8EB-1EF7A496A731.htm#GUID-FFBCF8FC-D131-4863-B8EB-1EF7A496A731)
 
 **Important:** The sample web application isn't meant to be published to production and isn't concerned about the language’s specific best practices, such as data handling, patterns, security, and so on. The sole purpose of the sample application is to address the recommended approach to integrate Oracle Identity Cloud Service and a custom application using the SCIM standard.
 
@@ -162,8 +161,6 @@ After you update these parameters you can test connectivity between the applicat
 2. Click  **Test Connectivity**  to verify that a connection can be established between Oracle Identity Cloud Service and your sample SCIM gateway application.
 **Note**: Make sure you run the SCIM gateway sample application before testing the connectivity.
 3. In the **Provisioning** pane, click **Finish**, and then click **Activate** to activate the application.  
-
-
 
 ### Test Your SCIM Gateway Sample Application
 
