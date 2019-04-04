@@ -9,7 +9,6 @@ The code samples are:
  - **idcs-authn-api-rest-clients**: POSTMAN Collection with example scenarios for testing the Oracle Identity Cloud Service Authentication APIs
  - **idcs-authn-api-signin-app**: Custom Oracle Identity Cloud Service Sign-in page application
  - **idcs-factor-enrollment-api**: MFA Factor Enrollment API
- - **idcs-factor-verification-api**: 
  - **idcs-rest-clients**: Complete set of REST API requests to be used with Oracle Identity Cloud Service.
  - **idcs-scim-gateway-app**: Application that exposes SCIM-based REST APIs to integrate Oracle Identity Cloud Service for provisioning purpose.
  - **idcs-sdk-sample-apps**: Multiple applications (Node.js, Java, Python, .NET, Android and iOS) which use Oracle Identity Cloud Service's SDK for authentication.
