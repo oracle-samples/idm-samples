@@ -12,7 +12,7 @@ The code samples are:
  - **idcs-factor-verification-api**: 
  - **idcs-rest-clients**: Complete set of REST API requests to be used with Oracle Identity Cloud Service.
  - **idcs-scim-gateway-app**: Application that exposes SCIM-based REST APIs to integrate Oracle Identity Cloud Service for provisioning purpose.
- - **idcs-sdk-sample-apps**: Multiple applications (Node.js, Java, Python, .NET) which use Oracle Identity Cloud Service's SDK for authentication.
+ - **idcs-sdk-sample-apps**: Multiple applications (Node.js, Java, Python, .NET, Android and iOS) which use Oracle Identity Cloud Service's SDK for authentication.
  - **salesinsight**: sample web application used to test the Oracle Identity Cloud Service integration with OAuth2 as a resource server application.
 
 For instructions, licensing, and support information, please consult the README and LICENSE files provided with each sample.
