@@ -19971,7 +19971,7 @@
 										],
 										"body": {
 											"mode": "raw",
-											"raw": "{\r\n  \"Operations\": [\r\n    {\r\n      \"op\": \"replace\",\r\n      \"path\": \"status\",\r\n      \"value\": \"{{Attribute to be Replaced, such as INPROGRESS}}\"\r\n    }\r\n  ],\r\n  \"schemas\": [\r\n    \"urn:ietf:params:scim:api:messages:2.0:PatchOp\"\r\n  ]\r\n}"
+											"raw": "{\r\n{\r\n  \"Operations\": [\r\n    {\r\n      \"op\": \"replace\",\r\n      \"path\": \"urn:ietf:params:scim:schemas:oracle:idcs:Device:displayName\",\r\n      \"value\": \"Joe's iPhone 7\"\r\n    }\r\n  ],\r\n  \"schemas\": [\r\n    \"urn:ietf:params:scim:api:messages:2.0:PatchOp\"\r\n  ]\r\n}"
 										},
 										"url": {
 											"raw": "{{HOST}}/admin/v1/MyDevices/{{DeviceId}}",
