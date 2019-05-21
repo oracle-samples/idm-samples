@@ -1,4 +1,3 @@
-//Author: Felippe Oliveira
 //Oracle Corporation
 
 module.exports = function(app){

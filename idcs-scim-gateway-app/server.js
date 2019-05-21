@@ -1,6 +1,5 @@
-//Author: Felippe Oliveira
 //Oracle Corporation
-//This application doesn't implement SSL. Oracle recomendeds that the SCIM Gateway
+//This application doesn't implement SSL. Oracle recommends that the SCIM Gateway
 //for your application uses HTTP(s).
 //Don't deploy this application to production.
 
