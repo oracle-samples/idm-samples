@@ -15,7 +15,6 @@ import oracle.security.jps.idcsbinding.shared.IDCSTokenAssertionConfiguration;
  * This class provides the parameters for the SDK to connect with a 
  * Oracle Identity Cloud Service instance.
  * The list of parameters must be added to a HashMap.
- * @author felippe.oliveira@oracle.com
  * @Copyright Oracle
  */
 public class ConnectionOptions {

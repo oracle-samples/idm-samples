@@ -1,6 +1,5 @@
 /*
 * File containing all the routes for the Sample Application.
-* @author felippe.oliveira@oracle.com
 * @Copyright Oracle
 */
 
@@ -15,7 +14,6 @@ var session = require('express-session');
 var passport = require('passport');
 var OIDCStrategy = require('passport-idcs').OIDCStrategy;
 var IdcsAuthenticationManager = require('passport-idcs').IdcsAuthenticationManager;
-var IdcsUserManager = require('passport-idcs').IdcsUserManager;
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 //Loading the configurations
@@ -210,8 +208,8 @@ app.get('/home', ensureAuthenticated, function(req, res) {
   });
 });
 //Protected route. Uses ensureAuthenticated function. Diplays user information in the screen.
-//The /myProfile route's handler calls the IdcsUserManager.getUser() SDK's function to get the JSON object,
-//hich represents the user profile, and sends it to the myProfile.handlebars file to be rendered in the browser.
+//The /myProfile route's handler calls the IdcsAuthenticationManager.validateIdToken() SDK's function get a json object from the id token,
+//and sends it to the myProfile.handlebars file to be rendered in the browser.
 app.get("/myProfile", ensureAuthenticated, function(req,res){
   console.log('\n---Resource: /myProfile -- Listing user information ---------------------');
   var am = new IdcsAuthenticationManager(auth.oracle);

@@ -57,7 +57,6 @@ namespace SampleApp.Controllers
         /**
         * This method logs the user out from the application and then redirects the user to Oracle Identity 
         * Cloud Service log out URL.
-        * @author felippe.oliveira@oracle.com
         * @Copyright Oracle
         */
         public ActionResult Logout()

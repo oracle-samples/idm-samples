@@ -28,7 +28,6 @@ import oracle.security.jps.idcsbinding.shared.*;
  * to request an access token. The access token is then stored in the user session, 
  * along with the userId and displayName values. 
  * Then, the Servlet forwards the request to the private/home.jsp page.
- * @author felippe.oliveira@oracle.com
  * @Copyright Oracle
  */
 public class CallbackServlet extends HttpServlet {

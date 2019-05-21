@@ -19,7 +19,6 @@ import oracle.security.jps.idcsbinding.shared.Constants;
 /**
  * The LogoutServlet class invalidates the user session and then redirects the user 
  * to Oracle Identity Cloud Service's log out URL.
- * @author felippe.oliveira@oracle.com
  * @Copyright Oracle
  */
 public class LogoutServlet extends HttpServlet {

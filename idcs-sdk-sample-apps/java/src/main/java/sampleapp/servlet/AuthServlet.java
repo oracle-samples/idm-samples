@@ -23,7 +23,6 @@ import oracle.security.jps.idcsbinding.shared.IDCSTokenAssertionConfiguration;
 /**
  * The AuthSevlet class maps to the /auth URL. 
  * It uses the SDK to generate the authorization code URL, and redirects the browser to the generated URL.
- * @author felippe.oliveira@oracle.com
  * @Copyright Oracle
  */
 public class AuthServlet extends HttpServlet {

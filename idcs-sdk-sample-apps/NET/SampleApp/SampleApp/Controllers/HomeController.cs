@@ -37,7 +37,6 @@ namespace SampleApp.Controllers
 
         /**
          * This method uses the SDK to generate the authorization code URL, and redirects the browser to the generated URL.
-         * @author felippe.oliveira@oracle.com
          * @Copyright Oracle
          */
         public ActionResult Oracle()
@@ -56,7 +55,6 @@ namespace SampleApp.Controllers
         * This method uses the authorization code parameter to request an access token. 
         * The access token is then stored in the user session, along with other information of the signed in user. 
         * Then, the method forwards the request to the Home page.
-        * @author felippe.oliveira@oracle.com
         * @Copyright Oracle
         */
         public ActionResult Callback(String code)
