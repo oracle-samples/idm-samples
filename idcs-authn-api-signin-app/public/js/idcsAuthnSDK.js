@@ -120,10 +120,34 @@ function IdcsAuthnSDK(app) {
     }
   }; // this.initAuthentication
 
+  // Replays the authenticate call with a newly acquired access token
+  this.replayAuthenticate = function(data) {
+      let self = this;
+
+      let newATUri = "/newAccessToken";
+      this.app.logMsg('[IdcsAuthnSDK] Obtaining wew access token from ' + newATUri);
+
+      var xhr = new XMLHttpRequest();
+      xhr.open("POST", newATUri);
+      xhr.setRequestHeader("Content-Type", "application/json");
+      xhr.setRequestHeader("Authorization", "Bearer " + this.app.getAccessToken());
+
+      xhr.send();
+
+      xhr.addEventListener("readystatechange", function () {
+        if (this.readyState == 4) {
+          self.app.logMsg('[IdcsAuthnSDK] New access token: ' + this.responseText);
+          self.app.setAccessToken(this.responseText);
+          // Once we have the new access token we can replay the authenticate request.
+          self.authenticate(data);
+        }
+      });
+  }
+
   this.authenticate = function(data) {
 
     this.app.logMsg('[IdcsAuthnSDK] Authenticating with: ' + this.app.mask(data));
-    const self = this;
+    let self = this;
 
     try {
       let jsonData = JSON.parse(data); //Verifying input data
@@ -134,65 +158,80 @@ function IdcsAuthnSDK(app) {
       var xhr = new XMLHttpRequest();
 
       xhr.addEventListener("readystatechange", function () {
-        if (this.readyState === 4) {
-          self.app.logMsg ('Authenticate response: ' + self.app.mask(this.responseText));
-          const jsonResponse = JSON.parse(this.responseText);
 
-          if (jsonResponse.status === 'success') {
-            if (jsonResponse.authnToken) { // User is successfully authenticated!
-              self.app.logMsg('[IdcsAuthnSDK] Credentials successfully validated.');
-              self.createSession(jsonResponse);
-            }
-            else {
-              self.app.nextOperation(jsonResponse);
-            }
+        self.app.logMsg('[IdcsAuthnSDK] XHR [readyState,status]: [' + this.readyState + ',' + this.status + ']');
+
+        // The operation is complete
+        if (this.readyState == 4) {
+          self.app.logMsg ('[IdcsAuthnSDK] Authenticate response: ' + self.app.mask(this.responseText));
+
+          // IDCS sends 401 status with HTML content when the access token expires.
+          // This response MUST be distinct of every other 401 status scenario, or this check won't behave as intended
+          // The ability to extend the access token is only applicable to USERNAME_PASSWORD authFactor.
+          if (jsonData.authFactor === 'USERNAME_PASSWORD' && this.status == 401 && this.getResponseHeader("Content-type") === 'text/html') {
+            self.replayAuthenticate(data);
           }
-          else
-          if (jsonResponse.status === 'failed') {
-            if (jsonResponse.cause) {
-              self.app.setLoginErrorMessage({code:jsonResponse.cause[0].code, msg:jsonResponse.cause[0].message});
-            }
-            else {
-              self.app.setLoginErrorMessage(self.sdkErrors.error9010);
-            }
+          else {
+            let jsonResponse = JSON.parse(this.responseText);
 
-            if (jsonResponse.nextOp && jsonResponse.nextOp.indexOf("submitCreds") >= 0) {
-              // do nothing
-              self.app.logMsg("Nothing to do here.");
+            if (jsonResponse.status === 'success') {
+              if (jsonResponse.authnToken) { // User is successfully authenticated!
+                self.app.logMsg('[IdcsAuthnSDK] Credentials successfully validated.');
+                self.createSession(jsonResponse);
+              }
+              else {
+                self.app.nextOperation(jsonResponse);
+              }
             }
-          }
-          else
-          if (jsonResponse.status === 'pending') {
-            // pending means one of two things:
-            if ( jsonResponse.cause ) {
-              if ( jsonResponse.cause[0].code ) {
-                let code = jsonResponse.cause[0].code;
+            else
+            if (jsonResponse.status === 'failed') {
+              if (jsonResponse.cause) {
+                self.app.setLoginErrorMessage({code:jsonResponse.cause[0].code, msg:jsonResponse.cause[0].message});
+              }
+              else {
+                self.app.setLoginErrorMessage(self.sdkErrors.error9010);
+              }
 
-                // then we're waiting for the user to say "Allow"
-                // so call back to the app to let them know it's OK to proceed
-                if ( code == "AUTH-1108" ) {
-                  self.app.nextOperation(jsonResponse);
+              if (jsonResponse.nextOp && jsonResponse.nextOp.indexOf("submitCreds") >= 0) {
+                // do nothing
+                self.app.logMsg("Nothing to do here.");
+              }
+            }
+            else
+            if (jsonResponse.status === 'pending') {
+              // pending means one of two things:
+              if ( jsonResponse.cause ) {
+                if ( jsonResponse.cause[0].code ) {
+                  let code = jsonResponse.cause[0].code;
+
+                  // then we're waiting for the user to say "Allow"
+                  // so call back to the app to let them know it's OK to proceed
+                  if ( code == "AUTH-1108" ) {
+                    self.app.nextOperation(jsonResponse);
+                  }
                 }
               }
             }
-          }
-          else {
-            self.app.setLoginErrorMessage(self.sdkErrors.error9011);
+            else {
+              self.app.setLoginErrorMessage(self.sdkErrors.error9011);
+            }
           }
         }
       });
 
       xhr.open("POST", app.baseUri + "/sso/v1/sdk/authenticate");
       xhr.setRequestHeader("Content-Type", "application/json");
+      xhr.setRequestHeader("Accept", "application/json");
+      this.app.logMsg('[IdcsAuthnSDK] Using access token: ' + this.app.getAccessToken());
       xhr.setRequestHeader("Authorization", "Bearer " + this.app.getAccessToken());
 
       xhr.send(data);
+
     }
     catch(e) { //this should never happen
       self.app.logMsg(e);
       self.app.setLoginErrorMessage(self.sdkErrors.error9999);
     }
-
   } //this.authenticate
 
   this.postCreds = function(credentials) {
@@ -207,15 +246,15 @@ function IdcsAuthnSDK(app) {
     });
 
     this.authenticate(data);
-
   }; // this.postCreds
 
-  this.postOtp = function(credentials) {
+  this.postEmailOtp = function(credentials) {
 
-    this.app.logMsg('[IdcsAuthnSDK] Posting OTP...');
+    this.app.logMsg('[IdcsAuthnSDK] Posting Email OTP...');
 
     var data = JSON.stringify({
       "op": "credSubmit",
+      "authFactor": "EMAIL",
       "credentials": credentials,
       "trustedDevice": JSON.parse(this.app.getTrustedDeviceOption()), // Value here MUST be Boolean!!
       "trustedDeviceDisplayName": this.clientFingerprint.browser + ' on ' + this.clientFingerprint.OS + ' ' + this.clientFingerprint.OSVersion,
@@ -223,7 +262,23 @@ function IdcsAuthnSDK(app) {
     });
 
     this.authenticate(data);
-  }; // this.postOtp
+  }; // this.postEmailOtp
+
+  this.postSmsOtp = function(credentials) {
+
+    this.app.logMsg('[IdcsAuthnSDK] Posting SMS OTP...');
+
+    var data = JSON.stringify({
+      "op": "credSubmit",
+      "authFactor": "SMS",
+      "credentials": credentials,
+      "trustedDevice": JSON.parse(this.app.getTrustedDeviceOption()), // Value here MUST be Boolean!!
+      "trustedDeviceDisplayName": this.clientFingerprint.browser + ' on ' + this.clientFingerprint.OS + ' ' + this.clientFingerprint.OSVersion,
+      "requestState": this.app.getRequestState()
+    });
+
+    this.authenticate(data);
+  }; // this.postSmsOtp
 
   this.enrollSecurityQuestions = function(credentials) {
 
@@ -385,15 +440,26 @@ function IdcsAuthnSDK(app) {
     this.authenticate(data);
   } // this.initEnrollOtpTotp
 
-  this.submitTOTP = function(credentials) {
+  this.submitTOTP = function(credentials, includeAuthnFactor) {
+
       var data = JSON.stringify({
         "op":"credSubmit",
-        "authFactor":"TOTP",
         "credentials": credentials,
         "trustedDevice": JSON.parse(this.app.getTrustedDeviceOption()), // Value here MUST be Boolean!!
         "trustedDeviceDisplayName": this.clientFingerprint.browser + ' on ' + this.clientFingerprint.OS + ' ' + this.clientFingerprint.OSVersion,
         "requestState":this.app.getRequestState()
+      });
+
+      if (typeof includeAuthnFactor !== 'undefined') {
+        data = JSON.stringify({
+          "op":"credSubmit",
+          "authFactor": "TOTP",
+          "credentials": credentials,
+          "trustedDevice": JSON.parse(this.app.getTrustedDeviceOption()), // Value here MUST be Boolean!!
+          "trustedDeviceDisplayName": this.clientFingerprint.browser + ' on ' + this.clientFingerprint.OS + ' ' + this.clientFingerprint.OSVersion,
+          "requestState":this.app.getRequestState()
         });
+      }
       this.authenticate(data);
   }
 
@@ -406,6 +472,18 @@ function IdcsAuthnSDK(app) {
     });
     this.authenticate(data);
   }
+
+  this.submitAcceptTerms = function() {
+    var data = JSON.stringify({
+        "op": "acceptTOU",
+        "credentials": {
+          "consent": true
+        },
+        "requestState": this.app.getRequestState()
+    });
+    this.authenticate(data);
+  }
+
 
   this.forgotPassword = function(username) {
     const self = this;
@@ -457,9 +535,11 @@ function IdcsAuthnSDK(app) {
     this.authenticate(data);
   }; // this.initAuthnPush
 
-  this.submitPushPoll = function() {
+  this.submitPushPoll = function(credentials) {
     var data = JSON.stringify({
       "op":"credSubmit",
+      "authFactor": "PUSH",
+      "credentials": credentials,
       "trustedDevice": JSON.parse(this.app.getTrustedDeviceOption()), // Value here MUST be Boolean!!
       "trustedDeviceDisplayName": this.clientFingerprint.browser + ' on ' + this.clientFingerprint.OS + ' ' + this.clientFingerprint.OSVersion,
       "requestState":this.app.getRequestState()

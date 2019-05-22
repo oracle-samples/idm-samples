@@ -29,7 +29,8 @@ const resources = {
 
 // Push form
   "push-hdr" : "Verifikation af Push Notifikation",
-  "push-info-msg" : "En notifikation er blevet sendt til Oracle Mobile Authenticator Appen på din mobile enhed.",
+  "push-info-msg" : "En notifikation er blevet sendt til authenticator appen på din mobile enhed.",
+  "push-info-nodisplayname-msg" : "En notifikation er blevet sendt til authenticator appen på følgende mobile enhed.",
   "push-approve-info-msg" : "Venligst godkend den for at fortsœtte.",
 
 
@@ -71,10 +72,24 @@ const resources = {
   "factor-security_questions-btn" : "Sikkerheds spørgsmål",
   "factor-bypasscode-btn" : "Bypass kode",
 
+  "factor-sms-msg" : "Send en kode til Mobile nr.",
+  "factor-email-msg" : "Send en kode til Email",
+  "factor-push-msg" : "Send en besked til Authenticator Mobil Appen på",
+  "factor-totp-msg" : "Brug koden fra Authenticator Mobil Appen på",
+  "factor-security_questions-msg" : "Besvar sikkerheds spørgsmålene",
+  "factor-bypasscode-msg" : "Brug en Bypass kode hvis de andre faktorer ikke kan bruges",
+
+  "factor-sms-msg-short" : "SMS",
+  "factor-email-msg-short" : "EMAIL",
+  "factor-push-msg-short" : "PUSH",
+  "factor-totp-msg-short" : "TOTP",
+  "factor-security_questions-msg-short" : "Q/A",
+  "factor-bypasscode-msg-short" : "BYPASS",
+
   "factor-sms-desc" : "Sender Engangskode til din mobil",
   "factor-email-desc" : "Sender en Email med en kode",
-  "factor-push-desc" : "Oracle Authenticator App",
-  "factor-totp-desc" : "Tids-baseret engangskode via mobil App",
+  "factor-push-desc" : "Sender en besked til Authenticator Mobil Appen",
+  "factor-totp-desc" : "Tids-baseret engangskode via Authenticator Mobil Appen",
   "factor-security_questions-desc" : "Sikkerheds spørgsmål og svar",
   "factor-bypasscode-desc" : "Brug en Bypass kode hvis de andre faktorer ikke kan bruges",
 
@@ -165,6 +180,13 @@ const resources = {
   "signup-reg-success-msg": "Din tilmedling er gennemført og du vil modtage en email snarest...",
   "signup-reg-complete-msg": "Tilmelding gennemført<BR/>Venligt luk dette vindue.",
 
+
+ // Terms of use
+  "must-accept-terms": "Du skal acceptere vilkår og betingelser før du kan fortsœtte",
+
+
+  // Preferred Factor
+  "preferredFactor-msg" : "Vœlg denne sikkerhedsfaktor som den fortrukne",
 
 
   // Misc

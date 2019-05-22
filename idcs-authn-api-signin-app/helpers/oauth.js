@@ -156,7 +156,7 @@ const initialized = false;
 //
 // In the future we may be able to just use the Client ID and secret.
 // Enh 27896624
-function getSigningKey(accessToken) {
+function getSigningKeyOriginal(accessToken) {
   return new Promise(function(resolve, reject) {
     request({
         method: 'GET',
@@ -216,6 +216,82 @@ function getSigningKey(accessToken) {
       });
   });
 }
+
+function getSigningKey(accessToken) {
+  return new Promise(function(resolve, reject) {
+    request({
+        method: 'GET',
+        uri: process.env.IDCS_URL + "/admin/v1/SigningCert/jwk",
+        headers: {
+          'Content-type': 'application/x-www-form-urlencoded',
+          'Authorization': 'Bearer ' + accessToken,
+          'Accept': 'application/json'
+        },
+      },
+      function(error, response, body) {
+        if (error) {
+          return reject(error);
+        }
+        else if (response && response.statusCode == 200) {
+          var bodydata = JSON.parse(body);
+
+          if (bodydata.keys && bodydata.keys[0] && bodydata.keys[0].x5c) {
+
+            var x5c = bodydata.keys[0].x5c[0];
+            var cert = '-----BEGIN CERTIFICATE-----\n';
+            while (x5c.length > 0) {
+              if (x5c.length > 64) {
+                cert += x5c.substring(0, 64) + '\n';
+                x5c = x5c.substring(64, x5c.length);
+              }
+              else {
+                cert += x5c;
+                x5c = '';
+              }
+            }
+            cert += '\n-----END CERTIFICATE-----\n';
+            idcsCrypto.setTenantCert(cert);
+            logger.log( "Cert: \n" + cert );
+            return resolve(cert);
+          }
+        }
+        else {
+          return reject("Unable to get certificate from JWKS URI.");
+        }
+      });
+  });
+}
+
+function authorize(value) {
+  return new Promise(function(resolve, reject) {
+    logger.log("--- Authorizing request...");
+    if (!value) {
+      return reject("Invalid token.");
+    }
+    let valueArray = value.split(" ");
+    let tokenType = valueArray[0];
+    let tokenValue = valueArray[1];
+    if (tokenType && tokenType.toLowerCase() !== 'bearer') {
+      return reject("Invalid token.");
+    }
+    let cert = idcsCrypto.getTenantCert();
+    logger.log("--- Cert: \n" + cert);
+    logger.log("--- Signing cert obtained. Verifying JWT...");
+    jwt.verify(tokenValue, cert, {sub:process.env.IDCS_CLIENT_ID,issuer:'https://identity.oraclecloud.com/', ignoreExpiration:'true'}, function(error, decoded) {
+      if (error) {
+        logger.log("--- Verification failed: " + error.message);
+        return reject("Invalid token.");
+      }
+      if (decoded) {
+        logger.log("--- Verification ok. Token decoded: " + JSON.stringify(decoded));
+        return resolve(decoded);
+      }
+    });
+  });
+}
+
+exports.authorize = authorize;
+
 // only do this once:
 if (!initialized) {
   // go get an initial AT not only to check the config, but
@@ -223,16 +299,16 @@ if (!initialized) {
   // We will need that later to decode the post data.
   logger.log('Acquiring initial Access Token...');
   getAT()
-    .then(function(accessToken) {
-      logger.log("Access token:\n" + accessToken);
-      logger.log("Acquired initial Access Token successfully.\n");
-      logger.log("Access Token is: " + accessToken + "\n");
+  .then(function(accessToken) {
+    logger.log("Acquired initial Access Token successfully:");
+    logger.log(accessToken + "\n");
 
-      // then acquire the tenant signing certificate
-      // we should only need to do this once
-      // TODO: think about if we need to do this more often
-      getSigningKey(accessToken);
-
+    // then acquire the tenant signing certificate
+    // we should only need to do this once
+    // TODO: think about if we need to do this more often
+    //getSigningKey(accessToken)
+    getSigningKey(accessToken)
+    .then(function() {
       logger.log("Looking for tenant name in Access Token...\n");
       var decoded = jwt.decode(accessToken);
       if (decoded["user.tenant.name"]) {
@@ -240,6 +316,7 @@ if (!initialized) {
         logger.log("Tenant name is: " + tenantName);
         idcsCrypto.setTenantName(tenantName);
       }
-    })
-    .catch((err) => console.error(err));
+    });
+  })
+  .catch((err) => logger.log(err));
 }

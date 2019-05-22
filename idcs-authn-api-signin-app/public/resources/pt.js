@@ -28,8 +28,9 @@ const resources = {
 
   // Push form
   "push-hdr" : "Verificando Notificação Push",
-  "push-info-msg" : "Uma notificação foi enviada para o Oracle Mobile Authenticator App no seu dispositivo móvel",
-  "push-approve-info-msg" : "É preciso aprová-la para prosseguir",
+  "push-info-msg" : "Notificação enviada para o app de autenticação no seguinte dispositivo móvel:",
+  "push-info-nodisplayname-msg" : "Notificação enviada para o app de autenticação no seu dispositivo móvel.",
+  "push-approve-info-msg" : "É preciso aprová-la para prosseguir.",
 
   // Trusted device
   "td-msg" : "Confie neste dispositivo por ",
@@ -68,10 +69,24 @@ const resources = {
   "factor-security_questions-btn" : "Perguntas de Segurança",
   "factor-bypasscode-btn" : "Código Bypass",
 
+  "factor-sms-msg" : "Enviar um código para o número",
+  "factor-email-msg" : "Enviar um código para o email",
+  "factor-push-msg" : "Enviar notificação para o app de autenticação em",
+  "factor-totp-msg" : "Usar código gerado pelo app de autenticação em",
+  "factor-security_questions-msg" : "Responder a perguntas de segurança",
+  "factor-bypasscode-msg" : "Use um código bypass se não pode usar outro fator",
+
+  "factor-sms-msg-short" : "SMS",
+  "factor-email-msg-short" : "EMAIL",
+  "factor-push-msg-short" : "PUSH",
+  "factor-totp-msg-short" : "TOTP",
+  "factor-security_questions-msg-short" : "Q/A",
+  "factor-bypasscode-msg-short" : "BYPASS",
+
   "factor-sms-desc" : "SMS enviado para o telefone móvel",
   "factor-email-desc" : "Código OTP enviado para o email",
-  "factor-push-desc" : "Notificação enviada ao App de Autenticação Móvel da Oracle",
-  "factor-totp-desc" : "Código OTP com tempo de expiração enviado ao App de Autenticação Móvel da Oracle",
+  "factor-push-desc" : "Notificação enviada ao app de autenticação",
+  "factor-totp-desc" : "Código OTP com tempo de expiração enviado ao app de autenticação",
   "factor-security_questions-desc" : "Usuário escolhe perguntas de segurança",
   "factor-bypasscode-desc" : "Código Bypass caso não seja possível usar outros fatores",
 
@@ -161,6 +176,9 @@ const resources = {
   "signup-hello-msg": "Olá, ",
   "signup-reg-success-msg": "Registro realizado com sucesso. Você receberá um email de confirmação em instantes.",
   "signup-reg-complete-msg": "Registro completo.<BR/>Esta janela pode seer fechada.",
+
+  // Preferred Factor
+  "preferredFactor-msg" : "Definir este método como preferido",
 
   // Misc
   "loading-msg" : "Carregando...",

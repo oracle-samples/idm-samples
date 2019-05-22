@@ -1,0 +1,38 @@
+Release Notes - Sample Custom Login Application version 1.1 
+
+Enhancements
+
+1. Terms of Use: the login flow has been enhanced to support IDCS "Terms of Use" feature, where users are required to agree with the terms set forth by IDCS administrator on a per application basis.
+
+2. Access Token Refresh: IDCS added the ability to extend the lifetime of requestState parameter. When that happens, it may not produce the required effect if the access token times out before requestState. Therefore, the login flow has been enhanced to support automatic refresh of access tokens to accommodate requestState extension.
+
+3. Multiple devices per TOTP and Push Factors: the login flow has been enhanced to support the same user account enrolling multiple authenticator applications for TOTP and Push, using the same or different devices.
+
+4. Localizations added: Swedish and French
+
+
+Bug fixes
+
+1. "Set as preferred" checkbox not available for social user.
+
+2. MFA Enrollment screen is not localized.
+
+3. Polling request not made when Push is default factor and user chooses PUSH after selecting TOTP from backup factor.
+
+4. User not prompted for MFA when existing session created without MFA already exists (usage of different tabs).
+
+5. No display name available on backup factors.
+
+6. TOTP should be available in backup factors if user enrolls PUSH notification.
+
+7. Device display name not available for Push notification.
+
+8. Incorrect payload used while enrolling TOTP.
+
+9. Let users set their preferred MFA method.
+
+10. "Set as preferred" checkbox should appear only when factor is chosen from backup factor list.
+
+11. Clicking "Register" button on SSO from Social IdP for new user causes UI to hang.
+
+12. Spinning wheel keeps appearing when only one factor is enabled and user tries to enroll it for MFA.

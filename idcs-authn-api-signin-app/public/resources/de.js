@@ -28,8 +28,9 @@ const resources = {
 
   // Push form
   "push-hdr" : "Push-Benachrichtigung angeben",
-  "push-info-msg" : "Eine Benachrichtigung wurde an die Oracle Mobile Authenticator App auf Ihrem mobilem Gerät geschickt.",
-  "push-approve-info-msg" : "Um fortzufahren müssen Sie diese bestätigen",
+  "push-info-msg" : "Eine Benachrichtigung wurde an die authenticator app auf dieses mobile Gerät geschickt:",
+  "push-info-nodisplayname-msg" : "Eine Benachrichtigung wurde an die authenticator app auf Ihrem mobilem Gerät geschickt.",
+  "push-approve-info-msg" : "Um fortzufahren müssen Sie diese bestätigen.",
 
   // Trusted device
   "td-msg" : "Diesem Gerät für",
@@ -67,6 +68,20 @@ const resources = {
   "factor-totp-btn" : "Zeit-basiertes Einmal-Passwort",
   "factor-security_questions-btn" : "Sicherheitsfragen",
   "factor-bypasscode-btn" : "Bypass-Code",
+
+  "factor-sms-msg" : "Einmal-Code an Ihre Mobilnummer senden",
+  "factor-email-msg" : "Einmal-Code als E-Mail senden",
+  "factor-push-msg" : "Eine Benachrichtigung an die Authenticator App senden",
+  "factor-totp-msg" : "Von der Authenticator App erzeugten Code verwenden",
+  "factor-security_questions-msg" : "Sicherheitsfragen beantworten",
+  "factor-bypasscode-msg" : "Benutzen Sie den Notfall-Code wenn Sie keine andere Möglichkeit verwenden können",
+
+  "factor-sms-msg-short" : "SMS",
+  "factor-email-msg-short" : "EMAIL",
+  "factor-push-msg-short" : "PUSH",
+  "factor-totp-msg-short" : "APP",
+  "factor-security_questions-msg-short" : "F & A",
+  "factor-bypasscode-msg-short" : "BYPASS",
 
   "factor-sms-desc" : "SMS an eine Mobilnummer senden",
   "factor-email-desc" : "Einmal-Passwort per E-Mail erhalten",
@@ -159,6 +174,12 @@ const resources = {
   "signup-hello-msg": "Hallo, ",
   "signup-reg-success-msg": "Ihre Registrierung war erfolgreich. Sie sollten in Kürze eine Bestätigung per E-Mail erhalten...",
   "signup-reg-complete-msg": "Die Registrierung ist abgeschlossen.<BR/>Sie können das Fenster jetzt schließen.",
+
+  // Terms of use
+  "must-accept-terms": "Um fortzufahren müssen Sie die Benutzerregeln akzeptieren",
+
+  // Preferred Factor
+  "preferredFactor-msg" : "Setzen Sie diesen Faktor als bevorzugten Faktor",
 
   // Misc
   "loading-msg" : "Lädt...",

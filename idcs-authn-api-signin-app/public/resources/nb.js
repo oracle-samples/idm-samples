@@ -9,7 +9,7 @@ const resources = {
   "bar-signin-subhdr" : "Bare logg in",
 
   // Signin form
-  "signin-hdr" : "Welcome",
+  "signin-hdr" : "Velkommen",
   "signin-username-fld" : "Brukernavn",
   "signin-password-fld" : "Passord",
   "signin-submit-btn" : "Pålogging",
@@ -28,7 +28,8 @@ const resources = {
 
   // Push form
   "push-hdr" : "Verifiser push-varsler",
-  "push-info-msg" : "Et varsel har blitt sendt til Oracle Mobile Authenticator App på din mobile enhet.",
+  "push-info-msg" : "Varsel sendt til autentiseringprogrammet på følgende mobile enhet:",
+  "push-info-nodisplayname-msg" : "Varsel sendt til autentiseringprogrammet på mobile enhet.",
   "push-approve-info-msg" : "Du må godkjenne for å kunne gå videre",
 
   // Trusted device
@@ -67,6 +68,20 @@ const resources = {
   "factor-totp-btn" : "Tidsbasert engangs-passord",
   "factor-security_questions-btn" : "Sikkerhets-spørsmål",
   "factor-bypasscode-btn" : "Nød-kode",
+
+  "factor-sms-msg" : "Send en kode til mobilnummer",
+  "factor-email-msg" : "Send en kode til epost",
+  "factor-push-msg" : "Send et varsel til autentiseringprogrammet på",
+  "factor-totp-msg" : "Bruk koden generert av autentiseringprogrammet på",
+  "factor-security_questions-msg" : "Gi svar på sikkerhets-spørsmål",
+  "factor-bypasscode-msg" : "Brun en nød-kode hvis du ikke kan bruke en annen faktor",
+
+  "factor-sms-msg-short" : "SMS",
+  "factor-email-msg-short" : "EPOST",
+  "factor-push-msg-short" : "PUSH",
+  "factor-totp-msg-short" : "TOTP",
+  "factor-security_questions-msg-short" : "Q/A",
+  "factor-bypasscode-msg-short" : "BYPASS",
 
   "factor-sms-desc" : "SMS til mobil",
   "factor-email-desc" : "Send en epost med koden",
@@ -159,6 +174,12 @@ const resources = {
   "signup-hello-msg": "Hallo",
   "signup-reg-success-msg": ". Din registrering var vellykket. Du vil motta en bekreftelses-spost snart...",
   "signup-reg-complete-msg": "Selv-registering er fullført.<BR/>.Du kan lukke dette vinduet.",
+
+  // Terms of use
+  "must-accept-terms": "Du må godta vilkårene for bruk å fortsœtte",
+
+  // Preferred Factor
+  "preferredFactor-msg" : "Sett denne metode som foretrukket",
 
   // Misc
   "loading-msg" : "Laster...",

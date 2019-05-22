@@ -16,6 +16,46 @@ input, button {
   font-family: 'Open Sans', Helvetica, Arial, sans-serif;
 }
 
+.alt-factor-pane {
+  display: table;
+  padding: 0 0 0 50px;
+  width: 95%;
+}
+
+.alt-factor-header {
+  display: block;
+  margin: 0 0 10px 0;
+  padding: 0 10px 0 10px;
+}
+
+.alt-factor-row {
+  height: 36px;
+  display: table;
+  padding: 0 0 0 10px;
+  margin: 5px;
+}
+
+.alt-factor-button {
+  display: table-cell;
+  margin: 0;
+  width: 70px;
+  height: 36px;
+  border-radius: 30px;
+  color: #fff;
+  font-size: 15px;
+  cursor: pointer;
+  background: #f80000;
+  text-transform: uppercase;
+}
+
+.alt-factor-text {
+  display: table-cell;
+  font-size: 12px;
+  color: #4e5052;
+  text-transform: uppercase;
+  padding: 0 0 0 10px;
+}
+
 button {
   display: block;
   margin: 0 auto;
@@ -37,7 +77,7 @@ select {
 div.hr {
   display: flex;
   width: 100%;
-  margin: 20px auto;
+  margin: 15px auto;
 }
 
 hr {
@@ -355,6 +395,17 @@ span.info {
   color: #4e5052;
   padding: 0px;
   text-align: center;
+}
+
+.device-name {
+  display: inline;
+  width: 100%;
+  font-size: 12px;
+  color: #4e5052;
+  padding: 0px;
+  text-align: center;
+  font-weight: bold;
+  text-transform: uppercase;
 }
 
 a {

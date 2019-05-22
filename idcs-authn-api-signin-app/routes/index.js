@@ -7,6 +7,21 @@ var oauth = require('../helpers/oauth.js');
 
 const crypto = require('crypto');
 
+function getHostName() {
+  try {
+    var hostName = process.env.HOST || process.env.HOSTNAME;
+    if (!hostName) {
+      var OS = require('os');
+      hostName = OS.hostname();
+    }
+    logger.log('Hostname is ' + hostName);
+    return hostName;
+  }
+  catch (e) {
+    logger.log('Cannot retrieve host name! Aborting...')
+    throw(e);
+  }
+}
 
 // utility function:
 function redirectBrowser( req, res, url, payload ) {
@@ -19,7 +34,7 @@ function redirectBrowser( req, res, url, payload ) {
     res.write('<script language="JavaScript">\n');
 
     res.write('try {\n');
-    
+
     // check to make sure session storage isn't disabled:
     res.write( 'if (!sessionStorage) { console.log("Session storage missing."); throw("No session storage");}\n');
     // then make sure it works:
@@ -29,7 +44,7 @@ function redirectBrowser( req, res, url, payload ) {
     res.write( 'console.log("Save and read back from session storage failed.");\n');
     res.write( 'throw("Unable to save in session storage");\n')
     res.write( '}\n');
-    
+
     // clear storage to make sure we're starting from a clean slate
     // We do this to remove the above test but also to deal with the case where
     // a user comes to the login page (and possibly begins working through a login)
@@ -40,10 +55,17 @@ function redirectBrowser( req, res, url, payload ) {
     res.write('sessionStorage.setItem("debugEnabled", ' + logger.debugEnabled() + ');\n');
     res.write('sessionStorage.setItem("signinAT", "' + accessToken + '");\n');
     res.write('sessionStorage.setItem("baseUri", "' + process.env.IDCS_URL + '");\n');
+
     if ( process.env.IDCS_SELFREGPROFILES ) {
       res.write('sessionStorage.setItem("selfRegProfiles", "' + process.env.IDCS_SELFREGPROFILES + '");\n');
     }
     res.write('sessionStorage.setItem("clientId",\'' + process.env.IDCS_CLIENT_ID + '\');\n');
+
+    // Building the base URI of this server
+    // It may be used by the client-side to call back (for refreshing the access token, for instance).
+    //let serverSideBaseUri = process.env.PROTOCOL + '://' + getHostName() + ':' + process.env.PORT;
+    //logger.log('serverSideBaseUri: ' + serverSideBaseUri)
+    //res.write('sessionStorage.setItem("serverSideBaseUri", "' + serverSideBaseUri + '");\n');
 
     // then add on everything from the payload
     for ( var field in payload ) {
@@ -63,7 +85,6 @@ function redirectBrowser( req, res, url, payload ) {
     res.end();
   });
 }
-
 
 /* GET home page. */
 
@@ -115,8 +136,9 @@ router.post("/", function (req, res, next) {
 
     // parse it as JSON
     var loginContext = JSON.parse(decrypted);
-    if (!loginContext.requestState) {
-        // then the request state is missing.
+    if ( (!loginContext.requestState) &&
+         (!loginContext.status) ) {
+        // then the request state AND status are both missing
         // it COULD be that SSO Settings haven't been adjusted to set sdkEnabled to true
         res.statusCode = 500;
         res.end("Login context does not contain request state.");
@@ -249,6 +271,19 @@ router.get("/resetpwd", function (req, res, next) {
     res.statusCode = 500;
     res.end("Could not understand your request.");
   }
+});
+
+router.post("/newAccessToken", function (req, res) {
+  logger.log("------------------------------------------------");
+  logger.log("--- New access token request.");
+  oauth.authorize(req.get('Authorization')).then(oauth.getAT).then(function(accessToken) {
+    logger.log("--- Access token request fulfilled.");
+    res.status(200).send(accessToken);
+  })
+  .catch(function (error) {
+    logger.log("--- Access token request rejected: " + error);
+    res.status(401).send(error);
+  });
 });
 
 module.exports = router;

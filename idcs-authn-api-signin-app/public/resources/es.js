@@ -1,6 +1,6 @@
 const resources = {
   "signin-page-title": "Login",
-  
+
   // Side bar
   "bar-signin-btn" : "Conectar",
   "bar-signup-btn" : "Registrarse",
@@ -29,7 +29,8 @@ const resources = {
 
   // Push form
   "push-hdr" : "Verificando Notificación Push",
-  "push-info-msg" : "Una notificación ha sido enviada a la Application Oracle Mobile Authenticator en su dispositivo móvil.",
+  "push-info-msg" : "Notificación enviada a la aplicación de autenticación en el siguiente dispositivo móvil:",
+  "push-info-nodisplayname-msg" : "Notificación enviada a la aplicación de autenticación en su dispositivo móvil",
   "push-approve-info-msg" : "Debe aprobarla para continuar.",
 
   // Trusted device
@@ -62,12 +63,26 @@ const resources = {
   "enroll-success-btn" : "Listo",
   "enroll-anotherfactor-btn" : "Inscribir otro factor",
 
-  "factor-sms-btn" : "Contraseña de un solo uso OTP por mensaje de texto SMS",
-  "factor-email-btn" : "Contraseña de un solo uso OTP por Correo Electrónico",
+  "factor-sms-btn" : "OTP por mensaje de texto SMS",
+  "factor-email-btn" : "OTP por Correo Electrónico",
   "factor-push-btn" : "Notificaciones Push",
-  "factor-totp-btn" : "Contraseña de un solo uso OTP con tiempo",
+  "factor-totp-btn" : "OTP con tiempo",
   "factor-security_questions-btn" : "Preguntas de Seguridad",
   "factor-bypasscode-btn" : "Código de Bypass",
+
+  "factor-sms-msg" : "Contraseña de un solo uso OTP por mensaje de texto SMS",
+  "factor-email-msg" : "Contraseña de un solo uso OTP por Correo Electrónico",
+  "factor-push-msg" : "Notificaciones Push",
+  "factor-totp-msg" : "Contraseña de un solo uso OTP con tiempo",
+  "factor-security_questions-msg" : "Preguntas de Seguridad",
+  "factor-bypasscode-msg" : "Código de Bypass",
+
+  "factor-sms-msg-short" : "SMS",
+  "factor-email-msg-short" : "EMAIL",
+  "factor-push-msg-short" : "PUSH",
+  "factor-totp-msg-short" : "TOTP",
+  "factor-security_questions-msg-short" : "Q/A",
+  "factor-bypasscode-msg-short" : "BYPASS",
 
   "factor-sms-desc" : "Mensaje de texto SMS por Número Móvil",
   "factor-email-desc" : "Enviar un correo electrónico con el código a usar",

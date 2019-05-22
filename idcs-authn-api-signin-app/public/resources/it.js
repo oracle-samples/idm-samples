@@ -28,7 +28,8 @@ const resources = {
 
   // Push form
   "push-hdr" : "Verifica delle notifiche Push",
-  "push-info-msg" : "Una notifica è stata inviata sull'app mobile Oracle di autenticazione sul tuo dispositivo mobile",
+  "push-info-msg" : "Notifica inviata all'app di autenticazione sul seguente dispositivo mobile:",
+  "push-info-nodisplayname-msg" : "Notifica inviata all'app di autenticazione sul tuo dispositivo mobile.",
   "push-approve-info-msg" : "Per continuare è necessario approvarla.",
 
   // Trusted device
@@ -67,6 +68,20 @@ const resources = {
   "factor-totp-btn" : "Orario OTP",
   "factor-security_questions-btn" : "Domande di sicurezza",
   "factor-bypasscode-btn" : "Bypass del codice",
+
+  "factor-sms-msg" : "Inviare un codice al numero di cellulare",
+  "factor-email-msg" : "Inviare un codice per email",
+  "factor-push-msg" : "Inviare una notifica all'app autenticatore su",
+  "factor-totp-msg" : "Utilizzare il codice generato dall'app autenticatore su",
+  "factor-security_questions-msg" : "Fornire risposte alle domande di sicurezza",
+  "factor-bypasscode-msg" : "Utilizzare un codice di bypass se non è possible utilizzare un altro fattore",
+
+  "factor-sms-msg-short" : "SMS",
+  "factor-email-msg-short" : "EMAIL",
+  "factor-push-msg-short" : "PUSH",
+  "factor-totp-msg-short" : "TOTP",
+  "factor-security_questions-msg-short" : "Q/A",
+  "factor-bypasscode-msg-short" : "BYPASS",
 
   "factor-sms-desc" : "SMS sul numero Mobile",
   "factor-email-desc" : "Manda un email con il codice da usare",
@@ -159,6 +174,12 @@ const resources = {
   "signup-hello-msg": "Ciao, ",
   "signup-reg-success-msg": "La tua registrazione è andata a buon fine. Dovresti ricevere un'email di conferma a breve...",
   "signup-reg-complete-msg": "L'auto registrazione è terminata.<BR/>Puoi chiudere questa pagina.",
+
+  // Terms of use
+  "must-accept-terms": "Devi accettare i termini di utilizzo per procedere",
+
+  // Preferred Factor
+  "preferredFactor-msg" : "Imposta questo fattore come preferito",
 
   // Misc
   "loading-msg" : "Caricando...",

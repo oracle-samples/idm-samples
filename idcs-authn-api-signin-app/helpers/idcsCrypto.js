@@ -9,6 +9,7 @@ var obfuscationKey = undefined;
 
 var tenantCert = undefined;
 
+exports.tenantCert = undefined;
 
 // The loginCtx and errorCtx are both obfuscated by encrypting them with an
 // key derived from the IDCS tenant name.
@@ -52,7 +53,7 @@ function decrypt( encrypted ) {
   var decrypted = decipher.update(encrypted, 'base64', 'utf8');
   decrypted += decipher.final('utf8');
   logger.log("loginCtx decrypted: " + decrypted);
-  
+
   return decrypted;
 }
 exports.decrypt = decrypt;
@@ -80,6 +81,12 @@ function setTenantCert( cert ) {
 }
 exports.setTenantCert = setTenantCert;
 
+function getTenantCert() {
+  return tenantCert;
+}
+
+exports.getTenantCert = getTenantCert;
+
 // verifySignature is used to verify the signature of an incoming POST
 // i.e. the handoff from IDCS to the custom login app
 // Params:
@@ -90,7 +97,7 @@ function verifySignature( what, data, sig ) {
   var verifier = crypto.createVerify('sha256');
   verifier.update(what,'utf8');
   verifier.update(data, 'utf8');
-  
+
   logger.log( "Verifying signature" );
   if ( verifier.verify(tenantCert, sig, 'base64') ) {
     logger.log( "Signature verified" );

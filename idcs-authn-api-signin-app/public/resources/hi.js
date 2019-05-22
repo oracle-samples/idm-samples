@@ -28,7 +28,8 @@ const resources = {
 
   // Push form
   "push-hdr" : "पुश अधिसूचना की पुष्टि",
-  "push-info-msg" : "आपके मोबाइल डिवाइस पर ओरेकल मोबाइल प्रमाणक ऐप को एक अधिसूचना भेजी गई है।",
+  "push-info-msg" : "निम्नलिखित मोबाइल डिवाइस पर ओरेकल मोबाइल ऑथेंटिकेटर ऐप को अधिसूचना भेजी गई:",
+  "push-info-nodisplayname-msg" : "निम्नलिखित मोबाइल डिवाइस पर ओरेकल मोबाइल ऑथेंटिकेटर ऐप को अधिसूचना भेजी गई.",
   "push-approve-info-msg" : "आगे बढ़ने के लिए आपको इसे स्वीकार करना होगा।",
 
   // Trusted device
@@ -67,6 +68,20 @@ const resources = {
   "factor-totp-btn" : "समय-आधारित ओटीपी",
   "factor-security_questions-btn" : "सुरक्षा प्रश्न",
   "factor-bypasscode-btn" : "बाईपास कोड",
+
+  "factor-sms-msg" : "मोबाइल नंबर पर एक कोड भेजें",
+  "factor-email-msg" : "ईमेल पर एक कोड भेजें",
+  "factor-push-msg" : "प्रमाणक ऐप पर एक अधिसूचना भेजें",
+  "factor-totp-msg" : "प्रमाणक ऐप द्वारा उत्पन्न कोड का उपयोग करें",
+  "factor-security_questions-msg" : "सुरक्षा प्रश्नों के उत्तर प्रदान करें",
+  "factor-bypasscode-msg" : "यदि आप किसी अन्य कारक का उपयोग नहीं कर सकते हैं तो एक बायपास कोड का उपयोग करें",
+
+  "factor-sms-msg-short" : "एसएमएस",
+  "factor-email-msg-short" : "ईमेल",
+  "factor-push-msg-short" : "पुश",
+  "factor-totp-msg-short" : "टीहेटीपी",
+  "factor-security_questions-msg-short" : "सवाल/जवाब",
+  "factor-bypasscode-msg-short" : "उपमार्ग",
 
   "factor-sms-desc" : "मोबाइल नंबर पर एसएमएस करें",
   "factor-email-desc" : "उपयोग करने के लिए एक कोड के साथ एक ईमेल भेजें",
@@ -160,7 +175,13 @@ const resources = {
   "signup-reg-success-msg": "आपका पंजीकरण सफल रहा था। आपको जल्द ही एक पुष्टिकरण ईमेल प्राप्त करना चाहिए ...",
   "signup-reg-complete-msg": "आत्म पंजीकरण पूरा हो गया है।<BR/>आप इस विंडो को बंद कर सकते हैं।",
 
-  // Misc
+  // Terms of use
+  "must-accept-terms": "आगे बढ़ने के लिए आपको उपयोग की शर्तों को स्वीकार करना होगा",
+
+  // Preferred Factor
+  "preferredFactor-msg" : "इस कारक को पसंदीदा के रूप में सेट करें",
+
+// Misc
   "loading-msg" : "लोड हो रहा है...",
   "or-msg" : "या",
   "back-to-login-msg" : "लॉगिन पर वापस जाएं",

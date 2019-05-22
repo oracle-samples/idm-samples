@@ -7,6 +7,7 @@ function LoginApp() {
   this.baseUri = sessionStorage.getItem("baseUri");
   this.debugEnabled = sessionStorage.getItem("debugEnabled") && (sessionStorage.getItem("debugEnabled").toLowerCase() == "true");
   this.pushPollInterval;
+  this.serverSideBaseUri = sessionStorage.getItem("serverSideBaseUri");
 
   /* ----------------------------------------------------------------------------------------------------------------
      -------------------------------------------- HELPER METHODS ----------------------------------------------------
@@ -43,7 +44,12 @@ this.removeBtnAndShowSpinner = function(btn) {
         if ( ( signinDiv ) &&
              ( signinDiv.whichFactorForm === "PUSH" ) ) {
           self.logMsg( signinDiv.whichFactorForm + " is active");
-          self.sdk.submitPushPoll();
+
+          // Issue #1 fix. Change introduced to channel the call to submitPushPoll through buildPayload for adding credentials
+          const payload = self.buildPayload("submitPushPoll", signinDiv);
+          self.logMsg("Invoking submitPushPoll with payload " + self.mask(payload));
+          self.sdk.submitPushPoll(payload);
+          // End of fix.
         }
     }, timeInMillis);
   }
@@ -51,6 +57,8 @@ this.removeBtnAndShowSpinner = function(btn) {
   // Stops polling for push notifications
   this.stopPushPoll = function() {
     if (this.pushPollInterval != null) {
+      this.removeSpinner();
+      this.logMsg('Stopping push poll...');
       clearInterval(this.pushPollInterval);
     }
   }
@@ -59,16 +67,11 @@ this.removeBtnAndShowSpinner = function(btn) {
   // Used in EMAIL and SMS.
   this.showResendCodeOption = function(formDiv, obj, timeInMilis) {
 
-
     if (formDiv && (formDiv.whichFactorForm === "EMAIL" || formDiv.whichFactorForm === "SMS" ) && formDiv.noResend == null) {
 
-      var didNotGetMsg = 'Did not get the message?';
-      var resendMsg = 'Resend message';
+      let didNotGetMsg = this.localizeMsg(formDiv.whichFactorForm.toLowerCase() + '-did-not-get-msg', 'Did not get the message?');
+      let resendMsg = this.localizeMsg(formDiv.whichFactorForm.toLowerCase() + '-resend-btn', 'Resend message');
 
-      if (typeof resources !== 'undefined') {
-        didNotGetMsg = resources[formDiv.whichFactorForm.toLowerCase() + '-did-not-get-msg'];
-        resendMsg = resources[formDiv.whichFactorForm.toLowerCase() + '-resend-btn'];
-      }
       setTimeout(function() {
         self.logMsg(formDiv.whichFactorForm + " factor detected for showing Resend Message option.");
 
@@ -98,13 +101,9 @@ this.removeBtnAndShowSpinner = function(btn) {
   this.showResendEmail = function(formDiv, obj, timeInMilis) {
     if (formDiv && formDiv.whichForm != null && formDiv.whichForm === "FORGOT_PASSWORD_FORM") {
       var usernameLocal = formDiv.querySelector("#forgotUserName").value;
-      var didNotGetMsg = 'Did not get the Email?';
-      var resendMsg = 'Resend Email';
 
-      if (typeof resources !== 'undefined') {
-        didNotGetMsg = resources['forgot-pw-did-not-get-msg'];
-        resendMsg = resources['forgot-pw-resend-btn'];
-      }
+      let didNotGetMsg = this.localizeMsg('forgot-pw-did-not-get-msg','Did not get the email?');
+      let resendMsg = this.localizeMsg('forgot-pw-resend-btn', 'Resend email');
 
       setTimeout(function() {
         var resendDivElem = document.createElement('div');
@@ -132,14 +131,9 @@ this.removeBtnAndShowSpinner = function(btn) {
   this.showReinputUserName = function(formDiv, obj, timeInMilis) {
     if (formDiv && formDiv.whichForm != null && formDiv.whichForm === "FORGOT_PASSWORD_FORM") {
       var usernameLocal = formDiv.querySelector("#forgotUserName").value;
-      var didNotGetMsg = 'Incorrect UserName?';
-      var resendMsg = 'Fix UserName';
 
-      if (typeof resources !== 'undefined') {
-        didNotGetMsg = resources['forgot-pw-incorrect-username-msg'];
-        resendMsg = resources['forgot-pw-incorrect-username-btn'];
-      }
-
+      let didNotGetMsg = this.localizeMsg('forgot-pw-incorrect-username-msg','Incorrect UserName?');
+      let resendMsg = this.localizeMsg('forgot-pw-incorrect-username-btn','Fix UserName');
 
       setTimeout(function() {
         formDiv.appendChild(document.createElement('hr'));
@@ -168,7 +162,7 @@ this.removeBtnAndShowSpinner = function(btn) {
 
   // Localizes all labels inside formDiv
   this.localize = function(formDiv) {
-    if (typeof resources !== 'undefined') {
+    if (resources) {
       var resElms = formDiv.querySelectorAll('[data-res]');
       for (var n = 0; n < resElms.length; n++) {
         var elem = resElms[n];
@@ -185,8 +179,20 @@ this.removeBtnAndShowSpinner = function(btn) {
     }
   } // this.localize
 
+  // Returns the message associated with a given key. If the key isn't found, the message (msg) as passed is returned.
+  this.localizeMsg = function(resKey, msg) {
+    if (resources && resources[resKey]) {
+      return resources[resKey];
+    }
+    else {
+      this.logWarning( "Translation missing for resource key '" + resKey + "'");
+      return msg;
+    }
+  }
+
   this.mask = function(msg) {
     let propsToMask = ['username','password','bypasscode','otpcode','questions','deviceid','requeststate','phonenumber','token','authntoken','trusttoken','userid'];
+
     var stars = '***';
     var temp;
     try {
@@ -277,7 +283,7 @@ this.removeBtnAndShowSpinner = function(btn) {
     const inputFields = formDiv.getElementsByTagName("INPUT");
     var isError = false;
     for (i=0; i < inputFields.length; i++) {
-      this.logMsg('Validating field ' + inputFields[i].name);
+      this.logMsg('Validating field ' + inputFields[i].id);
       if (inputFields[i].required && inputFields[i].value.trim() === '') {
         isError = true;
         // Toggling the element class for styling on error.
@@ -285,14 +291,12 @@ this.removeBtnAndShowSpinner = function(btn) {
       }
     }
     if (isError) {
-      var errorMessage = 'Required field empty';
-      if (typeof resources !== 'undefined') {
-        errorMessage = resources["error-required-fld"];
-      }
+      let errorMessage = this.localizeMsg('error-required-fld','Required field empty');
       this.setLoginErrorMessage({code:'', msg:errorMessage});
       formDiv.querySelector("#submit-btn").disabled = false;
       return false;
     }
+    this.logMsg('Validation OK.');
     this.removeBtnAndShowSpinner(formDiv.querySelector("#submit-btn"));
     return true;
   }
@@ -310,29 +314,35 @@ this.removeBtnAndShowSpinner = function(btn) {
   }
 
   // Handles onClick event for submiting form data.
-  this.handleClickToSubmitEvent = function(formDiv, obj, methodName) {
+  this.handleClickToSubmitEvent = function(formDiv, obj, methodName, includeAuthnFactor) {
     const self = this;
     formDiv.querySelector("#submit-btn").onclick = function() {
       if (obj.validateForm(formDiv)) {
         const payload = obj.buildPayload(methodName, formDiv);
         if (payload) { // Giving a chance for buildPayload to fail.
-          self.logMsg("Invoking " + methodName + " with payload " + self.mask(payload));
-          obj.sdk[methodName](payload);
+          self.logMsg("Invoking " + methodName + " with credentials " + self.mask(payload));
+          obj.sdk[methodName](payload, includeAuthnFactor);
+        }
+        else {
+          this.log("handleClickToSubmitEvent: [BUG] payload must not be null");
         }
       }
     }
   }
 
   // Handles onKeyPress event for submiting form data.
-  this.handleKeyPressToSubmitEvent = function(formDiv, elem, obj, methodName) {
+  this.handleKeyPressToSubmitEvent = function(formDiv, elem, obj, methodName, includeAuthnFactor) {
     const self = this;
     elem.onkeypress = function(event) {
       if (event.keyCode == 13) {
         if (obj.validateForm(formDiv)) {
           const payload = obj.buildPayload(methodName, formDiv);
           if (payload) { // Giving a chance for buildPayload to fail.
-            self.logMsg("Invoking " + methodName + " with payload " + self.mask(payload));
-            obj.sdk[methodName](payload);
+            self.logMsg("Invoking " + methodName + " with credentials " + self.mask(payload));
+            obj.sdk[methodName](payload, includeAuthnFactor);
+          }
+          else {
+            this.log("handleKeyPressToSubmitEvent: [BUG] payload must not be null");
           }
         }
       }
@@ -348,8 +358,13 @@ this.removeBtnAndShowSpinner = function(btn) {
 
   // Builds the expected credentials payload to the respective API in the SDK, here identified by methodName.
   this.buildPayload = function(methodName, formDiv) {
+
+    let preferredFactorElem = document.getElementById("preferredFactorOption");
+
     switch (methodName) {
       case 'postCreds':
+        // ER #1. Saving the request origin. This is read later for determining the user preferred factor.
+        this.setUnPwOrigin("true");
         return {"username": document.getElementById("userid").value, "password": document.getElementById("password").value};
 
       case 'enrollSecurityQuestions':
@@ -372,10 +387,7 @@ this.removeBtnAndShowSpinner = function(btn) {
             secQuestions[qi]=qesObj;
           }
           else {
-            var errorMsg = 'Same security question is chosen twice. Please, select another question';
-            if (typeof resources !== 'undefined') {
-              errorMsg = resources["enroll-qa-error-sameq-twice-msg"];
-            }
+            var errorMsg = this.localizeMsg('enroll-qa-error-sameq-twice-msg','Same security question is chosen twice. Please, select another question');
             this.setLoginErrorMessage({code:'', msg:errorMsg});
             return;
           }
@@ -390,29 +402,57 @@ this.removeBtnAndShowSpinner = function(btn) {
             questions[i] = {'questionId':inputElements[i].id, 'answer':inputElements[i].value};
           }
         }
-        return {"questions": questions};
+        var payload = {};
+        payload["questions"] = questions;
+
+        if (preferredFactorElem && preferredFactorElem.checked) {
+          // DeviceId is not need for setting Security Questions as preferred factor.
+          payload["preferred"] = true;
+        }
+
+        return payload;
 
       case 'enrollOtpEmail':
           return {"otpCode": document.getElementById("otpCode").value};
 
-      case 'postOtp':
-        return {"otpCode": document.getElementById("otpCode").value};
+      case 'postEmailOtp':
+        var payload = {};
+        payload["otpCode"] = document.getElementById("otpCode").value;
+
+        if (preferredFactorElem && preferredFactorElem.checked) {
+          payload["preferred"] = true;
+          if (this.getSelectedDevice()) {
+            payload["deviceId"] = this.getSelectedDevice().deviceId;
+          }
+        }
+        return payload;
+
+      case 'postSmsOtp':
+        var payload = {};
+        payload["otpCode"] = document.getElementById("otpCode").value;
+
+        if (preferredFactorElem && preferredFactorElem.checked) {
+          payload["preferred"] = true;
+          if (this.getSelectedDevice()) {
+            payload["deviceId"] = this.getSelectedDevice().deviceId;
+          }
+        }
+        return payload;
 
       case 'initEnrollMobileNumber':
           return {"phoneNumber": document.getElementById("mobileNumber").value};
 
       case 'submitTOTP':
-//        return {"otpCode": document.getElementById("otpCode").value};
         var payload = {};
         payload["otpCode"] = document.getElementById("otpCode").value;
-        let deviceIdElem = document.getElementById("deviceId")
-        if (deviceIdElem) {
-          payload["deviceId"] = deviceIdElem.value;
+        if (this.getSelectedDevice()) {
+          payload["deviceId"] = this.getSelectedDevice().deviceId;
         }
-        let preferredElem = document.getElementById("preferred");
-        if (preferredElem && preferredElem.value === 'true') {
+
+        if (preferredFactorElem && preferredFactorElem.checked) {
           payload["preferred"] = true;
         }
+
         return payload;
 
       case 'submitBypasscode':
@@ -426,15 +466,37 @@ this.removeBtnAndShowSpinner = function(btn) {
          return {"token": this.shortlived_token, "password": document.getElementById("confresetPassword").value};
         }
         else {
-          var errorMsg = 'Password and Confirm Password did not match! Please, retry.';
-          if (typeof resources !== 'undefined') {
-            errorMsg = resources['reset-pw-nomatch-msg'];
-          }
+          var errorMsg = this.localizeMsg('reset-pw-nomatch-msg','Password and Confirm Password did not match! Please, retry.');
           this.setLoginErrorMessage({code:'', msg:errorMsg});
           return;
         };
       case 'initAuthnOtpEmail':
         return {"deviceId" : '' };
+
+      case 'submitAcceptTerms':
+        if ( ! document.getElementById("termsconsent").checked ) {
+          var errorMsg = this.localizeMsg('must-accept-terms','You must accept the terms of use to proceed');
+          this.setLoginErrorMessage({code:'', msg:errorMsg});
+          return;
+        }
+        // otherwise it's checked. So build the payload
+
+        return true;
+
+      case 'submitPushPoll':
+        this.logMsg('submitPushPoll...');
+        var payload = {};
+        if (preferredFactorElem && preferredFactorElem.checked) {
+          payload["preferred"] = true;
+          if (this.getSelectedDevice()) {
+            payload["deviceId"] = this.getSelectedDevice().deviceId;
+          }
+
+        }
+        return payload;
+
+      default:
+        alert("Sorry, buggy code.")
     }
   }
 
@@ -444,10 +506,7 @@ this.removeBtnAndShowSpinner = function(btn) {
     if (payload.mfaSettings) {
       this.logMsg('Is Enrollment required? ' + payload.mfaSettings.enrollmentRequired);
       if (!payload.mfaSettings.enrollmentRequired) {
-        var skipEnrollMsg = "Skip Enrollment";
-        if (typeof resources !== 'undefined') {
-          skipEnrollMsg = resources['enroll-skip-msg'];
-        }
+        var skipEnrollMsg = this.localizeMsg('enroll-skip-msg','Skip Enrollment');
         var skipEnrollDivElem = document.createElement('div');
         skipEnrollDivElem.classList.add('sameline');
         skipEnrollDivElem.innerHTML = '<div class="hr"><hr class="left"><span class="hr-text" data-res="or-msg">OR</span><hr class="right"></div>';
@@ -473,12 +532,9 @@ this.removeBtnAndShowSpinner = function(btn) {
 
     if (formDiv && (formDiv.step === "enrollment")) {
       this.logMsg('Adding switch enroll factor option...');
-      var enrollSwitchMsg = "Switch Factor to Enroll";
-      var orMsg = "OR";
-      if (typeof resources !== 'undefined') {
-        enrollSwitchMsg = resources['enroll-switch-msg'];
-        orMsg = resources['or-msg'];
-      }
+
+      let enrollSwitchMsg = this.localizeMsg('enroll-switch-msg','Switch Factor to Enroll');
+      let orMsg = this.localizeMsg('or-msg','OR');
 
       var switchEnrollDivElem = document.createElement('div');
       switchEnrollDivElem.classList.add('newline');
@@ -504,7 +560,7 @@ this.removeBtnAndShowSpinner = function(btn) {
 
     this.logMsg("Which: " + which);
     this.logMsg("Step: " + step);
-    this.logMsg("payload: " + this.mask(payload));
+    this.logMsg("Payload: " + this.mask(payload));
 
     // "which" will be the key to this.AuthenticationFactorInfo
     var formDiv = document.createElement('div');
@@ -514,6 +570,20 @@ this.removeBtnAndShowSpinner = function(btn) {
     // our own tag so we can suppress this option if the user clicks alternative
     formDiv.whichFactorForm = which;
     formDiv.step = step;
+
+    // Authn API not always set the displayName in the response.
+    // For instance, this is the case when a backup factor is being initiated for the 2nd time in the same session.
+    if (payload && payload.displayName) {
+      formDiv.whichDisplayName = payload.displayName;
+    }
+    else {
+      if (this.getSelectedDevice()) {
+        formDiv.whichDisplayName = this.getSelectedDevice().displayName;
+      }
+      else {
+        formDiv.whichDisplayName = '';
+      }
+    }
 
     // There is ONE special case - email
     if ((which==undefined) && (payload["EMAIL"])) {
@@ -526,14 +596,33 @@ this.removeBtnAndShowSpinner = function(btn) {
     }
     else
     if (this.AuthenticationFactorInfo[which]) {
-      if ( step == "submitCreds" ) {
+      if ( step === "submitCreds" ) {
         (this.AuthenticationFactorInfo[which]["loginFormFunction"])(formDiv,payload);
 
         // hide stuff that is not needed except on the initial screen
-        if (which != "USERNAME_PASSWORD") {
+        if (which !== "USERNAME_PASSWORD") {
           Array.prototype.slice.call(document.querySelectorAll('.hidelater')).forEach(function(e) { // Making MS (IE and Edge) family happy
             e.style.visibility = "hidden";
           });
+
+          // Issue #1. Checking whether or not displaying the option for setting preferred factor.
+          if (which !== 'BYPASSCODE' &&
+                (this.getPreferredFactor() &&
+                    (this.getPreferredFactor().factor !== which ||
+                        (this.getPreferredFactor().displayName && this.getPreferredFactor().displayName !== formDiv.whichDisplayName)
+                    )
+                )
+              ) {
+            var preferredFactorDiv = document.createElement('div');
+            preferredFactorDiv.innerHTML =
+              '<label><span>' +
+                '<input type="checkbox" id="preferredFactorOption">' +
+                '<span data-res="preferredFactor-msg">Set this factor as preferred</span>'+
+              '</span></label>';
+
+            formDiv.insertBefore(preferredFactorDiv, formDiv.querySelector("#submit-btn"));
+          }
+          // End of Issue #1
 
           if (payload.trustedDeviceSettings) {
             var trustedDeviceDiv = document.createElement('div');
@@ -562,10 +651,8 @@ this.removeBtnAndShowSpinner = function(btn) {
             divHr.innerHTML = '<hr class="left"><span class="hr-text" data-res="or-msg">OR</span><hr class="right">';
             formDiv.appendChild(divHr);
 
-            var altFactorsMsg = "Use an Alternative Factor";
-            if (typeof resources !== 'undefined') {
-              altFactorsMsg = resources['backup-btn'];
-            }
+            let altFactorsMsg = this.localizeMsg('backup-btn', 'Use an Alternative Factor');
+
             var altFactorsDivElem = document.createElement('div');
             altFactorsDivElem.classList.add('sameline');
             altFactorsDivElem.innerHTML = '<a href="#" class="info" id="backupfactors-btn">' + altFactorsMsg + '</a>';
@@ -590,7 +677,7 @@ this.removeBtnAndShowSpinner = function(btn) {
         this.replaceDiv("signin-div",formDiv,true);
       }
       else
-      if (step = "enrollment") {
+      if (step === "enrollment") {
         // SMS special case where we need to 'submitCreds' during enrollment
         if (which === 'SMS' && payload.SMS && payload.SMS.credentials[0] === "otpCode") {
           (this.AuthenticationFactorInfo[which]["loginFormFunction"])(formDiv,payload);
@@ -609,18 +696,18 @@ this.removeBtnAndShowSpinner = function(btn) {
   this.buildUidPwForm = function(formDiv,IDPdata) {
     this.buildFirstForm(formDiv,true,IDPdata);
   }
-  
+
   // Builds the main form, allowing IDP selection
   this.buildIdpChooserForm = function(formDiv,IDPdata) {
     this.buildFirstForm(formDiv,false,IDPdata);
   }
-  
+
   // this function builds both the UID + PW and/or the IDP chooser form
   // this is all in one function to avoid duplicating code or comments
   // the boolean showUidPw determines whether to show the uid+pw portion
   this.buildFirstForm = function(formDiv,showUidPw,IDPdata) {
     const self = this;
-    
+
     // always show the header message
     formDiv.innerHTML =
         '<h3 data-res="signin-hdr">Welcome</h3>';
@@ -639,7 +726,7 @@ this.removeBtnAndShowSpinner = function(btn) {
     if ( showUidPw && IDPdata ) {
       formDiv.innerHTML += '<div class="hr"><hr class="left"><span class="hr-text" data-res="or-msg">OR</span><hr class="right"></div>';
     }
-    
+
     // and finally build the IDP list
     if ( IDPdata ) {
       formDiv.innerHTML += '<label class="error-msg" id="social-login-error-msg"></label>';
@@ -721,39 +808,35 @@ this.removeBtnAndShowSpinner = function(btn) {
     return formDiv;
   }; // this.buildFirstForm
 
-  // Builds the OTP form
-  this.buildOtpForm = function(formDiv,payload) {
-
-    var displayName;
-    if(payload.displayName){
-       displayName=payload.displayName;
-       if(payload.EMAIL){
-           this.setEMAILDisplayName(displayName);
-       }
-       else if(payload.SMS){
-           this.setSMSDisplayName(displayName);
-       }
-
-    }
-    else if (payload.SMS) {
-        displayName = this.getSMSDisplayName();
-    }
-    else if(payload.EMAIL){
-          displayName = this.getEMAILDisplayName();
-    }
+  // Builds the Email OTP form
+  this.buildEmailOtpForm = function(formDiv,payload) {
 
     formDiv.innerHTML +=
         '<h3 data-res="otp-hdr">Verifying OTP</h3>' +
-        '<div class="sameline"><span class="info" data-res="otp-info-msg">Please enter OTP code sent to </span><span class="info">' + displayName + '</span></div>' +
+        '<div class="sameline"><span class="info" data-res="otp-info-msg">Please enter OTP code sent to </span><span class="device-name">' + formDiv.whichDisplayName + '</span></div>' +
         '<label><span data-res="otp-fld">OTP Code</span><input type="text" id="otpCode" required></label>' +
         '<label class="error-msg" id="login-error-msg"></label>' +
         '<button type="button" class="submit" id="submit-btn" data-res="otp-submit-btn">Verify</button>';
 
-    this.handleClickToSubmitEvent(formDiv,this,'postOtp');
-    this.handleKeyPressToSubmitEvent(formDiv,formDiv.querySelector("#otpCode"),this,'postOtp');
+    this.handleClickToSubmitEvent(formDiv,this,'postEmailOtp');
+    this.handleKeyPressToSubmitEvent(formDiv,formDiv.querySelector("#otpCode"),this,'postEmailOtp');
 
-  } // this.buildOtpForm
+  } // this.buildEmailOtpForm
 
+  // Builds the Email OTP form
+  this.buildSmsOtpForm = function(formDiv,payload) {
+
+    formDiv.innerHTML +=
+        '<h3 data-res="otp-hdr">Verifying OTP</h3>' +
+        '<div class="sameline"><span class="info" data-res="otp-info-msg">Please enter OTP code sent to </span><span class="device-name">' + formDiv.whichDisplayName + '</span></div>' +
+        '<label><span data-res="otp-fld">OTP Code</span><input type="text" id="otpCode" required></label>' +
+        '<label class="error-msg" id="login-error-msg"></label>' +
+        '<button type="button" class="submit" id="submit-btn" data-res="otp-submit-btn">Verify</button>';
+
+    this.handleClickToSubmitEvent(formDiv,this,'postSmsOtp');
+    this.handleKeyPressToSubmitEvent(formDiv,formDiv.querySelector("#otpCode"),this,'postSmsOtp');
+
+  } // this.buildSmsOtpForm
 
   // Builds the Security Questions form.
   this.buildSecQuestionsForm = function(formDiv,payload) {
@@ -833,7 +916,7 @@ this.removeBtnAndShowSpinner = function(btn) {
 
     formDiv.innerHTML +=
           '<h3 data-res="enroll-otp-hdr">Enrolling in OTP over E-Mail</h3>' +
-          '<div class="sameline"><span class="info" data-res="enroll-otp-info-msg">Please, enter OTP sent to </span><span class="info">' + payload.displayName + '</span></div>' +
+          '<div class="sameline"><span class="info" data-res="enroll-otp-info-msg">Please, enter OTP sent to </span><span class="device-name">' + payload.displayName + '</span></div>' +
           '<label><span data-res="enroll-otp-fld">OTP Code</span><input type="text" id="otpCode" required></label>' +
           '<label class="error-msg" id="login-error-msg"></label>' +
           '<button type="button" class="submit" id="submit-btn" data-res="enroll-otp-submit-btn">Enroll</button>';
@@ -934,7 +1017,7 @@ this.removeBtnAndShowSpinner = function(btn) {
       selectLabel.appendChild(sel);
 
       var answerLabel = document.createElement('label');
-      answerLabel.innerHTML = '<span data-res="enroll-qa-answer-fld">Answer</span><input type="text" id="ans-' + qIndex + '" required>';
+      answerLabel.innerHTML = '<span data-res="enroll-qa-answer-fld">Answer</span><input type="password" id="ans-' + qIndex + '" required>';
 
       var hintLabel = document.createElement('label');
       hintLabel.innerHTML = '<span data-res="enroll-qa-hint-fld">Hint</span><input type="text" id="hint-'+ qIndex + '">';
@@ -991,9 +1074,14 @@ this.removeBtnAndShowSpinner = function(btn) {
       self.sdk.createToken();
     };
 
-    document.getElementById("submit-btn-factor").onclick = function () {
-      self.sdk.getEnrollmentFactors();
-    };
+    // Button event listener for enroll in another factors should only be available if enrollment is in nextOp array.
+    // Part of bug fix reported on 12/04/18 by Pulkit Agarwal.
+    if (payload.nextOp.indexOf("enrollment") >= 0) {
+      document.getElementById("submit-btn-factor").onclick = function () {
+        self.sdk.getEnrollmentFactors();
+      };
+    }
+
 
   } // this.displayEnrollmentSuccess
 
@@ -1063,26 +1151,9 @@ this.removeBtnAndShowSpinner = function(btn) {
     else {
       buttonText = "Login";
       dataResKey = "totp-submit-btn";
-      displayName = null;
 
       formDiv.innerHTML += '<h3 data-res="totp-hdr">Verifying Time-based OTP</h3>';
-
-      if (payload.displayName) {
-        displayName = payload.displayName;
-      }
-      else if (payload.TOTP.enrolledDevices) {
-        displayName = payload.TOTP.enrolledDevices[0].displayName;
-      }
-      if (displayName != null) {
-        formDiv.innerHTML += '<div class="sameline"><span class="info" data-res="totp-info-msg">Please enter TOTP code as displayed in </span><span class="info">' + displayName + '</span></div>';
-      }
-      // Handling TOTP as alternative factor
-      if (payload.TOTP.credentials.indexOf("deviceId") != -1 && payload.TOTP.enrolledDevices[0].deviceId) {
-        formDiv.innerHTML += '<input type="hidden" id="deviceId" value="' + payload.TOTP.enrolledDevices[0].deviceId + '">';
-      }
-      if (payload.TOTP.credentials.indexOf("preferred") != -1) {
-        formDiv.innerHTML += '<input type="hidden" id="preferred" value="true">';
-      }
+      formDiv.innerHTML += '<div class="sameline"><span class="info" data-res="totp-info-msg">Please enter TOTP code as displayed in </span><span class="device-name">' + formDiv.whichDisplayName + '</span></div>';
     }
 
     formDiv.innerHTML +=
@@ -1090,8 +1161,8 @@ this.removeBtnAndShowSpinner = function(btn) {
       '<label class="error-msg" id="login-error-msg"></label>' +
       '<button type="button" class="submit" id="submit-btn" data-res="' + dataResKey + '">' + buttonText + '</button>';
 
-      this.handleClickToSubmitEvent(formDiv,this,'submitTOTP');
-      this.handleKeyPressToSubmitEvent(formDiv,formDiv.querySelector("#otpCode"),this,'submitTOTP');
+      this.handleClickToSubmitEvent(formDiv,this,'submitTOTP',payload.alternate);
+      this.handleKeyPressToSubmitEvent(formDiv,formDiv.querySelector("#otpCode"),this,'submitTOTP',payload.alternate);
   } //this.buildTOTPForm
 
   // Builds the form for push notifications enrollment via OMA App.
@@ -1119,9 +1190,22 @@ this.removeBtnAndShowSpinner = function(btn) {
 
   this.buildPushLoginForm = function(formDiv,payload) {
     formDiv.innerHTML =
-      '<h3 data-res="push-hdr">Verifying Push Notification</h3>' +
-      '<div class="newline">' +
-        '<span class="info" data-res="push-info-msg">A notification has been sent to the Oracle Mobile Authenticator App on your mobile device.</span>' +
+      '<h3 data-res="push-hdr">Verifying Push Notification</h3>';
+      if (formDiv.whichDisplayName) {
+        formDiv.innerHTML +=
+        '<div class="newline">' +
+          '<span class="info" data-res="push-info-msg">Notification sent to the Authenticator App on the following mobile device:</span>' +
+          '<span class="device-name">' + formDiv.whichDisplayName + '</span>' +
+        '</div>';
+      }
+      else {
+        formDiv.innerHTML +=
+        '<div class="newline">' +
+          '<span class="info" data-res="push-info-nodisplayname-msg">Notification sent to the Authenticator App on your mobile device</span>' +
+        '</div>';
+      }
+      formDiv.innerHTML +=
+      '<div class="sameline">' +
         '<span class="info" data-res="push-approve-info-msg">You must approve it for moving forward.</span>'+
       '</div>' +
       '<div class="loader" data-res="loading-msg">Loading...</div>' +
@@ -1144,55 +1228,97 @@ this.removeBtnAndShowSpinner = function(btn) {
 
   } // this.buildBypasscodeLoginForm
 
+  // Build the Terms of Use form
+  this.buildTermsForm = function(formDiv,payload) {
+    formDiv.innerHTML +=
+      '<div class="consent">' +
+        '<div class="consenttext">' + payload.TOU.statement + '</div>' +
+        '<div class="consentcheckbox"><input type="checkbox" id="termsconsent"/>' +
+        '<span style="display:none"></span>' +
+        '<span data-res="signin-termsconsent">I Agree</span></div>' +
+        '<label class="error-msg" id="login-error-msg"></label>' +
+      '</div>' +
+      '<button type="button" class="submit" id="submit-btn" data-res="bypass-submit-btn">Submit</button>';
+
+    this.handleClickToSubmitEvent(formDiv,this,'submitAcceptTerms');
+
+  } // buildTermsForm
+
   // Displays a form with backup factors the user can choose from
   this.displayAltFactorsSubform = function(payload) {
     const self = this;
     let otherFactorsDiv = document.createElement('div');
-    otherFactorsDiv.innerHTML += '<div class="sameline"><span class="info" data-res="backup-msg">Choose an alternative authentication method:</span></div>';
+    otherFactorsDiv.classList.add("alt-factor-pane");
+    otherFactorsDiv.innerHTML += '<div class="alt-factor-header"><span class="info" data-res="backup-msg">Choose an alternative authentication method:</span></div>';
 
-    let numAdditionalFactors = 0;
+    // which factor is currently on screen?
+    let currentFactor = document.getElementById("signin-div").whichFactorForm;
+    // which device displayName is currently being used?
+    let displayNameOnScreen = document.getElementById("signin-div").whichDisplayName;
 
     payload.nextAuthFactors.forEach(function(factor) {
-      // which factor is currently on screen?
-      let currentfactor = document.getElementById("signin-div").whichFactorForm;
-      // this should never be blank but be careful
-      if ( ( currentfactor ) &&
-           ( currentfactor != factor ) ) {
-
-        if ( self.AuthenticationFactorInfo[factor] ) {
-          let div = document.createElement('div');
-          div.classList.add("tooltip");
-          div.innerHTML +=
-              '<button type="button" class="button submit" id="' + factor + '" data-res="factor-' + factor.toLowerCase() + '-btn">' + self.AuthenticationFactorInfo[factor].label + '</button>' +
-              '<span class="tooltiptext" data-res="factor-' + factor.toLowerCase() + '-desc">' + self.AuthenticationFactorInfo[factor].description + '</span>';
-
-          div.querySelector('.button').addEventListener('click', function(event) {
-            //self.displayForm(factor,"submitCreds",payload);
-            self.initiateAlternativeFactor(factor, payload);
-          });
-
-          otherFactorsDiv.appendChild(div);
+      if ( self.AuthenticationFactorInfo[factor] ) {
+        // Case when user is enrolled with the same factor via multiples devices.
+        if (payload[factor] && payload[factor].enrolledDevices) {
+          for (i=0; i < payload[factor].enrolledDevices.length; i++) {
+            if (displayNameOnScreen != payload[factor].enrolledDevices[i].displayName || currentFactor !== factor) {
+              let div = document.createElement('div');
+              //div.classList.add("tooltip");
+              div.classList.add("alt-factor-row");
+              div.innerHTML +=
+                '<button type="button" class="alt-factor-button" data-res="factor-' + factor.toLowerCase() + '-msg-short" id="' + factor + '">' + factor + '</button><div class="alt-factor-text"><span data-res="factor-' + factor.toLowerCase() + '-msg">' + self.AuthenticationFactorInfo[factor].label + '</span>&nbsp;<span class=device-name>' + payload[factor].enrolledDevices[i].displayName + '</span></div>';
+//                '<span class="tooltiptext" data-res="factor-' + factor.toLowerCase() + '-desc">' + self.AuthenticationFactorInfo[factor].description + '</span>';
+              let currentDevice = payload[factor].enrolledDevices[i];
+              div.querySelector('.alt-factor-button').addEventListener('click', function(event) {
+                self.logMsg(currentDevice.displayName + ':' + currentDevice.deviceId);
+                self.initiateAlternativeFactor(factor, payload, currentDevice);
+              });
+              otherFactorsDiv.appendChild(div);
+            }
+          }
         }
-      }
+        else {
+          // Case where multiple devices is not supported.
+          if (currentFactor && currentFactor !== factor) {
+            let div = document.createElement('div');
+            //div.classList.add("tooltip");
+            div.classList.add("alt-factor-row");
+            div.innerHTML +=
+              '<button type="button" class="alt-factor-button" data-res="factor-' + factor.toLowerCase() + '-msg-short" id="' + factor + '">' + factor + '</button><div class="alt-factor-text"><span data-res="factor-' + factor.toLowerCase() + '-msg">' + self.AuthenticationFactorInfo[factor].label + '</span></div>';
+  //            '<span class="tooltiptext" data-res="factor-' + factor.toLowerCase() + '-desc">' + self.AuthenticationFactorInfo[factor].description + '</span>';
+              div.querySelector('.alt-factor-button').addEventListener('click', function(event) {
+                self.initiateAlternativeFactor(factor, payload);
+              });
+            otherFactorsDiv.appendChild(div);
+          }
+        }
+      };
     });
 
     this.replaceDiv("backupFactorChooser",otherFactorsDiv,false);
   };
 
-  this.initiateAlternativeFactor = function(factor, payload) {
+  this.initiateAlternativeFactor = function(factor, payload, device) {
+    this.logMsg('Alternative factor selected: ' + factor);
+    // Need to save selected device here, so it can be retrieved back later in the flow,
+    // as notice that a roundtrip to IDCS is needed for factors that require some initiation.
+    this.setSelectedDevice(device);
+    // Setting payload.alternate=true because some factors may require a different request body when used as alternative factor.
+    // This is currently (as of Jan19) the case of TOTP.
+    payload.alternate = 'true';
     this.stopPushPoll(); // we must stop polling for push because a new factor has been chosen.
     switch (factor) {
       case 'EMAIL':
-        this.sdk.initAuthnOtpEmail({"deviceId":payload[factor].enrolledDevices[0].deviceId});
+        this.sdk.initAuthnOtpEmail({"deviceId":device.deviceId});
         break;
       case 'SMS':
-        this.sdk.initAuthnMobileNumber({"deviceId":payload[factor].enrolledDevices[0].deviceId,"preferred":true});
+        this.sdk.initAuthnMobileNumber({"deviceId":device.deviceId});
         break;
       case 'TOTP':
         this.displayForm(factor,"submitCreds",payload);
         break;
       case 'PUSH':
-        this.sdk.initAuthnPush({"deviceId":payload[factor].enrolledDevices[0].deviceId});
+        this.sdk.initAuthnPush({"deviceId":device.deviceId});
         break;
       case 'SECURITY_QUESTIONS':
         this.displayForm(factor,"submitCreds",payload);
@@ -1308,30 +1434,53 @@ this.removeBtnAndShowSpinner = function(btn) {
       this.setRequestState(payload.requestState);
 
       if (payload.nextOp[0] === 'credSubmit') {
-        if ( payload.nextAuthFactors ) {
-          if ( payload.nextAuthFactors.length > 1 ) {
+        if (payload.nextAuthFactors) {
+
+          var sameFactorMultipleDevices = false;
+          payload.nextAuthFactors.forEach(function(factor) {
+            if (payload[factor] && payload[factor].enrolledDevices && payload[factor].enrolledDevices.length > 0) {
+              sameFactorMultipleDevices = true;
+            }
+          });
+          // Fix on bug reported by Pulkit Agarwal on 12/04/18. Used to happen when MFA is active for a Social User that isn't registered in IDCS.
+          // We must send the user to enrollment where enrollment is also in nextOp array.
+          if ( payload.nextOp[1] === "enrollment" ) {
+            this.displayEnrollmentOptionsForm(payload);
+          }
+          // End of fix.
+          // If there's more than one nextAuthFactor or multiple devices for the same factor, we go to alternative factors flow.
+          else if (payload.nextAuthFactors.length > 1 || sameFactorMultipleDevices) {
             this.displayAltFactorsSubform(payload);
           }
 
           else {
+            // ER #1
+            // Doing this because the API response not always tell whether the factor is the preferred one.
+            // Setting the user preferred factor. It's the one returned from username/password submit.
+            // We may also come here via Social Login, in which case the origin is undefined.
+            if (!this.getUnPwOrigin() || this.getUnPwOrigin() === "true") {
+              this.setPreferredFactor({factor:payload.nextAuthFactors[0],displayName:payload.displayName});
+              this.setUnPwOrigin("false");
+            }
+            // End of ER #1.
             this.displayForm(payload.nextAuthFactors[0],"submitCreds",payload);
           }
         }
         else
         if (payload.nextOp.indexOf('enrollment') == -1) { // Alternative factors case
           which = Object.keys(self.AuthenticationFactorInfo).filter( function(x) { return x in payload;});
-          this.logMsg('Factor is ' + which[0]);
+          this.logMsg('nextOperation: Factor is ' + which[0]);
 
           if (typeof which[0] === 'undefined') { // PUSH alternative factor case, when there's no 'PUSH' in the payload.
             if (payload.status === 'pending' && payload.cause && payload.cause[0].code === 'AUTH-1108') {
-              which[0] = 'PUSH';
-              this.logMsg('Setting factor to ' + which[0]);
-              if (payload.displayName) { // displayName is on payload for PUSH only when PUSH is chosen as an alternative method.
-                this.logMsg('About to display form for ' + which[0] + '[submitCreds] with payload ' + this.mask(payload));
-                this.displayForm(which[0],"submitCreds",payload);
+              let signinDiv = document.getElementById("signin-div");
+              if (signinDiv && signinDiv.whichFactorForm === "PUSH") {
+                self.logMsg( signinDiv.whichFactorForm + " is active");
+                this.logMsg('Waiting on ' + signinDiv.whichFactorForm + '[submitCreds] with payload ' + this.mask(payload));
               }
               else {
-                this.logMsg('Waiting on ' + which[0] + '[submitCreds] with payload ' + this.mask(payload))
+                this.logMsg('About to display form for PUSH [submitCreds] with payload ' + this.mask(payload));
+                this.displayForm("PUSH","submitCreds",payload);
               }
             }
           }
@@ -1362,13 +1511,18 @@ this.removeBtnAndShowSpinner = function(btn) {
           this.logMsg('Do not know what to do with given payload.');
         }
       }
-      else if (payload.nextOp.indexOf('enrollment') >= 0) {
+      // Fix on bug reported by Pulkit Agarwal on 12/04/18. Used to happen when there was only one MFA method active.
+      // Added the check payload.nextOp.indexOf('createToken') >= 0 below.
+      else if (payload.nextOp.indexOf('enrollment') >= 0 || payload.nextOp.indexOf('createToken') >= 0) {
         if (!payload.nextAuthFactors) {
           this.displayEnrollmentSuccess(payload);
         }
         else {
           this.displayEnrollmentOptionsForm(payload);
         }
+      }
+      else if (payload.nextOp[0] === 'acceptTOU') {
+        this.displayForm('TOU',"submitCreds",payload);
       }
       else {
         this.logMsg('Do not know what to do with given payload.');
@@ -1396,26 +1550,16 @@ this.removeBtnAndShowSpinner = function(btn) {
     if (error) {
       errorMsg = error.msg;
       if (error.code.indexOf('AUTH-1120') != -1) {
-        errorMsg = 'Invalid state. Please, reinitiate login';
-        if (typeof resources !== 'undefined') {
-          if (resources['error-AUTH-1120']) {
-            errorMsg = resources['error-AUTH-1120'];
-          }
-        }
+        errorMsg = this.localizeMsg('error-AUTH-1120','Invalid state. Please, reinitiate login');
+      }
+	    else if (error.code.indexOf('AUTH-1112') != -1) {
+        errorMsg = this.localizeMsg('error-AUTH-1112','Access denied');
       }
       else if (error.code.indexOf('SDK-AUTH') != -1) {
-        if (typeof resources !== 'undefined') {
-          if (resources['error-' + error.code]) {
-            errorMsg = resources['error-' + error.code];
-          }
-        }
+        errorMsg = this.localizeMsg('error-' + error.code,error.msg);
       }
       else if (error.code.indexOf('SSO-') != -1 && error.msg === 'undefined') {
-        if (typeof resources !== 'undefined') {
-          if (resources['error-' + error.code]) {
-            errorMsg = resources['error-' + error.code];
-          }
-        }
+        errorMsg = this.localizeMsg('error-' + error.code,'<Undefined error message>');
       }
       else {
         this.logMsg('Passing backend error message as is: ' + errorMsg);
@@ -1487,19 +1631,10 @@ this.removeBtnAndShowSpinner = function(btn) {
     return;
   }
 
-  this.setSMSDisplayName = function(dn) {
-    sessionStorage.setItem("smsDisplayName", dn);
-  }
-  this.setEMAILDisplayName = function(dn) {
-    sessionStorage.setItem("emailDisplayName", dn);
+  this.setAccessToken = function(at) {
+    return sessionStorage.setItem("signinAT", at);
   }
 
-  this.getSMSDisplayName = function() {
-    return sessionStorage.getItem("smsDisplayName");
-  }
-  this.getEMAILDisplayName = function() {
-    return sessionStorage.getItem("emailDisplayName");
-  }
   this.getAccessToken = function() {
     return sessionStorage.getItem("signinAT");
   }
@@ -1557,6 +1692,44 @@ this.removeBtnAndShowSpinner = function(btn) {
     return sessionStorage.getItem("isDeviceTrusted");
   }
 
+  // Issue #1
+  // The following six methods were introduced to support the preferred device feature.
+  this.setPreferredFactor = function(factor) {
+    sessionStorage.setItem("preferredFactor", JSON.stringify(factor));
+  }
+
+  this.getPreferredFactor = function() {
+    return JSON.parse(sessionStorage.getItem("preferredFactor"));
+  }
+
+  // This captures the device object (containing deviceId and displayName) selected by the user.
+  this.setSelectedDevice = function(device) {
+    this.logMsg('Setting selectedDevice: ' + JSON.stringify(device));
+    sessionStorage.setItem("device", JSON.stringify(device));
+  }
+
+  this.getSelectedDevice = function() {
+    var selectedDevice = sessionStorage.getItem("device")
+    this.logMsg('Getting selectedDevice: ' + selectedDevice);
+    try {
+      return JSON.parse(selectedDevice);
+    }
+    catch(e) {
+      return null;
+    }
+  }
+
+  // As of IDCS 18.4.2, the preferred factor is the factor returned as a result of successful username/password submit.
+  // So it must be stored and retrieved at a later time.
+  this.setUnPwOrigin = function(flag) {
+    sessionStorage.setItem("unPwOrigin", flag)
+  }
+
+  this.getUnPwOrigin = function() {
+    return sessionStorage.getItem("unPwOrigin");
+  }
+  // End of Issue #1.
+
   // This object is used mostly by method displayForm, telling it which form to build.
   const self=this;
   this.AuthenticationFactorInfo = {
@@ -1576,7 +1749,7 @@ this.removeBtnAndShowSpinner = function(btn) {
       description: "Send an email with a code to use",
       initEnrollFormFunction: function () { self.displayForm("spinner"), self.sdk.initEnrollOtpEmail();},
       enrollFormFunction: function (formDiv,payload) { self.buildOtpEmailEnrollmentForm(formDiv,payload);},
-      loginFormFunction: function (formdiv,payload) { self.buildOtpForm(formdiv,payload);},
+      loginFormFunction: function (formdiv,payload) { self.buildEmailOtpForm(formdiv,payload);},
     },
     SECURITY_QUESTIONS: {
       label: "Security Questions",
@@ -1589,7 +1762,7 @@ this.removeBtnAndShowSpinner = function(btn) {
       label: "SMS",
       description: "SMS to Mobile Number",
       enrollFormFunction: function (formDiv,payload) { self.buildSMSMobileEnrollmentForm(formDiv,payload);},
-      loginFormFunction: function (formdiv,payload) { self.buildOtpForm(formdiv,payload);},
+      loginFormFunction: function (formdiv,payload) { self.buildSmsOtpForm(formdiv,payload);},
     },
     PUSH: {
       label: "Oracle Authenticator App",
@@ -1604,12 +1777,17 @@ this.removeBtnAndShowSpinner = function(btn) {
       initEnrollFormFunction: function () { self.displayForm("spinner"), self.sdk.initEnrollOtpTotp();},
       // this is not a mistake - buildTOTPForm does both enroll and regular
       enrollFormFunction: function (formDiv,payload) { self.buildTOTPForm(formDiv,payload);},
-      loginFormFunction: function (formdiv,payload) { self.buildTOTPForm(formdiv,payload);},
+      loginFormFunction: function (formdiv,payload,device) { self.buildTOTPForm(formdiv,payload);},
     },
     BYPASSCODE: {
       label: "Bypass code",
       description: "Use a security bypass code from your list",
       loginFormFunction: function (formdiv,payload) { self.buildBypasscodeLoginForm(formdiv,payload);},
+    },
+    TOU: {
+      label: "Terms of Use",
+      description: "Terms of Use",
+      loginFormFunction: function (formdiv,payload) { self.buildTermsForm(formdiv,payload);},
     }
     // If/when enginering adds a new factor begin by copying and then uncommenting this block
     // NEW_ONE: {

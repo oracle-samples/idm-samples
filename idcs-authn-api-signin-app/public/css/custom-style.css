@@ -13,6 +13,19 @@ body {
   background: #e3e3e8;
 }
 
+.alt-factor-button {
+  text-transform: capitalize;
+  border-radius: 0;
+  box-shadow: -2px 2px 2px #aeaeb7;
+  background: #1a1aff;
+}
+
+.alt-factor-text {
+  color: #003366;
+  text-shadow: -2px 2px 2px #aeaeb7;
+  text-transform: none;
+}
+
 button {
   border-radius: 0;
 }
@@ -55,6 +68,10 @@ a {
 input {
   border: 1px solid rgba(0, 0, 0, 0.4);
   box-shadow: -2px 2px 2px #aeaeb7;
+}
+
+.img:before {
+  background-image: url("../images/custom-background.png");
 }
 
 .img__btn:after {

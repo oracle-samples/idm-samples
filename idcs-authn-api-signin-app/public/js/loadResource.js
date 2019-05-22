@@ -8,7 +8,7 @@ function logMsg(msg) {
 
 var lang = window.navigator.userLanguage || window.navigator.language;
 
-let supportedLanguages = ['en','pt','es','de','da','hi','it','nb'];
+let supportedLanguages = ['en','pt','es','de','da','hi','it','nb','sv','fr'];
 var resourcePath;
 
 if (lang) {
