@@ -148,7 +148,7 @@ Make sure the hostname of this sample application is reachable through the Inter
 | Administrator Password | Type the password you provided as environment variable for your SCIM gateway (value of ADMINPASS variable )              |
 | HTTP Operation Types   | \_\_ACCOUNT\_\_.Update=PUT                                                                                                   |
 
-**Note**: You need to use Oracle Identity Cloud Service's API to change the Port, SSL Enabled, Content-Type and Response-Type parameter to be able to use this Sample Application integrated with Oracle Identity Cloud Service.
+**Note**: You need to use Oracle Identity Cloud Service's API to change the Port, SSL Enabled, Content-Type and Accept-Type parameter to be able to use this Sample Application integrated with Oracle Identity Cloud Service.
 
 **Note**: Use the parameter table below to update the fields with the corresponding values using REST API:
 
@@ -156,8 +156,8 @@ Make sure the hostname of this sample application is reachable through the Inter
 |---------------|-------------------|
 | Port          | 6355              |
 | SSLEnabled    | false             |
-| Content-Type  | application/json  |
-| Response-Type | application/json  |
+| Content Type  | application/json  |
+| Accept Type | application/json  |
 
 After you update these parameters you can test connectivity between the application and Oracle Identity Cloud Service and then activate the application.
 
