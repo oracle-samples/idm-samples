@@ -1,7 +1,8 @@
 @ECHO OFF
 
 SET ADMINUSER=admin
-SET ADMINPASS=welcome1
+REM Provide password value for ADMINPASS
+SET ADMINPASS=
 SET PORT=6355
 
 REM setting DEBUG_LOGIN to true will enable logging both in node.js and
