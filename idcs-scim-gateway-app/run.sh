@@ -1,7 +1,8 @@
 #!/bin/sh
 
 export ADMINUSER=admin
-export ADMINPASS=Welcome1
+#Provide password value for ADMINPASS
+export ADMINPASS=
 export PORT=6355
 
 # setting DEBUG_LOGIN to true will enable logging both in node.js and
