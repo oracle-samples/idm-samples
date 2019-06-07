@@ -27,7 +27,7 @@ exports.findAll = function(req, res){
   //Check credentials
   if(users.validateAdminCredentials(req, res)){
     groupIDStore = JSON.parse(fs.readFileSync('./groupdb.json', 'utf8'));
-    logger.log('Found '+ groupIDStore.groups.length +' groups.');
+    logger.log('Found '+ groupIDStore.resources.length +' groups.');
     res.status(200).json(groupIDStore);
   }
 }
@@ -44,7 +44,7 @@ exports.findOne = function(req, res){
   logger.log('--');
   if(users.validateAdminCredentials(req, res)){
     groupIDStore = JSON.parse(fs.readFileSync('./groupdb.json', 'utf8'));
-    groupIDStore.groups.forEach(function(group, index) {
+    groupIDStore.resources.forEach(function(group, index) {
       if (group.id == req.params.id){
         logger.log('--Found group \''+ group.displayName +'\'');
         result = group;
@@ -66,14 +66,14 @@ exports.create = function(req, res){
   logger.log('--');
   if(users.validateAdminCredentials(req, res)){
     groupIDStore = JSON.parse(fs.readFileSync('./groupdb.json', 'utf8'));
-    logger.log('--Base contains '+ groupIDStore.groups.length +' groups.');
+    logger.log('--Base contains '+ groupIDStore.resources.length +' groups.');
     newGroup = req.body;
-    if(!groups.groupExistsByUserName(groupIDStore.groups, newGroup.displayName)){
+    if(!groups.groupExistsByUserName(groupIDStore.resources, newGroup.displayName)){
       logger.log('--This group doesn\'t exist in group ID Store.');
       id = sequenceNumber++;
       newGroup.id = ''+id
       newGroup.externalId = ''+id;
-      groupIDStore.groups[groupIDStore.groups.length] = newGroup;
+      groupIDStore.resources[groupIDStore.resources.length] = newGroup;
       fs.writeFileSync('./groupdb.json', JSON.stringify(groupIDStore, null, 2));
       logger.log('--Group \''+ newGroup.displayName  +'\' created.');
       res.status(201).json(newGroup);
@@ -97,8 +97,8 @@ exports.update = function(req, res){
   if(users.validateAdminCredentials(req, res)){
     groupIDStore = JSON.parse(fs.readFileSync('./groupdb.json', 'utf8'));
     toUpdateGroup = req.body;
-    if(groups.groupExistsByID(groupIDStore.groups, req.params.id)){
-      groupIDStore.groups.forEach(function(group, index){
+    if(groups.groupExistsByID(groupIDStore.resources, req.params.id)){
+      groupIDStore.resources.forEach(function(group, index){
         if (group.id == req.params.id){
           logger.log('--Found group \''+ group.displayName +'\'');
           for(var myKey in toUpdateGroup){
@@ -127,8 +127,8 @@ exports.delete = function(req, res){
   //Entering delete function.
   if(users.validateAdminCredentials(req, res)){
     groupIDStore = JSON.parse(fs.readFileSync('./groupdb.json', 'utf8'));
-    if(groups.groupExistsByID(groupIDStore.groups, req.params.id)){
-      groupIDStore.groups.forEach(function(group, index) {
+    if(groups.groupExistsByID(groupIDStore.resources, req.params.id)){
+      groupIDStore.resources.forEach(function(group, index) {
         if (group.id == req.params.id){
           logger.log('--Found group \''+ group.displayName +'\'');
           for(var i in groupIDStore) {
