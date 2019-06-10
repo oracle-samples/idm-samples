@@ -119,13 +119,9 @@ You can also change the sample application's source code so that instead of cont
 
 ### Update and Run the Custom SCIM Gateway Sample Application
 
-1. Edit the run script file in the  **root**  folder of the sample SCIM gateway application, update the file with the following values, and then save the file.
+1. Edit the run script file in the  **root**  folder of the sample SCIM gateway application, update the ADMINUSER and ADMINPASS values, and then save the file.
 **Note:** If you're running this application in a Unix or Mac environment, use the `run.sh` script. If you're using Windows, then use `run.bat`.
-```script
-export ADMINUSER=admin  
-export ADMINPASS=Welcome1  
-export PORT=6355
-```
+
 2. Open a command prompt or terminal, navigate to the **root** folder of the sample application, execute the run script for your operating system environment. You'll see log information that helps you understand what the sample application is doing.
 Make sure the hostname of this sample application is reachable through the Internet, so that Oracle Identity Cloud Service can contact the application
 
@@ -148,18 +144,7 @@ Make sure the hostname of this sample application is reachable through the Inter
 | Administrator Password | Type the password you provided as environment variable for your SCIM gateway (value of ADMINPASS variable )              |
 | HTTP Operation Types   | \_\_ACCOUNT\_\_.Update=PUT                                                                                                   |
 
-**Note**: You need to use Oracle Identity Cloud Service's API to change the Port, SSL Enabled, Content-Type and Accept-Type parameter to be able to use this Sample Application integrated with Oracle Identity Cloud Service.
-
-**Note**: Use the parameter table below to update the fields with the corresponding values using REST API:
-
-|  Parameter    | Value             |
-|---------------|-------------------|
-| Port          | 6355              |
-| SSLEnabled    | false             |
-| Content Type  | application/json  |
-| Accept Type | application/json  |
-
-After you update these parameters you can test connectivity between the application and Oracle Identity Cloud Service and then activate the application.
+**Note**: If you deploy and run this sample application in non-ssl mode or with a invalid certificate, then you may need to use Oracle Identity Cloud Service's API to change the **SSLEnabled** parameter to false, and the **Port** parameter to the corresponding port number your application runs. After you update these parameters you can test connectivity between the application and Oracle Identity Cloud Service and then activate the application.
 
 1. In the Identity Cloud Service console, expand the **Navigation Drawer**, click **Applications**, click your application, and then click **Provisioning** tab.
 2. Click  **Test Connectivity**  to verify that a connection can be established between Oracle Identity Cloud Service and your sample SCIM gateway application.

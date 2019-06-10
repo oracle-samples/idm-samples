@@ -19,7 +19,7 @@ if ( (!process.env.ADMINUSER) ||
 var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
-app.use(bodyParser.json());
+app.use(bodyParser.json({ type: 'application/scim+json' }));
 var config = require('./config.js');
 
 //Routes to Users endpoint

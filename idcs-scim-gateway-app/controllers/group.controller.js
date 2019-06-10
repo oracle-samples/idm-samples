@@ -19,13 +19,14 @@ var sequenceNumber = 100;
 //The list is in JSON format and contains the attribute "resources" with the
 // value of an array of JSON objects representing each group and their attributes.
 exports.findAll = function(req, res){
+  res.setHeader("content-type", "application/scim+json");
   logger.log('-----------------');
   logger.log('Entering groups findAll function.');
   logger.log('Body:');
   logger.log(req.body);
   logger.log('----');
   //Check credentials
-  if(users.validateAdminCredentials(req, res)){
+  if(users.authenticate(req, res)){
     groupIDStore = JSON.parse(fs.readFileSync('./groupdb.json', 'utf8'));
     logger.log('Found '+ groupIDStore.resources.length +' groups.');
     res.status(200).json(groupIDStore);
@@ -37,12 +38,13 @@ exports.findAll = function(req, res){
 //Once found, the group information is send back as JSON message, containing
 // all attributes and their values.
 exports.findOne = function(req, res){
+  res.setHeader("content-type", "application/scim+json");
   logger.log('-----------------');
   logger.log('Entering groups findOne function.');
   logger.log('Body:');
   logger.log(req.body);
   logger.log('--');
-  if(users.validateAdminCredentials(req, res)){
+  if(users.authenticate(req, res)){
     groupIDStore = JSON.parse(fs.readFileSync('./groupdb.json', 'utf8'));
     groupIDStore.resources.forEach(function(group, index) {
       if (group.id == req.params.id){
@@ -59,12 +61,13 @@ exports.findOne = function(req, res){
 //The user ID is generated and added to the JSON message before saving it
 // in the identity store.
 exports.create = function(req, res){
+  res.setHeader("content-type", "application/scim+json");
   logger.log('-----------------');
   logger.log('Entering groups create function.');
   logger.log('Body:');
   logger.log(req.body);
   logger.log('--');
-  if(users.validateAdminCredentials(req, res)){
+  if(users.authenticate(req, res)){
     groupIDStore = JSON.parse(fs.readFileSync('./groupdb.json', 'utf8'));
     logger.log('--Base contains '+ groupIDStore.resources.length +' groups.');
     newGroup = req.body;
@@ -89,12 +92,13 @@ exports.create = function(req, res){
 //Once found, the attributes that appear in the JSON request body have their values
 // updated in the group store.
 exports.update = function(req, res){
+  res.setHeader("content-type", "application/scim+json");
   logger.log('-----------------');
   logger.log('Entering groups update function.');
   logger.log('Body:');
   logger.log(req.body);
   logger.log('--');
-  if(users.validateAdminCredentials(req, res)){
+  if(users.authenticate(req, res)){
     groupIDStore = JSON.parse(fs.readFileSync('./groupdb.json', 'utf8'));
     toUpdateGroup = req.body;
     if(groups.groupExistsByID(groupIDStore.resources, req.params.id)){
@@ -119,13 +123,14 @@ exports.update = function(req, res){
 // function searchs in the application group store for that group ID.
 //Once found, the entry is removed from the group store.
 exports.delete = function(req, res){
+  res.setHeader("content-type", "application/scim+json");
   logger.log('-----------------');
   logger.log('Entering groups delete function.');
   logger.log('Body:');
   logger.log(req.body);
   logger.log('--');
   //Entering delete function.
-  if(users.validateAdminCredentials(req, res)){
+  if(users.authenticate(req, res)){
     groupIDStore = JSON.parse(fs.readFileSync('./groupdb.json', 'utf8'));
     if(groups.groupExistsByID(groupIDStore.resources, req.params.id)){
       groupIDStore.resources.forEach(function(group, index) {

@@ -1,8 +1,10 @@
 #!/bin/sh
 
+#Credentials for basic mode.
 export ADMINUSER=admin
-#Provide password value for ADMINPASS
 export ADMINPASS=
+#Token for bearer mode.
+export BEARER_TOKEN=
 export PORT=6355
 
 # setting DEBUG_LOGIN to true will enable logging both in node.js and
@@ -10,6 +12,11 @@ export PORT=6355
 # this setting is intended for development and debugging purposes and shouldn't
 # be turned on in production
 export DEBUG_LOGIN=true
+
+# Define which method the SCIM gateway uses to validate authentication.
+# If none defined, then basic is selected as default value.
+# Options are basic, bearer, client_credentials, or resource_owner. 
+export MODE=basic
 
 _test_npm=`which npm`
 if [ "x${_test_npm}" == 'x' ]; then

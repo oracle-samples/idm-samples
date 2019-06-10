@@ -1,8 +1,10 @@
 @ECHO OFF
 
+REM Credentials for basic mode.
 SET ADMINUSER=admin
-REM Provide password value for ADMINPASS
 SET ADMINPASS=
+REM Token for bearer mode.
+SET BEARER_TOKEN=
 SET PORT=6355
 
 REM setting DEBUG_LOGIN to true will enable logging both in node.js and
@@ -10,6 +12,11 @@ REM in your web browser's JavaScript console.
 REM this setting is intended for development and debugging purposes and shouldn't
 REM be turned on in production
 SET DEBUG_LOGIN=true
+
+REM Define which method the SCIM gateway uses to validate authentication.
+REM If none defined, then basic is selected as default value.
+REM Options are basic, bearer, client_credentials, or resource_owner. 
+REM MODE=basic
 
 WHERE >nul 2>nul npm
 IF %ERRORLEVEL% NEQ 0 (
