@@ -14,16 +14,6 @@
   "Operations": [
      {
       "op": "replace",
-      "path": "urn:ietf:params:scim:schemas:oracle:idcs:extension:managedapp:App:bundleConfigurationProperties[name eq \"ContentType\"].value",
-      "value": [ "application/json"]
-    },
-     {
-      "op": "replace",
-      "path": "urn:ietf:params:scim:schemas:oracle:idcs:extension:managedapp:App:bundleConfigurationProperties[name eq \"AcceptType\"].value",
-      "value": [ "application/json"]
-    },
-     {
-      "op": "replace",
       "path": "urn:ietf:params:scim:schemas:oracle:idcs:extension:managedapp:App:bundleConfigurationProperties[name eq \"port\"].value",
       "value": [ "6355"]
     },
