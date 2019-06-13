@@ -5,6 +5,9 @@ export ADMINUSER=admin
 export ADMINPASS=
 #Token for bearer mode.
 export BEARER_TOKEN=
+#Client ID and Client Secret for client_credentials and resource_owner mode.
+export CLIENT_ID=
+export CLIENT_SECRET=
 export PORT=6355
 
 # setting DEBUG_LOGIN to true will enable logging both in node.js and

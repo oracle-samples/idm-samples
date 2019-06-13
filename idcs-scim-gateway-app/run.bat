@@ -5,6 +5,9 @@ SET ADMINUSER=admin
 SET ADMINPASS=
 REM Token for bearer mode.
 SET BEARER_TOKEN=
+REM Client ID and Client Secret for client_credentials and resource_owner mode.
+SET CLIENT_ID=
+SET CLIENT_SECRET=
 SET PORT=6355
 
 REM setting DEBUG_LOGIN to true will enable logging both in node.js and
