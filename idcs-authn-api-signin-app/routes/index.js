@@ -72,8 +72,8 @@ function redirectBrowser( req, res, url, payload ) {
       res.write('sessionStorage.setItem("' + field + '",\'' + payload[field].replace(/'/g, "\\'") + '\');\n');
     }
     // finally send the user to the requested URL
-    res.write('window.location = "' + url + '";\n');
     res.write('document.write("You should be redirected in a moment...");\n');
+    res.write('window.location = "' + url + '";\n');
 
     // this closes out the try block above
     res.write('}\n');
