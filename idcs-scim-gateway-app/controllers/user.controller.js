@@ -1,6 +1,6 @@
 //Oracle Corporation
 
-//Reference
+//References
 const fs = require('graceful-fs');
 const config = require('../config.js');
 var users = require('./user.controller.js');
@@ -8,6 +8,7 @@ var users = require('./user.controller.js');
 
 //Logs information.
 var logger = require('../logging.js');
+
 //basic-auth is used to validate basic authentication
 var auth = require('basic-auth');
 
@@ -186,8 +187,7 @@ exports.userExistsByID = function(array, id){
   return result;
 }
 
-//Internal function that validates username and password against ADMINUSER and
-// ADMINPASS environment variables.
+//For learning purpose, this function validates username and password against ADMINUSER and ADMINPASS environment variables.
 exports.validateBasic = function(req, res) {
   logger.log('users.validateBasic() function');
   var credentials = auth(req);
@@ -203,6 +203,8 @@ exports.validateBasic = function(req, res) {
   }
 }
 
+//For learning purpose, this function validates the Authorization Bearer token value against BEARER_TOKEN environment variables.
+//It does simple validation comparing the two strings.
   exports.validateToken = function(req, res) {
     logger.log('users.validateToken() function');
     var token = req.headers['authorization'];
@@ -222,16 +224,19 @@ exports.validateBasic = function(req, res) {
     }
   }
 
+//Mode n`ot yet implemented.
   exports.validateClientCredentials = function(req, res) {
     logger.log('users validateClientCredentials() function');
     return users.validateBasic(req, res);
   }
 
+//Mode not yet implemented.
   exports.validateResourceOwner = function(req, res) {
     logger.log('users validateResourceOwner() function');
     return users.validateBasic(req, res);
   }
 
+//This funcion does authentication. It verifies the MODE set and uses the corresponding function to authenticate.
   exports.authenticate = function(req, res) {
 	logger.log('users authenticate() function');
 	var mode = process.env.MODE || 'basic';
