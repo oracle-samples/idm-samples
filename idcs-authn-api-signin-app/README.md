@@ -36,8 +36,6 @@ To accomplish the tasks described in this tutorial, make sure that you have the 
 - The [Current Node.js binaries](https://nodejs.org/) installed on your desktop.
 - Download or git clone the is `idcs-authn-api-signin-app` to a temporary folder on your computer.
 
-**Note**: For cloud customers to access the Oracle Identity Cloud Service console, click the **Users** link from the top menu of the Oracle Cloud My Services dashboard, and then click **Identity Console**. You must have a Oracle Cloud Account with Identity Cloud Service.
-
 ## Register a Client Credentials Application
 Register a client credentials application in Oracle Identity Cloud Service so that the custom sign-in application can perform calls to the Oracle Identity Cloud Service's Authentication REST API.
 
