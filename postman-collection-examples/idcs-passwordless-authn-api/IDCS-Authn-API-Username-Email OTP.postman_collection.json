@@ -1,0 +1,327 @@
+{
+	"info": {
+		"_postman_id": "0d998297-9cc4-454f-b2ed-7eb44b5c63c5",
+		"name": "IDCS-Authn-API-Username-Email OTP",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Generate Access Token to Access Authn API",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "7c52da38-db41-4ea7-afea-ff56ba4b547b",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"var reqState = jsonData.access_token;",
+							"postman.setEnvironmentVariable(\"token\", reqState);",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "{{client_secret}}",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "{{client_id}}",
+							"type": "string"
+						},
+						{
+							"key": "saveHelperData",
+							"value": true,
+							"type": "boolean"
+						},
+						{
+							"key": "showPassword",
+							"value": false,
+							"type": "boolean"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "grant_type=client_credentials&scope=urn:opc:idm:__myscopes__"
+				},
+				"url": {
+					"raw": "{{tenant_url}}/oauth2/v1/token",
+					"host": [
+						"{{tenant_url}}"
+					],
+					"path": [
+						"oauth2",
+						"v1",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Initiate - Authn API Authentication Request",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "41c9a346-8876-493c-80e0-854ecf34ff7a",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"var reqState = jsonData.requestState;",
+							"postman.setEnvironmentVariable(\"requestState\", reqState);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}"
+					}
+				],
+				"url": {
+					"raw": "{{tenant_url}}/sso/v1/sdk/authenticate?appName={{appName}}",
+					"host": [
+						"{{tenant_url}}"
+					],
+					"path": [
+						"sso",
+						"v1",
+						"sdk",
+						"authenticate"
+					],
+					"query": [
+						{
+							"key": "appName",
+							"value": "{{appName}}"
+						}
+					]
+				},
+				"description": "Get"
+			},
+			"response": []
+		},
+		{
+			"name": "Submit - Username",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "de83254d-7dd5-4c46-9d25-9f5b3591fbef",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"var reqState = jsonData.requestState;",
+							"var authnToken = jsonData.authnToken;",
+							"postman.setEnvironmentVariable(\"authnToken\", authnToken);",
+							"postman.setEnvironmentVariable(\"requestState\", reqState);",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{  \r\n   \"op\":\"credSubmit\",\r\n   \"credentials\":{  \r\n      \"username\":\"{{userName}}\"\r\n   },\r\n   \"requestState\": \"{{requestState}}\"\r\n}"
+				},
+				"url": {
+					"raw": "{{tenant_url}}/sso/v1/sdk/authenticate",
+					"host": [
+						"{{tenant_url}}"
+					],
+					"path": [
+						"sso",
+						"v1",
+						"sdk",
+						"authenticate"
+					]
+				},
+				"description": "Get"
+			},
+			"response": []
+		},
+		{
+			"name": "Submit - Email OTP",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "da494996-dd5a-4c6f-a446-e5a6c223c9d4",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"var reqState = jsonData.requestState;",
+							"var authnToken = jsonData.authnToken;",
+							"postman.setEnvironmentVariable(\"authnToken\", authnToken);",
+							"postman.setEnvironmentVariable(\"requestState\", reqState);",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{  \r\n   \"op\":\"credSubmit\",\r\n   \"credentials\":{  \r\n      \"otpCode\": \"\"\r\n   },\r\n   \"requestState\": \"{{requestState}}\"\r\n}"
+				},
+				"url": {
+					"raw": "{{tenant_url}}/sso/v1/sdk/authenticate",
+					"host": [
+						"{{tenant_url}}"
+					],
+					"path": [
+						"sso",
+						"v1",
+						"sdk",
+						"authenticate"
+					]
+				},
+				"description": "Get"
+			},
+			"response": []
+		},
+		{
+			"name": "Get access token using ID Token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "ee3be772-3c22-44dd-832b-cf31bec6f324",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"var reqState = jsonData.access_token;",
+							"postman.setEnvironmentVariable(\"user_access_token\", reqState);",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "{{client_secret}}",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "{{client_id}}",
+							"type": "string"
+						},
+						{
+							"key": "saveHelperData",
+							"value": true,
+							"type": "boolean"
+						},
+						{
+							"key": "showPassword",
+							"value": false,
+							"type": "boolean"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Ajwt-bearer&scope=urn:opc:idm:__myscopes__&assertion={{authnToken}}"
+				},
+				"url": {
+					"raw": "{{tenant_url}}/oauth2/v1/token",
+					"host": [
+						"{{tenant_url}}"
+					],
+					"path": [
+						"oauth2",
+						"v1",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Access IDCS API",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{user_access_token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{tenant_url}}/admin/v1/Me",
+					"host": [
+						"{{tenant_url}}"
+					],
+					"path": [
+						"admin",
+						"v1",
+						"Me"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
