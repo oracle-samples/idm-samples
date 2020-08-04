@@ -1,10 +1,10 @@
-﻿# Oracle Identity Cloud Service REST Client Samples
+# Oracle Identity Cloud Service REST Client Samples
 
 This code contains a collection of sample REST API requests that can be used with clients such as [Postman](http://getpostman.com) to make test calls to Oracle Identity Cloud Service. 
 
 This application is provided “AS IS” with no express or implied warranty for accuracy or accessibility. The sample code is intended for study purposes, doesn't represent the recommended approach, and isn't intended to be used in development or production environments.
 
-The [Using the Oracle Identity Cloud Service REST APIs with Postman](https://apexapps.oracle.com/pls/apex/f?p=44785:112:13055075037206::::P112_CONTENT_ID,P112_PREV_PAGE:13484) Oracle By Example (OBE) is available to use with this REST API collection. 
+The [Using the Oracle Identity Cloud Service REST APIs with Postman](https://apexapps.oracle.com/pls/apex/f?p=44785:112:13055075037206::::P112_CONTENT_ID,P112_PREV_PAGE:13484) tutorial is available to use with this REST API collection. 
 
 ## Requirements
 
