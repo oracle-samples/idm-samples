@@ -1,0 +1,1302 @@
+{
+	"info": {
+		"_postman_id": "b5bf8fe9-4b28-49a9-9053-226b4b0ec638",
+		"name": "Oracle Identity Cloud Service RADIUS Proxy",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "RADIUS Proxy",
+			"item": [
+				{
+					"name": "Create",
+					"item": [
+						{
+							"name": "Create a RADIUS Proxy",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "ab18092c-62f8-44f9-aab4-d766ca583d3e",
+										"exec": [
+											"var response = JSON.parse(responseBody);",
+											"postman.setEnvironmentVariable(\"RPid\", response.id);",
+											"postman.setEnvironmentVariable(\"RPOAuthClientClientId\", response.oauthClient.clientId);",
+											"postman.setEnvironmentVariable(\"RPOAuthClientAppId\", response.oauthClient.value);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}"
+									},
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"displayName\": \"Acme Oracle Database RADIUS Proxy\",\r\n    \"description\": \"This is a RADIUS Proxy used for authentication of database users\",\r\n    \"type\": \"proxy\",\r\n    \"timeout\": 20,\r\n    \"noOfWorkerThreads\": 10,\r\n\t\"schemas\" : [\"urn:ietf:params:scim:schemas:oracle:idcs:RadiusProxy\"]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{HOST}}/admin/v1/RadiusProxies/",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"admin",
+										"v1",
+										"RadiusProxies",
+										""
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Delete",
+					"item": [
+						{
+							"name": "Delete a RADIUS Proxy",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{HOST}}/admin/v1/RadiusProxies/{{RPid}}?forceDelete=true",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"admin",
+										"v1",
+										"RadiusProxies",
+										"{{RPid}}"
+									],
+									"query": [
+										{
+											"key": "forceDelete",
+											"value": "true"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Lifecycle",
+					"item": [
+						{
+							"name": "Activate a RADIUS Proxy",
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"Operations\":[\n\t\t{\n\t\t\t\"op\": \"replace\",\n\t\t\t\"path\": \"active\",\n\t\t\t\"value\": true\n \t\t}\n\t],\n    \"schemas\": [\n        \"urn:ietf:params:scim:api:messages:2.0:PatchOp\"\n    ]\n}"
+								},
+								"url": {
+									"raw": "{{HOST}}/admin/v1/RadiusProxies/{{RPid}}",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"admin",
+										"v1",
+										"RadiusProxies",
+										"{{RPid}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Deactivate a RADIUS Proxy",
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"Operations\":[\n\t\t{\n\t\t\t\"op\": \"replace\",\n\t\t\t\"path\": \"active\",\n\t\t\t\"value\": false\n \t\t}\n\t],\n    \"schemas\": [\n        \"urn:ietf:params:scim:api:messages:2.0:PatchOp\"\n    ]\n}"
+								},
+								"url": {
+									"raw": "{{HOST}}/admin/v1/RadiusProxies/{{RPid}}",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"admin",
+										"v1",
+										"RadiusProxies",
+										"{{RPid}}"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Modify",
+					"item": [
+						{
+							"name": "Modify a RADIUS Proxy",
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"Operations\":[\r\n        {\r\n\t\t\t\"op\": \"replace\",\r\n\t\t\t\"path\": \"timeout\",\r\n\t\t\t\"value\": 15\r\n        },\r\n        {\r\n\t\t\t\"op\": \"replace\",\r\n\t\t\t\"path\": \"noOfWorkerThreads\",\r\n\t\t\t\"value\": 15\r\n        }\r\n    ],\r\n    \"schemas\": [\r\n        \"urn:ietf:params:scim:api:messages:2.0:PatchOp\"\r\n    ]\r\n} "
+								},
+								"url": {
+									"raw": "{{HOST}}/admin/v1/RadiusProxies/{{RPid}}",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"admin",
+										"v1",
+										"RadiusProxies",
+										"{{RPid}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Replace a RADIUS Proxy",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"displayName\": \"Acme Oracle Database RADIUS Proxy\",\r\n    \"description\": \"This is a RADIUS Proxy used for authentication of database users\",\r\n    \"type\": \"proxy\",\r\n    \"timeout\": 10,\r\n    \"noOfWorkerThreads\": 15,\r\n\t\"schemas\" : [\"urn:ietf:params:scim:schemas:oracle:idcs:RadiusProxy\"]\r\n}"
+								},
+								"url": {
+									"raw": "{{HOST}}/admin/v1/RadiusProxies/{{RPid}}",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"admin",
+										"v1",
+										"RadiusProxies",
+										"{{RPid}}"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Search",
+					"item": [
+						{
+							"name": "List all RADIUS Proxies",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{HOST}}/admin/v1/RadiusProxies",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"admin",
+										"v1",
+										"RadiusProxies"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get a specific RADIUS Proxy",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{HOST}}/admin/v1/RadiusProxies/{{RPid}}",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"admin",
+										"v1",
+										"RadiusProxies",
+										"{{RPid}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Search RADIUS Proxies via POST",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t    \"attributes\": [\"displayName\"],\n\t    \"filter\": \"displayName eq \\\"Acme Oracle Database RADIUS Proxy\\\"\",\n\t    \"startIndex\": 1,\n\t    \"count\": 5,\t\n\t    \"schemas\": [\n\t    \t\"urn:ietf:params:scim:api:messages:2.0:SearchRequest\"\n\t    ]\n}"
+								},
+								"url": {
+									"raw": "{{HOST}}/admin/v1/RadiusProxies/.search",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"admin",
+										"v1",
+										"RadiusProxies",
+										".search"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Obtain listeners and mappings info",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"type": "text",
+										"value": "Bearer {{access_token}}"
+									},
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{HOST}}/admin/v1/RadiusProxies?filter=oauthClient.clientId eq \"{{RPOAuthClientClientId}}\"&attributes=mappings,listeners,oauthClient,lastModifiedTime,active",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"admin",
+										"v1",
+										"RadiusProxies"
+									],
+									"query": [
+										{
+											"key": "filter",
+											"value": "oauthClient.clientId eq \"{{RPOAuthClientClientId}}\""
+										},
+										{
+											"key": "attributes",
+											"value": "mappings,listeners,oauthClient,lastModifiedTime,active"
+										}
+									]
+								},
+								"description": "This is presently used only by the RADIUS Agent so that it can obtain the listeners and mappings info in a single call, instead of having to make three calls.  This is supported to ensure performance gains. \n\nQuery parameter format:\nfilter=oauthClient.clientId eq \"{Client ID of OAuth App corresponding to RADIUS Proxy}\"&attributes=mappings,listeners,oauthClient,lastModifiedTime,active"
+							},
+							"response": []
+						},
+						{
+							"name": "Get client ID and client secret of App corresponding to RADIUS Proxy",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}"
+									},
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json",
+										"disabled": true
+									}
+								],
+								"url": {
+									"raw": "{{HOST}}/admin/v1/Apps/{{RPOAuthClientAppId}}?attributes=clientSecret,name",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"admin",
+										"v1",
+										"Apps",
+										"{{RPOAuthClientAppId}}"
+									],
+									"query": [
+										{
+											"key": "attributes",
+											"value": "clientSecret,name"
+										}
+									]
+								},
+								"description": "RPOAuthClientAppId represents the id of the OAuth App created internally to represent RADIUS Proxy."
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "RADIUS Proxy Listeners",
+					"item": [
+						{
+							"name": "Create",
+							"item": [
+								{
+									"name": "Create a RADIUS Proxy Listener",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "74f0bb4e-d8a7-4b42-9140-4134bf7fdeeb",
+												"exec": [
+													"var response = JSON.parse(responseBody);",
+													"postman.setEnvironmentVariable(\"RPListenerId\", response.id);"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"name": "Content-Type",
+												"value": "application/json",
+												"type": "text"
+											},
+											{
+												"key": "Authorization",
+												"value": "Bearer {{access_token}}"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"description\":  \"Brief description for this RADIUS Proxy Listener.\",\n    \"displayName\": \"RP1_L1\",\n    \"hostName\": \"www.external1.acme1.com\",\n    \"radiusProxySettings\": \"{\\\"key1\\\": \\\"value1\\\", \\\"key2\\\": \\\"value2\\\"}\",\n    \"radiusProxy\":  {\n        \"value\" :  \"{{RPid}}\"\n    },\n    \"schemas\" : [\"urn:ietf:params:scim:schemas:oracle:idcs:RadiusProxyListener\"]\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{HOST}}/admin/v1/RadiusProxyListeners",
+											"host": [
+												"{{HOST}}"
+											],
+											"path": [
+												"admin",
+												"v1",
+												"RadiusProxyListeners"
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"protocolProfileBehavior": {},
+							"_postman_isSubFolder": true
+						},
+						{
+							"name": "Delete",
+							"item": [
+								{
+									"name": "Delete a RADIUS Proxy Listener",
+									"request": {
+										"method": "DELETE",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Bearer {{access_token}}"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": ""
+										},
+										"url": {
+											"raw": "{{HOST}}/admin/v1/RadiusProxyListeners/{{RPListenerId}}",
+											"host": [
+												"{{HOST}}"
+											],
+											"path": [
+												"admin",
+												"v1",
+												"RadiusProxyListeners",
+												"{{RPListenerId}}"
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"protocolProfileBehavior": {},
+							"_postman_isSubFolder": true
+						},
+						{
+							"name": "Modify",
+							"item": [
+								{
+									"name": "Update a RADIUS Proxy Listener",
+									"request": {
+										"method": "PATCH",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "Authorization",
+												"value": "Bearer {{access_token}}"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n\t\"Operations\":[\n\t\t{\n\t\t\t\"op\": \"replace\",\n\t\t\t\"path\": \"hostName\",\n\t\t\t\"value\": \"den02cnt.us.oracle.com\"\n \t\t}\n\t],\n    \"schemas\": [\n        \"urn:ietf:params:scim:api:messages:2.0:PatchOp\"\n    ]\n}"
+										},
+										"url": {
+											"raw": "{{HOST}}/admin/v1/RadiusProxyListeners/{{RPListenerId}}",
+											"host": [
+												"{{HOST}}"
+											],
+											"path": [
+												"admin",
+												"v1",
+												"RadiusProxyListeners",
+												"{{RPListenerId}}"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Replace a RADIUS Proxy Listener",
+									"request": {
+										"method": "PUT",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "Authorization",
+												"value": "Bearer {{access_token}}"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"description\":  \"Brief description for this RADIUS proxy listener.\",\n    \"displayName\": \"RP1_L1\",\n    \"hostName\": \"206.223.27.2\",\n    \"radiusProxySettings\": \"{\\\"key1\\\": \\\"value1\\\", \\\"key2\\\": \\\"value2\\\"}\",\n    \"radiusProxy\":  {\n        \"value\" :  \"{{RPid}}\"\n    },\n    \"schemas\" : [\"urn:ietf:params:scim:schemas:oracle:idcs:RadiusProxyListener\"]\n}"
+										},
+										"url": {
+											"raw": "{{HOST}}/admin/v1/RadiusProxyListeners/{{RPListenerId}}",
+											"host": [
+												"{{HOST}}"
+											],
+											"path": [
+												"admin",
+												"v1",
+												"RadiusProxyListeners",
+												"{{RPListenerId}}"
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"protocolProfileBehavior": {},
+							"_postman_isSubFolder": true
+						},
+						{
+							"name": "Search",
+							"item": [
+								{
+									"name": "List all RADIUS Proxy Listeners",
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "Authorization",
+												"value": "Bearer {{access_token}}"
+											}
+										],
+										"url": {
+											"raw": "{{HOST}}/admin/v1/RadiusProxyListeners",
+											"host": [
+												"{{HOST}}"
+											],
+											"path": [
+												"admin",
+												"v1",
+												"RadiusProxyListeners"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Get a specific RADIUS Proxy Listener",
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "Authorization",
+												"value": "Bearer {{access_token}}"
+											}
+										],
+										"url": {
+											"raw": "{{HOST}}/admin/v1/RadiusProxyListeners/{{RPListenerId}}",
+											"host": [
+												"{{HOST}}"
+											],
+											"path": [
+												"admin",
+												"v1",
+												"RadiusProxyListeners",
+												"{{RPListenerId}}"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Search RADIUS Proxy Listeners via POST",
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Bearer {{access_token}}"
+											},
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n\t    \"filter\": \"radiusProxy.value eq \\\"{{RPid}}\\\"\",\n\t    \"startIndex\": 1,\n\t    \"count\": 5,\t\n\t    \"schemas\": [\n\t    \t\"urn:ietf:params:scim:api:messages:2.0:SearchRequest\"\n\t    ]\n}"
+										},
+										"url": {
+											"raw": "{{HOST}}/admin/v1/RadiusProxyListeners/.search",
+											"host": [
+												"{{HOST}}"
+											],
+											"path": [
+												"admin",
+												"v1",
+												"RadiusProxyListeners",
+												".search"
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"protocolProfileBehavior": {},
+							"_postman_isSubFolder": true
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "RADIUS Proxy Mappings",
+					"item": [
+						{
+							"name": "Create",
+							"item": [
+								{
+									"name": "Create a RADIUS Proxy Mapping",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "3ff5766f-9175-450d-82aa-7d21224b15fe",
+												"exec": [
+													"var response = JSON.parse(responseBody);",
+													"postman.setEnvironmentVariable(\"RPMappingId\", response.id);"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Bearer {{access_token}}"
+											},
+											{
+												"key": "Content-Type",
+												"name": "Content-Type",
+												"type": "text",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"description\":  \"RADIUS Proxy mapping for Database server\",\n    \"radiusProxy\":  {\n        \"value\" :  \"{{RPid}}\"\n    },\n    \"radiusApp\": {\n\t\t\"value\": \"{{appid}}\"\n    },\n    \"schemas\" : [\"urn:ietf:params:scim:schemas:oracle:idcs:RadiusProxyMapping\"]\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{HOST}}/admin/v1/RadiusProxyMappings",
+											"host": [
+												"{{HOST}}"
+											],
+											"path": [
+												"admin",
+												"v1",
+												"RadiusProxyMappings"
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"protocolProfileBehavior": {},
+							"_postman_isSubFolder": true
+						},
+						{
+							"name": "Delete",
+							"item": [
+								{
+									"name": "Delete a RADIUS Proxy Mapping",
+									"request": {
+										"method": "DELETE",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Bearer {{access_token}}"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": ""
+										},
+										"url": {
+											"raw": "{{HOST}}/admin/v1/RadiusProxyMappings/{{RPMappingId}}",
+											"host": [
+												"{{HOST}}"
+											],
+											"path": [
+												"admin",
+												"v1",
+												"RadiusProxyMappings",
+												"{{RPMappingId}}"
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"protocolProfileBehavior": {},
+							"_postman_isSubFolder": true
+						},
+						{
+							"name": "Modify",
+							"item": [
+								{
+									"name": "Update a RADIUS Proxy Mapping",
+									"request": {
+										"method": "PATCH",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "Authorization",
+												"value": "Bearer {{access_token}}"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n\t\"Operations\":[\n\t\t{\n\t\t\t\"op\": \"replace\",\n\t\t\t\"path\": \"description\",\n\t\t\t\"value\": \"RADIUS Proxy mapping for Oracle Database server\"\n \t\t}\n\t],\n    \"schemas\": [\n        \"urn:ietf:params:scim:api:messages:2.0:PatchOp\"\n    ]\n}"
+										},
+										"url": {
+											"raw": "{{HOST}}/admin/v1/RadiusProxyMappings/{{RPMappingId}}",
+											"host": [
+												"{{HOST}}"
+											],
+											"path": [
+												"admin",
+												"v1",
+												"RadiusProxyMappings",
+												"{{RPMappingId}}"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Replace a RADIUS Proxy Mapping",
+									"request": {
+										"method": "PUT",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "Authorization",
+												"value": "Bearer {{access_token}}"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"description\":  \"RADIUS Proxy mapping for Database server\",\n    \"radiusProxy\":  {\n        \"value\" :  \"{{RPid}}\"\n    },\n    \"radiusApp\": {\n\t\t\"value\": \"{{appid}}\"\n    },\n    \"schemas\" : [\"urn:ietf:params:scim:schemas:oracle:idcs:RadiusProxyMapping\"]\n}"
+										},
+										"url": {
+											"raw": "{{HOST}}/admin/v1/RadiusProxyMappings/{{RPMappingId}}",
+											"host": [
+												"{{HOST}}"
+											],
+											"path": [
+												"admin",
+												"v1",
+												"RadiusProxyMappings",
+												"{{RPMappingId}}"
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"protocolProfileBehavior": {},
+							"_postman_isSubFolder": true
+						},
+						{
+							"name": "Search",
+							"item": [
+								{
+									"name": "List all RADIUS Proxy Mappings",
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Bearer {{access_token}}"
+											},
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"url": {
+											"raw": "{{HOST}}/admin/v1/RadiusProxyMappings",
+											"host": [
+												"{{HOST}}"
+											],
+											"path": [
+												"admin",
+												"v1",
+												"RadiusProxyMappings"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "List all RADIUS Proxy Mappings (specific attributes)",
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Bearer {{access_token}}"
+											},
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"url": {
+											"raw": "{{HOST}}/admin/v1/RadiusProxyMappings?attributes=radiusProxy,radiusApp",
+											"host": [
+												"{{HOST}}"
+											],
+											"path": [
+												"admin",
+												"v1",
+												"RadiusProxyMappings"
+											],
+											"query": [
+												{
+													"key": "attributes",
+													"value": "radiusProxy,radiusApp"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Get a specific RADIUS Proxy Mapping",
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Bearer {{access_token}}"
+											},
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"url": {
+											"raw": "{{HOST}}/admin/v1/RadiusProxyMappings/{{RPMappingId}}",
+											"host": [
+												"{{HOST}}"
+											],
+											"path": [
+												"admin",
+												"v1",
+												"RadiusProxyMappings",
+												"{{RPMappingId}}"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Search RADIUS Proxy Mappings via POST",
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Bearer {{access_token}}"
+											},
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n\t    \"filter\": \"radiusProxy.value eq \\\"{{RPid}}\\\"\",\n\t    \"startIndex\": 1,\n\t    \"count\": 5,\t\n\t    \"schemas\": [\n\t    \t\"urn:ietf:params:scim:api:messages:2.0:SearchRequest\"\n\t    ]\n}"
+										},
+										"url": {
+											"raw": "{{HOST}}/admin/v1/RadiusProxyMappings/.search",
+											"host": [
+												"{{HOST}}"
+											],
+											"path": [
+												"admin",
+												"v1",
+												"RadiusProxyMappings",
+												".search"
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"protocolProfileBehavior": {},
+							"_postman_isSubFolder": true
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "RADIUS App",
+					"item": [
+						{
+							"name": "Create",
+							"item": [
+								{
+									"name": "Create RADIUS App",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "8ff55ca7-aa80-47c2-80eb-cd9ccc04cbba",
+												"exec": [
+													"var response = JSON.parse(responseBody);",
+													"postman.setEnvironmentVariable(\"appid\", response.id);"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Bearer {{access_token}}"
+											},
+											{
+												"key": "Content-Type",
+												"name": "Content-Type",
+												"type": "text",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n\t\"schemas\": [ \r\n        \"urn:ietf:params:scim:schemas:oracle:idcs:App\" ,\r\n        \"urn:ietf:params:scim:schemas:oracle:idcs:extension:radiusApp:App\"\r\n    ],\r\n    \"displayName\": \"Oracle Database 12c\",\r\n    \"description\": \"App representing Oracle Database which is a RADIUS client\",\r\n    \"basedOnTemplate\": { \r\n        \"value\": \"OracleDatabaseRADIUSAppTemplateId\" \r\n    },\r\n    \"isRadiusApp\": true,\r\n    \"isSamlServiceProvider\": false,\r\n    \"isOAuthResource\": false,\r\n    \"isOAuthClient\": false,\r\n    \"showInMyApps\": false,\r\n    \"isWebTierPolicy\": false,\r\n    \"loginMechanism\": \"RADIUS\",\r\n    \"urn:ietf:params:scim:schemas:oracle:idcs:extension:radiusApp:App\": {\r\n    \t\"clientIP\": \"10.191.235.147\",\r\n    \t\"port\": \"1812\",\r\n    \t\"secretKey\": \"testing123\",\r\n    \t\"includeGroupInResponse\": true\r\n    }\r\n }"
+										},
+										"url": {
+											"raw": "{{HOST}}/admin/v1/Apps/",
+											"host": [
+												"{{HOST}}"
+											],
+											"path": [
+												"admin",
+												"v1",
+												"Apps",
+												""
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"protocolProfileBehavior": {},
+							"_postman_isSubFolder": true
+						},
+						{
+							"name": "Modify",
+							"item": [
+								{
+									"name": "Update RADIUS App (IP Address in CIDR format)",
+									"request": {
+										"method": "PATCH",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "Authorization",
+												"value": "Bearer {{access_token}}"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n  \"schemas\": [\r\n    \"urn:ietf:params:scim:api:messages:2.0:PatchOp\"\r\n  ],\r\n  \"Operations\": [{\r\n      \"op\": \"replace\",\r\n      \"path\": \"urn:ietf:params:scim:schemas:oracle:idcs:extension:radiusApp:App:clientIP\",\r\n      \"value\": \"10.34.0.0/16\"\r\n    }]\r\n}"
+										},
+										"url": {
+											"raw": "{{HOST}}/admin/v1/Apps/{{appid}}",
+											"host": [
+												"{{HOST}}"
+											],
+											"path": [
+												"admin",
+												"v1",
+												"Apps",
+												"{{appid}}"
+											]
+										},
+										"description": "Update the RADIUS App with IP address range in CIDR format."
+									},
+									"response": []
+								}
+							],
+							"protocolProfileBehavior": {},
+							"_postman_isSubFolder": true
+						},
+						{
+							"name": "Delete",
+							"item": [
+								{
+									"name": "Delete RADIUS App",
+									"request": {
+										"method": "DELETE",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Bearer {{access_token}}"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": ""
+										},
+										"url": {
+											"raw": "{{HOST}}/admin/v1/Apps/{{appid}}?forceDelete=true",
+											"host": [
+												"{{HOST}}"
+											],
+											"path": [
+												"admin",
+												"v1",
+												"Apps",
+												"{{appid}}"
+											],
+											"query": [
+												{
+													"key": "forceDelete",
+													"value": "true"
+												}
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"protocolProfileBehavior": {},
+							"_postman_isSubFolder": true
+						},
+						{
+							"name": "Search",
+							"item": [
+								{
+									"name": "Search all apps (with search criteria)",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "fbeef830-be67-48d6-8061-64705634b786",
+												"exec": [
+													"var response = JSON.parse(responseBody);\r",
+													"postman.setEnvironmentVariable(\"appid\", response.Resources[0].id);"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Bearer {{access_token}}"
+											}
+										],
+										"url": {
+											"raw": "{{HOST}}/admin/v1/Apps?filter=displayName co \"dbserver\"",
+											"host": [
+												"{{HOST}}"
+											],
+											"path": [
+												"admin",
+												"v1",
+												"Apps"
+											],
+											"query": [
+												{
+													"key": "filter",
+													"value": "displayName co \"dbserver\""
+												}
+											]
+										},
+										"description": "filter = add a filter criteria to the search using attributes, values, and operators"
+									},
+									"response": []
+								}
+							],
+							"protocolProfileBehavior": {},
+							"_postman_isSubFolder": true
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "OAuth Token",
+					"item": [
+						{
+							"name": "Obtain access_token (client credentials)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "c4557fdc-5f7b-467e-8499-57ca4177d20f",
+										"exec": [
+											"var response = JSON.parse(responseBody);",
+											"postman.setEnvironmentVariable(\"access_token\", response.access_token);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "username",
+											"value": "{{CLIENT_ID}}",
+											"type": "string"
+										},
+										{
+											"key": "password",
+											"value": "{{CLIENT_SECRET}}",
+											"type": "string"
+										},
+										{
+											"key": "saveHelperData",
+											"value": true,
+											"type": "boolean"
+										},
+										{
+											"key": "showPassword",
+											"value": false,
+											"type": "boolean"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "grant_type",
+											"value": "client_credentials",
+											"type": "text"
+										},
+										{
+											"key": "scope",
+											"value": "urn:opc:idm:__myscopes__",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{HOST}}/oauth2/v1/token",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"oauth2",
+										"v1",
+										"token"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"protocolProfileBehavior": {}
+}
