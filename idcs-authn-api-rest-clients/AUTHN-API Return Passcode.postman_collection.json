@@ -1,0 +1,335 @@
+{
+	"info": {
+		"_postman_id": "25e05c16-e206-4381-bc1a-e5cc8e9c84df",
+		"name": "AUTHN-API Return Passcode",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Generate Access Token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "bb991466-3949-4c27-95ec-9c4cb2568d07",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"var reqState = jsonData.access_token;",
+							"postman.setEnvironmentVariable(\"token\", reqState);",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "{{CSEC}}",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "{{CID}}",
+							"type": "string"
+						},
+						{
+							"key": "saveHelperData",
+							"value": true,
+							"type": "boolean"
+						},
+						{
+							"key": "showPassword",
+							"value": false,
+							"type": "boolean"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "grant_type=client_credentials&scope=urn:opc:idm:__myscopes__"
+				},
+				"url": {
+					"raw": "{{tenant_url}}/oauth2/v1/token",
+					"host": [
+						"{{tenant_url}}"
+					],
+					"path": [
+						"oauth2",
+						"v1",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Authenticate",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "ac0e89f3-3fc4-4a9a-ba36-d971a3eb959b",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"var reqState = jsonData.requestState;",
+							"postman.setEnvironmentVariable(\"requestState\", reqState);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}"
+					}
+				],
+				"url": {
+					"raw": "{{tenant_url}}/sso/v1/sdk/authenticate",
+					"host": [
+						"{{tenant_url}}"
+					],
+					"path": [
+						"sso",
+						"v1",
+						"sdk",
+						"authenticate"
+					]
+				},
+				"description": "Get"
+			},
+			"response": []
+		},
+		{
+			"name": "PostUserName",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "22cff81c-36db-48c5-addd-5a9882f95a80",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"var reqState = jsonData.requestState;",
+							"var authnToken = jsonData.authnToken;",
+							"postman.setEnvironmentVariable(\"authnToken\", authnToken);",
+							"postman.setEnvironmentVariable(\"requestState\", reqState);",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n   \"op\": \"credSubmit\",\r\n   \"credentials\": {\r\n      \"username\": \"napattar\"\r\n   },\r\n   \"userFlowControlledByExternalClient\": true,\r\n   \"x5t\": \"ef4c2cdd56501d14aa22ab159c8d2d5aeca99d4b\",\r\n   \"requestState\": \"{{requestState}}\"\r\n}"
+				},
+				"url": {
+					"raw": "{{tenant_url}}/sso/v1/sdk/authenticate",
+					"host": [
+						"{{tenant_url}}"
+					],
+					"path": [
+						"sso",
+						"v1",
+						"sdk",
+						"authenticate"
+					]
+				},
+				"description": "Get"
+			},
+			"response": []
+		},
+		{
+			"name": "Resend Passcode",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "9cda88b7-e173-4f9d-8b08-33ad892705cd",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"var reqState = jsonData.requestState;",
+							"var authnToken = jsonData.authnToken;",
+							"postman.setEnvironmentVariable(\"authnToken\", authnToken);",
+							"postman.setEnvironmentVariable(\"requestState\", reqState);",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n   \"op\": \"resendCode\",\r\n   \"userFlowControlledByExternalClient\": true,\r\n   \"x5t\": \"2e9dc6db9c6f32e35eba9ded2e05449a4b8e1975\",\r\n   \"requestState\": \"{{requestState}}\"\r\n}"
+				},
+				"url": {
+					"raw": "{{tenant_url}}/sso/v1/sdk/authenticate",
+					"host": [
+						"{{tenant_url}}"
+					],
+					"path": [
+						"sso",
+						"v1",
+						"sdk",
+						"authenticate"
+					]
+				},
+				"description": "Get"
+			},
+			"response": []
+		},
+		{
+			"name": "Submit OTP Code Credentials - EMAIL / SMS",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "020e88cd-fe6f-4110-a016-ead3fda76569",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"var reqState = jsonData.requestState;",
+							"var authnToken = jsonData.authnToken;",
+							"postman.setEnvironmentVariable(\"authnToken\", authnToken);",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{  \r\n   \"op\":\"credSubmit\",\r\n   \"credentials\":{  \r\n   \t \"otpCode\":\"141499\"\r\n   },\r\n   \"requestState\": \"{{requestState}}\"\r\n}"
+				},
+				"url": {
+					"raw": "{{tenant_url}}/sso/v1/sdk/authenticate",
+					"host": [
+						"{{tenant_url}}"
+					],
+					"path": [
+						"sso",
+						"v1",
+						"sdk",
+						"authenticate"
+					]
+				},
+				"description": "Get"
+			},
+			"response": []
+		},
+		{
+			"name": "PostUserNamePassword",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "4c98089e-acd7-4b52-ad56-23d8cad54d3b",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"var reqState = jsonData.authnToken;",
+							"postman.setEnvironmentVariable(\"authnToken\", reqState);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{  \r\n   \"op\":\"credSubmit\",\r\n   \"credentials\":{  \r\n      \"username\":\"admin@oracle.com\",\r\n      \"password\":\"Welc0me@1\"\r\n   },\r\n   \"requestState\": \"{{requestState}}\"\r\n}"
+				},
+				"url": {
+					"raw": "{{tenant_url}}/sso/v1/sdk/authenticate",
+					"host": [
+						"{{tenant_url}}"
+					],
+					"path": [
+						"sso",
+						"v1",
+						"sdk",
+						"authenticate"
+					]
+				},
+				"description": "Get"
+			},
+			"response": []
+		},
+		{
+			"name": "MyProfile",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": ""
+				}
+			},
+			"response": []
+		}
+	]
+}
