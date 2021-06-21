@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~  Copyright (c) 2000, 2021, Oracle and/or its affiliates.
+  ~
+  ~   Licensed under the Universal Permissive License v 1.0 as shown at
+  ~   http://oss.oracle.com/licenses/upl.
+  -->
+
 <!DOCTYPE glassfish-web-app PUBLIC "-//GlassFish.org//DTD GlassFish Application Server 3.1 Servlet 3.0//EN" "http://glassfish.org/dtds/glassfish-web-app_3_0-1.dtd">
 <glassfish-web-app error-url="">
   <context-root>/</context-root>

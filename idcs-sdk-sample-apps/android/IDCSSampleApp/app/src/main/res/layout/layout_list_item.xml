@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~  Copyright (c) 2000, 2021, Oracle and/or its affiliates.
+  ~
+  ~   Licensed under the Universal Permissive License v 1.0 as shown at
+  ~   http://oss.oracle.com/licenses/upl.
+  -->
+
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"

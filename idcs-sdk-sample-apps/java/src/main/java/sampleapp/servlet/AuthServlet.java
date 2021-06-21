@@ -1,7 +1,8 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ *  Copyright (c) 2000, 2021, Oracle and/or its affiliates.
+ *  
+ *   Licensed under the Universal Permissive License v 1.0 as shown at
+ *   http://oss.oracle.com/licenses/upl.
  */
 package sampleapp.servlet;
 
