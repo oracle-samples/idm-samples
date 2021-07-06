@@ -10,6 +10,14 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
+#   Copyright (c) 2000, 2021, Oracle and/or its affiliates.
+#
+#    Licensed under the Universal Permissive License v 1.0 as shown at
+#    http://oss.oracle.com/licenses/upl.
+#
+#    Licensed under the Universal Permissive License v 1.0 as shown at
+#    http://oss.oracle.com/licenses/upl.
+
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
