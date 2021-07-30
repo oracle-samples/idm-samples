@@ -23,12 +23,11 @@
 		46C19AD720A87A430094EF1E /* MyAppTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 46C19AD520A87A430094EF1E /* MyAppTableViewCell.xib */; };
 		46C19ADB20A99D940094EF1E /* MyGroupTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 46C19ADA20A99D940094EF1E /* MyGroupTableViewCell.xib */; };
 		46C19ADD20A99DA80094EF1E /* MyGroupTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46C19ADC20A99DA80094EF1E /* MyGroupTableViewCell.swift */; };
-		46CCBD2121422BD100058141 /* IDMMobileSDKv2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 46CCBD2021422BD100058141 /* IDMMobileSDKv2.framework */; };
-		46CCBD2221422BD100058141 /* IDMMobileSDKv2.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 46CCBD2021422BD100058141 /* IDMMobileSDKv2.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		46EC6040209C690F00F5DE48 /* App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46EC603F209C690F00F5DE48 /* App.swift */; };
 		46EC604420A0405C00F5DE48 /* Groups.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46EC604320A0405C00F5DE48 /* Groups.swift */; };
 		46F9CD4A20FF3C7500FA1687 /* EmbeddedLoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46F9CD4820FF3C7500FA1687 /* EmbeddedLoginViewController.swift */; };
 		46F9CD4B20FF3C7500FA1687 /* EmbeddedLoginViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 46F9CD4920FF3C7500FA1687 /* EmbeddedLoginViewController.xib */; };
+		CD2F73702692D4EC0034E9E3 /* IDMMobileSDKv2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD2F736F2692D4EC0034E9E3 /* IDMMobileSDKv2.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -55,7 +54,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				46CCBD2221422BD100058141 /* IDMMobileSDKv2.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -85,11 +83,11 @@
 		46C19AD520A87A430094EF1E /* MyAppTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MyAppTableViewCell.xib; sourceTree = "<group>"; };
 		46C19ADA20A99D940094EF1E /* MyGroupTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MyGroupTableViewCell.xib; sourceTree = "<group>"; };
 		46C19ADC20A99DA80094EF1E /* MyGroupTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyGroupTableViewCell.swift; sourceTree = "<group>"; };
-		46CCBD2021422BD100058141 /* IDMMobileSDKv2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = IDMMobileSDKv2.framework; sourceTree = "<group>"; };
 		46EC603F209C690F00F5DE48 /* App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = App.swift; sourceTree = "<group>"; };
 		46EC604320A0405C00F5DE48 /* Groups.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Groups.swift; sourceTree = "<group>"; };
 		46F9CD4820FF3C7500FA1687 /* EmbeddedLoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmbeddedLoginViewController.swift; sourceTree = "<group>"; };
 		46F9CD4920FF3C7500FA1687 /* EmbeddedLoginViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = EmbeddedLoginViewController.xib; sourceTree = "<group>"; };
+		CD2F736F2692D4EC0034E9E3 /* IDMMobileSDKv2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = IDMMobileSDKv2.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -97,7 +95,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				46CCBD2121422BD100058141 /* IDMMobileSDKv2.framework in Frameworks */,
+				CD2F73702692D4EC0034E9E3 /* IDMMobileSDKv2.framework in Frameworks */,
 				464A588320C674790096B463 /* SafariServices.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -155,7 +153,7 @@
 		4671CE1F20934FF5006CA322 = {
 			isa = PBXGroup;
 			children = (
-				46CCBD2021422BD100058141 /* IDMMobileSDKv2.framework */,
+				CD2F736F2692D4EC0034E9E3 /* IDMMobileSDKv2.framework */,
 				4671CE2A20934FF5006CA322 /* IDCSSample */,
 				4671CE3F20934FF6006CA322 /* IDCSSampleTests */,
 				4671CE4A20934FF6006CA322 /* IDCSSampleUITests */,
@@ -272,7 +270,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0920;
-				LastUpgradeCheck = 0920;
+				LastUpgradeCheck = 1200;
 				ORGANIZATIONNAME = Oracle;
 				TargetAttributes = {
 					4671CE2720934FF5006CA322 = {
@@ -425,6 +423,7 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
@@ -432,8 +431,10 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -459,7 +460,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -482,6 +483,7 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
@@ -489,8 +491,10 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -510,7 +514,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
@@ -528,12 +532,13 @@
 					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = IDCSSample/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.oracle.IDCSSample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_WORKSPACE = YES;
 			};
 			name = Debug;
 		};
@@ -547,12 +552,13 @@
 					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = IDCSSample/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.oracle.IDCSSample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_WORKSPACE = YES;
 			};
 			name = Release;
 		};
