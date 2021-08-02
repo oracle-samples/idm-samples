@@ -1,3 +1,7 @@
+/*
+ * This file is subject to the terms and conditions defined in
+ * file 'LICENSE.MD' which is part of this source code package.
+ */
 package com.example.utils;
 
 import java.net.URLEncoder;

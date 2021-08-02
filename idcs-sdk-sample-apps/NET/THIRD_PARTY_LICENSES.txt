@@ -6,8 +6,6 @@
 - MICROSOFT SOFTWARE License
 - MIT License
 - Apache-2.0 License
--------------------------------- Notices -------------------------------
-
 
 ======================== Third Party Components ========================
 

@@ -4,8 +4,6 @@
 - MIT License
 - Apache License
 - Apache License 2.0
--------------------------------- Notices -------------------------------
-
 
 ======================== Third Party Components ========================
 

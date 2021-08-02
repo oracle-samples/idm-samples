@@ -3,19 +3,15 @@
 ------------------------------- Licenses -------------------------------
 - GNU General Public License
 - Apache License 2.0
--------------------------------- Notices -------------------------------
-
 
 ======================== Third Party Components ========================
 
 javax:javaee-web-api Version 7.0,
 net.minidev:asm Version 1.0.2,
 org.apache.commons:commons-collections4 Version 4.3,
-org.apache.commons:org.apache.commons Version 3.8.1,
-net.minidev:json-smart Version 2.3,
-com.nimbusds:lang-tag Version 1.4.4,
-com.nimbusds:nimbus-jose-jwt Version 6.3,
-com.nimbusds:oauth2-oidc-sdk Version 5.61
+org.apache.commons:commons-lang3 Version 3.8.1,
+com.nimbusds:nimbus-jose-jwt Version 8.18,
+com.nimbusds:oauth2-oidc-sdk Version 9.9
 
 
 =============================== Licenses ===============================
@@ -366,10 +362,8 @@ General Public License instead of this License.
 net.minidev:asm Version 1.0.2,
 org.apache.commons:commons-collections4 Version 4.3,
 org.apache.commons:org.apache.commons Version 3.8.1,
-net.minidev:json-smart Version 2.3,
-com.nimbusds:lang-tag Version 1.4.4,
-com.nimbusds:nimbus-jose-jwt Version 6.3
-com.nimbusds:oauth2-oidc-sdk Version 5.61
+com.nimbusds:nimbus-jose-jwt Version 8.18,
+com.nimbusds:oauth2-oidc-sdk Version 9.9
 
 Apache License
                            Version 2.0, January 2004
