@@ -699,30 +699,24 @@ this.removeBtnAndShowSpinner = function(btn) {
   }
 
   // Builds the main form, allowing username/password posting + IDP selection
-  // Logic has been moved into buildFirstForm
+  // Logic has been moved into buildForm
   this.buildUidPwForm = function(formDiv,IDPdata) {
-    // this.buildFirstForm(formDiv,true,IDPdata);
     this.buildForm(formDiv,"showUidPw",IDPdata,true);
   }
 
   // Builds the main form, allowing IDP selection
   this.buildIdpChooserForm = function(formDiv,IDPdata,isFirstForm) {
-    // this.buildFirstForm(formDiv,false,IDPdata);
     this.buildForm(formDiv,"showIdp",IDPdata,isFirstForm);
   }
 
+  //  builds the user name first form
   this.buildUidForm = function(formDiv,IDPdata) {
     this.buildForm(formDiv,"showUid",IDPdata,true);
   }
 
-//  this.buildPasswordForm = function(formDiv,IDPdata) {
-//    this.buildFirstForm(formDiv,"showPassword",IDPdata);
-//  }
-
   // this function builds both the UID + PW and/or the IDP chooser form
   // this is all in one function to avoid duplicating code or comments
   // the boolean showUidPw determines whether to show the uid+pw portion
-  // this.buildFirstForm = function(formDiv,showUidPw,IDPdata) {
   this.buildForm = function(formDiv,showField,IDPdata,isFirstForm) {
     const self = this;
     var showUidOrUidPwFields = true;
@@ -1376,7 +1370,7 @@ this.removeBtnAndShowSpinner = function(btn) {
 
   }
 
-  // Displays a form for forgotPassword flow with username as input.
+  // Displays a form for just for password.  This is displayed during the user name first flow.
   this.displayPasswordForm = function(payload) {
 
     const self = this;
@@ -1402,21 +1396,14 @@ this.removeBtnAndShowSpinner = function(btn) {
     backToLoginDivElem.innerHTML += '<a href="#" id="back-to-login-btn" data-res="back-to-login-msg">Back to Login</a>';
     formDiv.appendChild(backToLoginDivElem);
 
-    //this.replaceDiv("signin-div",formDiv,true);
-
-//////
     if ((payload.IDP) && (payload.IDP.configuredIDPs.length > 0)) {
       var formIDPDiv = document.createElement('div');
-      //formIDPDiv.classList.add("form");
-      //formIDPDiv.classList.add("sign-in");
       formIDPDiv.id = 'idp-div';
       formIDPDiv.innerHTML =
                 '<h3 data-res="idp-hdr">Choose your IDP</h3>';
       this.buildIdpChooserForm(formIDPDiv,payload.IDP,false);
       formDiv.appendChild(formIDPDiv);
     }
-
-//////
 
     this.replaceDiv("signin-div",formDiv,true);
 
@@ -1426,6 +1413,7 @@ this.removeBtnAndShowSpinner = function(btn) {
 
   } // this.displayPassWordForm
 
+  //  This form is displayed for user name first flow.
   this.displayIDPChooserForm = function(payload) {
     const self = this;
 
