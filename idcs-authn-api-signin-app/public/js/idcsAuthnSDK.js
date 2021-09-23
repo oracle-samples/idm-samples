@@ -65,18 +65,31 @@ function IdcsAuthnSDK(app) {
             this.app.logMsg(initialData.requestState);
             this.app.logMsg(initialData.nextOp);
             this.app.logMsg(initialData.nextAuthFactors);
+
+            //  Check if the typical user name + pwd UI needs to be displayed or
+            //  just the user name (if "user name first" feature is turned on in IDCS)
             if ((initialData.requestState) &&
                 (initialData.nextOp.indexOf('credSubmit') >= 0) &&
-                (initialData.nextAuthFactors.indexOf('USERNAME_PASSWORD') >= 0)) {
-                this.app.logMsg('[IdcsAuthnSDK] Displaying signin form');
-                this.app.displayForm("USERNAME_PASSWORD","submitCreds",initialData.IDP);
-                //inject error coming back from social/callback endpoint if IDCS is not able to match
-                //external user to locally deactivated user.... plus other errors like eg if user cancels
-                //external idp authentication... etc... this error is relayed to this page via /v1/error endpoint
-                //which injects it into sessionStorage...
-                if (error != null){
-                  this.app.setLoginErrorMessage(JSON.parse(error));
-                }
+                ((initialData.nextAuthFactors.indexOf('USERNAME_PASSWORD') >= 0) || (initialData.nextAuthFactors.indexOf('USERNAME') >= 0) )) {
+
+                    if (initialData.nextAuthFactors.indexOf('USERNAME_PASSWORD') >= 0) {
+                        this.app.logMsg('[IdcsAuthnSDK] Displaying signin form');
+                        this.app.displayForm("USERNAME_PASSWORD","submitCreds",initialData.IDP);
+                    }
+                    else {
+                        if (initialData.nextAuthFactors.indexOf('USERNAME') >= 0) {
+                            this.app.logMsg('[IdcsAuthnSDK] Displaying user name first form');
+                            this.app.displayForm("USERNAME","submitCreds",initialData.IDP);
+                        }
+                    }
+
+                    //inject error coming back from social/callback endpoint if IDCS is not able to match
+                    //external user to locally deactivated user.... plus other errors like eg if user cancels
+                    //external idp authentication... etc... this error is relayed to this page via /v1/error endpoint
+                    //which injects it into sessionStorage...
+                    if (error != null){
+                      this.app.setLoginErrorMessage(JSON.parse(error));
+                    }
             }
             // we can also come back here for a social login with MFA enrollment up next
             else
@@ -247,6 +260,22 @@ function IdcsAuthnSDK(app) {
 
     this.authenticate(data);
   }; // this.postCreds
+
+  //  Post just the user name to Idcs
+  //  This is for the "user name first" feature
+  this.postUserName = function(credentials) {
+
+    this.app.logMsg('[IdcsAuthnSDK] Posting user name ...');
+
+    var data = JSON.stringify({
+      "op": "credSubmit",
+      "authFactor": "USERNAME",
+      "credentials": credentials,
+      "requestState": this.app.getRequestState()
+    });
+
+    this.authenticate(data);
+  }; // this.postUserName
 
   this.postEmailOtp = function(credentials) {
 
@@ -439,6 +468,10 @@ function IdcsAuthnSDK(app) {
     });
     this.authenticate(data);
   } // this.initEnrollOtpTotp
+
+  this.submitPassword = function(credentials, includeAuthnFactor) {
+
+  }
 
   this.submitTOTP = function(credentials, includeAuthnFactor) {
 

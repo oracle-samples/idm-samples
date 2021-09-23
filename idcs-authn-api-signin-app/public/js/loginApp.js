@@ -367,6 +367,13 @@ this.removeBtnAndShowSpinner = function(btn) {
         this.setUnPwOrigin("true");
         return {"username": document.getElementById("userid").value, "password": document.getElementById("password").value};
 
+      case 'postUserName':
+      this.setUnPwOrigin("true");
+      return {"username": document.getElementById("userid").value};
+
+      //case 'submitPassword':
+      //return {"username": document.getElementById("userid").value, "password": document.getElementById("password").value}; //  Amit - need to change
+
       case 'enrollSecurityQuestions':
 
         var secQuestions=[];
@@ -600,7 +607,7 @@ this.removeBtnAndShowSpinner = function(btn) {
         (this.AuthenticationFactorInfo[which]["loginFormFunction"])(formDiv,payload);
 
         // hide stuff that is not needed except on the initial screen
-        if (which !== "USERNAME_PASSWORD") {
+        if ((which !== "USERNAME_PASSWORD") && (which !== "USERNAME") && (which !== "PASSWORD")) {
           Array.prototype.slice.call(document.querySelectorAll('.hidelater')).forEach(function(e) { // Making MS (IE and Edge) family happy
             e.style.visibility = "hidden";
           });
@@ -694,37 +701,66 @@ this.removeBtnAndShowSpinner = function(btn) {
   // Builds the main form, allowing username/password posting + IDP selection
   // Logic has been moved into buildFirstForm
   this.buildUidPwForm = function(formDiv,IDPdata) {
-    this.buildFirstForm(formDiv,true,IDPdata);
+    // this.buildFirstForm(formDiv,true,IDPdata);
+    this.buildForm(formDiv,"showUidPw",IDPdata,true);
   }
 
   // Builds the main form, allowing IDP selection
-  this.buildIdpChooserForm = function(formDiv,IDPdata) {
-    this.buildFirstForm(formDiv,false,IDPdata);
+  this.buildIdpChooserForm = function(formDiv,IDPdata,isFirstForm) {
+    // this.buildFirstForm(formDiv,false,IDPdata);
+    this.buildForm(formDiv,"showIdp",IDPdata,isFirstForm);
   }
+
+  this.buildUidForm = function(formDiv,IDPdata) {
+    this.buildForm(formDiv,"showUid",IDPdata,true);
+  }
+
+//  this.buildPasswordForm = function(formDiv,IDPdata) {
+//    this.buildFirstForm(formDiv,"showPassword",IDPdata);
+//  }
 
   // this function builds both the UID + PW and/or the IDP chooser form
   // this is all in one function to avoid duplicating code or comments
   // the boolean showUidPw determines whether to show the uid+pw portion
-  this.buildFirstForm = function(formDiv,showUidPw,IDPdata) {
+  // this.buildFirstForm = function(formDiv,showUidPw,IDPdata) {
+  this.buildForm = function(formDiv,showField,IDPdata,isFirstForm) {
     const self = this;
+    var showUidOrUidPwFields = true;
 
     // always show the header message
-    formDiv.innerHTML =
-        '<h3 data-res="signin-hdr">Welcome</h3>';
+    if (isFirstForm) {
+      formDiv.innerHTML =
+          '<h3 data-res="signin-hdr">Welcome</h3>';
+    }
 
     // then show the UID + PW form if needed
-    if ( showUidPw ) {
+    switch(showField) {
+
+      case "showUidPw":
+        formDiv.innerHTML +=
+          '<label><span data-res="signin-username-fld">Username</span><input type="text" id="userid" value="" required></label>' +
+          '<label><span data-res="signin-password-fld">Password</span><input type="password" id="password" value="" required></label>';
+      break;
+
+      case "showUid":
+        formDiv.innerHTML +=
+          '<label><span data-res="signin-username-fld">Username</span><input type="text" id="userid" value="" required></label>';
+      break;
+
+      default:
+        showUidOrUidPwFields = false;
+    }
+
+    if (showUidOrUidPwFields) {
       formDiv.innerHTML +=
-        '<label><span data-res="signin-username-fld">Username</span><input type="text" id="userid" value="" required></label>' +
-        '<label><span data-res="signin-password-fld">Password</span><input type="password" id="password" value="" required></label>' +
-        '<label class="error-msg" id="login-error-msg"></label>' +
-        '<button type="button" class="submit" id="submit-btn" data-res="signin-submit-btn">Sign In</button>' +
-        '<div class="sameline"><a href="#" class="info" id="signin-forgot-pass" data-res="forgot-pw-btn">Forgot password?</a></div>';
+      '<label class="error-msg" id="login-error-msg"></label>' +
+      '<button type="button" class="submit" id="submit-btn" data-res="signin-submit-btn">Sign In</button>' +
+      '<div class="sameline"><a href="#" class="info" id="signin-forgot-pass" data-res="forgot-pw-btn">Forgot password?</a></div>';
     }
 
     // if both UID+PW and an IDP list are being shown then add the "OR" bit
-    if ( showUidPw && IDPdata ) {
-      formDiv.innerHTML += '<div class="hr"><hr class="left"><span class="hr-text" data-res="or-msg">OR</span><hr class="right"></div>';
+    if ( showUidOrUidPwFields && IDPdata ) {
+      formDiv.innerHTML += '<div class="hr"><hr class="left"><span class="hr-text" data-res="or-msg">OR sign in with</span><hr class="right"></div>';
     }
 
     // and finally build the IDP list
@@ -799,14 +835,22 @@ this.removeBtnAndShowSpinner = function(btn) {
 
     // and now that we're done updating the HTML of that div we can
     // attach the event handlers for clicking or hitting enter
-    if ( showUidPw ) {
-      this.handleClickToSubmitEvent(formDiv,this,'postCreds');
-      this.handleKeyPressToSubmitEvent(formDiv,formDiv.querySelector("#password"),this,'postCreds');
+    // if ( showUidPw ) {
+    if ( showUidOrUidPwFields ) {
+      //this.handleClickToSubmitEvent(formDiv,this,'postCreds');
+      if (showField == "showUid"){
+        this.handleClickToSubmitEvent(formDiv,this,'postUserName');
+        this.handleKeyPressToSubmitEvent(formDiv,formDiv.querySelector("#userid"),this,'postUserName');
+      }
+      else {
+        this.handleClickToSubmitEvent(formDiv,this,'postCreds');
+        this.handleKeyPressToSubmitEvent(formDiv,formDiv.querySelector("#password"),this,'postCreds');
+      }
       this.handleClickEvent(formDiv,this);
     }
 
     return formDiv;
-  }; // this.buildFirstForm
+  }; // this.buildForm
 
   // Builds the Email OTP form
   this.buildEmailOtpForm = function(formDiv,payload) {
@@ -1333,6 +1377,85 @@ this.removeBtnAndShowSpinner = function(btn) {
   }
 
   // Displays a form for forgotPassword flow with username as input.
+  this.displayPasswordForm = function(payload) {
+
+    const self = this;
+    var formDiv = document.createElement('div');
+    formDiv.classList.add("form");
+    formDiv.classList.add("sign-in");
+    formDiv.id = 'signin-div';
+    formDiv.innerHTML =
+              '<h3 data-res="pw-hdr">Enter your Password</h3>' +
+              '<div class="sameline"><span class="info" data-res="pw-info-msg">Please enter your for password.</span></div>' +
+              '<label><span data-res="uid-fld"></span><input type="hidden" id="userid" required value="'+document.getElementById("userid").value + '"> </label>' +
+              '<label><span data-res="pw-fld">Password</span><input type="password" id="password" required></label>' +
+              '<label class="error-msg" id="login-error-msg"></label>' +
+              '<button type="button" class="submit" id="submit-btn" data-res="pw-submit-btn">Submit</button>' +
+              '<div class="sameline"><a href="#" class="info" id="signin-forgot-pass" data-res="forgot-pw-btn">Forgot password?</a></div>';
+
+    this.handleClickToSubmitEvent(formDiv,this,'postCreds');
+    this.handleKeyPressToSubmitEvent(formDiv,formDiv.querySelector("#password"),this,'postCreds');
+
+    var backToLoginDivElem = document.createElement('div');
+    backToLoginDivElem.classList.add('newline');
+    backToLoginDivElem.innerHTML = '<div class="hr"><hr class="left"><span class="hr-text" data-res="or-msg">OR</span><hr class="right"></div>';
+    backToLoginDivElem.innerHTML += '<a href="#" id="back-to-login-btn" data-res="back-to-login-msg">Back to Login</a>';
+    formDiv.appendChild(backToLoginDivElem);
+
+    //this.replaceDiv("signin-div",formDiv,true);
+
+//////
+    if ((payload.IDP) && (payload.IDP.configuredIDPs.length > 0)) {
+      var formIDPDiv = document.createElement('div');
+      //formIDPDiv.classList.add("form");
+      //formIDPDiv.classList.add("sign-in");
+      formIDPDiv.id = 'idp-div';
+      formIDPDiv.innerHTML =
+                '<h3 data-res="idp-hdr">Choose your IDP</h3>';
+      this.buildIdpChooserForm(formIDPDiv,payload.IDP,false);
+      formDiv.appendChild(formIDPDiv);
+    }
+
+//////
+
+    this.replaceDiv("signin-div",formDiv,true);
+
+    document.getElementById("back-to-login-btn").onclick = function () {
+      self.sdk.initAuthentication();
+    };
+
+  } // this.displayPassWordForm
+
+  this.displayIDPChooserForm = function(payload) {
+    const self = this;
+
+    //  if a single IDP exists, then redirect to that IDP
+    if (payload.IDP.configuredIDPs.length == 1) {
+      var idp = payload.IDP.configuredIDPs[0];
+      var singleIDPPayload = {
+          'requestState': self.getRequestState(),
+          'idpName': idp.idpName,
+          'idpId': idp.idpId,
+          'clientId': self.getClientId(),
+          'idpType': idp.idpType
+      };
+      self.sdk.chooseIDP(singleIDPPayload);
+    }
+    else {
+      var formDiv = document.createElement('div');
+      formDiv.classList.add("form");
+      formDiv.classList.add("sign-in");
+      formDiv.id = 'signin-div';
+      formDiv.innerHTML =
+                '<h3 data-res="pw-hdr">Choose your IDP</h3>';
+
+      this.replaceDiv("signin-div",formDiv,true);
+
+      this.buildIdpChooserForm(formDiv,payload.IDP,false);
+    }
+  }
+
+  // Displays a form for forgotPassword flow with username as input.
   this.displayForgotPassWordForm = function(payload) {
 
     const self = this;
@@ -1436,34 +1559,43 @@ this.removeBtnAndShowSpinner = function(btn) {
       if (payload.nextOp[0] === 'credSubmit') {
         if (payload.nextAuthFactors) {
 
-          var sameFactorMultipleDevices = false;
-          payload.nextAuthFactors.forEach(function(factor) {
-            if (payload[factor] && payload[factor].enrolledDevices && payload[factor].enrolledDevices.length > 0) {
-              sameFactorMultipleDevices = true;
-            }
-          });
-          // Fix on bug reported by Pulkit Agarwal on 12/04/18. Used to happen when MFA is active for a Social User that isn't registered in IDCS.
-          // We must send the user to enrollment where enrollment is also in nextOp array.
-          if ( payload.nextOp[1] === "enrollment" ) {
-            this.displayEnrollmentOptionsForm(payload);
+          if (payload.nextAuthFactors.includes('USERNAME_PASSWORD')) {
+            this.displayPasswordForm(payload);
           }
-          // End of fix.
-          // If there's more than one nextAuthFactor or multiple devices for the same factor, we go to alternative factors flow.
-          else if (payload.nextAuthFactors.length > 1 || sameFactorMultipleDevices) {
-            this.displayAltFactorsSubform(payload);
+          else if (payload.nextAuthFactors.includes('IDP')) {
+            this.displayIDPChooserForm(payload);
           }
 
           else {
-            // ER #1
-            // Doing this because the API response not always tell whether the factor is the preferred one.
-            // Setting the user preferred factor. It's the one returned from username/password submit.
-            // We may also come here via Social Login, in which case the origin is undefined.
-            if (!this.getUnPwOrigin() || this.getUnPwOrigin() === "true") {
-              this.setPreferredFactor({factor:payload.nextAuthFactors[0],displayName:payload.displayName});
-              this.setUnPwOrigin("false");
+            var sameFactorMultipleDevices = false;
+            payload.nextAuthFactors.forEach(function(factor) {
+              if (payload[factor] && payload[factor].enrolledDevices && payload[factor].enrolledDevices.length > 0) {
+                sameFactorMultipleDevices = true;
+              }
+            });
+            // Fix on bug reported by Pulkit Agarwal on 12/04/18. Used to happen when MFA is active for a Social User that isn't registered in IDCS.
+            // We must send the user to enrollment where enrollment is also in nextOp array.
+            if ( payload.nextOp[1] === "enrollment" ) {
+              this.displayEnrollmentOptionsForm(payload);
             }
-            // End of ER #1.
-            this.displayForm(payload.nextAuthFactors[0],"submitCreds",payload);
+            // End of fix.
+            // If there's more than one nextAuthFactor or multiple devices for the same factor, we go to alternative factors flow.
+            else if (payload.nextAuthFactors.length > 1 || sameFactorMultipleDevices) {
+              this.displayAltFactorsSubform(payload);
+            }
+
+            else {
+              // ER #1
+              // Doing this because the API response not always tell whether the factor is the preferred one.
+              // Setting the user preferred factor. It's the one returned from username/password submit.
+              // We may also come here via Social Login, in which case the origin is undefined.
+              if (!this.getUnPwOrigin() || this.getUnPwOrigin() === "true") {
+                this.setPreferredFactor({factor:payload.nextAuthFactors[0],displayName:payload.displayName});
+                this.setUnPwOrigin("false");
+              }
+              // End of ER #1.
+              this.displayForm(payload.nextAuthFactors[0],"submitCreds",payload);
+            }
           }
         }
         else
@@ -1738,11 +1870,21 @@ this.removeBtnAndShowSpinner = function(btn) {
       label: "Username and password",
       loginFormFunction: function (formdiv,payload) { self.buildUidPwForm(formdiv,payload);},
     },
+    USERNAME: {
+      // this one is only used for the initial login screen
+      label: "Username",
+      loginFormFunction: function (formdiv,payload) { self.buildUidForm(formdiv,payload);},
+    },
+//    PASSWORD: {
+      // this one is only used for the initial login screen
+//      label: "Password",
+//      loginFormFunction: function (formdiv,payload) { self.buildPasswordForm(formdiv,payload);},
+//    },
     IDP: {
       // If the admin removes "local IDP" in the IDP Policies then IDCS asks custom login app
       // to display only the IDP chooser on the intiial form
       label: "Select an IDP",
-      loginFormFunction: function (formdiv,payload) { self.buildIdpChooserForm(formdiv,payload.IDP);},
+      loginFormFunction: function (formdiv,payload) { self.buildIdpChooserForm(formdiv,payload.IDP,true);},
     },
     EMAIL: {
       label: "Email",

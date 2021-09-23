@@ -14,6 +14,7 @@ const resources = {
   "signin-password-fld" : "Password",
   "signin-submit-btn" : "Login",
   "signin-forgot-password-btn" : "Forgot Password?",
+  "idp-hdr" : "Choose your IDP",
 
   // OTP form
   "otp-hdr" : "Verifying OTP",
