@@ -469,10 +469,6 @@ function IdcsAuthnSDK(app) {
     this.authenticate(data);
   } // this.initEnrollOtpTotp
 
-  this.submitPassword = function(credentials, includeAuthnFactor) {
-
-  }
-
   this.submitTOTP = function(credentials, includeAuthnFactor) {
 
       var data = JSON.stringify({

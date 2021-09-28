@@ -371,9 +371,6 @@ this.removeBtnAndShowSpinner = function(btn) {
       this.setUnPwOrigin("true");
       return {"username": document.getElementById("userid").value};
 
-      //case 'submitPassword':
-      //return {"username": document.getElementById("userid").value, "password": document.getElementById("password").value}; //  Amit - need to change
-
       case 'enrollSecurityQuestions':
 
         var secQuestions=[];
@@ -1863,11 +1860,6 @@ this.removeBtnAndShowSpinner = function(btn) {
       label: "Username",
       loginFormFunction: function (formdiv,payload) { self.buildUidForm(formdiv,payload);},
     },
-//    PASSWORD: {
-      // this one is only used for the initial login screen
-//      label: "Password",
-//      loginFormFunction: function (formdiv,payload) { self.buildPasswordForm(formdiv,payload);},
-//    },
     IDP: {
       // If the admin removes "local IDP" in the IDP Policies then IDCS asks custom login app
       // to display only the IDP chooser on the intiial form
