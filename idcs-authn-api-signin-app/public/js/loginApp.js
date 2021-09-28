@@ -826,9 +826,7 @@ this.removeBtnAndShowSpinner = function(btn) {
 
     // and now that we're done updating the HTML of that div we can
     // attach the event handlers for clicking or hitting enter
-    // if ( showUidPw ) {
     if ( showUidOrUidPwFields ) {
-      //this.handleClickToSubmitEvent(formDiv,this,'postCreds');
       if (showField == "showUid"){
         this.handleClickToSubmitEvent(formDiv,this,'postUserName');
         this.handleKeyPressToSubmitEvent(formDiv,formDiv.querySelector("#userid"),this,'postUserName');
