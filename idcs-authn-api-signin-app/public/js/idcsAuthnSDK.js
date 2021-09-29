@@ -9,9 +9,13 @@ function IdcsAuthnSDK(app) {
     // 9010 series: Unknown Errors during authentication
     error9010 : {code: 'SDK-AUTH-9010', msg : 'Unknown error occurred.'},
     error9011 : {code: 'SDK-AUTH-9011', msg : 'Unrecognized status returned by authenticate.'},
+    error9012 : {code: 'SDK-AUTH-9012', msg : 'Unrecognized error returned by password reset.'},
     // 9020 series: Password reset errors
     error9020 : {code: 'SDK-AUTH-9020', msg : 'Validation failed. Your reset password link might have expired.'},
     error9021 : {code: 'SDK-AUTH-9021', msg : 'Chosen password violates one or more policies.'},
+    error9022 : {code: 'SDK-AUTH-9022', msg : 'Invalid Token'},
+    error9023 : {code: 'SDK-AUTH-9023', msg : 'Invalid Passcode.'},
+    error9024 : {code: 'SDK-AUTH-9024', msg : 'Your answer didn\'t match. Please try again.'},
     // Invalid payload
     error9999 : {code: 'SDK-AUTH-9999', msg : 'System error: invalid data. Please contact the administrator.'}
   };
@@ -484,17 +488,9 @@ function IdcsAuthnSDK(app) {
     this.authenticate(data);
   }
 
-
-  this.forgotPassword = function(username) {
+  this.forgotPassword = function(payload) {
     const self = this;
-    this.app.logMsg("[IdcsAuthnSDK] Username is :" + this.app.mask(username));
-    var data = JSON.stringify({
-      "userName": username,
-      "notificationType": "email",
-      "schemas": [
-      "urn:ietf:params:scim:schemas:oracle:idcs:MePasswordResetRequestor"
-                ]
-                });
+    this.app.logMsg("[IdcsAuthnSDK] Username is :" + payload.username);
 
     var xhr = new XMLHttpRequest();
     xhr.addEventListener("readystatechange", function () {
@@ -503,7 +499,18 @@ function IdcsAuthnSDK(app) {
             const jsonResponse = JSON.parse(this.responseText);
 
             if (jsonResponse.hasOwnProperty('userName')&& jsonResponse.notificationType === 'email') {
-              self.app.displayForgotPassWordSuccess(jsonResponse);
+              // Uncomment the line below if you want the OOTB Password Reset form
+              //self.app.displayForgotPassWordSuccess(jsonResponse, payload.username);
+
+              // Uncomment the line below to use a custom e-mail form to enter a token.
+              //  The ${userToken} must be set in the E-mail template for this flow to work.
+              self.app.displayForgotPassWordEmailForm(jsonResponse, payload.username);
+            }
+            if (jsonResponse.hasOwnProperty('userName')&& jsonResponse.notificationType === 'sms') {
+              self.app.displayForgotPassWordSmsForm(jsonResponse, payload.username);
+            }
+            if (jsonResponse.hasOwnProperty('userName')&& jsonResponse.notificationType === 'secquestions') {
+              self.app.displayForgotPassWordSecquestionForm(jsonResponse, payload.username);
             }
           }
         });
@@ -511,8 +518,173 @@ function IdcsAuthnSDK(app) {
     xhr.open("POST", app.baseUri + "/admin/v1/MePasswordResetRequestor");
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.setRequestHeader("Authorization", "Bearer " + this.app.getAccessToken());
-    xhr.send(data);
+    if (payload.method === 'email') {
+      var emailData = JSON.stringify({
+        "userName": payload.username,
+        "notificationType": "email",
+        "notificationEmailAddress" : payload.email,
+        "schemas": [
+        "urn:ietf:params:scim:schemas:oracle:idcs:MePasswordResetRequestor"
+                  ]
+        });
+      xhr.send(emailData);
+    }
+    else if (payload.method === 'sms') {
+      var smsData = JSON.stringify({
+        "userName": payload.username,
+        "notificationType": "sms",
+        "schemas": [
+        "urn:ietf:params:scim:schemas:oracle:idcs:MePasswordResetRequestor"
+                  ]
+        });
+      xhr.send(smsData);
+    }
+    else if (payload.method === 'secquestions') {
+      var secData = JSON.stringify({
+        "userName": payload.username,
+        "notificationType": "secquestions",
+        "schemas": [
+        "urn:ietf:params:scim:schemas:oracle:idcs:MePasswordResetRequestor"
+                  ]
+        });
+        xhr.send(secData);
+      }
+
   }; //this.forgotPassword
+
+  this.getPasswordMethod = function(username) {
+    const self = this;
+    this.app.logMsg("[IdcsAuthnSDK] Username is :" + username);
+    var data = JSON.stringify({
+      "userName": username,
+      "schemas": [
+      "urn:ietf:params:scim:schemas:oracle:idcs:MePasswordRecoveryOptionRetriever"
+                ]
+                });
+
+    var xhr = new XMLHttpRequest();
+    xhr.addEventListener("readystatechange", function () {
+          if (this.readyState === 4) {
+            self.app.logMsg("[IdcsAuthnSDK] PasswordRecoveryOptionRetriever Response: "+self.app.mask(this.responseText));
+            const jsonResponse = JSON.parse(this.responseText);
+            // Check what options the user can use for password flow (email, sms, secquestion)
+            // If there is only one option it must be email, check anyways.
+            if (jsonResponse.hasOwnProperty('options') )
+            {
+              if (jsonResponse.options.length == 1 )
+              {
+                if (jsonResponse.options[0].type === 'email')
+                {
+                 self.forgotPassword({"username": username, "email": jsonResponse.options[0].value, "method": "email"});
+                }
+                else if (jsonResponse.options[0].type === 'sms')
+                {
+                  self.forgotPassword({"username": username, "method": "sms"});
+                }
+                else if (jsonResponse.options[0].type === 'secquestions')
+                {
+                  self.forgotPassword({"username": username, "method": "secquestions"});
+                }
+                else
+                {
+                // Error - No options found.  This "should" never happen.
+                    self.app.setLoginErrorMessage(self.sdkErrors.error9010);
+                }
+              }
+              else
+              {
+                self.app.displayForgotPassWordMethodForm(jsonResponse, username);
+              }
+            }
+            else  // Error - No options found.  This "should" never happen.
+            {
+              self.app.setLoginErrorMessage(self.sdkErrors.error9010);
+            }
+          }
+        });
+
+    xhr.open("POST", app.baseUri + "/admin/v1/MePasswordRecoveryOptionRetriever");
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.setRequestHeader("Authorization", "Bearer " + this.app.getAccessToken());
+    xhr.send(data);
+  }; //this.getPasswordMethod
+
+  this.processPasswordMethod = function(payload) {
+    const self = this;
+    var xhr = new XMLHttpRequest();
+    xhr.addEventListener("readystatechange", function () {
+          if (this.readyState === 4) {
+            self.app.logMsg("[IdcsAuthnSDK] PasswordRecoveryFactorValidator Response: "+self.app.mask(this.responseText));
+            const jsonResponse = JSON.parse(this.responseText);
+
+            if (jsonResponse.hasOwnProperty('token')) {
+              self.app.displayResetPassWordForm(jsonResponse.token);
+            }
+            else {
+              // Checking for Status 400 - No Token
+              if (jsonResponse.hasOwnProperty('status') && jsonResponse.status === '400') {
+                var error = jsonResponse['urn:ietf:params:scim:api:oracle:idcs:extension:messages:Error'];
+                self.app.logMsg(error.messageId);
+                if (error.messageId === "error.identity.passwordmgmt.invalidToken") {
+                  self.app.setLoginErrorMessage(self.sdkErrors.error9022);
+                }
+                else if (error.messageId === "error.ssocommon.auth.invalidPasscode" ||
+                        error.messageId === "error.identity.accrec.invalidOTP") {
+                  self.app.setLoginErrorMessage(self.sdkErrors.error9023);
+                }
+                else if (error.messageId === "error.identity.passwordmgmt.invalidSecurityQuestionAnswer") {
+                  self.app.setLoginErrorMessage(self.sdkErrors.error9024);
+                }
+                else  // Unrecognized error message
+                {
+                  self.app.setLoginErrorMessage(self.sdkErrors.error9012);
+                }
+              }
+            }
+          }
+        });
+
+    xhr.open("POST", app.baseUri + "/admin/v1/MePasswordRecoveryFactorValidator");
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.setRequestHeader("Authorization", "Bearer " + this.app.getAccessToken());
+
+    if (payload.method === 'email') {
+      var emailData = JSON.stringify({
+        "schemas": [
+        "urn:ietf:params:scim:schemas:oracle:idcs:MePasswordRecoveryFactorValidator"
+                  ],
+        "type": "email",
+        "emailToken": decodeURIComponent(payload.emailToken)
+      });
+      xhr.send(emailData);
+    }
+    else if (payload.method === 'sms') {
+      var smsData = JSON.stringify({
+        "schemas": [
+        "urn:ietf:params:scim:schemas:oracle:idcs:MePasswordRecoveryFactorValidator"
+                  ],
+        "type": "sms",
+        "userName": payload.username,
+        "deviceId": payload.deviceId,
+        "requestId": payload.requestId,
+        "otpCode": payload.smsCode
+      });
+      xhr.send(smsData);
+    }
+    else if (payload.method === 'secquestions') {
+      var secData = JSON.stringify({
+        "schemas": [
+        "urn:ietf:params:scim:schemas:oracle:idcs:MePasswordRecoveryFactorValidator"
+                  ],
+        "userName": payload.username,
+        "type": "secquestions",
+        "securityQuestions": [{
+            "questionId": payload.questionId,
+            "securityAnswer": payload.secAnswer
+        }] });
+        xhr.send(secData);
+      }
+  }; //this.processPasswordMethod
 
   this.initEnrollPush = function() {
     var data = JSON.stringify({

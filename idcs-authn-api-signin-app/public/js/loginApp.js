@@ -459,7 +459,32 @@ this.removeBtnAndShowSpinner = function(btn) {
         return {"bypassCode": document.getElementById("bypassCode").value};
 
       case 'forgotPassword':
+        if (document.querySelector('input[name="pwmethod"]:checked').value === 'email') {
+          return {"username" : document.getElementById("forgotUserName").value, "email": document.getElementById("userEmail").value, "method": document.querySelector('input[name="pwmethod"]:checked').value}
+        }
+        else { // Not E-mail - Just send username and method
+          return {"username" : document.getElementById("forgotUserName").value, "method": document.querySelector('input[name="pwmethod"]:checked').value}
+        }
+
+      case 'getPasswordMethod':
         return document.getElementById("forgotUserName").value;
+
+      case 'processPasswordMethod':
+        if (!!document.getElementById("smsCode")) {
+          return { "username" : document.getElementById("forgotUserName").value, "method": "sms",
+                   "smsCode": document.getElementById("smsCode").value,
+                   "deviceId": document.getElementById("deviceId").value,
+                   "requestId": document.getElementById("requestId").value };
+        }
+        else if (!!document.getElementById("secAnswer")) {
+              return { "username": document.getElementById("forgotUserName").value, "method": "secquestions",
+              "secAnswer": document.getElementById("secAnswer").value,
+              "questionId": document.getElementById("questionId").value };
+        }
+        else if (!!document.getElementById("emailToken")) {
+              return { "username" : document.getElementById("forgotUserName").value, "method": "email",
+                       "emailToken": document.getElementById("emailToken").value };
+        }
 
       case 'resetPassword':
         if (document.getElementById("confresetPassword").value === document.getElementById("resetPassword").value){
@@ -1347,8 +1372,8 @@ this.removeBtnAndShowSpinner = function(btn) {
               '<label class="error-msg" id="login-error-msg"></label>' +
               '<button type="button" class="submit" id="submit-btn" data-res="forgot-pw-submit-btn">Submit</button>';
 
-    this.handleClickToSubmitEvent(formDiv,this,'forgotPassword');
-    this.handleKeyPressToSubmitEvent(formDiv,formDiv.querySelector("#forgotUserName"),this,'forgotPassword');
+    this.handleClickToSubmitEvent(formDiv,this,'getPasswordMethod');
+    this.handleKeyPressToSubmitEvent(formDiv,formDiv.querySelector("#forgotUserName"),this,'getPasswordMethod');
 
     var backToLoginDivElem = document.createElement('div');
     backToLoginDivElem.classList.add('newline');
@@ -1364,8 +1389,163 @@ this.removeBtnAndShowSpinner = function(btn) {
 
   } // this.displayForgotPassWordForm
 
+  // Displays a form for notification type in forgot password flow - email or sms.
+  this.displayForgotPassWordMethodForm = function(payload, username) {
+
+    const self = this;
+    var formDiv = document.createElement('div');
+    formDiv.classList.add("form");
+    formDiv.classList.add("sign-in");
+    formDiv.id = 'signin-div';
+    formDiv.innerHTML =
+              '<h3 data-res="forgot-pw-hdr">Forgot your Password?</h3>' +
+              '<div class="sameline"><span class="info" data-res="forgot-pw-mth-msg">Please select the method for password reset:</span></div>' +
+              '<input type="hidden" id="forgotUserName" name="forgotUserName" value="' + username +'"/>';
+
+    for (i=0; i < payload.options.length; i++) {  // TODO: Fix the radio button layout
+      var currentType = payload.options[i].type;
+      if (currentType === "email" ) {
+        formDiv.innerHTML +=
+                  '<input type="hidden" id="userEmail" name="userEmail" value="' + payload.options[i].value + '"/>';
+      }
+      if (i == 0) {
+      formDiv.innerHTML +=
+                '<input type="radio" name="pwmethod" id="' + currentType + '" value="' + currentType + '" checked/>' +
+                '<label for="' + currentType + '">' + currentType + '</label>';
+      }
+      else {
+        formDiv.innerHTML +=
+                  '<input type="radio" name="pwmethod" id="' + currentType + '" value="' + currentType + '" />' +
+                  '<label for="' + currentType + '">' + currentType + '</label>';
+      }
+    }
+
+    formDiv.innerHTML +=
+              '<label class="error-msg" id="login-error-msg"></label>' +
+              '<button type="button" class="submit" id="submit-btn" data-res="forgot-pw-submit-btn">Submit</button>';
+
+    this.handleClickToSubmitEvent(formDiv,this,'forgotPassword');
+
+    for (i=0; i < payload.options.length; i++) {
+      var currentType = payload.options[i].type;
+      this.handleKeyPressToSubmitEvent(formDiv,formDiv.querySelector("#" + currentType),this,'forgotPassword');
+    }
+
+    var backToLoginDivElem = document.createElement('div');
+    backToLoginDivElem.classList.add('newline');
+    backToLoginDivElem.innerHTML = '<div class="hr"><hr class="left"><span class="hr-text" data-res="or-msg">OR</span><hr class="right"></div>';
+    backToLoginDivElem.innerHTML += '<a href="#" id="back-to-login-btn" data-res="back-to-login-msg">Back to Login</a>';
+    formDiv.appendChild(backToLoginDivElem);
+
+    this.replaceDiv("signin-div",formDiv,true);
+
+    document.getElementById("back-to-login-btn").onclick = function () {
+      self.sdk.initAuthentication();
+    };
+
+  } // this.displayForgotPassWordMethodForm
+
+  // Displays a form for notification type in forgot password flow - sms.
+  this.displayForgotPassWordSmsForm = function(payload, username) {
+  this.logMsg("Building Forgot Password SMS Form");
+    const self = this;
+    var formDiv = document.createElement('div');
+    formDiv.classList.add("form");
+    formDiv.classList.add("sign-in");
+    formDiv.id = 'signin-div';
+    formDiv.innerHTML =
+              '<h3 data-res="forgot-pw-hdr">Forgot your Password?</h3>' +
+              '<input type="hidden" id="forgotUserName" name="forgotUserName" value="'+ username +'"/>' +
+              '<input type="hidden" id="deviceId" name="deviceId" value="'+ payload.deviceId + '"/>' +
+              '<input type="hidden" id="requestId" name="requestId" value="'+ payload.requestId + '"/>' +
+              '<label><span data-res="forgot-pw-sms-fld">Enter your SMS Code:</span><input type="text" id="smsCode" required></label>' +
+              '<label class="error-msg" id="login-error-msg"></label>' +
+              '<button type="button" class="submit" id="submit-btn" data-res="forgot-pw-submit-btn">Submit</button>';
+
+    this.handleClickToSubmitEvent(formDiv,this,'processPasswordMethod');
+    this.handleKeyPressToSubmitEvent(formDiv,formDiv.querySelector("#smsCode"),this,'processPasswordMethod');
+
+    var backToLoginDivElem = document.createElement('div');
+    backToLoginDivElem.classList.add('newline');
+    backToLoginDivElem.innerHTML = '<div class="hr"><hr class="left"><span class="hr-text" data-res="or-msg">OR</span><hr class="right"></div>';
+    backToLoginDivElem.innerHTML += '<a href="#" id="back-to-login-btn" data-res="back-to-login-msg">Back to Login</a>';
+    formDiv.appendChild(backToLoginDivElem);
+
+    this.replaceDiv("signin-div",formDiv,true);
+
+    document.getElementById("back-to-login-btn").onclick = function () {
+      self.sdk.initAuthentication();
+    };
+  } // this.displayForgotPassWordSmsForm
+
+  // Displays a form for notification type in forgot password flow - secquestsion.
+  this.displayForgotPassWordSecquestionForm = function(payload, username) {
+  this.logMsg("Building Forgot Password Secquestion Form");
+    const self = this;
+    var formDiv = document.createElement('div');
+    formDiv.classList.add("form");
+    formDiv.classList.add("sign-in");
+    formDiv.id = 'signin-div';
+    formDiv.innerHTML =
+              '<h3 data-res="forgot-pw-hdr">Forgot your Password?</h3>' +
+              '<div class="sameline"><span class="info" data-res="forgot-pw-sec-msg">' + payload.secquestions[0].localizedQuestionText + ' </span></div>' +
+              '<label><span data-res="sec-pw-fld">Answer: </span><input type="text" id="secAnswer" required></label>' +
+              '<input type="hidden" id="forgotUserName" name="forgotUserName" value="'+ username +'"/>' +
+              '<input type="hidden" id="questionId" name="questionId" value="' + payload.secquestions[0].questionId + '"/>' +
+              '<label class="error-msg" id="login-error-msg"></label>' +
+              '<button type="button" class="submit" id="submit-btn" data-res="forgot-pw-submit-btn">Submit</button>';
+
+    this.handleClickToSubmitEvent(formDiv,this,'processPasswordMethod');
+    this.handleKeyPressToSubmitEvent(formDiv,formDiv.querySelector("#secAnswer"),this,'processPasswordMethod');
+
+    var backToLoginDivElem = document.createElement('div');
+    backToLoginDivElem.classList.add('newline');
+    backToLoginDivElem.innerHTML = '<div class="hr"><hr class="left"><span class="hr-text" data-res="or-msg">OR</span><hr class="right"></div>';
+    backToLoginDivElem.innerHTML += '<a href="#" id="back-to-login-btn" data-res="back-to-login-msg">Back to Login</a>';
+    formDiv.appendChild(backToLoginDivElem);
+
+    this.replaceDiv("signin-div",formDiv,true);
+
+    document.getElementById("back-to-login-btn").onclick = function () {
+      self.sdk.initAuthentication();
+    };
+  } // this.displayForgotPassWordSecquestionForm
+
+  // Displays a form for notification type in forgot password flow - email.
+  this.displayForgotPassWordEmailForm = function(payload, username) {
+  this.logMsg("Building Forgot Password EMail Form");
+    const self = this;
+    var formDiv = document.createElement('div');
+    formDiv.classList.add("form");
+    formDiv.classList.add("sign-in");
+    formDiv.id = 'signin-div';
+    formDiv.innerHTML =
+              '<h3 data-res="forgot-pw-hdr">Forgot your Password?</h3>' +
+              '<div class="sameline"><span class="info" data-res="email-pw-mth-msg">Please enter the token you recieved via E-Mail:</span></div>' +
+              '<input type="hidden" id="forgotUserName" name="forgotUserName" value="'+ username +'"/>' +
+              '<label><span data-res="email-pw-fld">Token: </span><input type="text" id="emailToken" required></label>' +
+              '<label class="error-msg" id="login-error-msg"></label>' +
+              '<button type="button" class="submit" id="submit-btn" data-res="forgot-pw-submit-btn">Submit</button>';
+
+    this.handleClickToSubmitEvent(formDiv,this,'processPasswordMethod');
+    this.handleKeyPressToSubmitEvent(formDiv,formDiv.querySelector("#emailToken"),this,'processPasswordMethod');
+
+    var backToLoginDivElem = document.createElement('div');
+    backToLoginDivElem.classList.add('newline');
+    backToLoginDivElem.innerHTML = '<div class="hr"><hr class="left"><span class="hr-text" data-res="or-msg">OR</span><hr class="right"></div>';
+    backToLoginDivElem.innerHTML += '<a href="#" id="back-to-login-btn" data-res="back-to-login-msg">Back to Login</a>';
+    formDiv.appendChild(backToLoginDivElem);
+
+    this.replaceDiv("signin-div",formDiv,true);
+
+    document.getElementById("back-to-login-btn").onclick = function () {
+      self.sdk.initAuthentication();
+    };
+
+  } // this.displayForgotPassWordEmailForm
+
   // Displays forgotPassword Success
-  this.displayForgotPassWordSuccess = function(payload) {
+  this.displayForgotPassWordSuccess = function(payload, username) {
     var formDiv = document.createElement('div');
     formDiv.classList.add("form");
     formDiv.classList.add("sign-in");
@@ -1373,12 +1553,12 @@ this.removeBtnAndShowSpinner = function(btn) {
     formDiv.whichForm = "FORGOT_PASSWORD_FORM";
     formDiv.innerHTML =
               '<h3 data-res="forgot-pw-hdr">Forgot your Password?</h3>' +
-              '<div class="sameline"><span class="info" data-res="forgot-pw-success-info-msg">An email with reset password instructions has been sent for username: </span><span> '+payload.userName+' </span></div>' +
+              '<div class="sameline"><span class="info" data-res="forgot-pw-success-info-msg">An email with reset password instructions has been sent for username: </span><span> '+username+' </span></div>' +
               '<label class="error-msg" id="login-error-msg"></label>' +
-              '<input type="hidden" id="forgotUserName" name="forgotUserName" value="'+payload.userName+'"/>';
+              '<input type="hidden" id="forgotUserName" name="forgotUserName" value="'+ username +'"/>';
 
     this.replaceDiv("signin-div",formDiv,true);
-  } // this.displayForgotPassWordForm
+  } // this.displayForgotPassWordSuccess
 
   // Builds the Reset Password form, Post validation of usertoken
   this.displayResetPassWordForm = function(usertoken) {

@@ -151,6 +151,9 @@ const resources = {
   "forgot-pw-resend-btn": "Resend Email",
   "forgot-pw-incorrect-username-msg": "Incorrect Username?",
   "forgot-pw-incorrect-username-btn": "Fix Username",
+  "forgot-pw-mth-msg": "Please select the method for password reset:",
+  "forgot-pw-sms-fld": "Enter your SMS Code:",
+  "forgot-pw-email-msg": "Please enter the token you recieved via E-Mail:",
 
   "reset-pw-hdr" : "Reset Password",
   "reset-pw-info-msg" : "Please, fill out password and confirm password.",
