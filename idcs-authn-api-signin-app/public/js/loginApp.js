@@ -1409,6 +1409,7 @@ this.removeBtnAndShowSpinner = function(btn) {
 
     this.handleClickToSubmitEvent(formDiv,this,'postCreds');
     this.handleKeyPressToSubmitEvent(formDiv,formDiv.querySelector("#password"),this,'postCreds');
+    this.handleClickEvent(formDiv,this);
 
     var backToLoginDivElem = document.createElement('div');
     backToLoginDivElem.classList.add('newline');
