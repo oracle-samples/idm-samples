@@ -17,6 +17,7 @@ The application implements the following Oracle Identity Cloud Service use cases
 4.  Social Log In
 5.  Self Registration
 6. I Forgot My Password
+7. FIDO Integatration
 
 The sample sign-in application is localized to support multiple languages such as:
 
@@ -82,6 +83,281 @@ If you don't have an application previously registered in Oracle Identity Cloud 
 4. Click **Next** in the Client pane and in the following panes until you reach the last pane. Then click **Finish**.
 5. In the **Application Added** dialog box, make note of the **Client ID** and the **Client Secret** values, and then click **Close**.
 6. Activate the application, click **Activate**.
+
+## Configure the Custom Sign-In Application for FIDO Integration
+Learn how to configure the Custom Sign-In application for Fast Identity Online (FIDO) integration.
+
+FIDO enrollment and authentication are tightly coupled with the domain on which the API is called. Usually, the Custom Sign-In application runs in a domain different than Oracle Identity Cloud Service. If FIDO is enrolled in the Oracle Identity Cloud Service domain, then that domain can’t be used for the Custom Sign-In application. Conversely, if FIDO is enrolled in the Custom Sign-In application domain, then that domain can’t be used for Oracle Identity Cloud Service. For the Custom Sign-In application to successfully support FIDO, FIDO enrollment needs to be done for the Custom Sign-In application domain.
+
+If the domain information is passed during FIDO enrollment and authentication, Oracle Identity Cloud Service uses that domain. If the domain information is not passed during FIDO enrollment and authentication, the Oracle Identity Cloud Service domain is used.
+
+During enrollment and authentication, the Custom Sign-In application passes the current domain in the origin attribute (origin > window.location.origin). The Custom Sign-In application can get the current domain using the following steps.
+
+### Step One: Enrollment
+As part of the enrollment, Oracle Identity Cloud Service sends the WebAuthn enrollment data as part of fidoData response attribute.
+#### Example of Request Body
+	`{
+	 "op": "enrollment",
+	 "origin": <Custom Sign-In domain>,
+	 "authFactor": "FIDO_AUTHENTICATOR",
+	 "requestState": "eUJFAUV4P/aDHfPAYw..."
+	}`
+ 
+#### Example of Response Body
+	`{
+	 "status": "success",
+	 "ecId": "8pl8T131000000000",
+	 "FIDO_AUTHENTICATOR": {
+	 "credentials": [
+	 "fidoAssertion"
+	 ],
+	 "fidoData": {
+	 
+	 }
+	 },
+	 "nextOp": [
+	 "credSubmit",
+	 "createToken",
+	 "createSession",
+	 "enrollment"
+	 ],
+	 "mfaSettings": {
+	 "enrollmentRequired": false
+	 },
+	 "scenario": "ENROLLMENT",
+	 "requestState": "yX452AdKYmgAgT6..."
+	}`
+### Step One: Authentication
+Oracle Identity Cloud Service expects the WebAuthn response to be passed back in the `fidoAssertion` attribute.
+#### Example of Request Body
+	`{
+	 "op": "credSubmit",
+	 "origin": <Custom Sign-In domain>",
+	 "credentials": {
+	 "fidoAssertion": "{\n \"id\": \"oziixW7....\",\n \"type\": \"public-key\",\n \"rawId\": \"oziix....\",\n \"response\": {\n \"clientDataJSON\": \"eyJ0eXBlIjoid2ViYXV0aG4uY3J....\",\n \"attestationObject\": \"o2NmbXRkbm9uZWdhdH....\"\n }\n}",
+	 "consent": false
+	 },
+	 "requestState": "lk3RmlEfvP80P2....."
+	}`
+#### Example of Response Body
+	`{
+	 "status": "success",
+	 "ecId": "ndPTW012000000000",
+	 "nextOp": [
+	 "createToken",
+	 "createSession",
+	 "enrollment"
+	 ],
+	 "scenario": "ENROLLMENT",
+	 "requestState": "AskSweq6lsplfK4yn...."
+	}`
+
+### Example WebAuthn.js File
+This example WebAuthn.js file can be used to convert the Oracle Identity Cloud Service request data to a WebAuthn request and a WebAuthn response back to Oracle Identity Cloud Service response. The register and authenticate methods perfor, the WebAuthn FIDO enrollment and WebAuthn FIDO authentication.
+
+	`function register(response) {
+	    var fidoResponseData = JSON.parse(JSON.stringify(response.FIDO_AUTHENTICATOR.fidoData));
+	    var options = {};
+	    fidoResponseData.forEach(function(attr) {
+	        var name = attr.name;
+	        options[name] = attr.value;
+	    });
+	    var publicKeyCredentialCreationOptions = {
+	        Challenge: Uint8Array.from(
+	            options.challenge, function (char) {
+	                return char.charCodeAt(0);
+	            }),
+	        rp: {
+	            id: options.rpId,
+	            name: options.rpName,
+	        },
+	        user: {
+	            id: Uint8Array.from(
+	                options.userId, function (char) {
+	                    return char.charCodeAt(0);
+	                }),
+	            name: options.userName,
+	            displayName: options.userDisplayName,
+	        },
+	        pubKeyCredParams: options.publicKeyAlgorithms,
+	        //pubKeyCredParams: [{alg: -35, type: "public-key"}],
+	        authenticatorSelection: {
+	            userVerification: options.authSelectionUserVerification
+	        },
+	        timeout: options.timeout,
+	        attestation: options.attestation.toLowerCase(),
+	        extensions: {
+	            credProps: true
+	        },
+	    };
+	
+	    if (options.authSelectionResidentKey) {
+	        publicKeyCredentialCreationOptions.authenticatorSelection.residentKey = options.authSelectionResidentKey;
+	        publicKeyCredentialCreationOptions.authenticatorSelection.requireResidentKey = options.authSelectionRequireResidentKey;
+	    }
+	
+	    if (options.excludeCredentials) {
+	        publicKeyCredentialCreationOptions.excludeCredentials = options.excludeCredentials;
+	    }
+	
+	    if (options.authSelectionAttachment) {
+	        publicKeyCredentialCreationOptions.authenticatorSelection.authenticatorAttachment = options.authSelectionAttachment;
+	    }
+	    // call the WebAuthn for registration
+	    var promise = new Promise(function(resolve, reject) {
+	        navigator_credentials_create(publicKeyCredentialCreationOptions).then(function(credential) {
+	            resolve(credential);
+	        })
+	    });
+	   return promise;
+	}
+	
+	function authenticate(response) {
+	    var fidoResponseData = JSON.parse(JSON.stringify(response.FIDO_AUTHENTICATOR.fidoData));
+	    var options = {};
+	    var allowCredentials = [];
+	    fidoResponseData.forEach(function(attr) {
+	        var name = attr.name;
+	        options[name] = attr.value;
+	    });
+	    if (options.allowCredentials) {
+	        options.allowCredentials.forEach(function(allowCredential) {
+	            allowCredentials.push({
+	                id: Uint8Array.from(window.atob(allowCredential.id),
+	                    function(char) {
+	                        return char.charCodeAt(0);
+	                    }),
+	                type: allowCredential.type
+	            });
+	        });
+	    }
+	    var publicKeyCredentialRequestOptions = {
+	        challenge: Uint8Array.from(
+	            options.challenge, function(char) { return char.charCodeAt(0);}),
+	        allowCredentials: allowCredentials,
+	        rpId: options.rpId,
+	        timeout: options.timeout,
+	        userVerification: options.authSelectionUserVerification,
+	        extensions: {
+	            appid: options.appId
+	        },
+	    };
+	
+	    // call the WebAuthn for authenticate
+	    var promise = new Promise(function(resolve, reject) {
+	        navigator_credentials_get(publicKeyCredentialRequestOptions).then(function(credential) {
+	            resolve(credential);
+	        })
+	    });
+	    return promise;
+	}
+	
+	function navigator_credentials_create(options) {
+	    var promise = new Promise(function(resolve, reject) {
+	        if (navigator && navigator.credentials && navigator.credentials.create) {
+	            navigator.credentials.create({publicKey: options}).then(function(credential) {
+	                resolve(credential);
+	            }).catch(function(error) {
+	                reject(error);
+	            });
+	        } else {
+	            // WebAuthn not supported, throw error
+	        }
+	    });
+	    return promise;
+	}
+	
+	function navigator_credentials_get(options) {
+	    var promise = new Promise(function(resolve, reject) {
+	        if (navigator && navigator.credentials && navigator.credentials.get) {
+	            navigator.credentials.get({publicKey: options}).then(function(credential) {
+	                resolve(credential);
+	            }).catch(function(error) {
+	                reject(error);
+	            });
+	        } else {
+	            // WebAuthn not supported, throw error
+	        }
+	    });
+	    return promise;
+	}
+	
+	function encodeJson(value) {
+	    return JSON.stringify(value, replacer, 2);
+	}
+	
+	function replacer(name, value) {
+	    if (value && value.constructor === Uint8Array) {
+	        return encodeArray(value);
+	    }
+	
+	    if (value && value.constructor === ArrayBuffer) {
+	        return encodeArray(value);
+	    }
+	
+	    /* global PublicKeyCredential */
+	    if (value && value.constructor === PublicKeyCredential) {
+	        return {
+	            id: value.id,
+	            type: value.type,
+	            rawId: value.rawId,
+	            response: value.response,
+	        };
+	    }
+	
+	    /* global AuthenticatorAttestationResponse */
+	    if (value && value.constructor === AuthenticatorAttestationResponse) {
+	        return {
+	            clientDataJSON: value.clientDataJSON,
+	            attestationObject: value.attestationObject,
+	        };
+	    }
+	
+	    /* global AuthenticatorAssertionResponse */
+	    if (value && value.constructor === AuthenticatorAssertionResponse) {
+	        return {
+	            clientDataJSON: value.clientDataJSON,
+	            authenticatorData: value.authenticatorData,
+	            signature: value.signature,
+	            userHandle: value.userHandle,
+	        };
+	    }
+	
+	    if (value && value.constructor === CryptoKey) {
+	        return {
+	            type: value.type,
+	            extractable: value.extractable,
+	            algorithm: value.algorithm,
+	            usages: value.usages,
+	        };
+	    }
+	    return value;
+	}
+	
+	function encodeArray(array) {
+	    return btoaUrlSafe(Array.from(new Uint8Array(array), function(char) {
+	        return String.fromCharCode(char);
+	    }).join(''));
+	}
+	
+	function btoaUrlSafe(textParam) {
+	    var text = textParam;
+	    if (text === null) {
+	        return null;
+	    }
+	
+	    /*
+	     * Replace '+' with '-'.
+	     * Replace '/' with '_'.
+	     * Remove trailing padding characters
+	     */
+	
+	    text = btoa(text)
+	        .replace(/\+/g, '-')
+	        .replace(/\//g, '_')
+	        .replace(/=+$/, '');
+	    return text;
+	}`
 
 ## Configure Cross-Origin Resource Sharing (CORS)
 Configure the Cross-Origin Resource Sharing (CORS) feature because the sample web application and Oracle Identity Cloud Service are in different domains. CORS allows the sample sign-in application to make REST calls to Oracle Identity Cloud Service using the user browser.
