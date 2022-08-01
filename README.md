@@ -6,6 +6,7 @@ The code samples are:
 
  - **cquotes**: Used to test the Oracle Identity Cloud Service integration with OpenID Connect and OAuth2.
  - **edashboard**: JAAS/JAZN web application used to demonstrate Java security integrations.
+ - **iam-domain-migration-utilities**: Command line utilities for cloning resources between IAM instances.
  - **idcs-authn-api-rest-clients**: Postman Collection with example scenarios for testing the Oracle Identity Cloud Service Authentication APIs.
  - **idcs-authn-api-signin-app**: Custom Oracle Identity Cloud Service Sign-in page application.
  - **idcs-factor-enrollment-api**: MFA Factor Enrollment API.
