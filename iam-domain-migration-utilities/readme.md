@@ -84,7 +84,7 @@ The `migrate-app` command can be used to migrate individual apps from the source
 
 `node migrate-iam migrate-app <app-id> --config ./config.json`
 
-Here, `app-id` is the identifier of the application in IAM, which can be obtained from ...
+Here, `app-id` is the identifier of the application in IAM, which can be obtained from the API or the console.
 
 When this is run, the source will be introspected to determine the application dependencies, then they will be recreated and relinked in the target instance.
 
