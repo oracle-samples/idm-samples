@@ -1,0 +1,22 @@
+#modules
+node_modules/
+
+#config info
+config.json
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Diagnostic reports (https://nodejs.org/api/report.html)
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+
+
+# Runtime data
+*.pid
+*.pid.lock
+
+#npm cache directory
+.npm
+

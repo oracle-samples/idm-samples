@@ -1,0 +1,13 @@
+{
+  "source":{
+    "client_id": "1234567",
+    "client_secret": "source-secret",
+    "base_url":"https://idcs-<source-guid>.identity.oraclecloud.com"
+  },
+  "target":{
+    "client_id": "12334567",
+    "client_secret": "target-secret",
+    "base_url":"https://idcs-<target-guid>.identity.oraclecloud.com"
+  }
+  
+}
