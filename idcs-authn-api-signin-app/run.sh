@@ -6,6 +6,7 @@
 export IDCS_URL=https://MYTENNANT.identity.oraclecloud.com
 export IDCS_CLIENT_ID=1234567890abcdef1234567890abcdef
 export IDCS_CLIENT_SECRET=12345678-abcd-1234-abcd-123456789abc
+export NODE_TLS_REJECT_UNAUTHORIZED=0
 
 # if you want to use the app to do self registration uncomment line
 # and include the ID of a self registration profile here:
