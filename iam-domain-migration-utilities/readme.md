@@ -277,6 +277,18 @@ This overrides the MFA settings in the target so ensure you are not inadvertantl
 
 This command takes no additional options.
 
+## Using a Proxy Server
+
+This utility will honour the `HTTPS_PROXY` environment variable, or you can explicitly set a proxy in the config file, i.e.
+
+```
+{
+  "source":{...},
+  "target":{...},
+  "proxy":"http://myproxyserver:8080"
+}
+```
+
 ## Known Issues
 
 ### Limits on Bulk Import

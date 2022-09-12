@@ -1,4 +1,5 @@
 import fetch from 'node-fetch';
+import HttpsProxyAgent from 'https-proxy-agent';
 import log4js from 'log4js';
 const logger = log4js.getLogger();
 
@@ -15,12 +16,24 @@ class IamUtil {
     if(!isAbsolute(configPath)){
       configPath = joinPaths(process.cwd(), configPath);
     }
-    this.configPath = configPath; 
+    this.configPath = configPath;
     this.tokens = {};
+    this.proxyAgent = null;
   }
 
   async initialise(){
     this.config = JSON.parse(await readFile(this.configPath));
+    if(process.env["HTTPS_PROXY"]){
+      this.proxyAgent = new HttpsProxyAgent(process.env["HTTPS_PROXY"]);
+      return;
+    }
+    if(this.config.proxy){
+      if(typeof this.config.proxy != 'string'){
+        logger.warn("'proxy' value in the config was set, but not a string, ignoring.");
+        return;
+      }
+      this.proxyAgent = new HttpsProxyAgent(this.config.proxy);
+    }
   }
 
   //Grab an access token, just using global config
@@ -35,7 +48,7 @@ class IamUtil {
       'grant_type': 'client_credentials',
       'scope': 'urn:opc:idm:__myscopes__'
     };
-    var options = {
+    let options = {
       url: this.config[instance].base_url + '/oauth2/v1/token',
       method: "POST",
       headers: {
@@ -45,6 +58,9 @@ class IamUtil {
       },
       body: Object.entries(form).map(v => v.join('=')).join('&')
     };
+    if(this.proxyAgent){
+      options.agent = this.proxyAgent;
+    }
     try{
       let tokenRes = await fetch(options.url, options);
       let tokenJSON = await tokenRes.json();
@@ -74,6 +90,9 @@ class IamUtil {
       options.headers = {};
     }
     options.headers["Authorization"] = "Bearer " +this.tokens[instance];
+    if(this.proxyAgent){
+      options.agent = this.proxyAgent;
+    }
     try{
       let response = await fetch(this.config[instance].base_url + options.url, options);
       if(response.ok){

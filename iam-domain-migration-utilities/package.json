@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "https-proxy-agent": "^5.0.1",
     "log4js": "^6.5.2",
     "node-fetch": "^3.2.6",
     "yargs": "^17.5.1"
