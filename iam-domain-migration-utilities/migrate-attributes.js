@@ -103,6 +103,11 @@ async function addExportHeaders(iam, instance, dryRun) {
   //For each of the attributes in the schema, add a idcsCsvAttributeNameMappings
   //entry, to permit import/export via CSV
   logger.debug("Adding Column Headers...");
+  if(!schema.attributes){
+    logger.debug("No Attributes to migrate.");
+    schema.attributes = {};
+    return schema;
+  }
   for (let attribute of schema.attributes) {
     attribute.idcsCsvAttributeNameMappings = [{
       "columnHeaderName": "Custom_" + attribute.name
