@@ -81,7 +81,7 @@ const FAILSAFE_POLICY={
 
 async function resetPolicy(iam, instance, dryRun){
   logger.debug("Reseting Default Sign-On Policy for " +instance +"...");
-  if(typeof instance != 'string' || !config[instance]){
+  if(typeof instance != 'string'){
     logger.error("No configuration provided for the instance type.");
     return null;
   }
