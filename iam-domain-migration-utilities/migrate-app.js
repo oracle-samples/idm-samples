@@ -55,7 +55,8 @@ async function migrateApp(iam, appId, dryRun, newIds, setInactive) {
     mappingAttributes: [],
     grants: [],
     tou: [],
-    touStatements: []
+    touStatements: [],
+    certificates: []
   };
   //Validate the App is supported
   switch (getMigrationType(sourceApp)) {
@@ -237,7 +238,7 @@ async function getOAuthAppDependencies(iam, instance, app, resourcesToCreate) {
           invalidScopes.push(scope.fqs);
         } else {
           //Recurse to get the dependencies of this app
-          let recurseResources = { apps: appDependencies.apps.concat([dependentApp]), networkPerimeters: appDependencies.networkPerimeters };
+          let recurseResources = { apps: appDependencies.apps.concat([dependentApp]), networkPerimeters: appDependencies.networkPerimeters, certificates: appDependencies.certificates };
           appDependencies = await getOAuthAppDependencies(iam, instance, dependentApp, recurseResources);
         }
       }
@@ -265,7 +266,35 @@ async function getOAuthAppDependencies(iam, instance, app, resourcesToCreate) {
       }
       if (newPerimeter) {
         let perimeterInfo = await iam.getNetworkPerimeterInfo(instance, perimeter.value);
+        if(!appDependencies.networkPerimeters){
+          appDependencies.networkPerimeters = [];
+        }
         appDependencies.networkPerimeters.push(perimeterInfo);
+      }
+    }
+  }
+  //Certificates are in 'certificates'
+  if(app.certificates && app.certificates.length > 0){
+    for(let certificate of app.certificates){
+      let newCertificate = true;
+      for (let existingCertificate of appDependencies.certificates) {
+        //Are we already planning to create this certificate
+        if (existingCertificate.certificateAlias == certificate.certAlias) {
+          newCertificate = false;
+          break;
+        }
+      }
+      if (newCertificate){
+        //Format doesn't quite align, so need to remap.
+        let certificateInfo = {
+          schemas:["urn:ietf:params:scim:schemas:oracle:idcs:OAuthClientCertificate"],
+          certificateAlias: certificate.certAlias,
+          x509Base64Certificate: certificate.x509Base64Certificate
+        }
+        if(!appDependencies.certificates){
+          appDependencies.certificates = [];
+        }
+        appDependencies.certificates.push(certificateInfo);
       }
     }
   }
@@ -530,19 +559,25 @@ async function createResources(iam, instance, resources, dryRun) {
   logger.debug("Creating resources in " + instance + "...");
   if (resources.apps && Array.isArray(resources.apps)) {
     logger.debug("Apps to create:");
-    for (var appToCreate of resources.apps) {
+    for (let appToCreate of resources.apps) {
       logger.debug(appToCreate.id + " - " + appToCreate.displayName);
     }
   }
   if (resources.networkPerimeters && Array.isArray(resources.networkPerimeters)) {
     logger.debug("Network Perimeters to create:");
-    for (var perimeterToCreate of resources.networkPerimeters) {
+    for (let perimeterToCreate of resources.networkPerimeters) {
       logger.debug(perimeterToCreate.id + " - " + perimeterToCreate.name);
+    }
+  }
+  if (resources.certificates && Array.isArray(resources.certificates)) {
+    logger.debug("Certificates to create:");
+    for (let certificateToCreate of resources.certificates) {
+      logger.debug(certificateToCreate.certificateAlias);
     }
   }
   if (resources.mappingAttributes && Array.isArray(resources.mappingAttributes)) {
     logger.debug("Mapped Attributes to create:");
-    for (var mappingToCreate of resources.mappingAttributes) {
+    for (let mappingToCreate of resources.mappingAttributes) {
       logger.debug(mappingToCreate.id);
     }
   }
@@ -551,22 +586,22 @@ async function createResources(iam, instance, resources, dryRun) {
   }
   if (resources.tou && Array.isArray(resources.tou)) {
     logger.debug("Terms of Use to create:");
-    for (var touToCreate of resources.tou) {
+    for (let touToCreate of resources.tou) {
       logger.debug(touToCreate.id);
     }
   }
   if (resources.touStatements && Array.isArray(resources.touStatements)) {
     logger.debug("Terms of Use Statements to create:");
-    for (var statementToCreate of resources.touStatements) {
+    for (let statementToCreate of resources.touStatements) {
       logger.debug(statementToCreate.id);
     }
   }
   //Assemble Bulk request
-  var bulkRequest = {
+  let bulkRequest = {
     schemas: ["urn:ietf:params:scim:api:messages:2.0:BulkRequest"],
     Operations: []
   };
-  var patchBulkRequest = {
+  let patchBulkRequest = {
     schemas: ["urn:ietf:params:scim:api:messages:2.0:BulkRequest"],
     Operations: []
   };
@@ -604,6 +639,15 @@ async function createResources(iam, instance, resources, dryRun) {
       path: "/NetworkPerimeters",
       bulkId: "perimId" + perimeter,
       data: filterCreateBody(resources.networkPerimeters[perimeter])
+    });
+  }
+  //Certificates
+  for (let certificate in resources.certificates){
+    bulkRequest.Operations.push({
+      method: "POST",
+      path: "/OAuthClientCertificates",
+      bulkId: "certId" +certificate,
+      data: filterCreateBody(resources.certificates[certificate])
     });
   }
   //Apps
@@ -682,6 +726,26 @@ async function createResources(iam, instance, resources, dryRun) {
           });
         }
       }
+    }
+    //Grab the certificate information to map back in
+    if( resources.apps[app].certificates && resources.apps[app].certificates.length > 0){
+      //Easy PATCH since it just uses the cert alias
+      patchBulkRequest.Operations.push({
+        method: "PATCH",
+        path: "/Apps/bulkId:appId" + app,
+        data: {
+          schemas: ["urn:ietf:params:scim:api:messages:2.0:PatchOp"],
+          Operations: [
+            {
+              "op": "add",
+              "path": "certificates",
+              "value": resources.apps[app].certificates.map((certificate) => {return certificate.certAlias})
+            }
+          ]
+        }
+      });
+      //Remove the reference
+      delete resources.apps[app].certificates;
     }
     bulkRequest.Operations.push({
       method: "POST",
@@ -781,6 +845,7 @@ async function createResources(iam, instance, resources, dryRun) {
       }
       //Handle Outbound Assertion Attributes, which are really annoying for some reason...
       for (let operation of patchBulkRequest.Operations) {
+        logger.debug(operation.path);
         if(operation.path.startsWith("/MappedAttributes")){
           //Get the new appId
           let appId = idMapping[operation.path.slice(25)]
@@ -789,7 +854,7 @@ async function createResources(iam, instance, resources, dryRun) {
             url: '/admin/v1/Apps/' +appId +"?attributes=" +SAMLSCHEMA +":outboundAssertionAttributes.value",
             method: "GET"
           }
-          logger.default("Getting newly created app from " +instance +" in order to configure attribute mappings...")
+          logger.debug("Getting newly created app from " +instance +" in order to configure attribute mappings...")
           let appInfo = await iam.callIamEndpoint(instance, options);
           operation.path = "/MappedAttributes/" +appInfo[SAMLSCHEMA].outboundAssertionAttributes.value;
         }
