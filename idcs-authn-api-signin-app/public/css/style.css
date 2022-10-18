@@ -228,6 +228,19 @@ input.on__error {
           transform: translate3d(-640px, 0, 0);
 }
 
+.externalIdpBtn{
+  display: flex;
+  width: 200px;
+  height: 36px;
+  border-radius: 30px;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  border : solid;
+  border-width: 1.0px;
+  cursor: pointer;
+}
+
 .qrcode-text {
   font-weight: normal;
 }
