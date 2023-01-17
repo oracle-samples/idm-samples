@@ -2,7 +2,7 @@
 
 # there are other ways to do this but for now just do this:
 
-# export PORT=3001
+export PORT=3000
 export IDCS_URL=https://MYTENNANT.identity.oraclecloud.com
 export IDCS_CLIENT_ID=1234567890abcdef1234567890abcdef
 export IDCS_CLIENT_SECRET=12345678-abcd-1234-abcd-123456789abc
@@ -44,3 +44,4 @@ if [ ! -e node_modules ]; then
 fi
 
 npm start
+

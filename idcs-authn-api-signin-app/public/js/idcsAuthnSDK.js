@@ -192,121 +192,25 @@ function IdcsAuthnSDK(app) {
             let jsonResponse = JSON.parse(this.responseText);
 
             if (jsonResponse.status === 'success') {
-              if (jsonData["authFactor"] !== "USERNAME") {
-                self.app.setRequestState(jsonResponse.requestState)
-                if (jsonResponse.authnToken) { // User is successfully authenticated!
-                  self.app.logMsg('[IdcsAuthnSDK] Credentials successfully validated.');
-                  self.createSession(jsonResponse);
-                }
-                else {
-                  self.app.nextOperation(jsonResponse);
-                }
-              }
-              else if (jsonData["authFactor"] === "USERNAME") {
-                var buildPayloadUserNameFirst = function (nextOp) {
-                  return {
-                    "username": jsonData.credentials.username,
-                    "deviceId": jsonResponse[nextOp]["enrolledDevices"][0].deviceId
+              if (jsonData.op === "getBackupFactors") {//condition to use query selector and add buttons
+                self.app.displayAltFactorsSubform(jsonResponse, jsonData?.credentials?.username);
+              } else
+                if (jsonData["authFactor"] !== "USERNAME") {
+                  self.app.setRequestState(jsonResponse.requestState)
+                  if (jsonResponse.authnToken) { // User is successfully authenticated!
+                    self.app.logMsg('[IdcsAuthnSDK] Credentials successfully validated.');
+                    self.createSession(jsonResponse);
                   }
-                }
-                var getDisplayName = function (nextOp) {
-                  return jsonResponse[nextOp]["enrolledDevices"][0].displayName
-                }
-                self.app.setRequestState(jsonResponse.requestState)
-                if (jsonData.op === "credSubmit") {//condition to display normal form
-                  self.app.displayuserNameFirstNextAuth({ "res": jsonResponse, "email": jsonData.credentials.username });
-                }
-                if (jsonData.op === "getBackupFactors") {//condition to use query selector and add buttons
-                  let subdiv = document.querySelector("#signin-div");
-                  if (jsonResponse.nextAuthFactors.length === 1) {
-                    let altfacdiv = document.querySelector("#altfac");
-                    if (altfacdiv) {
-                      altfacdiv.innerHTML = '<div class="sameline"><span class="info">No alternative factors are configured for this user.</span></div>';
-                      altfacdiv.removeAttribute("style");
-                    }
-                    switch (jsonResponse.nextAuthFactors[0]) {
-                      case "EMAIL":
-                        self.app.setSelectedDevice({ "deviceId": jsonResponse["EMAIL"]["enrolledDevices"][0].deviceId });
-                        self.initAuthnOtpEmail(buildPayloadUserNameFirst("EMAIL"));
-                        subdiv.innerHTML = "";
-                        subdiv.whichDisplayName = getDisplayName("EMAIL");
-                        self.app.buildEmailOtpForm(
-                          subdiv,
-                          buildPayloadUserNameFirst("EMAIL")
-                        );
-                        break;
-                      case "SMS":
-                        self.app.setSelectedDevice({ "deviceId": jsonResponse["SMS"]["enrolledDevices"][0].deviceId });
-                        self.initAuthnMobileNumber(buildPayloadUserNameFirst("SMS"));
-                        subdiv.innerHTML = "";
-                        subdiv.whichDisplayName = getDisplayName("SMS");
-                        self.app.buildSmsOtpForm(
-                          subdiv,
-                          buildPayloadUserNameFirst("SMS")
-                        );
-                        break;
-                      case "TOTP":
-                        self.app.setSelectedDevice({ "deviceId": jsonResponse["TOTP"]["enrolledDevices"][0].deviceId });
-                        subdiv.innerHTML = "";
-                        subdiv.whichDisplayName = getDisplayName("TOTP");
-                        // build TOTP Form
-                        self.app.buildTOTPForm(
-                          subdiv,
-                          {
-                            "deviceId": jsonResponse["TOTP"]["enrolledDevices"][0].deviceId,
-                            "offlineTotp": jsonResponse["TOTP"]["enrolledDevices"][0],
-                          }
-                        );
-                        break;
-                      default:
-                        //self.app.setLoginErrorMessage(self.sdkErrors.error9010);
-                        self.app.logMsg("No alternative factors are configured for this user.");
-                    }
-                  }
-                  //create buttons for factors available
                   else {
-                    jsonResponse.nextAuthFactors.forEach(function (factor) {
-                      if (self.app.AuthenticationFactorInfo[factor] && factor !== "USERNAME_PASSWORD") {
-                        subdiv.innerHTML +=
-                          '<div class="tooltip">' +
-                          '<button type="button" class="submit" id="' + factor + '" data-res="factor-' + factor.toLowerCase() + '-btn">' + self.app.AuthenticationFactorInfo[factor].label + '</button>' +
-                          '<span class="tooltiptext" data-res="factor-' + factor.toLowerCase() + '-desc">' + self.app.AuthenticationFactorInfo[factor].description + '</span>' +
-                          '</div><BR/>';
-
-                        let btn = document.getElementById(factor);
-                        btn.onclick = () => {
-                          let state = JSON.parse(self.app.getInitialState())
-                          self.app.setSelectedDevice({ "deviceId": jsonResponse[factor]["enrolledDevices"][0].deviceId });
-                          switch (factor) {
-                            case "EMAIL":
-                              self.initAuthnOtpEmail(buildPayloadUserNameFirst("EMAIL"));
-                              subdiv.innerHTML = "";
-                              subdiv.whichDisplayName = getDisplayName("EMAIL");
-                              self.app.buildEmailOtpForm(subdiv, buildPayloadUserNameFirst("EMAIL"));
-                              break;
-                            case "SMS":
-                              self.initAuthnOtpSms(buildPayloadUserNameFirst("SMS"));
-                              subdiv.innerHTML = "";
-                              subdiv.whichDisplayName = getDisplayName("SMS");
-                              self.app.buildSMSMobileEnrollmentForm(subdiv, buildPayloadUserNameFirst("SMS"));
-                              self.app.buildSmsOtpForm(subdiv, buildPayloadUserNameFirst("SMS"));
-                              break;
-                            case "TOTP":
-                              subdiv.innerHTML = "";
-                              subdiv.whichDisplayName = getDisplayName("TOTP");
-                              self.initEnrollOtpTotp()
-                              self.app.buildTOTPForm(subdiv, { "deviceId": jsonResponse["TOTP"]["enrolledDevices"][0].deviceId, "offlineTotp": jsonResponse["TOTP"]["enrolledDevices"][0], });
-                              break;
-                            default:
-                              self.app.logMsg("No factors enabled for authentication");
-                              break;
-                          }
-                        }
-                      }
-                    });
+                    self.app.nextOperation(jsonResponse, jsonData?.credentials?.username);
                   }
                 }
-              }
+                else if (jsonData["authFactor"] === "USERNAME") {
+                  self.app.setRequestState(jsonResponse.requestState)
+                  if (jsonData.op === "credSubmit") {//condition to display normal form
+                    self.app.displayuserNameFirstNextAuth({ "res": jsonResponse, "email": jsonData.credentials.username });
+                  }
+                }
             }
             else
               if (jsonResponse.status === 'failed') {
@@ -431,6 +335,22 @@ function IdcsAuthnSDK(app) {
     this.authenticate(data);
   }; // this.postSmsOtp
 
+  this.postPhoneCallOtp = function (credentials) {
+
+    this.app.logMsg('[IdcsAuthnSDK] Posting PHONE_CALL OTP...');
+
+    var data = JSON.stringify({
+      "op": "credSubmit",
+      "authFactor": "PHONE_CALL",
+      "credentials": credentials,
+      "trustedDevice": JSON.parse(this.app.getTrustedDeviceOption()), // Value here MUST be Boolean!!
+      "trustedDeviceDisplayName": this.clientFingerprint.browser + ' on ' + this.clientFingerprint.OS + ' ' + this.clientFingerprint.OSVersion,
+      "requestState": this.app.getRequestState()
+    });
+
+    this.authenticate(data);
+  }; // this.postPhoneCallOtp
+
   this.enrollSecurityQuestions = function (credentials) {
 
     this.app.logMsg('[IdcsAuthnSDK] Enrolling Security Questions and Answers...');
@@ -467,6 +387,21 @@ function IdcsAuthnSDK(app) {
     this.authenticate(data);
 
   }; // this.postSecQuestions
+
+  this.initEnrollFido = function () {
+
+    this.app.logMsg('[IdcsAuthnSDK] Initiating Fido enrollment...');
+
+    var data = JSON.stringify({
+      "op": "enrollment",
+      "authFactor": "FIDO_AUTHENTICATOR",
+      "origin": window.location.origin,
+      "requestState": this.app.getRequestState()
+    });
+
+    this.authenticate(data);
+
+  }; // this.initEnrollFido
 
   this.initEnrollOtpEmail = function () {
 
@@ -535,6 +470,32 @@ function IdcsAuthnSDK(app) {
     this.authenticate(data);
 
   }; // this.initAuthnMobileNumber
+
+  this.initEnrollPhoneNumber = function (credentials) {
+    this.app.logMsg('Initiating OTP over PHONE_CALL: Mobile enrollment...');
+
+    var data = JSON.stringify({
+      "op": "enrollment",
+      "authFactor": "PHONE_CALL",
+      "credentials": credentials,
+      "requestState": this.app.getRequestState()
+    });
+    this.authenticate(data);
+  }; // this.initEnrollPhoneNumber
+
+
+  this.initAuthnPhoneNumber = function (credentials) {
+    this.app.logMsg('Initiating OTP over PHONE_CALL: Authenticating...');
+
+    var data = JSON.stringify({
+      "op": "credSubmit",
+      "authFactor": "PHONE_CALL",
+      "credentials": credentials,
+      "requestState": this.app.getRequestState()
+    });
+    this.authenticate(data);
+
+  }; // this.initAuthnPhoneNumber
 
   this.resendOtp = function () {
     this.app.logMsg('Resending OTP ...');
@@ -848,6 +809,18 @@ function IdcsAuthnSDK(app) {
     this.authenticate(data);
   }; // this.initAuthnPush
 
+  this.initAuthnFido = function (credentials) {
+    this.app.logMsg('[IdcsAuthnSDK] Initiating Fido...');
+
+    var data = JSON.stringify({
+      "op": "credSubmit",
+      "authFactor": "FIDO_AUTHENTICATOR",
+      "credentials": credentials,
+      "requestState": this.app.getRequestState()
+    });
+    this.authenticate(data);
+  }; // this.initAuthnPush
+
   this.submitPushPoll = function (credentials) {
     var data = JSON.stringify({
       "op": "credSubmit",
@@ -863,6 +836,7 @@ function IdcsAuthnSDK(app) {
   this.submitBackupFactors = function () {
     var data = JSON.stringify({
       "op": "getBackupFactors",
+      "origin": window.location.origin,
       "requestState": this.app.getRequestState()
     });
     this.authenticate(data);
@@ -897,7 +871,7 @@ function IdcsAuthnSDK(app) {
       }
     });
 
-    xhr.open("POST", app.baseUri + "/admin/v1/UserTokenValidator");
+    xhr.open("POST", unescape(this.app.encodeValueChars(app.baseUri + "/admin/v1/UserTokenValidator")));
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.setRequestHeader("Authorization", "Bearer " + this.app.getAccessToken());
     xhr.send(data);
@@ -1028,7 +1002,7 @@ function IdcsAuthnSDK(app) {
 
     var myform = document.createElement("form");
     myform.method = "POST";
-    myform.action = app.baseUri + "/sso/v1/sdk/session";
+    myform.action = this.app.htmlEscape(app.baseUri + "/sso/v1/sdk/session");
     myform.target = "_top";
     addParam(myform, "authnToken", payload.authnToken);
     if (payload.trustToken) {

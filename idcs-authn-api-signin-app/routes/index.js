@@ -4,6 +4,7 @@ var router = express.Router();
 var logger = require('../helpers/logging');
 var idcsCrypto = require('../helpers/idcsCrypto.js');
 var oauth = require('../helpers/oauth.js');
+var xss = require("xss");
 
 const crypto = require('crypto');
 
@@ -19,12 +20,12 @@ function getHostName() {
   }
   catch (e) {
     logger.log('Cannot retrieve host name! Aborting...')
-    throw(e);
+    throw (e);
   }
 }
 
 // utility function:
-function redirectBrowser( req, res, url, payload ) {
+function redirectBrowser(req, res, url, payload) {
   res.statusCode = 200;
 
   oauth.getAT().then(function (accessToken) {
@@ -36,14 +37,14 @@ function redirectBrowser( req, res, url, payload ) {
     res.write('try {\n');
 
     // Check to make sure session storage isn't disabled.
-    res.write( 'if (!sessionStorage) { console.log("Session storage missing."); throw("No session storage");}\n');
+    res.write('if (!sessionStorage) { console.log("Session storage missing."); throw("No session storage");}\n');
     // Then make sure it works.
-    res.write( 'let temp = Math.floor( Math.random() * 10000).toString();\n');
-    res.write( 'sessionStorage.setItem("test", temp);\n');
-    res.write( 'if ( sessionStorage.getItem("test") != temp ) {\n');
-    res.write( 'console.log("Save and read back from session storage failed.");\n');
-    res.write( 'throw("Unable to save in session storage");\n')
-    res.write( '}\n');
+    res.write('let temp = Math.floor( Math.random() * 10000).toString();\n');
+    res.write('sessionStorage.setItem("test", temp);\n');
+    res.write('if ( sessionStorage.getItem("test") != temp ) {\n');
+    res.write('console.log("Save and read back from session storage failed.");\n');
+    res.write('throw("Unable to save in session storage");\n')
+    res.write('}\n');
 
     // Clear storage to make sure we're starting from a clean slate
     // We do this to remove the above test but also to deal with the case where
@@ -56,7 +57,7 @@ function redirectBrowser( req, res, url, payload ) {
     res.write('sessionStorage.setItem("signinAT", "' + accessToken + '");\n');
     res.write('sessionStorage.setItem("baseUri", "' + process.env.IDCS_URL + '");\n');
 
-    if ( process.env.IDCS_SELFREGPROFILES ) {
+    if (process.env.IDCS_SELFREGPROFILES) {
       res.write('sessionStorage.setItem("selfRegProfiles", "' + process.env.IDCS_SELFREGPROFILES + '");\n');
     }
     res.write('sessionStorage.setItem("clientId",\'' + process.env.IDCS_CLIENT_ID + '\');\n');
@@ -68,8 +69,10 @@ function redirectBrowser( req, res, url, payload ) {
     // res.write('sessionStorage.setItem("serverSideBaseUri", "' + serverSideBaseUri + '");\n');
 
     // Then add on everything from the payload.
-    for ( var field in payload ) {
-      res.write('sessionStorage.setItem("' + field + '",\'' + payload[field].replace(/'/g, "\\'") + '\');\n');
+    for (var field in payload) {
+      var sanitizedField = xss(field);
+      var sanitizedValue = xss(payload[field]);
+      res.write('sessionStorage.setItem("' + sanitizedField + '",\'' + sanitizedValue.replace(/'/g, "\\'") + '\');\n');
     }
     // Finally send the user to the requested URL.
     res.write('document.write("You should be redirected in a moment...");\n');
@@ -89,16 +92,16 @@ function redirectBrowser( req, res, url, payload ) {
 /* GET home page. */
 
 router.get('/', function (req, res, next) {
-    // If a user does a GET here one of three things is going on:
-    // 1: They just set this up, don't know how to use it, and are just poking around
-    // 2: They are not developer or admin and they are exploring
-    // 3: There is a misconfig and Oracle Identity Cloud Service is 302'ing them here instead of having them POST
-    //    The most common misconfiguration is forgetting to enable the SDK under Oracle Identity Cloud Service' SsoSettings
-    //    See https://docs.oracle.com/en/cloud/paas/identity-cloud/rest-api/op-admin-v1-ssosettings-id-get.html
-    //    check/change the sdkEnabled setting - it should be set to "true"
-    //
-    // In all 3 cases we set the HTTP response code to 500 and let the HTML page speak for itself.
-    res.statusCode = 500;
+  // If a user does a GET here one of three things is going on:
+  // 1: They just set this up, don't know how to use it, and are just poking around
+  // 2: They are not developer or admin and they are exploring
+  // 3: There is a misconfig and Oracle Identity Cloud Service is 302'ing them here instead of having them POST
+  //    The most common misconfiguration is forgetting to enable the SDK under Oracle Identity Cloud Service' SsoSettings
+  //    See https://docs.oracle.com/en/cloud/paas/identity-cloud/rest-api/op-admin-v1-ssosettings-id-get.html
+  //    check/change the sdkEnabled setting - it should be set to "true"
+  //
+  // In all 3 cases we set the HTTP response code to 500 and let the HTML page speak for itself.
+  res.statusCode = 500;
 
 });
 
@@ -110,21 +113,21 @@ router.post("/", function (req, res, next) {
   // Take loginCtx from the the POST data and decode it
   logger.log("POST for / received.")
 
-  logger.log("POST body:\n" + JSON.stringify(req.body,null,2));
+  logger.log("POST body:\n" + JSON.stringify(req.body, null, 2));
 
   // From Oracle Identity Cloud Service 18.3.+, /social/callback sends us back here.
   // Social user is in Oracle Identity Cloud Service and no MFA
   if (req.body.authnToken) {
-      redirectBrowser( req, res, "../../signin.html", {
-         "IDPAuthnToken": req.body.authnToken
-      });
+    redirectBrowser(req, res, "../../signin.html", {
+      "IDPAuthnToken": req.body.authnToken
+    });
   }
 
-  else if ( req.body.loginCtx && req.body.signature ) {
+  else if (req.body.loginCtx && req.body.signature) {
     // Only proceed if both 'loginCtx' and 'signature' parameters set in the request.
 
     // Then verify the signature
-    idcsCrypto.verifySignature( "loginCtx", req.body.loginCtx, req.body.signature );
+    idcsCrypto.verifySignature("loginCtx", req.body.loginCtx, req.body.signature);
     // If there's a problem with the signature .verifySignature will throw an exception
     // so if we get past that line then the signature was OK
 
@@ -136,12 +139,12 @@ router.post("/", function (req, res, next) {
 
     // Parse it as JSON
     var loginContext = JSON.parse(decrypted);
-    if ( (!loginContext.requestState) &&
-         (!loginContext.status) ) {
-        // Then the request state AND status are both missing
-        // it could be that SSO Settings haven't been adjusted to set sdkEnabled to true
-        res.statusCode = 500;
-        res.end("Login context does not contain request state.");
+    if ((!loginContext.requestState) &&
+      (!loginContext.status)) {
+      // Then the request state AND status are both missing
+      // it could be that SSO Settings haven't been adjusted to set sdkEnabled to true
+      res.statusCode = 500;
+      res.end("Login context does not contain request state.");
     }
     else {
       logger.log('Acquired request state successfully.');
@@ -159,7 +162,7 @@ router.post("/", function (req, res, next) {
       // loginContext["foo"] = "'";
       // logger.log('login Context: ' + JSON.stringify(loginContext).replace(/'/g, "\\'"));
 
-      redirectBrowser( req, res, "signin.html", {
+      redirectBrowser(req, res, "signin.html", {
         "initialState": JSON.stringify(loginContext)
       });
     }
@@ -176,31 +179,31 @@ router.post("/", function (req, res, next) {
 // 2. When the external IDP is successful and the account doesn't exist in Oracle Identity Cloud Service.
 
 router.post('/ui/v1/error', function (req, res, next) {
-    // Take loginCtx from the the GET data and decode it
-    logger.log("POST for /ui/v1/error received.")
+  // Take loginCtx from the the GET data and decode it
+  logger.log("POST for /ui/v1/error received.")
 
-    // Social user is in Oracle Identity Cloud Service and no MFA
-    if (req.body.authnToken) {
-      redirectBrowser( req, res, "../../signin.html", {
-        "IDPAuthnToken": req.body.authnToken
-      });
-    }
-    // Social user needs to be registered in Oracle Identity Cloud Service, using SAME id as social provider's
-    else if (req.body.userData) {
-      var decrypted = idcsCrypto.decryptSocial(req.body.userData, process.env.IDCS_CLIENT_SECRET);
-      var userData = JSON.parse(decrypted);
-      var scimUserAttrs = JSON.parse(userData.scim_user_attr);
+  // Social user is in Oracle Identity Cloud Service and no MFA
+  if (req.body.authnToken) {
+    redirectBrowser(req, res, "../../signin.html", {
+      "IDPAuthnToken": req.body.authnToken
+    });
+  }
+  // Social user needs to be registered in Oracle Identity Cloud Service, using SAME id as social provider's
+  else if (req.body.userData) {
+    var decrypted = idcsCrypto.decryptSocial(req.body.userData, process.env.IDCS_CLIENT_SECRET);
+    var userData = JSON.parse(decrypted);
+    var scimUserAttrs = JSON.parse(userData.scim_user_attr);
 
-      redirectBrowser( req, res, "../../signin.html", {
-        "requestState": req.body.requestState,
-        "social.scimUserAttrs": JSON.stringify(scimUserAttrs),
-        "social.needToRegister": "true"
-      });
-    }
-    else {
-      res.statusCode = 500;
-      res.end("Something has gone terribly wrong!");
-    }
+    redirectBrowser(req, res, "../../signin.html", {
+      "requestState": req.body.requestState,
+      "social.scimUserAttrs": JSON.stringify(scimUserAttrs),
+      "social.needToRegister": "true"
+    });
+  }
+  else {
+    res.statusCode = 500;
+    res.end("Something has gone terribly wrong!");
+  }
 });
 
 
@@ -228,9 +231,9 @@ router.get('/ui/v1/error', function (req, res, next) {
   }
 
   logger.log("Redirecting browser with error context info.")
-  redirectBrowser( req, res, "../../signin.html", {
+  redirectBrowser(req, res, "../../signin.html", {
     "isIDPUserInIDCS": "false",
-    "backendError": JSON.stringify({type:errorType, code:errCtx.errors[0].code, msg:errCtx.errors[0].message})
+    "backendError": JSON.stringify({ type: errorType, code: errCtx.errors[0].code, msg: errCtx.errors[0].message })
   });
 });
 
@@ -243,14 +246,14 @@ router.get("/selfreg", function (req, res, next) {
     logger.log("Token: " + req.query.token);
     logger.log("Token post encoding: " + encodeURIComponent(req.query.token));
 
-    redirectBrowser( req, res, "signin.html", {
+    redirectBrowser(req, res, "signin.html", {
       "operation": "register",
       "token": encodeURIComponent(req.query.token)
     });
   }
   else {
-      res.statusCode = 500;
-      res.end("Could not understand your request.");
+    res.statusCode = 500;
+    res.end("Could not understand your request.");
   }
 });
 
@@ -259,7 +262,7 @@ router.get("/resetpwd", function (req, res, next) {
   logger.log("GET for resetpwd received.");
 
   if (req.query.token) {
-    redirectBrowser( req, res, "signin.html", {
+    redirectBrowser(req, res, "signin.html", {
       "operation": "resetpwd",
       "token": encodeURIComponent(req.query.token)
     });
@@ -273,14 +276,14 @@ router.get("/resetpwd", function (req, res, next) {
 router.post("/newAccessToken", function (req, res) {
   logger.log("------------------------------------------------");
   logger.log("--- New access token request.");
-  oauth.authorize(req.get('Authorization')).then(oauth.getAT).then(function(accessToken) {
+  oauth.authorize(req.get('Authorization')).then(oauth.getAT).then(function (accessToken) {
     logger.log("--- Access token request fulfilled.");
     res.status(200).send(accessToken);
   })
-  .catch(function (error) {
-    logger.log("--- Access token request rejected: " + error);
-    res.status(401).send(error);
-  });
+    .catch(function (error) {
+      logger.log("--- Access token request rejected: " + error);
+      res.status(401).send(error);
+    });
 });
 
 module.exports = router;

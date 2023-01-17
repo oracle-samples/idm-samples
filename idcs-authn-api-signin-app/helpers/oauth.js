@@ -1,7 +1,7 @@
-var request = require('request');
+var axios = require('axios');
 var jwt = require('jsonwebtoken');
 var logger = require('./logging');
-var idcsCrypto = require( "./idcsCrypto.js");
+var idcsCrypto = require("./idcsCrypto.js");
 
 // urn:opc:idm:__myscopes__ will get all of the IDCS scopes granted to the app
 // I don't want that.
@@ -35,11 +35,11 @@ var necessaryAppRoles = [
 
 // compares 2 sorted arrays to make sure the contents are the same
 // this isn't a complete function, it's just as much as I need
-function isEqual(a1,a2) {
-  if ( a1.length != a2.length ) {
+function isEqual(a1, a2) {
+  if (a1.length != a2.length) {
     return false;
   }
-  for (var i=0;i<a1.length;i++) {
+  for (var i = 0; i < a1.length; i++) {
     if (a1[i] != a2[i]) return false;
   }
   return true;
@@ -47,29 +47,27 @@ function isEqual(a1,a2) {
 
 // the getAT function goes and gets an AT from IDCS
 function getAT() {
-  return new Promise(function(resolve, reject) {
-    request({
-        method: 'POST',
-        uri: process.env.IDCS_URL + "/oauth2/v1/token",
+  return new Promise(function (resolve, reject) {
+    axios.post(
+      process.env.IDCS_URL + "/oauth2/v1/token",
+      'grant_type=client_credentials&scope=' + encodeURIComponent(neededScopes.join(' ')),
+      {
         headers: {
           'Content-type': 'application/x-www-form-urlencoded',
           'Authorization': 'Basic ' + Buffer.from(process.env.IDCS_CLIENT_ID + ":" + process.env.IDCS_CLIENT_SECRET).toString('base64'),
           'Accept': 'application/json'
-        },
-
-        body: 'grant_type=client_credentials&scope=' + encodeURIComponent(neededScopes.join(' '))
-      },
-      function(error, response, body) {
-        if (error)
-          logger.error('error: ' + error);
-        if ( response && response.statusCode ) {
-          logger.log('statusCode: ' + response.statusCode);
         }
-        logger.log('body: ' + body);
+      }).then((response) => {
+
+
+        if (response && response.status) {
+          logger.log('statusCode: ' + response.status);
+        }
+        logger.log('body: ', response.data);
 
         if ((response) &&
-            (200 == response.statusCode)) {
-          var bodydata = JSON.parse(body);
+          (200 == response.status)) {
+          var bodydata = response.data;
           let token = bodydata.access_token;
           var decoded = jwt.decode(token);
 
@@ -82,7 +80,7 @@ function getAT() {
           // Missing roles are non fatal as long as we have the necessary scopes
           var clientAppRoles = decoded.clientAppRoles.sort(); // sort them to make the compare easier
 
-          if ( !isEqual( clientAppRoles,necessaryAppRoles) ) {
+          if (!isEqual(clientAppRoles, necessaryAppRoles)) {
             logger.error('');
             logger.error('');
             logger.error('');
@@ -92,14 +90,14 @@ function getAT() {
             logger.error('');
             logger.error('');
             logger.error('Application configured incorrectly!');
-            logger.error('Sign in application should have **ONLY** these ' + necessaryAppRoles.length +' IDCS app roles granted:');
-            necessaryAppRoles.forEach( function(role) {
-              logger.error( ' * "' + role + '"')
+            logger.error('Sign in application should have **ONLY** these ' + necessaryAppRoles.length + ' IDCS app roles granted:');
+            necessaryAppRoles.forEach(function (role) {
+              logger.error(' * "' + role + '"')
             });
             logger.error('');
             logger.error('Your application has the following instead:');
-            clientAppRoles.forEach( function(role) {
-              logger.error( ' * "' + role + '"')
+            clientAppRoles.forEach(function (role) {
+              logger.error(' * "' + role + '"')
             });
             logger.error('');
             logger.error('The acquired token will only contain absolutely necessary scopes,');
@@ -125,14 +123,14 @@ function getAT() {
           // The only way to know if we got everything we need is to actually check.
           // This is where I do that check
           let missingScopes = [];
-          neededScopes.forEach( function(scope) {
-            if ( decoded.scope.indexOf(scope) == -1 ) missingScopes.push(scope);
+          neededScopes.forEach(function (scope) {
+            if (decoded.scope.indexOf(scope) == -1) missingScopes.push(scope);
           });
-          if ( missingScopes.length > 0 ) {
+          if (missingScopes.length > 0) {
             logger.error('ERROR: Token does not have required scopes ' + missingScopes.join(', '));
             // don't tell the user which is missing. Just that there's a config error.
             // the admin will have to look at the logs to know what they did wrong.
-            throw('Unable to continue due to configuration error');
+            throw ('Unable to continue due to configuration error');
           }
 
           // if we got here then things are OK
@@ -141,6 +139,8 @@ function getAT() {
           throw ('Failed to acquire Access Token. Check client ID, Secret, and IDCS URL.');
           // and also for sunspots, or leopards in the server room?
         }
+      }).catch((error) => {
+        logger.error('error: ', error);
       });
   });
 };
@@ -157,113 +157,114 @@ const initialized = false;
 // In the future we may be able to just use the Client ID and secret.
 // Enh 27896624
 function getSigningKeyOriginal(accessToken) {
-  return new Promise(function(resolve, reject) {
-    request({
-        method: 'GET',
-        uri: process.env.IDCS_URL + "/admin/v1/SigningCert/jwk",
+  return new Promise(function (resolve, reject) {
+    axios.get(
+      process.env.IDCS_URL + "/admin/v1/SigningCert/jwk",
+      {
         headers: {
           'Content-type': 'application/x-www-form-urlencoded',
           'Authorization': 'Bearer ' + accessToken,
           'Accept': 'application/json'
-        },
-      },
-      function(error, response, body) {
-        if (error)
-          logger.log('error: ' + error);
-        if ( response && response.statusCode ) {
-          logger.log('statusCode: ' + response.statusCode);
         }
-        logger.log('body: ' + body);
+      }
+    ).then((response) => {
 
-        if ((response) &&
-            (200 == response.statusCode)) {
-          var bodydata = JSON.parse(body);
-          logger.log(JSON.stringify(bodydata, null, 2));
-          // we need the first (and probably only) cert from there
-          if (( bodydata.keys )        &&
-              ( bodydata.keys[0] )     &&
-              ( bodydata.keys[0].x5c ) ) {
-            logger.log( "Extracting x5c from first JWKS key");
+      if (response && response.status) {
+        logger.log('statusCode: ' + response.status);
+      }
+      logger.log('body: ' + response.data);
 
-            var x5c = bodydata.keys[0].x5c[0];
+      if ((response) &&
+        (200 == response.status)) {
+        var bodydata = response.data;
+        logger.log(JSON.stringify(bodydata, null, 2));
+        // we need the first (and probably only) cert from there
+        if ((bodydata.keys) &&
+          (bodydata.keys[0]) &&
+          (bodydata.keys[0].x5c)) {
+          logger.log("Extracting x5c from first JWKS key");
 
-            // PEM format says that lines must be no more than 64 chars
-            // so rewrap the x5c content 64 bytes at a pop
-            var cert = '-----BEGIN CERTIFICATE-----\n';
-            while (x5c.length > 0) {
-              if (x5c.length > 64) {
-                cert += x5c.substring(0, 64) + '\n';
-                x5c = x5c.substring(64, x5c.length);
-              } else {
-                cert += x5c;
-                x5c = '';
-              }
+          var x5c = bodydata.keys[0].x5c[0];
+
+          // PEM format says that lines must be no more than 64 chars
+          // so rewrap the x5c content 64 bytes at a pop
+          var cert = '-----BEGIN CERTIFICATE-----\n';
+          while (x5c.length > 0) {
+            if (x5c.length > 64) {
+              cert += x5c.substring(0, 64) + '\n';
+              x5c = x5c.substring(64, x5c.length);
+            } else {
+              cert += x5c;
+              x5c = '';
             }
-            cert += '\n-----END CERTIFICATE-----\n';
-
-            logger.log( "Cert: \n" + cert );
-            idcsCrypto.setTenantCert(cert);
-            return;
           }
-        }
+          cert += '\n-----END CERTIFICATE-----\n';
 
-        // if we get down to here there was a problem.
-        // for now we just throw a generic error.
-        // since this function is only called during startup throwing here
-        // will crash out of the startup and shut the server down.
-        // I *think* that's what we want.
-        throw("Failed to acquire certificate from JWKS URI!");
-      });
+          logger.log("Cert: \n" + cert);
+          idcsCrypto.setTenantCert(cert);
+          return;
+        }
+      }
+
+      // if we get down to here there was a problem.
+      // for now we just throw a generic error.
+      // since this function is only called during startup throwing here
+      // will crash out of the startup and shut the server down.
+      // I *think* that's what we want.
+      throw ("Failed to acquire certificate from JWKS URI!");
+    }).catch(error => {
+      if (error)
+        logger.log('error: ', error);
+    });
   });
 }
 
 function getSigningKey(accessToken) {
-  return new Promise(function(resolve, reject) {
-    request({
-        method: 'GET',
-        uri: process.env.IDCS_URL + "/admin/v1/SigningCert/jwk",
+  return new Promise(function (resolve, reject) {
+    axios.get(
+      process.env.IDCS_URL + "/admin/v1/SigningCert/jwk",
+      {
         headers: {
           'Content-type': 'application/x-www-form-urlencoded',
           'Authorization': 'Bearer ' + accessToken,
           'Accept': 'application/json'
-        },
-      },
-      function(error, response, body) {
-        if (error) {
-          return reject(error);
         }
-        else if (response && response.statusCode == 200) {
-          var bodydata = JSON.parse(body);
+      }
+    ).then((response) => {
+      if (response && response.status == 200) {
+        var bodydata = response.data;
 
-          if (bodydata.keys && bodydata.keys[0] && bodydata.keys[0].x5c) {
+        if (bodydata.keys && bodydata.keys[0] && bodydata.keys[0].x5c) {
 
-            var x5c = bodydata.keys[0].x5c[0];
-            var cert = '-----BEGIN CERTIFICATE-----\n';
-            while (x5c.length > 0) {
-              if (x5c.length > 64) {
-                cert += x5c.substring(0, 64) + '\n';
-                x5c = x5c.substring(64, x5c.length);
-              }
-              else {
-                cert += x5c;
-                x5c = '';
-              }
+          var x5c = bodydata.keys[0].x5c[0];
+          var cert = '-----BEGIN CERTIFICATE-----\n';
+          while (x5c.length > 0) {
+            if (x5c.length > 64) {
+              cert += x5c.substring(0, 64) + '\n';
+              x5c = x5c.substring(64, x5c.length);
             }
-            cert += '\n-----END CERTIFICATE-----\n';
-            idcsCrypto.setTenantCert(cert);
-            logger.log( "Cert: \n" + cert );
-            return resolve(cert);
+            else {
+              cert += x5c;
+              x5c = '';
+            }
           }
+          cert += '\n-----END CERTIFICATE-----\n';
+          idcsCrypto.setTenantCert(cert);
+          logger.log("Cert: \n" + cert);
+          return resolve(cert);
         }
-        else {
-          return reject("Unable to get certificate from JWKS URI.");
-        }
-      });
+      }
+      else {
+        return reject("Unable to get certificate from JWKS URI.");
+      }
+    }).catch((error) => {
+      return reject(error);
+    });
   });
 }
 
 function authorize(value) {
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     logger.log("--- Authorizing request...");
     if (!value) {
       return reject("Invalid token.");
@@ -277,7 +278,7 @@ function authorize(value) {
     let cert = idcsCrypto.getTenantCert();
     logger.log("--- Cert: \n" + cert);
     logger.log("--- Signing cert obtained. Verifying JWT...");
-    jwt.verify(tokenValue, cert, {sub:process.env.IDCS_CLIENT_ID,issuer:'https://identity.oraclecloud.com/', ignoreExpiration:'true'}, function(error, decoded) {
+    jwt.verify(tokenValue, cert, { sub: process.env.IDCS_CLIENT_ID, issuer: 'https://identity.oraclecloud.com/', ignoreExpiration: 'true' }, function (error, decoded) {
       if (error) {
         logger.log("--- Verification failed: " + error.message);
         return reject("Invalid token.");
@@ -299,24 +300,24 @@ if (!initialized) {
   // We will need that later to decode the post data.
   logger.log('Acquiring initial Access Token...');
   getAT()
-  .then(function(accessToken) {
-    logger.log("Acquired initial Access Token successfully:");
-    logger.log(accessToken + "\n");
+    .then(function (accessToken) {
+      logger.log("Acquired initial Access Token successfully:");
+      logger.log(accessToken + "\n");
 
-    // then acquire the tenant signing certificate
-    // we should only need to do this once
-    // TODO: think about if we need to do this more often
-    //getSigningKey(accessToken)
-    getSigningKey(accessToken)
-    .then(function() {
-      logger.log("Looking for tenant name in Access Token...\n");
-      var decoded = jwt.decode(accessToken);
-      if (decoded["user.tenant.name"]) {
-        let tenantName = decoded["user.tenant.name"];
-        logger.log("Tenant name is: " + tenantName);
-        idcsCrypto.setTenantName(tenantName);
-      }
-    });
-  })
-  .catch((err) => logger.log(err));
+      // then acquire the tenant signing certificate
+      // we should only need to do this once
+      // TODO: think about if we need to do this more often
+      //getSigningKey(accessToken)
+      getSigningKey(accessToken)
+        .then(function () {
+          logger.log("Looking for tenant name in Access Token...\n");
+          var decoded = jwt.decode(accessToken);
+          if (decoded["user.tenant.name"]) {
+            let tenantName = decoded["user.tenant.name"];
+            logger.log("Tenant name is: " + tenantName);
+            idcsCrypto.setTenantName(tenantName);
+          }
+        });
+    })
+    .catch((err) => logger.log(err));
 }
