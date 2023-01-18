@@ -12,6 +12,7 @@ The application implements the following Oracle Identity Cloud Service use cases
 	- Security Question
 	- OTP via Email
 	- OTP via SMS
+	- OTP via Phone Call
 	- TOTP
 	- Push Notification
 4.  Social Log In
@@ -370,17 +371,18 @@ Configure and run the sample web application. Replace the following parameter va
 
 1. Edit the run script file that is present in the root folder of the sample sign-in application, update the IDCS_URL, IDCS_CLIENT_ID, and IDCS_CLIENT_SECRET values, and then save the file.
     ```
+    set PORT=3000
     set IDCS_URL=https://MYTENNANT.identity.oraclecloud.com
     set IDCS_CLIENT_ID=mysigninapp_client_id
     set IDCS_CLIENT_SECRET=mysigninapp_client_secret
     ```
-	**Note:** If you are running this application in a Linux or Mac environment, use `run.sh` script. If you are using Windows use `run.bat` instead.
+	**Note:** If you are running this application in a Linux or Mac environment, use `sh run.sh` script. If you are using Windows use `run.bat` instead. Change PORT in run.sh, if port number 3000 is unavailable.
     
 2. Open a command prompt or terminal, navigate to the root folder of the sample sign-in application, and then enter `npm install` to install all of the necessary modules, which are specified in the `package.json` file.
     
     **Note:** If you're behind a proxy, then set up the npm's proxy before running the `npm install` command.
     
-3. In the same command prompt or terminal window, execute the run script by typing the name of the file, and then press **Enter** to start the sample sign-in application. 
+3. In the same command prompt or terminal window, execute the run script by typing the name of the file, and then press **Enter** to start the sample sign-in application.
 
 In the command prompt or terminal window, you see log information that helps you to understand what the sample application is doing.
 

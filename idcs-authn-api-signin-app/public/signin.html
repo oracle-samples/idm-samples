@@ -1,93 +1,100 @@
 <!DOCTYPE html>
-<html lang="en" >
+<html lang="en">
 
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel='stylesheet prefetch' href='https://fonts.googleapis.com/css?family=Open+Sans'>
-    <link rel="stylesheet" href="css/style.css">
-    <link href="./css/loader.css" rel="stylesheet" id="loader-css">
-    <!-- If you want to make minor changes to the OOTB CSS this is an easy way to do so. SIMPLY UNCOMMENT THE LINE BELOW -->
-    <!--
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel='stylesheet prefetch' href='https://fonts.googleapis.com/css?family=Open+Sans'>
+  <link rel="stylesheet" href="css/style.css">
+  <link href="./css/loader.css" rel="stylesheet" id="loader-css">
+  <!-- If you want to make minor changes to the OOTB CSS this is an easy way to do so. SIMPLY UNCOMMENT THE LINE BELOW -->
+  <!--
     <link rel="stylesheet" href="css/custom-style.css">
     -->
-    <title data-res="signin-page-title">Custom Login App</title>
-  </head>
+  <title data-res="signin-page-title">Custom Login App</title>
+</head>
 
-  <body>
+<body>
 
-    <p class="tip"><!-- banner text can go here --></p>
-    <div class="cont">
-      <div class="mob-header">
-        <img src="images/mob-logo.png" height="17" width="136"/>
-      </div>
-      <div class="form sign" id="signin-div">
-        <!-- You'll notice that there's nothing actually here -->
-        <!-- the entire DIV with the name "signin-div" is replaced w/ the -->
-        <!-- login form via JS when loginApp.js loads -->
-      </div>
-      <div class="sub-cont">
-        <div class="img">
-          <div class="img__text m--up">
-            <img src="images/logo.png" height="126" width="126"/>
-            <p>&nbsp;</p><p class="slogan"><i>“If you have a problem, if no one else can help, and if you can find them, maybe you can hire the A-Team”</i></p>
+  <p class="tip">
+    <!-- banner text can go here -->
+  </p>
+  <div class="cont">
+    <div class="mob-header">
+      <img src="images/mob-logo.png" height="17" width="136" />
+    </div>
+    <div class="form sign" id="signin-div">
+      <!-- You'll notice that there's nothing actually here -->
+      <!-- the entire DIV with the name "signin-div" is replaced w/ the -->
+      <!-- login form via JS when loginApp.js loads -->
+    </div>
+    <div class="sub-cont">
+      <div class="img">
+        <div class="img__text m--up">
+          <img src="images/logo.png" height="126" width="126" />
+          <p>&nbsp;</p>
+          <p class="slogan"><i>“If you have a problem, if no one else can help, and if you can find them, maybe you can
+              hire the A-Team”</i></p>
           <!-- UNCOMMENT THE LINE BELOW AND COMMENT THE TWO LINES ABOVE FOR CHANGING THE LOGO AND SLOGAN. -->
           <!--
             <img src="images/custom-logo.png" height="126" width="126"/>
           -->
-          </div>
-          <div class="img__text m--in hidelater">
-            <h2 class="on__dark" data-res="bar-signin-hdr">One of us?</h2>
-            <p data-res="bar-signin-subhdr">Just sign in.</p>
-          </div>
-          <div class="img__btn hidelater">
-            <span class="m--up" data-res="bar-signup-btn">Sign Up</span>
-            <span class="m--in" data-res="bar-signin-btn">Sign In</span>
-          </div>
         </div>
-        <div class="form sign-up" id="signup-div">
-          <!-- Just as above there's nothing actually here -->
-          <!-- the DIV with the name "signup-div" is replaced w/ the -->
-          <!-- self registration form via JS when registerApp.js loads -->
+        <div class="img__text m--in hidelater">
+          <h2 class="on__dark" data-res="bar-signin-hdr">One of us?</h2>
+          <p data-res="bar-signin-subhdr">Just sign in.</p>
         </div>
-        <div class="mob-sin-sup hidelater">
-          <span class="info" data-res="bar-signin-hdr">One of us?</span>&nbsp;<a href="#" class="mob-in-btn info" data-res="bar-signin-btn">Sign In</a>
+        <div class="img__btn hidelater">
+          <span class="m--up" data-res="bar-signup-btn">Sign Up</span>
+          <span class="m--in" data-res="bar-signin-btn">Sign In</span>
         </div>
+      </div>
+      <div class="form sign-up" id="signup-div">
+        <!-- Just as above there's nothing actually here -->
+        <!-- the DIV with the name "signup-div" is replaced w/ the -->
+        <!-- self registration form via JS when registerApp.js loads -->
       </div>
       <div class="mob-sin-sup hidelater">
-        <span class="info" data-res="bar-signup-hdr">Don't have an account?</span>&nbsp;<a href="#" class="mob-up-btn info" data-res="bar-signup-btn">Sign Up</a>
+        <span class="info" data-res="bar-signin-hdr">One of us?</span>&nbsp;<a href="#" class="mob-in-btn info"
+          data-res="bar-signin-btn">Sign In</a>
       </div>
     </div>
+    <div class="mob-sin-sup hidelater">
+      <span class="info" data-res="bar-signup-hdr">Don't have an account?</span>&nbsp;<a href="#"
+        class="mob-up-btn info" data-res="bar-signup-btn">Sign Up</a>
+    </div>
+  </div>
 
-    <script language="JavaScript">
-      document.querySelector('.img__btn').addEventListener('click', function() {
-        document.querySelector('.cont').classList.toggle('s--signup');
-      });
-      document.querySelector('.mob-in-btn').addEventListener('click', function() {
-        document.querySelector('.cont').classList.toggle('s--signup');
-      });
-      document.querySelector('.mob-up-btn').addEventListener('click', function() {
-        document.querySelector('.cont').classList.toggle('s--signup');
-      });
-      //notifyRegComplete is for auto flipping from signin to signup screens
-      function notifyRegComplete()
-      {
-        document.querySelector('.cont').classList.toggle('s--signup');
-        if ( ( document.getElementById("userid") ) &&
-             ( document.getElementById("uname") ) ) {
-          document.getElementById("userid").value=document.getElementById("uname").value;
-        }
-      };
+  <script language="JavaScript">
+    document.querySelector('.img__btn').addEventListener('click', function () {
+      document.querySelector('.cont').classList.toggle('s--signup');
+    });
+    document.querySelector('.mob-in-btn').addEventListener('click', function () {
+      document.querySelector('.cont').classList.toggle('s--signup');
+    });
+    document.querySelector('.mob-up-btn').addEventListener('click', function () {
+      document.querySelector('.cont').classList.toggle('s--signup');
+    });
+    //notifyRegComplete is for auto flipping from signin to signup screens
+    function notifyRegComplete() {
+      document.querySelector('.cont').classList.toggle('s--signup');
+      if ((document.getElementById("userid")) &&
+        (document.getElementById("uname"))) {
+        document.getElementById("userid").value = document.getElementById("uname").value;
+      }
+    };
 
-    </script>
+  </script>
 
-    <!-- the JS files should be placed BELOW the HTML content, inside BODY -->
-    <script src="./js/loadResource.js"></script>
-    <script src="./js/idcsSelfRegSDK.js"></script>
-    <script src="./js/registerApp.js"></script>
-    <script src="./js/idcsAuthnSDK.js"></script>
-    <script src="./js/loginApp.js"></script>
+  <!-- the JS files should be placed BELOW the HTML content, inside BODY -->
+  <script src="https://rawgit.com/leizongmin/js-xss/master/dist/xss.js"></script>
+  <script src="./js/loadResource.js"></script>
+  <script src="./js/idcsSelfRegSDK.js"></script>
+  <script src="./js/registerApp.js"></script>
+  <script src="./js/idcsAuthnSDK.js"></script>
+  <script src="./js/loginApp.js"></script>
+  <script src="./js/WebAuthn.js"></script>
 
-  </body>
+</body>
 
 </html>
