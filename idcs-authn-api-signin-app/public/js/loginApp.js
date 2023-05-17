@@ -1129,7 +1129,9 @@ function LoginApp() {
     } else if (payload.nextAuthFactors.length > 1 && payload.nextAuthFactors.includes("USERNAME") && payload.nextOp.includes("credSubmit")) {
       let nextAuthFactors = payload.nextAuthFactors;
       nextAuthFactors.splice(nextAuthFactors.indexOf("USERNAME"), 1);
-      nextAuthFactors.splice(nextAuthFactors.indexOf("IDP"), 1);
+      if (nextAuthFactors.indexOf("IDP") !== -1) {
+        nextAuthFactors.splice(nextAuthFactors.indexOf("IDP"), 1);
+      }
       this.displayForm(nextAuthFactors[0], "submitCreds", payload, email);
     }
 
