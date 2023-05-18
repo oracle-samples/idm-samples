@@ -1,5 +1,5 @@
 function register(response) {
-  var fidoResponseData = JSON.parse(response.FIDO_AUTHENTICATOR.fidoData.fidoData);
+  var fidoResponseData = JSON.parse(JSON.stringify(response.FIDO_AUTHENTICATOR.fidoData));
   var options = {};
   fidoResponseData.forEach(function (attr) {
     var name = attr.name;
@@ -53,7 +53,7 @@ function register(response) {
 }
 
 function authenticate(response) {
-  var fidoResponseData = JSON.parse(response.FIDO_AUTHENTICATOR.fidoData.fidoData);
+  var fidoResponseData = JSON.parse(JSON.stringify(response.FIDO_AUTHENTICATOR.fidoData));
   var options = {};
   var allowCredentials = [];
   fidoResponseData.forEach(function (attr) {

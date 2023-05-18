@@ -351,6 +351,20 @@ function IdcsAuthnSDK(app) {
     this.authenticate(data);
   }; // this.postPhoneCallOtp
 
+  this.postYubicoOtp = function(credentials) {
+    this.app.logMsg('[IdcsAuthnSDK] Posting Yubico OTP...');
+    var data = JSON.stringify({
+           "op": "credSubmit",
+           "authFactor": "YUBICO_OTP",
+           "credentials": credentials,
+           "trustedDevice": JSON.parse(this.app.getTrustedDeviceOption()), // Value here MUST be Boolean!!
+           "trustedDeviceDisplayName": this.clientFingerprint.browser + ' on ' + this.clientFingerprint.OS + ' ' + this.clientFingerprint.OSVersion,
+           "requestState": this.app.getRequestState()
+        });
+
+    this.authenticate(data);
+  }; // this.postYubicoOtp
+
   this.enrollSecurityQuestions = function (credentials) {
 
     this.app.logMsg('[IdcsAuthnSDK] Enrolling Security Questions and Answers...');
@@ -517,6 +531,18 @@ function IdcsAuthnSDK(app) {
     });
     this.authenticate(data);
   }; // this.enrollMobileNumber
+
+  this.initEnrollYubicoOtp = function(credentials) {
+      this.app.logMsg('Initiating Yubico OTP enrollment...');
+
+      var data = JSON.stringify({
+            "op": "enrollment",
+            "authFactor": "YUBICO_OTP",
+            "credentials": credentials,
+            "requestState": this.app.getRequestState()
+          });
+          this.authenticate(data);
+   }; // this.initEnrollYubicoOtp
 
   this.initEnrollSecurityQuestions = function () {
     this.app.logMsg('[IdcsAuthnSDK] Enrolling Security Questions...');
