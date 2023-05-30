@@ -1,0 +1,15 @@
+.status-container {
+  padding-left: 50px;
+  padding-right: 50px;
+  padding-bottom: 10px;
+  height: 1em;
+  text-align: center;
+}
+
+.status-container.error {
+  color: #c74634;
+}
+
+.status-container.info {
+  color: #1e2834;
+}

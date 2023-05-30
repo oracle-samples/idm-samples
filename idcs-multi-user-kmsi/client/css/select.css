@@ -1,0 +1,16 @@
+.flat-select {
+  background-color: rgba(0, 0, 0, 0.0);
+  color: rgba(0,0,0,.8);
+  padding: 5px;
+  font-size: 1rem;
+  border-style: solid;
+  border-color: #e5e6e6;
+  border-width: 1px 1px 1px 1px;
+  border-radius: 2px;
+  height: 2.28571rem;
+}
+
+.flat-select.inline {
+  max-width: 30%;
+  margin: 0px;
+}

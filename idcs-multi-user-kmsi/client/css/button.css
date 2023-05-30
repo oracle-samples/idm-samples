@@ -1,0 +1,111 @@
+.flat-button {
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  padding: 8px;
+  border-radius: 2px;
+  cursor: default;
+}
+
+.flat-button:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.flat-button:active {
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+.flat-button.disabled {
+  background-color: rgba(0, 0, 0, 0.1);
+  color:rgba(0, 0, 0, 0.3);
+}
+
+.flat-button.action {
+  border: none;
+  background-color: #027bc7;
+  color: white;
+  text-align: center;
+}
+
+.flat-button.emphasis {
+  font-weight: bold;
+}
+
+.flat-button.action:hover {
+  background-color: #028de3;
+}
+
+.flat-button.action:active {
+  background-color: #025e97;
+}
+
+.flat-button.action.redwood {
+  background-color: rgb(49, 45, 42);
+}
+
+.flat-button.action.redwood:hover {
+  background-color: rgba(49, 45, 42, 0.85);
+}
+
+
+.flat-button.action.disabled {
+  background-color: rgb(1, 40, 65);
+  color:rgba(255, 255, 255, 0.3);
+}
+
+
+.flat-button.warning {
+  background-color: rgb(176, 1, 1);
+  color: white;
+}
+
+.flat-button.warning:hover {
+  background-color: rgb(114, 2, 2);
+}
+
+.flat-button.warning:active {
+  background-color: rgb(70, 0, 0);
+}
+
+.flat-button.warning.disabled {
+  background-color: rgb(70, 0, 0);
+  color:rgba(255, 255, 255, 0.3);
+}
+
+.flat-button.toppad {
+  margin-top: 24px
+}
+
+.small-button {
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  padding: 3px;
+  border-radius: 3px;
+  cursor: default;
+  font-size: 0.8em;
+}
+
+.small-button.disabled {
+  background-color: rgba(0, 0, 0, 0.1);
+  color:rgba(0, 0, 0, 0.3);
+}
+
+.small-button:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.small-button:active {
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+.inline-input-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 5px 0;
+}
+
+.inline-input-button .flat-button {
+  margin: 0 3px;
+}
+
+.inline-input-button .small-button {
+  margin: 0 3px;
+}
