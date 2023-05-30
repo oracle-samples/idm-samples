@@ -1295,7 +1295,6 @@ function LoginApp() {
 
       this.handleClickToSubmitEvent(formDiv,this,'initEnrollYubicoOtp');
       this.handleKeyPressToSubmitEvent(formDiv,formDiv.querySelector("#yubicoSecretKey"),this,'initEnrollYubicoOtp');
-
   } // this.buildYubicoOtpEnrollmentForm
 
   // social registration page
