@@ -1912,9 +1912,9 @@ function LoginApp() {
     };
   } // this.displayForgotPassWordSmsForm
 
-  // Displays a form for notification type in forgot password flow - secquestsion.
+  // Displays a form for notification type in forgot password flow - SecQuestions.
   this.displayForgotPassWordSecquestionForm = function (payload, username) {
-    this.logMsg("Building Forgot Password Secquestion Form");
+    this.logMsg("Building Forgot Password SecQuestion Form");
     const self = this;
     var formDiv = document.createElement('div');
     formDiv.classList.add("form");
