@@ -1,0 +1,9 @@
+{
+  "require": [
+      "test/runner/init-tests.js",
+      "mocha-suppress-logs"
+  ],
+  "spec": [
+      "test/**/*.ts"
+  ]
+}

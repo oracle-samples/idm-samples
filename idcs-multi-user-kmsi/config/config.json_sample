@@ -1,0 +1,28 @@
+{
+  "idcs_config":{
+    "base_url": "https://idcs-guid.identity.oraclecloud.com",
+    "client_id": "12345678",
+    "client_secret": "1234abcd",
+    "required_scopes":[
+        "urn:opc:idm:t.security.client",
+        "urn:opc:idm:t.user.signin",
+        "urn:opc:idm:t.user.resetpassword",
+        "urn:opc:idm:t.user.forgotpassword",
+        "urn:opc:idm:t.mfa"
+    ],
+    "kmsi_last_used_validity_in_days":30,
+    "reset_password_endpoint":"https://idcs-guid.identity.oraclecloud.com/ui/v1/resetpwd"
+  },
+  "ssl":{
+    "use_ssl":true,
+    "is_ssl":true,
+    "public_cert_path":"./sslcert/certificate.crt",
+    "private_key_path":"./sslcert/privatekey.key"
+  },
+  "port":8000,
+  "force_ip_version_4":true,
+  "cookie_signing_key":"random_signing_key"
+  "style":{
+    "redwood_theme":true
+  }
+}

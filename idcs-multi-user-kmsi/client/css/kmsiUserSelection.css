@@ -1,0 +1,24 @@
+.kmsi-user-list {
+  max-height: 60vh;
+}
+
+.kmsi-user-item{
+  justify-content: space-between;
+}
+
+.kmsi-forget-user{
+  color: #8a8d8f;
+  cursor: pointer;
+}
+
+.kmsi-forget-user:hover{
+  color: #76b8e1;
+}
+
+.kmsi-forget-user.redwood {
+  color: #717171;
+}
+
+.kmsi-forget-user.redwood:hover{
+  color: #000000;
+}
