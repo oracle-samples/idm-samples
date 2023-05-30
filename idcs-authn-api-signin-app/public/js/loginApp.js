@@ -1229,7 +1229,7 @@ function LoginApp() {
       '</div>';
 
     this.setRequestState(payload.requestState);
-    this.logMsg("Building FIDO Enrollment Form");
+    this.logMsg("Building FIDO Authentication Form");
     authenticate(payload).then(function (credential) {
       self.fidoCallback(credential);
     });
