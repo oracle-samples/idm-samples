@@ -461,6 +461,26 @@ function LoginApp() {
         }
         return payload;
 
+      case 'postYubicoOtp':
+        var payload = {};
+        payload["otpCode"] = document.getElementById("otpCode").value;
+        if (this.getSelectedDevice()) {
+            payload["deviceId"] = this.getSelectedDevice().deviceId;
+        }
+
+        if (preferredFactorElem && preferredFactorElem.checked) {
+            payload["preferred"] = true;
+        }
+        return payload;
+
+      case 'initEnrollYubicoOtp':
+        var payload = {};
+        payload["serialNumber"] = document.getElementById("yubicoSerialNo").value;
+        payload["privateId"] = document.getElementById("yubicoPrivateId").value;
+        payload["publicId"] = document.getElementById("yubicoPublicId").value;
+        payload["secretKey"] = document.getElementById("yubicoSecretKey").value;
+        return payload;
+
       case 'postPhoneCallOtp':
         var payload = {};
         payload["otpCode"] = document.getElementById("otpCode").value;
@@ -771,6 +791,8 @@ function LoginApp() {
             }
             else if (which === 'PHONE_CALL' && payload.PHONE_CALL && payload.PHONE_CALL.credentials[0] === "otpCode") {
               (this.AuthenticationFactorInfo[which]["loginFormFunction"])(formDiv, payload);
+            } else if (which === 'YUBICO_OTP' && payload.YUBICO_OTP && payload.YUBICO_OTP.credentials[0] === "otpCode") {
+               (this.AuthenticationFactorInfo[which]["loginFormFunction"])(formDiv, payload);
             }
             else {
               (this.AuthenticationFactorInfo[which]["enrollFormFunction"])(formDiv, payload);
@@ -984,6 +1006,18 @@ function LoginApp() {
 
   } // this.buildPhoneCallOtpForm
 
+  this.buildYubicoOtpForm = function(formDiv,payload) {
+      formDiv.innerHTML +=
+          '<h3 data-res="otp-hdr">Verifying OTP</h3>' +
+          '<div class="sameline"><span class="info" data-res="yubico-otp-info-msg">Please press the Yubikey </span><span class="device-name">' + formDiv.whichDisplayName + '</span></div>' +
+          '<label><span data-res="otp-fld">OTP Code</span><input type="text" id="otpCode" required></label>' +
+          '<label class="error-msg" id="login-error-msg"></label>' +
+          '<button type="button" class="submit" id="submit-btn" data-res="yubico-otp-submit-btn">Verify</button>';
+
+      this.handleClickToSubmitEvent(formDiv,this,'postYubicoOtp');
+      this.handleKeyPressToSubmitEvent(formDiv,formDiv.querySelector("#otpCode"),this,'postYubicoOtp');
+  } // this.buildYubicoOtpForm
+
   // Builds the Security Questions form.
   this.buildSecQuestionsForm = function (formDiv, payload) {
     var secQuestionsInput = '';
@@ -1130,8 +1164,8 @@ function LoginApp() {
       let nextAuthFactors = payload.nextAuthFactors;
       nextAuthFactors.splice(nextAuthFactors.indexOf("USERNAME"), 1);
       if (nextAuthFactors.indexOf("IDP") !== -1) {
-        nextAuthFactors.splice(nextAuthFactors.indexOf("IDP"), 1);
-      }
+              nextAuthFactors.splice(nextAuthFactors.indexOf("IDP"), 1);
+       }
       this.displayForm(nextAuthFactors[0], "submitCreds", payload, email);
     }
 
@@ -1245,6 +1279,24 @@ function LoginApp() {
     this.handleKeyPressToSubmitEvent(formDiv, formDiv.querySelector("#mobileNumber"), this, 'initEnrollPhoneNumber');
 
   } // this.buildPhoneCallMobileEnrollmentForm
+
+  this.buildYubicoOtpEnrollmentForm = function(formDiv,payload) {
+      this.logMsg("Building the Yubico OTP Enrollment Form ");
+      formDiv.noResend = true;
+      formDiv.innerHTML =
+          '<h3 data-res="enroll-yubico-otp-hdr">Enrolling Yubico OTP </h3>' +
+          '<div class="sameline"><span class="info" data-res="enroll-yubico-info-msg">Enter Yubico credentials</span></div>' +
+          '<label><span data-res="enroll-yubico-serial-no">Serial Number</span><input type="text" id="yubicoSerialNo" required></label>' +
+          '<label><span data-res="enroll-yubico-private-id">Public Id</span><input type="text" id="yubicoPublicId" required></label>' +
+          '<label><span data-res="enroll-yubico-public-id">Private Id</span><input type="text" id="yubicoPrivateId" required></label>' +
+          '<label><span data-res="enroll-yubico-secret-key">Secret Key</span><input type="text" id="yubicoSecretKey" required></label>' +
+          '<label class="error-msg" id="login-error-msg"></label>' +
+          '<button type="button" class="submit" id="submit-btn" data-res="enroll-yubico-submit-btn">Enroll</button>';
+
+      this.handleClickToSubmitEvent(formDiv,this,'initEnrollYubicoOtp');
+      this.handleKeyPressToSubmitEvent(formDiv,formDiv.querySelector("#yubicoSecretKey"),this,'initEnrollYubicoOtp');
+
+  } // this.buildYubicoOtpEnrollmentForm
 
   // social registration page
   this.displaySocialRegistrationForm = function (socialData) {
@@ -1655,6 +1707,9 @@ function LoginApp() {
         break;
       case 'FIDO_AUTHENTICATOR':
         this.sdk.initAuthnFido(credentials);
+        break;
+      case 'YUBICO_OTP':
+        this.displayForm(factor,"submitCreds", payload);
         break;
       default:
         this.logMsg('Unrecognized alternative factor: ' + factor);
@@ -2083,12 +2138,15 @@ function LoginApp() {
                   this.logMsg('which[0] is ' + which[0]);
                   this.displayForm(which[0], "enrollment", payload);
                 }
-                else
-                  if (payload.PHONE_CALL && payload.PHONE_CALL.credentials[0] === "otpCode") {
+                else if (payload.PHONE_CALL && payload.PHONE_CALL.credentials[0] === "otpCode") {
                     which = Object.keys(self.AuthenticationFactorInfo).filter(function (x) { return x in payload; });
                     this.logMsg('which[0] is ' + which[0]);
                     this.displayForm(which[0], "enrollment", payload);
-                  }
+                } else if (payload.YUBICO_OTP && payload.YUBICO_OTP.credentials[0] === "otpCode") {
+                     which = Object.keys(self.AuthenticationFactorInfo).filter(function (x) { return x in payload; });
+                     this.logMsg('which[0] is ' + which[0]);
+                     this.displayForm(which[0], "enrollment", payload);
+                }
                   else {
                     this.logMsg('Do not know what to do with given payload.');
                   }
@@ -2388,6 +2446,12 @@ function LoginApp() {
       description: "Make a Phone Call to deliver OTP",
       enrollFormFunction: function (formDiv, payload) { self.buildPhoneCallMobileEnrollmentForm(formDiv, payload); },
       loginFormFunction: function (formdiv, payload) { self.buildPhoneCallOtpForm(formdiv, payload); },
+    },
+    YUBICO_OTP: {
+       label: "Yubico OTP",
+       description: "Yubico OTP",
+       enrollFormFunction: function (formDiv,payload) { self.buildYubicoOtpEnrollmentForm(formDiv,payload);},
+       loginFormFunction: function (formdiv,payload) { self.buildYubicoOtpForm(formdiv,payload);},
     },
     PUSH: {
       label: "Oracle Authenticator App",
