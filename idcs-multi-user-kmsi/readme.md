@@ -10,6 +10,9 @@ To use this Custom Login Implmentation, a Confidential App is required to be con
 
 * Signin
 * Authenticator Client
+* Change Password
+* Reset Password
+* Forgot Password
 * Identity Domain Administrator
 
 _Note:_ Identity Domain Administrator is a highly privileged role, and should not be granted lightly. It is required here to allow for the use of the `urn:opc:idm:t.mfa` scope, which is required to delete KMSI Sessions from within IAM. This may change in the future, but for now it is unfortunately needed to accomodate the 'Forget a User' flow.
