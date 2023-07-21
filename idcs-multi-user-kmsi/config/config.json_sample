@@ -8,6 +8,7 @@
         "urn:opc:idm:t.user.signin",
         "urn:opc:idm:t.user.resetpassword",
         "urn:opc:idm:t.user.forgotpassword",
+        "urn:opc:idm:t.user.changepassword",
         "urn:opc:idm:t.mfa"
     ],
     "kmsi_last_used_validity_in_days":30,
