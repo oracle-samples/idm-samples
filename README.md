@@ -17,6 +17,8 @@ The code samples are:
  - **postman-collection-examples**: Postman collection that includes 7 use -cases related to passwordless flows such as: Username – Password, Username - Email OTP, Username - SMS OTP, Username – TOTP, Username - PUSH Notification, Username - Password and SMS Login from using backup factor, and Username - SMS - MFA Push Notification.
  - **salesinsight**: Sample web application used to test the Oracle Identity Cloud Service integration with OAuth2 as a resource server application.
 
+## Documentation
+
 For instructions, licensing, and support information, please consult the README and LICENSE files provided with each sample.
 
 ## Contributing
