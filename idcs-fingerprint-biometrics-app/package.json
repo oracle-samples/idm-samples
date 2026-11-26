@@ -1,0 +1,13 @@
+{
+  "name": "fingerprint-reference-app",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Local reference implementation for fingerprint enrollment and 1:1 verification",
+  "scripts": {
+    "start": "node app/src/server.js",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

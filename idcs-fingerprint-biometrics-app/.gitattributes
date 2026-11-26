@@ -1,0 +1,8 @@
+# Keep repository text files consistent across Windows and Unix environments.
+* text=auto eol=lf
+
+# Fingerprint captures and vendor/runtime artifacts must never undergo text conversion.
+*.class binary
+*.dll binary
+*.jar binary
+*.pgm binary
