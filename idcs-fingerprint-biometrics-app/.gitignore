@@ -1,0 +1,22 @@
+.DS_Store
+.idea/
+*.iml
+
+# Java process.
+**/*gc.log.*
+**/core.*
+**/bup.log
+/admin-srv.tar.gz
+
+#Vim.
+*~
+.netrwhist
+vimtags
+*.swp
+
+# Local secrets and certificates.
+.env
+certs/
+
+# Generated bridge classes.
+bridge/out/

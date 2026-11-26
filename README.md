@@ -11,6 +11,7 @@ The code samples are:
  - **idcs-authn-api-signin-app**: Custom Oracle Identity Cloud Service Sign-in page application.
  - **idcs-factor-enrollment-api**: MFA Factor Enrollment API.
  - **idcs-factor-verification-api**: MFA Factor Verification API.
+ - **[idcs-fingerprint-biometrics-app](./idcs-fingerprint-biometrics-app)**: Fingerprint enrollment and verification reference application with a Node.js web service, local Java bridge, and mock or optional hardware integrations.
  - **idcs-rest-clients**: Complete set of REST API requests to be used with Oracle Identity Cloud Service.
  - **idcs-scim-gateway-app**: Application that exposes SCIM-based REST APIs to integrate Oracle Identity Cloud Service for provisioning purpose.
  - **idcs-sdk-sample-apps**: Multiple applications (Node.js, Java, Python, .NET, Android and iOS) which use Oracle Identity Cloud Service's SDK for authentication.

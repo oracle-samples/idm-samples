@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Fingerprint Reference App</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+
+<body>
+    <div class="global-header" aria-label="Application header">
+        <a class="oracle-wordmark" href="/" aria-label="Fingerprint Reference App home">
+            <img src="/oracle-logo.svg" alt="Oracle">
+        </a>
+        <span class="global-header-divider" aria-hidden="true"></span>
+        <span class="global-product-name">Identity and Access Management</span>
+    </div>
+    <main>
+        <header class="page-header">
+            <div>
+                <p class="eyebrow">OCI IAM FINGERPRINT REFERENCE APP</p>
+                <h1>Fingerprint enrollment and verification</h1>
+                <div id="identity" class="identity-card" hidden aria-live="polite">
+                    <span class="identity-label">Signed in as</span>
+                    <strong id="identityName" class="identity-name"></strong>
+                    <span id="identityMeta" class="identity-meta"></span>
+                </div>
+            </div>
+            <div class="header-actions">
+                <span id="reader" class="badge" hidden>Reader checking…</span>
+                <button id="signOut" class="secondary-button" hidden>Sign&nbsp;out</button>
+            </div>
+        </header>
+
+        <section id="signedOut" class="signin-card session-screen" tabindex="-1" aria-labelledby="signInTitle">
+            <div class="outcome-icon neutral-icon" aria-hidden="true">i</div>
+            <p id="signInEyebrow" class="eyebrow">AUTHENTICATION REQUIRED</p>
+            <h2 id="signInTitle">Sign in to continue</h2>
+            <p id="signInMessage">Sign in with your OCI IAM account before enrolling or verifying a fingerprint.</p>
+            <a id="signInLink" class="button-link" href="/login">Sign in with OCI IAM</a>
+        </section>
+
+        <div id="authenticatedContent" hidden>
+            <section class="notice" aria-label="Privacy information">
+                <strong>Security and privacy:</strong> App sign-in uses OCI IAM OpenID Connect (OIDC) Authorization Code flow with PKCE. Enrollment and
+                verification requests are sent securely to on-demand IAM APIs over mTLS using OAuth TLS Client authentication. Raw fingerprint data, kept only in-memory, is used to create a fingerprint template protected with Biometric Template Protection (BTP), then discarded.
+                IAM never receives raw fingerprint data, only the BTP-protected template. IAM uses OCI AI Biometric Service for template persistence and to perform matching.
+            </section>
+            <section class="reader-picker" aria-labelledby="readerPickerTitle">
+                <div class="reader-picker-heading">
+                    <h2 id="readerPickerTitle">Fingerprint reader</h2>
+                    <p>Choose the connected reader to use for the next operation.</p>
+                </div>
+                <div class="reader-picker-control">
+                    <label class="sr-only" for="readerSelect">Fingerprint reader</label>
+                    <select id="readerSelect"></select>
+                </div>
+                <button id="refreshReaders" class="secondary-button" type="button">Refresh readers</button>
+            </section>
+            <section class="result operation-status">
+                <h2>Operation status</h2>
+                <p id="status" role="status" aria-live="polite" aria-atomic="true">Ready. Ensure the reader is
+                    connected.</p>
+            </section>
+            <div class="section-heading">
+                <div>
+                    <p class="eyebrow">FINGERPRINT OPERATIONS</p>
+                    <h2>Enroll or verify a fingerprint</h2>
+                </div>
+            </div>
+            <div class="cards">
+                <section class="card">
+                    <h2>Enroll fingerprint</h2>
+                    <p>Start IAM enrollment, review the consent statement, then capture one finger.</p>
+                    <label>
+                        Finger
+                        <select id="enrollFinger">
+                            <option>RIGHT_INDEX</option>
+                            <option>LEFT_INDEX</option>
+                        </select>
+                    </label>
+                    <label>
+                        PIN number
+                        <input id="enrollSeed2" type="password" inputmode="numeric" autocomplete="off" maxlength="19" aria-required="true" aria-describedby="enrollPinHelp enrollPinError">
+                    </label>
+                    <p id="enrollPinHelp">PIN number is required for Biometric Template Protection (BTP).</p>
+                    <p id="enrollPinError" class="field-error" role="alert" hidden></p>
+                    <button id="beginEnrollment" class="primary-button" type="button">Begin enrollment</button>
+                </section>
+                <section class="card">
+                    <h2>Verify fingerprint</h2>
+                    <p>Capture the enrolled finger and send one 1:1 authentication request to IAM.</p>
+                    <label>
+                        Finger
+                        <select id="verifyFinger">
+                            <option>RIGHT_INDEX</option>
+                            <option>LEFT_INDEX</option>
+                        </select>
+                    </label>
+                    <label>
+                        PIN number
+                        <input id="verifySeed2" type="password" inputmode="numeric" autocomplete="off" maxlength="19" aria-required="true" aria-describedby="verifyPinHelp verifyPinError">
+                    </label>
+                    <p id="verifyPinHelp">PIN number is required for Biometric Template Protection (BTP).</p>
+                    <p id="verifyPinError" class="field-error" role="alert" hidden></p>
+                    <button id="verifyFingerprint" class="primary-button" data-action="verify" type="button">Capture and verify</button>
+                </section>
+            </div>
+            <p class="unenroll-action">
+                <button id="unenrollFingerprint" class="danger" data-action="unenroll" type="button">Unenroll
+                    fingerprint</button>
+            </p>
+        </div>
+
+        <section id="outcomeScreen" class="outcome-screen" hidden tabindex="-1" aria-labelledby="outcomeTitle"
+            aria-live="polite">
+            <div id="outcomeIcon" class="outcome-icon" aria-hidden="true"></div>
+            <p id="outcomeEyebrow" class="eyebrow"></p>
+            <h2 id="outcomeTitle" tabindex="-1"></h2>
+            <p id="outcomeMessage" class="outcome-message"></p>
+            <dl id="outcomeReferenceWrap" class="outcome-reference" hidden>
+                <dt>Transaction reference</dt>
+                <dd><code id="outcomeReference"></code></dd>
+            </dl>
+            <div class="outcome-actions">
+                <button id="outcomePrimary" class="primary-button" type="button" hidden></button>
+                <button id="outcomeBack" class="secondary-button" type="button">Back</button>
+            </div>
+        </section>
+
+        <dialog id="enrollmentConsent" aria-labelledby="consentTitle" aria-describedby="consentStatement">
+            <div class="consent-panel">
+                <p class="eyebrow">IAM ENROLLMENT CONSENT</p>
+                <h2 id="consentTitle" tabindex="-1">Consent to enroll your fingerprint</h2>
+                <p id="consentStatement" class="consent-statement"></p>
+                <p class="consent-note">Your fingerprint will not be captured unless you agree.</p>
+                <p id="consentError" class="dialog-error" role="alert" hidden></p>
+                <div class="dialog-actions">
+                    <button id="declineEnrollment" type="button" class="secondary-button">Decline</button>
+                    <button id="agreeEnrollment" class="primary-button" type="button">Agree and capture</button>
+                </div>
+            </div>
+        </dialog>
+
+        <dialog id="unenrollmentConfirmation" aria-labelledby="unenrollmentTitle" aria-describedby="unenrollmentDescription">
+            <div class="consent-panel">
+                <p class="eyebrow">REMOVE FINGERPRINT ENROLLMENT</p>
+                <h2 id="unenrollmentTitle" tabindex="-1">Unenroll fingerprint?</h2>
+                <p id="unenrollmentDescription" class="consent-note">This removes the fingerprint enrollment for the
+                    signed-in user. This action cannot be undone.</p>
+                <div class="dialog-actions">
+                    <button id="cancelUnenrollment" type="button" class="secondary-button">Cancel</button>
+                    <button id="confirmUnenrollment" type="button" class="danger">Unenroll fingerprint</button>
+                </div>
+            </div>
+        </dialog>
+    </main>
+    <script src="/app.js"></script>
+</body>
+
+</html>
