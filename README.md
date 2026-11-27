@@ -1,6 +1,6 @@
-# Identity Management (IdM) Samples
+# OCI Identity and Access Management Samples
 
-This repository stores Identity Management (idm) code samples from Oracle.
+This repository stores OCI Identity and Access Management code samples from Oracle.
 
 The code samples are:
 
