@@ -1,0 +1,1647 @@
+asyncapi: 3.0.0
+info:
+  title: AI World Voice Identity Application WebSocket
+  version: 1.0.0
+  x-contract-status: DRAFT
+  x-gate-status:
+    T001: PARTIAL
+    T002: REMEDIATION_PENDING
+    T003: LIVE_VALIDATION_PENDING
+  x-approval-blockers:
+    - T001 PARTIAL - IDCS password-grant details, IAM source inconsistencies, and verification cancellation remain unresolved; documented successful verification completion is implemented, while the exact assurance-event binding contract blocks T101 and T106
+    - T002 REMEDIATION PENDING - the supplied ABIS SDK must pass the approved security and contract remediation gate
+    - T003 LIVE VALIDATION PENDING - OCI Speech session-token authentication and real-time behavior require a live local smoke test
+    - LOOPBACK PROFILE BLOCKED - literal boundary, sole-account, cookie, microphone, one-socket, downstream-security, warning, cleanup, and evidence-exclusion tests require review before enablement
+  description: |
+    DRAFT: T001 is partial, T002 remediation is pending, and T003 live validation is pending. This
+    browser contract is not eligible for human approval until those recorded gates pass.
+
+    Bidirectional same-origin contract between the Oracle JET browser and Java backend. One bound
+    WebSocket carries JSON commands/events and binary PCM audio for one enrollment or verification
+    voice session. Java owns audio acceptance order, turn detection, canonical utterance IDs,
+    correlation, flow control and downstream orchestration.
+    `SECURE_DEMO` uses same-origin WSS and is the only release-capable profile.
+    `LOOPBACK_HTTP_TEST` uses at most one exact same-origin
+    `ws://127.0.0.1:8080/ws/v1/voice` connection and produces local-development evidence only.
+defaultContentType: application/json
+
+servers:
+  secureDemo:
+    host: '{host}'
+    pathname: /ws/v1/voice
+    protocol: wss
+    description: "SECURE_DEMO same public HTTPS/WSS origin."
+    variables:
+      host:
+        description: Approved application host; never a downstream service endpoint.
+    security:
+      - $ref: '#/components/securitySchemes/secureSessionCookie'
+  loopbackHttpTest:
+    host: 127.0.0.1:8080
+    pathname: /ws/v1/voice
+    protocol: ws
+    description: |
+      Development-only `LOOPBACK_HTTP_TEST` origin. Java binds only to `127.0.0.1` and rejects
+      `localhost`, alternate aliases, non-loopback peers, unexpected Host/Origin/port values, and
+      every `Forwarded` or `X-Forwarded-*` header. This server cannot satisfy release acceptance.
+    security:
+      - $ref: '#/components/securitySchemes/loopbackSessionCookie'
+
+channels:
+  voice:
+    address: /
+    description: |
+      Constant endpoint authenticated by the active profile's isolated application cookie, exact
+      Origin, and network boundary. `LOOPBACK_HTTP_TEST` additionally requires the sole configured
+      disposable test account and rejects all forwarded/proxy headers. At most one browser socket
+      exists for an active capture session. The first JSON command must be `session.bind` for a preauthorized
+      `voiceSessionId` within 5 seconds of establishment. That preauthorization can exist only
+      after the browser has confirmed that the exact origin is microphone-capable, microphone
+      permission, input availability, and the supported audio profile through the HTTP preflight
+      contract. A failed capability/permission/audio preflight creates no IAM mutation, voice
+      session, application socket, ABIS connection, or Speech connection. A second connection cannot bind the same
+      session. IAM HTTP authorization has already completed before the session becomes
+      PREAUTHORIZED and is not a streaming readiness branch. Both ABIS and Speech must reach READY
+      within their 10-second readiness deadlines
+      before Java emits `session.bound` with state READY and accepts `capture.start`. After capture
+      starts, terminal failure of either branch stops acceptance of new browser audio immediately;
+      Java finalizes the current turn from already-accepted frames and the healthy branch may finish
+      only already-accepted work during bounded drain.
+      Java-to-ABIS and Java-to-OCI Speech remain separate certificate-validating WSS connections in
+      both browser-facing profiles. The browser never opens either downstream connection.
+    messages:
+      sessionBind:
+        $ref: '#/components/messages/SessionBindCommand'
+      captureStart:
+        $ref: '#/components/messages/CaptureStartCommand'
+      capturePause:
+        $ref: '#/components/messages/CapturePauseCommand'
+      captureResume:
+        $ref: '#/components/messages/CaptureResumeCommand'
+      audioFrame:
+        $ref: '#/components/messages/AudioFrame'
+      captureEnd:
+        $ref: '#/components/messages/CaptureEndCommand'
+      sessionCancel:
+        $ref: '#/components/messages/SessionCancelCommand'
+      clientHeartbeat:
+        $ref: '#/components/messages/ClientHeartbeatCommand'
+      sessionBound:
+        $ref: '#/components/messages/SessionBoundEvent'
+      sessionState:
+        $ref: '#/components/messages/SessionStateEvent'
+      captureState:
+        $ref: '#/components/messages/CaptureStateEvent'
+      captureQuality:
+        $ref: '#/components/messages/CaptureQualityEvent'
+      dependencyState:
+        $ref: '#/components/messages/DependencyStateEvent'
+      creditWindow:
+        $ref: '#/components/messages/CreditWindowEvent'
+      audioAck:
+        $ref: '#/components/messages/AudioAckEvent'
+      enrollmentProgress:
+        $ref: '#/components/messages/EnrollmentProgressEvent'
+      enrollmentState:
+        $ref: '#/components/messages/EnrollmentStateEvent'
+      utteranceStarted:
+        $ref: '#/components/messages/UtteranceStartedEvent'
+      utteranceDiscarded:
+        $ref: '#/components/messages/UtteranceDiscardedEvent'
+      utteranceSealed:
+        $ref: '#/components/messages/UtteranceSealedEvent'
+      utteranceCreated:
+        $ref: '#/components/messages/UtteranceCreatedEvent'
+      utteranceBoundaryUpdated:
+        $ref: '#/components/messages/UtteranceBoundaryUpdatedEvent'
+      utteranceFinalized:
+        $ref: '#/components/messages/UtteranceFinalizedEvent'
+      transcriptPartial:
+        $ref: '#/components/messages/TranscriptPartialEvent'
+      transcriptFinal:
+        $ref: '#/components/messages/TranscriptFinalEvent'
+      transcriptFailed:
+        $ref: '#/components/messages/TranscriptFailedEvent'
+      assuranceResult:
+        $ref: '#/components/messages/AssuranceResultEvent'
+      assuranceFailed:
+        $ref: '#/components/messages/AssuranceFailedEvent'
+      auditState:
+        $ref: '#/components/messages/AuditStateEvent'
+      error:
+        $ref: '#/components/messages/ErrorEvent'
+      sessionCompleted:
+        $ref: '#/components/messages/SessionCompletedEvent'
+      serverHeartbeat:
+        $ref: '#/components/messages/ServerHeartbeatEvent'
+
+operations:
+  receiveBrowserCommands:
+    action: receive
+    channel:
+      $ref: '#/channels/voice'
+    summary: Java receives browser JSON commands and binary PCM frames.
+    messages:
+      - $ref: '#/channels/voice/messages/sessionBind'
+      - $ref: '#/channels/voice/messages/captureStart'
+      - $ref: '#/channels/voice/messages/capturePause'
+      - $ref: '#/channels/voice/messages/captureResume'
+      - $ref: '#/channels/voice/messages/audioFrame'
+      - $ref: '#/channels/voice/messages/captureEnd'
+      - $ref: '#/channels/voice/messages/sessionCancel'
+      - $ref: '#/channels/voice/messages/clientHeartbeat'
+  sendApplicationEvents:
+    action: send
+    channel:
+      $ref: '#/channels/voice'
+    summary: Java sends correlated application events to the browser.
+    messages:
+      - $ref: '#/channels/voice/messages/sessionBound'
+      - $ref: '#/channels/voice/messages/sessionState'
+      - $ref: '#/channels/voice/messages/captureState'
+      - $ref: '#/channels/voice/messages/captureQuality'
+      - $ref: '#/channels/voice/messages/dependencyState'
+      - $ref: '#/channels/voice/messages/creditWindow'
+      - $ref: '#/channels/voice/messages/audioAck'
+      - $ref: '#/channels/voice/messages/enrollmentProgress'
+      - $ref: '#/channels/voice/messages/enrollmentState'
+      - $ref: '#/channels/voice/messages/utteranceStarted'
+      - $ref: '#/channels/voice/messages/utteranceDiscarded'
+      - $ref: '#/channels/voice/messages/utteranceSealed'
+      - $ref: '#/channels/voice/messages/utteranceCreated'
+      - $ref: '#/channels/voice/messages/utteranceBoundaryUpdated'
+      - $ref: '#/channels/voice/messages/utteranceFinalized'
+      - $ref: '#/channels/voice/messages/transcriptPartial'
+      - $ref: '#/channels/voice/messages/transcriptFinal'
+      - $ref: '#/channels/voice/messages/transcriptFailed'
+      - $ref: '#/channels/voice/messages/assuranceResult'
+      - $ref: '#/channels/voice/messages/assuranceFailed'
+      - $ref: '#/channels/voice/messages/auditState'
+      - $ref: '#/channels/voice/messages/error'
+      - $ref: '#/channels/voice/messages/sessionCompleted'
+      - $ref: '#/channels/voice/messages/serverHeartbeat'
+
+components:
+  securitySchemes:
+    secureSessionCookie:
+      type: httpApiKey
+      in: cookie
+      name: __Host-AIWORLD_SESSION
+      description: |
+        `SECURE_DEMO` opaque application cookie with Secure, HttpOnly, SameSite=Lax, Path=/, and no
+        Domain. It is never accepted by `LOOPBACK_HTTP_TEST`. The
+        server also validates the exact WebSocket Origin and that the bound voice session belongs
+        to this application session. The cookie is issued only after Java completes the approved
+        one-use IDCS password-grant exchange and validates the returned identity token. Passwords,
+        IDCS tokens, provider endpoints, grant controls, and login CSRF material are never valid
+        WebSocket credentials and never appear in the WebSocket URL or messages.
+    loopbackSessionCookie:
+      type: httpApiKey
+      in: cookie
+      name: AIWORLD_LOOPBACK_SESSION
+      description: |
+        `LOOPBACK_HTTP_TEST` host-only opaque cookie with HttpOnly, SameSite=Strict, Path=/, no
+        Domain, no Secure, and bounded lifetime. It is accepted only on exact `127.0.0.1:8080`, is
+        never accepted by `SECURE_DEMO`, expires on sign-out, and becomes unusable after Java
+        process termination. It authorizes only the sole externally provisioned disposable,
+        non-privileged test account and the purpose-bound preauthorized voice session.
+
+  messages:
+    SessionBindCommand:
+      name: session.bind
+      title: Bind the socket to one preauthorized voice session.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/SessionBindCommand'
+    CaptureStartCommand:
+      name: capture.start
+      title: Begin accepting binary audio after readiness and credit are available.
+      description: Rejected unless both ABIS and Speech are READY within the 10-second deadline.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/CaptureStartCommand'
+    CapturePauseCommand:
+      name: capture.pause
+      title: Stop verification audio transmission while keeping the session open.
+      description: >-
+        Verification only. Java closes an eligible pre-mute VAD utterance or discards an
+        ineligible partial utterance. No muted PCM frame may follow this ordered command before
+        capture.resume.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/CapturePauseCommand'
+    CaptureResumeCommand:
+      name: capture.resume
+      title: Resume verification audio transmission with a fresh VAD boundary.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/CaptureResumeCommand'
+    AudioFrame:
+      name: audio.frame
+      title: One raw canonical PCM WebSocket binary frame.
+      description: |
+        Allowed only after `capture.start` is accepted and while frame/byte credit is positive.
+        The payload is raw mono signed 16-bit little-endian PCM at 16 kHz, nominally 20 ms. It has
+        no custom header. Java assigns `audioSequence` from WebSocket receive order. Audio is never
+        retried or resumed on another connection.
+      contentType: application/octet-stream
+      payload:
+        type: string
+        contentEncoding: binary
+    CaptureEndCommand:
+      name: capture.end
+      title: Authoritative graceful end of capture.
+      description: |
+        Browser-requested graceful stop. The browser does not declare enrollment completion. For
+        normal enrollment, ABIS action WAIT stops sample collection and Java sends the provider
+        capture-ended message exactly once; reaching one configured maximum sample length is non-terminal.
+
+        For enrollment, terminal ABIS success, rejection, or processing failure triggers the fixed
+        IAM enrollment completion request exactly once. Only ABIS success followed by IAM-confirmed
+        ENROLLED produces a successful `session.completed`; an ABIS failure remains an error.
+
+        For verification, after a terminal ABIS outcome or terminal processing failure Java sends
+        the documented IAM completion shape exactly once. A successful `session.completed` is
+        emitted only for a terminal biometric outcome after IAM completion; an ABIS failure remains
+        an error after the IAM request is closed. The request sends no ABIS result field because IAM
+        resolves the referenced provider session through `requestState`.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/CaptureEndCommand'
+    SessionCancelCommand:
+      name: session.cancel
+      title: Abort the current session without claiming successful completion.
+      description: |
+        For verification, Java applies the semantic transition
+        `CANCELLATION_PENDING -> CANCELLED` while stopping local, ABIS, and Speech work. The
+        reviewed IAM source defines no cancellation route or payload, so this command does not
+        imply a provider cancellation API; exact IAM cleanup semantics remain a T001 blocker.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/SessionCancelCommand'
+    ClientHeartbeatCommand:
+      name: client.heartbeat
+      title: Application-level browser liveness signal.
+      description: Sent every 15 seconds; 45 seconds without peer progress is half-open.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/ClientHeartbeatCommand'
+
+    SessionBoundEvent:
+      name: session.bound
+      description: >-
+        Both and only the ABIS and Speech streaming branches are READY and capture may now be
+        requested. IAM authorization completed over HTTP before WebSocket binding.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/SessionBoundEvent'
+    SessionStateEvent:
+      name: session.state
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/SessionStateEvent'
+    CaptureStateEvent:
+      name: capture.state
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/CaptureStateEvent'
+    CaptureQualityEvent:
+      name: capture.quality
+      description: >-
+        Coarse Java-VAD capture guidance only. It never exposes audio measurements and never
+        determines an ABIS biometric result.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/CaptureQualityEvent'
+    DependencyStateEvent:
+      name: dependency.state
+      description: >-
+        Reports only ABIS or Speech streaming-branch state. A terminal branch failure causes zero
+        browser credit, stops new audio acceptance, and starts bounded drain of already-accepted
+        work. IAM control/audit failures use stage-specific state or error events, never this
+        readiness event.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/DependencyStateEvent'
+    CreditWindowEvent:
+      name: credit.window
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/CreditWindowEvent'
+    AudioAckEvent:
+      name: audio.ack
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/AudioAckEvent'
+    EnrollmentProgressEvent:
+      name: enrollment.progress
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/EnrollmentProgressEvent'
+    EnrollmentStateEvent:
+      name: enrollment.state
+      description: >-
+        Announces that ABIS has stopped requesting enrollment samples and Java is completing
+        provider capture. The browser stops its microphone only after this event, not when an
+        individual sample reaches its configured maximum.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/EnrollmentStateEvent'
+    UtteranceStartedEvent:
+      name: utterance.started
+      description: Opens the provisional UI row when SDK VAD confirms speech start.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/UtteranceStartedEvent'
+    UtteranceDiscardedEvent:
+      name: utterance.discarded
+      description: Withdraws a provisional row when mute/end discards audio below the verification minimum.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/UtteranceDiscardedEvent'
+    UtteranceSealedEvent:
+      name: utterance.sealed
+      description: Seals the exact VAD-selected PCM window dispatched to ABIS.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/UtteranceSealedEvent'
+    UtteranceCreatedEvent:
+      name: utterance.created
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/UtteranceCreatedEvent'
+    UtteranceBoundaryUpdatedEvent:
+      name: utterance.boundary.updated
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/UtteranceBoundaryUpdatedEvent'
+    UtteranceFinalizedEvent:
+      name: utterance.finalized
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/UtteranceFinalizedEvent'
+    TranscriptPartialEvent:
+      name: transcript.partial
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/TranscriptPartialEvent'
+    TranscriptFinalEvent:
+      name: transcript.final
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/TranscriptFinalEvent'
+    TranscriptFailedEvent:
+      name: transcript.failed
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/TranscriptFailedEvent'
+    AssuranceResultEvent:
+      name: assurance.result
+      description: Carries only a biometric comparison outcome, never a processing failure.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/AssuranceResultEvent'
+    AssuranceFailedEvent:
+      name: assurance.failed
+      description: Carries ABIS processing failure or timeout with no biometric outcome.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/AssuranceFailedEvent'
+    AuditStateEvent:
+      name: audit.state
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/AuditStateEvent'
+    ErrorEvent:
+      name: error
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/ErrorEvent'
+    SessionCompletedEvent:
+      name: session.completed
+      description: |
+        Terminal application projection. A successful enrollment requires IAM-confirmed ENROLLED.
+        A successful verification requires the semantic IAM completion state COMPLETED after a
+        terminal ABIS biometric outcome. A terminal ABIS processing failure also triggers IAM
+        completion, but remains a failed application session. Cancellation before an ABIS terminal
+        event requires semantic state CANCELLED. These normalized application states do not assert
+        undocumented IAM `requestState` values or cancellation fields.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/SessionCompletedEvent'
+    ServerHeartbeatEvent:
+      name: server.heartbeat
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/ServerHeartbeatEvent'
+
+  schemas:
+    OpaqueId:
+      type: string
+      minLength: 16
+      maxLength: 128
+      pattern: '^[A-Za-z0-9_-]+$'
+
+    VoicePurpose:
+      type: string
+      enum: [ENROLLMENT, VERIFICATION]
+
+    Source:
+      type: string
+      enum: [APPLICATION, IAM, ABIS, SPEECH]
+
+    ClientEnvelope:
+      type: object
+      required:
+        - protocolVersion
+        - eventId
+        - eventType
+        - voiceSessionId
+        - correlationId
+        - clientSequence
+        - occurredAt
+        - payload
+      properties:
+        protocolVersion:
+          type: string
+          const: '1.0'
+        eventId:
+          $ref: '#/components/schemas/OpaqueId'
+        eventType:
+          type: string
+          minLength: 1
+          maxLength: 128
+        voiceSessionId:
+          $ref: '#/components/schemas/OpaqueId'
+        correlationId:
+          $ref: '#/components/schemas/OpaqueId'
+        clientSequence:
+          type: integer
+          minimum: 1
+        occurredAt:
+          type: string
+          format: date-time
+        payload:
+          type: object
+
+    ServerEnvelope:
+      type: object
+      required:
+        - protocolVersion
+        - eventId
+        - eventType
+        - source
+        - voiceSessionId
+        - correlationId
+        - eventSequence
+        - occurredAt
+        - emittedAt
+        - payload
+      properties:
+        protocolVersion:
+          type: string
+          const: '1.0'
+        eventId:
+          $ref: '#/components/schemas/OpaqueId'
+        eventType:
+          type: string
+          minLength: 1
+          maxLength: 128
+        source:
+          $ref: '#/components/schemas/Source'
+        voiceSessionId:
+          $ref: '#/components/schemas/OpaqueId'
+        correlationId:
+          $ref: '#/components/schemas/OpaqueId'
+        eventSequence:
+          type: integer
+          minimum: 1
+        causationId:
+          $ref: '#/components/schemas/OpaqueId'
+        utteranceId:
+          $ref: '#/components/schemas/OpaqueId'
+        occurredAt:
+          type: string
+          format: date-time
+        emittedAt:
+          type: string
+          format: date-time
+        payload:
+          type: object
+
+    AudioProfile:
+      type: object
+      additionalProperties: false
+      required: [encoding, sampleRateHz, channels, sampleSizeBits, byteOrder, nominalFrameMs]
+      properties:
+        encoding:
+          type: string
+          const: PCM_SIGNED
+        sampleRateHz:
+          type: integer
+          const: 16000
+        channels:
+          type: integer
+          const: 1
+        sampleSizeBits:
+          type: integer
+          const: 16
+        byteOrder:
+          type: string
+          const: LITTLE_ENDIAN
+        nominalFrameMs:
+          type: integer
+          const: 20
+
+    CreditWindow:
+      type: object
+      additionalProperties: false
+      required:
+        - windowVersion
+        - availableFrames
+        - availableBytes
+        - maxOutstandingFrames
+        - maxOutstandingBytes
+        - maxFrameBytes
+      properties:
+        windowVersion:
+          type: integer
+          minimum: 0
+        availableFrames:
+          type: integer
+          minimum: 0
+          maximum: 50
+        availableBytes:
+          type: integer
+          minimum: 0
+          maximum: 32000
+        maxOutstandingFrames:
+          type: integer
+          const: 50
+        maxOutstandingBytes:
+          type: integer
+          const: 32000
+        maxFrameBytes:
+          type: integer
+          const: 640
+        reason:
+          type: string
+          enum: [INITIAL, ACKNOWLEDGED, HIGH_WATER, BRANCH_FAILED, DRAINING, CLOSED]
+        pauseAfterAudioSequence:
+          type: integer
+          minimum: 0
+
+    InitialCreditWindow:
+      allOf:
+        - $ref: '#/components/schemas/CreditWindow'
+        - type: object
+          required: [reason]
+          properties:
+            windowVersion:
+              const: 0
+            availableFrames:
+              const: 50
+            availableBytes:
+              const: 32000
+            reason:
+              const: INITIAL
+
+    OperationalLimits:
+      type: object
+      additionalProperties: false
+      required:
+        - bindDeadlineSeconds
+        - dependencyReadinessDeadlineSeconds
+        - heartbeatIntervalSeconds
+        - halfOpenTimeoutSeconds
+        - branchQueueFrames
+        - branchQueueBytes
+        - drainDeadlineSeconds
+        - enrollmentSampleTargetMilliseconds
+        - enrollmentSampleCaptureDeadlineSeconds
+        - enrollmentMaxCaptureSeconds
+        - verificationMaxCaptureSeconds
+      properties:
+        bindDeadlineSeconds:
+          type: integer
+          const: 5
+        dependencyReadinessDeadlineSeconds:
+          type: integer
+          const: 10
+        heartbeatIntervalSeconds:
+          type: integer
+          const: 15
+        halfOpenTimeoutSeconds:
+          type: integer
+          const: 45
+        branchQueueFrames:
+          type: integer
+          const: 100
+        branchQueueBytes:
+          type: integer
+          const: 64000
+        drainDeadlineSeconds:
+          type: integer
+          const: 10
+        enrollmentSampleMinimumMilliseconds:
+          type: integer
+          minimum: 5000
+          maximum: 30000
+          default: 7000
+        enrollmentSampleMaximumMilliseconds:
+          type: integer
+          minimum: 5000
+          maximum: 30000
+          default: 10000
+        enrollmentMaxCaptureSeconds:
+          type: integer
+          const: 90
+        verificationMaxCaptureSeconds:
+          type: integer
+          const: 900
+
+    DependencyName:
+      type: string
+      enum: [IAM, ABIS, SPEECH]
+
+    BranchName:
+      type: string
+      description: The only streaming readiness branches. IAM is an HTTP control/audit dependency.
+      enum: [ABIS, SPEECH]
+
+    ProcessingState:
+      type: string
+      enum: [NOT_STARTED, CONNECTING, READY, PROCESSING, DRAINING, COMPLETED, FAILED, TIMED_OUT]
+
+    FailureKind:
+      type: string
+      description: Stable normalized class; raw provider error detail is never exposed.
+      enum:
+        - AUTHENTICATION
+        - AUTHORIZATION
+        - TRANSPORT
+        - TIMEOUT
+        - QUALITY
+        - PROTOCOL
+        - BACKPRESSURE
+        - CORRELATION
+        - DEPENDENCY
+        - CANCELLED
+        - INTERNAL
+
+    SafeFailure:
+      type: object
+      additionalProperties: false
+      required: [stage, failureKind, code, processingState, retryable, terminal]
+      properties:
+        stage:
+          type: string
+          enum: [AUTH, IAM, CAPTURE, FLOW, TURN, ABIS, SPEECH, AUDIT, APPLICATION]
+        failureKind:
+          $ref: '#/components/schemas/FailureKind'
+        code:
+          type: string
+          minLength: 1
+          maxLength: 128
+        processingState:
+          type: string
+          enum: [FAILED, TIMED_OUT]
+        retryable:
+          type: boolean
+        terminal:
+          type: boolean
+        affectedDependency:
+          $ref: '#/components/schemas/DependencyName'
+        message:
+          type: string
+          maxLength: 512
+
+    SessionBindCommand:
+      allOf:
+        - $ref: '#/components/schemas/ClientEnvelope'
+        - type: object
+          required: [eventType, payload]
+          properties:
+            eventType:
+              const: session.bind
+            clientSequence:
+              const: 1
+            payload:
+              type: object
+              additionalProperties: false
+              required: [requestedProtocolVersion]
+              properties:
+                requestedProtocolVersion:
+                  type: string
+                  const: '1.0'
+
+    CaptureStartCommand:
+      allOf:
+        - $ref: '#/components/schemas/ClientEnvelope'
+        - type: object
+          properties:
+            eventType:
+              const: capture.start
+            payload:
+              type: object
+              additionalProperties: false
+              required: [audioProfile]
+              properties:
+                audioProfile:
+                  $ref: '#/components/schemas/AudioProfile'
+
+    CapturePauseCommand:
+      allOf:
+        - $ref: '#/components/schemas/ClientEnvelope'
+        - type: object
+          properties:
+            eventType:
+              const: capture.pause
+            payload:
+              type: object
+              additionalProperties: false
+              required: [reason]
+              properties:
+                reason:
+                  type: string
+                  const: USER_REQUEST
+
+    CaptureResumeCommand:
+      allOf:
+        - $ref: '#/components/schemas/ClientEnvelope'
+        - type: object
+          properties:
+            eventType:
+              const: capture.resume
+            payload:
+              type: object
+              additionalProperties: false
+
+    CaptureEndCommand:
+      allOf:
+        - $ref: '#/components/schemas/ClientEnvelope'
+        - type: object
+          properties:
+            eventType:
+              const: capture.end
+            payload:
+              type: object
+              additionalProperties: false
+              required: [reason, sentFrameCount]
+              properties:
+                reason:
+                  type: string
+                  enum: [USER_REQUEST, NAVIGATION, SIGN_OUT]
+                sentFrameCount:
+                  type: integer
+                  minimum: 0
+
+    SessionCancelCommand:
+      allOf:
+        - $ref: '#/components/schemas/ClientEnvelope'
+        - type: object
+          properties:
+            eventType:
+              const: session.cancel
+            payload:
+              type: object
+              additionalProperties: false
+              required: [reason]
+              properties:
+                reason:
+                  type: string
+                  enum: [UI_ABORT, NAVIGATION, SIGN_OUT, OPERATOR_CANCEL]
+
+    ClientHeartbeatCommand:
+      allOf:
+        - $ref: '#/components/schemas/ClientEnvelope'
+        - type: object
+          properties:
+            eventType:
+              const: client.heartbeat
+            payload:
+              type: object
+              additionalProperties: false
+              required: [lastServerEventSequence]
+              properties:
+                lastServerEventSequence:
+                  type: integer
+                  minimum: 0
+
+    VoiceSessionState:
+      type: string
+      enum:
+        - BINDING
+        - READY
+        - CAPTURING
+        - MUTED
+        - PAUSED_BACKPRESSURE
+        - DRAINING
+        - COMPLETED
+        - FAILED
+        - CANCELLED
+        - EXPIRED
+        - DISCONNECTED
+
+    CaptureState:
+      type: string
+      enum: [DISABLED, READY, CAPTURING, MUTED, PAUSED_BACKPRESSURE, STOPPING, STOPPED, FAILED]
+
+    SessionBoundEvent:
+      allOf:
+        - $ref: '#/components/schemas/ServerEnvelope'
+        - type: object
+          properties:
+            eventType:
+              const: session.bound
+            source:
+              const: APPLICATION
+            payload:
+              type: object
+              additionalProperties: false
+              required:
+                - purpose
+                - state
+                - audioProfile
+                - credit
+                - operationalLimits
+                - maxCaptureSeconds
+                - drainDeadlineSeconds
+                - dependencies
+              properties:
+                purpose:
+                  $ref: '#/components/schemas/VoicePurpose'
+                state:
+                  type: string
+                  const: READY
+                audioProfile:
+                  $ref: '#/components/schemas/AudioProfile'
+                credit:
+                  $ref: '#/components/schemas/InitialCreditWindow'
+                operationalLimits:
+                  $ref: '#/components/schemas/OperationalLimits'
+                maxCaptureSeconds:
+                  type: integer
+                  enum: [90, 900]
+                drainDeadlineSeconds:
+                  type: integer
+                  const: 10
+                dependencies:
+                  type: array
+                  minItems: 2
+                  maxItems: 2
+                  uniqueItems: true
+                  items:
+                    type: object
+                    additionalProperties: false
+                    required: [dependency, state]
+                    properties:
+                      dependency:
+                        $ref: '#/components/schemas/BranchName'
+                      state:
+                        type: string
+                        const: READY
+                  allOf:
+                    - contains:
+                        type: object
+                        properties:
+                          dependency:
+                            const: ABIS
+                    - contains:
+                        type: object
+                        properties:
+                          dependency:
+                            const: SPEECH
+              if:
+                required: [purpose]
+                properties:
+                  purpose:
+                    const: ENROLLMENT
+              then:
+                properties:
+                  maxCaptureSeconds:
+                    const: 90
+              else:
+                properties:
+                  maxCaptureSeconds:
+                    const: 900
+
+    SessionStateEvent:
+      allOf:
+        - $ref: '#/components/schemas/ServerEnvelope'
+        - type: object
+          properties:
+            eventType:
+              const: session.state
+            payload:
+              type: object
+              additionalProperties: false
+              required: [state]
+              properties:
+                state:
+                  $ref: '#/components/schemas/VoiceSessionState'
+                reason:
+                  type: string
+                  maxLength: 128
+                  description: >-
+                    Includes ENROLLMENT_PROVIDER_WAIT when ABIS directs Java to stop requesting
+                    enrollment samples; this is never client input.
+                drainDeadlineAt:
+                  type: string
+                  format: date-time
+
+    CaptureStateEvent:
+      allOf:
+        - $ref: '#/components/schemas/ServerEnvelope'
+        - type: object
+          properties:
+            eventType:
+              const: capture.state
+            source:
+              const: APPLICATION
+            payload:
+              type: object
+              additionalProperties: false
+              required: [state]
+              properties:
+                state:
+                  $ref: '#/components/schemas/CaptureState'
+                reason:
+                  type: string
+                  maxLength: 128
+
+    CaptureQualityEvent:
+      allOf:
+        - $ref: '#/components/schemas/ServerEnvelope'
+        - type: object
+          properties:
+            eventType:
+              const: capture.quality
+            source:
+              const: APPLICATION
+            payload:
+              type: object
+              additionalProperties: false
+              required: [state]
+              properties:
+                state:
+                  type: string
+                  enum: [GOOD, NOISY]
+
+    DependencyStateEvent:
+      allOf:
+        - $ref: '#/components/schemas/ServerEnvelope'
+        - type: object
+          properties:
+            eventType:
+              const: dependency.state
+            payload:
+              type: object
+              additionalProperties: false
+              required: [dependency, state]
+              properties:
+                dependency:
+                  $ref: '#/components/schemas/BranchName'
+                state:
+                  $ref: '#/components/schemas/ProcessingState'
+                retryable:
+                  type: boolean
+                safeCode:
+                  type: string
+                  maxLength: 128
+
+    CreditWindowEvent:
+      allOf:
+        - $ref: '#/components/schemas/ServerEnvelope'
+        - type: object
+          properties:
+            eventType:
+              const: credit.window
+            source:
+              const: APPLICATION
+            payload:
+              $ref: '#/components/schemas/CreditWindow'
+
+    AudioAckEvent:
+      allOf:
+        - $ref: '#/components/schemas/ServerEnvelope'
+        - type: object
+          properties:
+            eventType:
+              const: audio.ack
+            source:
+              const: APPLICATION
+            payload:
+              type: object
+              additionalProperties: false
+              required:
+                - acceptedThroughAudioSequence
+                - acceptedFrameCount
+                - credit
+              properties:
+                acceptedThroughAudioSequence:
+                  type: integer
+                  minimum: 0
+                acceptedFrameCount:
+                  type: integer
+                  minimum: 0
+                credit:
+                  $ref: '#/components/schemas/CreditWindow'
+
+    EnrollmentProgressEvent:
+      allOf:
+        - $ref: '#/components/schemas/ServerEnvelope'
+        - type: object
+          properties:
+            eventType:
+              const: enrollment.progress
+            payload:
+              type: object
+              additionalProperties: false
+              required:
+                - utteranceOrdinal
+                - acceptedUtteranceCount
+                - capturedSampleMs
+                - maximumSampleMs
+                - minimumSampleMs
+                - qualityState
+                - voiceActivity
+              properties:
+                utteranceOrdinal:
+                  type: integer
+                  minimum: 1
+                  description: >-
+                    Current SDK-assembled sample ordinal; stable while its audio is collected.
+                    Provider acceptance is reported separately and must not be inferred from this ordinal.
+                acceptedUtteranceCount:
+                  type: integer
+                  minimum: 0
+                  description: >-
+                    Number of samples acknowledged as accepted by ABIS before this progress event.
+                    The total number required by ABIS is intentionally not exposed or inferred.
+                capturedSampleMs:
+                  type: integer
+                  minimum: 0
+                  maximum: 30000
+                  description: >-
+                    SDK-retained audio duration for the current ordinal, not a provider quality or acceptance verdict. The browser
+                    must not derive this value from elapsed capture time, sent frame count, or
+                    waveform energy. It may reset only when utteranceOrdinal increases.
+                maximumSampleMs:
+                  type: integer
+                  minimum: 5000
+                  maximum: 30000
+                  description: >-
+                    Per-sample target. Reaching it seals the current sample but does not complete
+                    enrollment, stop capture, or imply how many more samples ABIS will request.
+                minimumSampleMs:
+                  type: integer
+                  minimum: 5000
+                  maximum: 30000
+                  description: Minimum retained audio required before a sample can be submitted; no greater than maximumSampleMs.
+                qualityState:
+                  type: string
+                  enum: [WAITING, ACCEPTED, SILENCE, REJECTED, DEGRADED]
+                  description: The SDK integration reports WAITING, or REJECTED after an actual provider input rejection; it does not invent an audio-quality verdict.
+                voiceActivity:
+                  type: string
+                  enum: [SILENCE, SPEECH, AWAITING_PAUSE]
+                  description: >-
+                    SDK collection state used for enrollment coaching; AWAITING_PAUSE indicates the sample minimum has been reached. The browser
+                    does not calculate or override it.
+                safeReason:
+                  type: string
+                  maxLength: 128
+
+    EnrollmentStateEvent:
+      allOf:
+        - $ref: '#/components/schemas/ServerEnvelope'
+        - type: object
+          properties:
+            eventType:
+              const: enrollment.state
+            source:
+              const: ABIS
+            payload:
+              type: object
+              additionalProperties: false
+              required: [state, action, safeCode]
+              properties:
+                state:
+                  const: WAITING
+                action:
+                  const: WAIT
+                safeCode:
+                  type: string
+                  const: ABIS_PROCESSING
+
+    UtteranceBoundary:
+      type: object
+      additionalProperties: false
+      required:
+        - purpose
+        - utteranceSequence
+        - boundaryRevision
+        - startAudioSequence
+        - startTime
+      properties:
+        purpose:
+          $ref: '#/components/schemas/VoicePurpose'
+        utteranceSequence:
+          type: integer
+          minimum: 1
+        boundaryRevision:
+          type: integer
+          minimum: 0
+        startAudioSequence:
+          type: integer
+          minimum: 1
+        endAudioSequence:
+          type: integer
+          minimum: 1
+        startTime:
+          type: string
+          format: date-time
+        endTime:
+          type: string
+          format: date-time
+        nonEmpty:
+          type: boolean
+          description: Populated when the utterance is finalized.
+        qualityEligible:
+          type: boolean
+          description: Populated when the utterance is finalized from Java-owned quality rules.
+        assuranceEligible:
+          type: boolean
+          description: >-
+            Populated when finalized. It is true only for a VERIFICATION utterance that is non-empty
+            and quality-eligible; enrollment audio uses enrollment progress/completion instead.
+        ineligibilityReason:
+          type: string
+          description: >-
+            Required only when a finalized VERIFICATION utterance is not assurance eligible because
+            of its content or quality; it is absent for ENROLLMENT.
+          enum: [EMPTY_OR_SILENCE, BELOW_MINIMUM_SPEECH, EXCESSIVE_NOISE, CLIPPED, OTHER_QUALITY]
+
+    CanonicalVerificationWindowStart:
+      type: object
+      additionalProperties: false
+      required: [utteranceOrdinal, startAudioSequence]
+      properties:
+        utteranceOrdinal:
+          type: integer
+          minimum: 1
+        startAudioSequence:
+          type: integer
+          minimum: 1
+
+    UtteranceStartedEvent:
+      allOf:
+        - $ref: '#/components/schemas/ServerEnvelope'
+        - type: object
+          required: [utteranceId]
+          properties:
+            eventType:
+              const: utterance.started
+            source:
+              const: APPLICATION
+            payload:
+              $ref: '#/components/schemas/CanonicalVerificationWindowStart'
+
+    UtteranceDiscardedEvent:
+      allOf:
+        - $ref: '#/components/schemas/ServerEnvelope'
+        - type: object
+          required: [utteranceId]
+          properties:
+            eventType:
+              const: utterance.discarded
+            source:
+              const: APPLICATION
+            payload:
+              $ref: '#/components/schemas/CanonicalVerificationWindowStart'
+
+    UtteranceSealedEvent:
+      allOf:
+        - $ref: '#/components/schemas/ServerEnvelope'
+        - type: object
+          required: [utteranceId]
+          properties:
+            eventType:
+              const: utterance.sealed
+            source:
+              const: APPLICATION
+            payload:
+              type: object
+              additionalProperties: false
+              required:
+                - utteranceOrdinal
+                - startAudioSequence
+                - endAudioSequence
+                - voiceStartAudioSequence
+                - voiceEndAudioSequence
+                - detectedSpeechMs
+              properties:
+                utteranceOrdinal:
+                  type: integer
+                  minimum: 1
+                startAudioSequence:
+                  type: integer
+                  minimum: 1
+                endAudioSequence:
+                  type: integer
+                  minimum: 1
+                voiceStartAudioSequence:
+                  type: integer
+                  minimum: 1
+                voiceEndAudioSequence:
+                  type: integer
+                  minimum: 1
+                detectedSpeechMs:
+                  type: integer
+                  minimum: 0
+                  description: >-
+                    SDK-detected speech duration for the dispatched window. A short continuation
+                    can contain zero complete speech-analysis frames and is still submitted.
+                    ABIS remains responsible for accepting or rejecting its quality.
+
+    UtteranceCreatedEvent:
+      allOf:
+        - $ref: '#/components/schemas/ServerEnvelope'
+        - type: object
+          required: [utteranceId]
+          properties:
+            eventType:
+              const: utterance.created
+            source:
+              const: APPLICATION
+            payload:
+              $ref: '#/components/schemas/UtteranceBoundary'
+
+    UtteranceBoundaryUpdatedEvent:
+      allOf:
+        - $ref: '#/components/schemas/ServerEnvelope'
+        - type: object
+          required: [utteranceId]
+          properties:
+            eventType:
+              const: utterance.boundary.updated
+            source:
+              const: APPLICATION
+            payload:
+              $ref: '#/components/schemas/UtteranceBoundary'
+
+    UtteranceFinalizedEvent:
+      allOf:
+        - $ref: '#/components/schemas/ServerEnvelope'
+        - type: object
+          required: [utteranceId]
+          properties:
+            eventType:
+              const: utterance.finalized
+            source:
+              const: APPLICATION
+            payload:
+              allOf:
+                - $ref: '#/components/schemas/UtteranceBoundary'
+                - type: object
+                  description: >-
+                    Java finalizes every detected turn. Every finalized non-empty, quality-eligible
+                    VERIFICATION utterance is automatically assurance eligible; ENROLLMENT
+                    utterances contribute only to enrollment progress/completion. No browser
+                    command, manual speaker mark, inferred speaker identity, or diarization state
+                    can change this decision.
+                  required:
+                    - endAudioSequence
+                    - endTime
+                    - nonEmpty
+                    - qualityEligible
+                    - assuranceEligible
+                  properties:
+                    nonEmpty:
+                      type: boolean
+                    qualityEligible:
+                      type: boolean
+                    assuranceEligible:
+                      type: boolean
+                  allOf:
+                    - if:
+                        required: [purpose, nonEmpty, qualityEligible]
+                        properties:
+                          purpose:
+                            const: VERIFICATION
+                          nonEmpty:
+                            const: true
+                          qualityEligible:
+                            const: true
+                      then:
+                        properties:
+                          assuranceEligible:
+                            const: true
+                      else:
+                        properties:
+                          assuranceEligible:
+                            const: false
+                    - if:
+                        required: [purpose, assuranceEligible]
+                        properties:
+                          purpose:
+                            const: VERIFICATION
+                          assuranceEligible:
+                            const: false
+                      then:
+                        required: [ineligibilityReason]
+                      else:
+                        not:
+                          required: [ineligibilityReason]
+
+    TranscriptPartialEvent:
+      allOf:
+        - $ref: '#/components/schemas/ServerEnvelope'
+        - type: object
+          required: [utteranceId]
+          properties:
+            eventType:
+              const: transcript.partial
+            source:
+              const: SPEECH
+            payload:
+              type: object
+              additionalProperties: false
+              required: [revision, text, startAudioSequence, endAudioSequence]
+              properties:
+                revision:
+                  type: integer
+                  minimum: 1
+                text:
+                  type: string
+                  maxLength: 20000
+                startAudioSequence:
+                  type: integer
+                  minimum: 1
+                endAudioSequence:
+                  type: integer
+                  minimum: 1
+
+    TranscriptFinalEvent:
+      allOf:
+        - $ref: '#/components/schemas/ServerEnvelope'
+        - type: object
+          required: [utteranceId]
+          properties:
+            eventType:
+              const: transcript.final
+            source:
+              const: SPEECH
+            payload:
+              type: object
+              additionalProperties: false
+              required: [revision, text, startAudioSequence, endAudioSequence]
+              properties:
+                revision:
+                  type: integer
+                  minimum: 1
+                text:
+                  type: string
+                  maxLength: 20000
+                startAudioSequence:
+                  type: integer
+                  minimum: 1
+                endAudioSequence:
+                  type: integer
+                  minimum: 1
+
+    TranscriptFailedEvent:
+      allOf:
+        - $ref: '#/components/schemas/ServerEnvelope'
+        - type: object
+          required: [utteranceId]
+          properties:
+            eventType:
+              const: transcript.failed
+            source:
+              enum: [APPLICATION, SPEECH]
+            payload:
+              allOf:
+                - $ref: '#/components/schemas/SafeFailure'
+                - type: object
+                  required: [affectedDependency, utteranceOrdinal]
+                  properties:
+                    affectedDependency:
+                      const: SPEECH
+                    utteranceOrdinal:
+                      type: integer
+                      minimum: 1
+
+    AssuranceOutcome:
+      type: string
+      description: Processing failure and timeout are deliberately excluded.
+      enum: [MATCH, MISMATCH, INCONCLUSIVE]
+
+    AssuranceResultEvent:
+      allOf:
+        - $ref: '#/components/schemas/ServerEnvelope'
+        - type: object
+          required: [utteranceId]
+          properties:
+            eventType:
+              const: assurance.result
+            source:
+              const: ABIS
+            payload:
+              type: object
+              additionalProperties: false
+              required: [utteranceOrdinal, outcome, completedAt]
+              properties:
+                utteranceOrdinal:
+                  type: integer
+                  minimum: 1
+                  description: Session-local ABIS utterance order assigned when the utterance is dispatched.
+                outcome:
+                  $ref: '#/components/schemas/AssuranceOutcome'
+                completedAt:
+                  type: string
+                  format: date-time
+                qualitySummary:
+                  type: string
+                  maxLength: 512
+
+    AssuranceFailedEvent:
+      allOf:
+        - $ref: '#/components/schemas/ServerEnvelope'
+        - type: object
+          required: [utteranceId]
+          properties:
+            eventType:
+              const: assurance.failed
+            source:
+              enum: [APPLICATION, ABIS]
+            payload:
+              allOf:
+                - $ref: '#/components/schemas/SafeFailure'
+                - type: object
+                  required: [affectedDependency, utteranceOrdinal]
+                  properties:
+                    affectedDependency:
+                      const: ABIS
+                    utteranceOrdinal:
+                      type: integer
+                      minimum: 1
+
+    AuditState:
+      type: string
+      enum: [PENDING, ACCEPTED, FAILED]
+
+    AuditStateEvent:
+      allOf:
+        - $ref: '#/components/schemas/ServerEnvelope'
+        - type: object
+          required: [utteranceId]
+          properties:
+            eventType:
+              const: audit.state
+            source:
+              enum: [APPLICATION, IAM]
+            payload:
+              type: object
+              additionalProperties: false
+              required: [state, attempt, stage, affectedDependency]
+              properties:
+                state:
+                  $ref: '#/components/schemas/AuditState'
+                attempt:
+                  type: integer
+                  minimum: 1
+                  maximum: 3
+                stage:
+                  type: string
+                  const: AUDIT
+                affectedDependency:
+                  type: string
+                  const: IAM
+                retryable:
+                  type: boolean
+                processingState:
+                  type: string
+                  enum: [FAILED, TIMED_OUT]
+                failureKind:
+                  $ref: '#/components/schemas/FailureKind'
+                safeCode:
+                  type: string
+                  maxLength: 128
+              if:
+                required: [state]
+                properties:
+                  state:
+                    const: FAILED
+              then:
+                required: [retryable, processingState, failureKind, safeCode]
+
+    ErrorEvent:
+      allOf:
+        - $ref: '#/components/schemas/ServerEnvelope'
+        - type: object
+          properties:
+            eventType:
+              const: error
+            payload:
+              $ref: '#/components/schemas/SafeFailure'
+
+    SessionCompletedEvent:
+      allOf:
+        - $ref: '#/components/schemas/ServerEnvelope'
+        - type: object
+          properties:
+            eventType:
+              const: session.completed
+            source:
+              const: APPLICATION
+            payload:
+              type: object
+              additionalProperties: false
+              required:
+                - state
+                - purpose
+                - acceptedAudioFrames
+                - utteranceCount
+                - dependencies
+              properties:
+                state:
+                  type: string
+                  enum: [COMPLETED, FAILED, CANCELLED, DISCONNECTED]
+                purpose:
+                  $ref: '#/components/schemas/VoicePurpose'
+                acceptedAudioFrames:
+                  type: integer
+                  minimum: 0
+                utteranceCount:
+                  type: integer
+                  minimum: 0
+                enrollmentStatus:
+                  type: string
+                  enum: [UNKNOWN, NOT_ENROLLED, ENROLLED]
+                dependencies:
+                  type: array
+                  minItems: 2
+                  maxItems: 2
+                  uniqueItems: true
+                  items:
+                    type: object
+                    additionalProperties: false
+                    required: [dependency, state]
+                    properties:
+                      dependency:
+                        $ref: '#/components/schemas/BranchName'
+                      state:
+                        $ref: '#/components/schemas/ProcessingState'
+                      safeCode:
+                        type: string
+                        maxLength: 128
+                  allOf:
+                    - contains:
+                        type: object
+                        properties:
+                          dependency:
+                            const: ABIS
+                    - contains:
+                        type: object
+                        properties:
+                          dependency:
+                            const: SPEECH
+              allOf:
+                - if:
+                    properties:
+                      purpose:
+                        const: ENROLLMENT
+                      state:
+                        const: COMPLETED
+                    required: [purpose, state]
+                  then:
+                    required: [enrollmentStatus]
+                    properties:
+                      enrollmentStatus:
+                        const: ENROLLED
+                  else:
+                    not:
+                      required: [enrollmentStatus]
+
+    ServerHeartbeatEvent:
+      allOf:
+        - $ref: '#/components/schemas/ServerEnvelope'
+        - type: object
+          properties:
+            eventType:
+              const: server.heartbeat
+            source:
+              const: APPLICATION
+            payload:
+              type: object
+              additionalProperties: false
+              required: [lastClientSequence, lastAcceptedAudioSequence]
+              properties:
+                lastClientSequence:
+                  type: integer
+                  minimum: 0
+                lastAcceptedAudioSequence:
+                  type: integer
+                  minimum: 0

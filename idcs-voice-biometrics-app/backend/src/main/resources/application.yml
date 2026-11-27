@@ -1,0 +1,137 @@
+spring:
+  application:
+    name: ai-world-voice-demo
+  config:
+    import:
+      - optional:file:.env[.properties]
+      - optional:file:../.env[.properties]
+  jackson:
+    default-property-inclusion: non_null
+    deserialization:
+      fail-on-unknown-properties: true
+  main:
+    banner-mode: "off"
+  web:
+    resources:
+      cache:
+        cachecontrol:
+          no-cache: true
+
+server:
+  address: ${AI_WORLD_BIND_ADDRESS:127.0.0.1}
+  port: ${AI_WORLD_BACKEND_PORT:8080}
+  ssl:
+    enabled: ${AI_WORLD_TLS_ENABLED:false}
+    certificate: ${AI_WORLD_TLS_CERTIFICATE_FILE:}
+    certificate-private-key: ${AI_WORLD_TLS_PRIVATE_KEY_FILE:}
+  error:
+    include-message: never
+    include-binding-errors: never
+    include-stacktrace: never
+    whitelabel:
+      enabled: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+ai-world:
+  public-origin: ${AI_WORLD_PUBLIC_ORIGIN:https://localhost:8443}
+  abis:
+    enabled: ${AI_WORLD_ABIS_ENABLED:false}
+    base-url: ${AI_WORLD_ABIS_BASE_URL:}
+    tls-verify: ${AI_WORLD_ABIS_TLS_VERIFY:true}
+    connect-timeout-ms: ${AI_WORLD_ABIS_CONNECT_TIMEOUT_MS:10000}
+    verification-max-ms: ${AI_WORLD_ABIS_VERIFICATION_MAX_MS:10000}
+    registration-min-ms: ${AI_WORLD_ABIS_REGISTRATION_MIN_MS:7000}
+    registration-max-ms: ${AI_WORLD_ABIS_REGISTRATION_MAX_MS:10000}
+    pre-roll-ms: ${AI_WORLD_ABIS_PRE_ROLL_MS:200}
+    end-silence-ms: ${AI_WORLD_ABIS_END_SILENCE_MS:800}
+    registration-start-frames: ${AI_WORLD_ABIS_REGISTRATION_START_FRAMES:3}
+    pending-pcm-bytes: ${AI_WORLD_ABIS_PENDING_PCM_BYTES:4194304}
+    finish-timeout-ms: ${AI_WORLD_ABIS_FINISH_TIMEOUT_MS:30000}
+    store-enrollment-audio: ${AI_WORLD_ABIS_STORE_ENROLLMENT_AUDIO:false}
+    store-verification-audio: ${AI_WORLD_ABIS_STORE_VERIFICATION_AUDIO:false}
+  speech:
+    enabled: ${AI_WORLD_OCI_SPEECH_ENABLED:false}
+    auth-mode: ${AI_WORLD_OCI_AUTH_MODE:SESSION_TOKEN}
+    config-file: ${AI_WORLD_OCI_CONFIG_FILE:}
+    profile: ${AI_WORLD_OCI_PROFILE:AI_WORLD_DEMO}
+    expected-tenancy-ocid: ${AI_WORLD_OCI_EXPECTED_TENANCY_OCID:}
+    region: ${AI_WORLD_OCI_REGION:}
+    compartment-ocid: ${AI_WORLD_OCI_SPEECH_COMPARTMENT_OCID:}
+    realtime-endpoint: ${AI_WORLD_OCI_SPEECH_REALTIME_ENDPOINT:}
+    model-type: ${AI_WORLD_OCI_SPEECH_MODEL_TYPE:WHISPER}
+    model-domain: ${AI_WORLD_OCI_SPEECH_MODEL_DOMAIN:GENERIC}
+    language-code: ${AI_WORLD_OCI_SPEECH_LANGUAGE_CODE:en}
+    encoding: ${AI_WORLD_OCI_SPEECH_ENCODING:audio/raw;rate=16000}
+    punctuation: ${AI_WORLD_OCI_SPEECH_PUNCTUATION:AUTO}
+    ack-enabled: ${AI_WORLD_OCI_SPEECH_ACK_ENABLED:true}
+    stabilize-partial-results: ${AI_WORLD_OCI_SPEECH_STABILIZE_PARTIAL_RESULTS:NONE}
+    partial-silence-ms: ${AI_WORLD_OCI_SPEECH_PARTIAL_SILENCE_MS:0}
+    final-silence-ms: ${AI_WORLD_OCI_SPEECH_FINAL_SILENCE_MS:300}
+    readiness-timeout-ms: ${AI_WORLD_OCI_SPEECH_READINESS_TIMEOUT_MS:10000}
+    drain-timeout-ms: ${AI_WORLD_OCI_SPEECH_DRAIN_TIMEOUT_MS:10000}
+  session:
+    idle-seconds: ${AI_WORLD_SESSION_IDLE_SECONDS:900}
+    absolute-seconds: ${AI_WORLD_SESSION_ABSOLUTE_SECONDS:28800}
+    capacity: ${AI_WORLD_SESSION_CAPACITY:1000}
+  idcs:
+    enabled: ${AI_WORLD_IDCS_ENABLED:false}
+    authentication-mode: ${AI_WORLD_IDCS_AUTHENTICATION_MODE:STRICT_JWT}
+    domain-url: ${AI_WORLD_IDCS_DOMAIN_URL:}
+    token-path: ${AI_WORLD_IDCS_TOKEN_PATH:/oauth2/v1/token}
+    profile-path: ${AI_WORLD_IDCS_PROFILE_PATH:/admin/v1/Me}
+    client-id: ${AI_WORLD_IDCS_CLIENT_ID:}
+    client-secret-file: ${AI_WORLD_IDCS_CLIENT_SECRET_FILE:}
+    scope: ${AI_WORLD_IDCS_SCOPE:}
+    tls-verify: ${AI_WORLD_IDCS_TLS_VERIFY:true}
+    issuer: ${AI_WORLD_IDCS_ISSUER:}
+    audience: ${AI_WORLD_IDCS_AUDIENCE:}
+    jwks-uri: ${AI_WORLD_IDCS_JWKS_URI:}
+    identity-domain-claim: ${AI_WORLD_IDCS_IDENTITY_DOMAIN_CLAIM:}
+    identity-domain-value: ${AI_WORLD_IDCS_IDENTITY_DOMAIN_VALUE:}
+    username-claim: ${AI_WORLD_IDCS_USERNAME_CLAIM:}
+    display-name-claim: ${AI_WORLD_IDCS_DISPLAY_NAME_CLAIM:}
+    organization-claim: ${AI_WORLD_IDCS_ORGANIZATION_CLAIM:}
+    user-guid-claim: ${AI_WORLD_IDCS_USER_GUID_CLAIM:}
+    clock-skew-seconds: ${AI_WORLD_IDCS_CLOCK_SKEW_SECONDS:60}
+    login-rate-limit-attempts: ${AI_WORLD_IDCS_LOGIN_RATE_LIMIT_ATTEMPTS:10}
+    login-rate-limit-ip-attempts: ${AI_WORLD_IDCS_LOGIN_RATE_LIMIT_IP_ATTEMPTS:100}
+    login-rate-limit-window-seconds: ${AI_WORLD_IDCS_LOGIN_RATE_LIMIT_WINDOW_SECONDS:60}
+    approved-doctors-file: ${AI_WORLD_IDCS_APPROVED_DOCTORS_FILE:}
+    connect-timeout-ms: ${AI_WORLD_IDCS_CONNECT_TIMEOUT_MS:3000}
+    response-timeout-ms: ${AI_WORLD_IDCS_RESPONSE_TIMEOUT_MS:10000}
+  iam:
+    status-enabled: ${AI_WORLD_IAM_STATUS_ENABLED:false}
+    enrollment-enabled: ${AI_WORLD_IAM_ENROLLMENT_ENABLED:false}
+    secure-domain-url: ${AI_WORLD_IAM_SECURE_DOMAIN_URL:}
+    service-token-path: ${AI_WORLD_IAM_SERVICE_TOKEN_PATH:/oauth2/v1/token}
+    service-client-id: ${AI_WORLD_IAM_SERVICE_CLIENT_ID:}
+    service-scope: ${AI_WORLD_IAM_SERVICE_SCOPE:urn:opc:idm:__myscopes__}
+    tls-verify: ${AI_WORLD_IAM_TLS_VERIFY:true}
+    mtls-keystore-file: ${AI_WORLD_IAM_MTLS_KEYSTORE_FILE:}
+    mtls-keystore-password-file: ${AI_WORLD_IAM_MTLS_KEYSTORE_PASSWORD_FILE:}
+    mtls-keystore-type: ${AI_WORLD_IAM_MTLS_KEYSTORE_TYPE:PKCS12}
+    mtls-truststore-file: ${AI_WORLD_IAM_MTLS_TRUSTSTORE_FILE:}
+    mtls-truststore-password-file: ${AI_WORLD_IAM_MTLS_TRUSTSTORE_PASSWORD_FILE:}
+    mtls-truststore-type: ${AI_WORLD_IAM_MTLS_TRUSTSTORE_TYPE:PKCS12}
+    factor-status-path: ${AI_WORLD_IAM_FACTOR_STATUS_PATH:/mfa/v1/users/{userId}/factors}
+    verification-request-path: ${AI_WORLD_IAM_VERIFICATION_REQUEST_PATH:/mfa/v1/requests}
+    verification-request-item-path: ${AI_WORLD_IAM_VERIFICATION_REQUEST_ITEM_PATH:/mfa/v1/requests/{requestId}}
+    connect-timeout-ms: ${AI_WORLD_IAM_CONNECT_TIMEOUT_MS:3000}
+    response-timeout-ms: ${AI_WORLD_IAM_RESPONSE_TIMEOUT_MS:10000}
+    factor-mapping-approved: ${AI_WORLD_IAM_FACTOR_MAPPING_APPROVED:false}
+    factors-json-pointer: ${AI_WORLD_IAM_FACTORS_JSON_POINTER:}
+    factor-method-field: ${AI_WORLD_IAM_FACTOR_METHOD_FIELD:}
+    factor-status-field: ${AI_WORLD_IAM_FACTOR_STATUS_FIELD:}
+    voice-method-value: ${AI_WORLD_IAM_VOICE_METHOD_VALUE:}
+    enrolled-status-value: ${AI_WORLD_IAM_ENROLLED_STATUS_VALUE:}
+    not-enrolled-status-values: ${AI_WORLD_IAM_NOT_ENROLLED_STATUS_VALUES:}
+    absent-voice-status: ${AI_WORLD_IAM_ABSENT_VOICE_STATUS:}
+    unenrollment-enabled: ${AI_WORLD_IAM_UNENROLLMENT_ENABLED:false}
+    factor-resource-path: ${AI_WORLD_IAM_FACTOR_RESOURCE_PATH:${AI_WORLD_IAM_FACTOR_DELETE_PATH:/mfa/v1/users/{userId}/factors/{factorId}}}
+    factor-id-field: ${AI_WORLD_IAM_FACTOR_ID_FIELD:factorId}
+    factor-user-guid-field: ${AI_WORLD_IAM_FACTOR_USER_GUID_FIELD:userGUID}

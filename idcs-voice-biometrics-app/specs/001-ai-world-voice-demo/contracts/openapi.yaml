@@ -1,0 +1,1940 @@
+openapi: 3.1.0
+info:
+  title: AI World Voice Identity Browser HTTP API
+  version: 1.1.0
+  x-contract-status: DRAFT
+  x-gate-status:
+    T001: PARTIAL
+    T002: REMEDIATION_PENDING
+    T003: LIVE_VALIDATION_PENDING
+  x-approval-blockers:
+    - T001 PARTIAL - IDCS password-grant details, IAM source inconsistencies, and verification cancellation remain unresolved; documented successful verification completion is implemented, while the exact assurance-event binding contract blocks T101 and T106
+    - T002 REMEDIATION PENDING - the supplied ABIS SDK must pass the approved security and contract remediation gate
+    - T003 LIVE VALIDATION PENDING - OCI Speech session-token authentication and real-time behavior require a live local smoke test
+    - LOOPBACK PROFILE BLOCKED - exact boundary, single-account, cookie, JWE, microphone, one-socket, secure-downstream, warning, cleanup, and evidence-exclusion tests require review before enablement
+  summary: DRAFT same-origin HTTP contract between the Oracle JET browser and Java backend.
+  description: |
+    DRAFT: T001 is partial, T002 remediation is pending, and T003 live validation is pending. This
+    browser contract is not eligible for human approval until those recorded gates pass.
+
+    This contract exposes application state, credential login, lifecycle operations, and one
+    authenticated self-service voice-unenrollment operation only.
+    Provider client credentials, service/downstream tokens, private endpoints, raw provider
+    payloads, voice templates, and raw audio never cross this API.
+    Graceful capture completion is authoritative on the WebSocket through `capture.end`; the HTTP
+    cancel operation is an idempotent fallback.
+    A Java response filter sets `Cache-Control: no-store` on every authentication and authenticated
+    response, including problems. Successful credential login establishes only an opaque
+    application session; IDCS tokens and the submitted password never cross back to the browser.
+    `SECURE_DEMO` remains the HTTPS/WSS release-capable profile. `LOOPBACK_HTTP_TEST` is a
+    development-only profile fixed to `http://127.0.0.1:8080`; it cannot satisfy release or final
+    live-demo acceptance.
+x-runtime-profiles:
+  SECURE_DEMO:
+    browserTransport: HTTPS_WSS
+    releaseEvidenceCandidate: true
+  LOOPBACK_HTTP_TEST:
+    browserOrigin: http://127.0.0.1:8080
+    browserTransport: HTTP_WS
+    releaseEvidenceCandidate: false
+    evidenceClassification: LOCAL_DEVELOPMENT_ONLY
+servers:
+  - url: /api/v1
+    description: Same-origin application API
+tags:
+  - name: Authentication
+  - name: Identity
+  - name: Enrollment
+  - name: Voice sessions
+  - name: Evidence
+  - name: Operations
+security:
+  - secureSessionCookie: []
+  - loopbackSessionCookie: []
+
+paths:
+  /runtime-context:
+    get:
+      tags: [Operations]
+      operationId: getRuntimeContext
+      summary: Return the server-owned safe runtime-profile projection.
+      description: |
+        No-store, read-only projection used before login so the browser can show the continuous
+        loopback warning and select the same-origin WebSocket scheme. The request cannot select,
+        override, or widen the server profile and returns no provider endpoint, identity, token,
+        client credential, or secret. Java requires the active profile's exact peer and Host,
+        same-origin Fetch Metadata, and forwarding-header policy. An absent `Origin` is accepted
+        only for this safe GET; `Origin: null` or any mismatched supplied value is rejected.
+      security: []
+      responses:
+        '200':
+          description: Safe active-profile projection.
+          headers:
+            Cache-Control:
+              $ref: '#/components/headers/NoStore'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RuntimeContext'
+        '403':
+          $ref: '#/components/responses/LoginContextForbidden'
+
+  /auth/login-context:
+    get:
+      tags: [Authentication]
+      operationId: getLoginContext
+      summary: Issue one short-lived anti-forgery token for a credential submission.
+      description: |
+        Called by the same-origin Oracle JET login page before an explicit credential submission.
+        Java requires the active profile's exact network, same-origin Fetch Metadata, and Origin
+        policy and rejects a mismatched `Origin` when one is
+        supplied. An absent `Origin` is accepted only for this safe GET because the Fetch standard
+        does not reliably include that header on same-origin GET/HEAD requests. Java returns no
+        identity or provider configuration and issues a random opaque token recorded in a bounded
+        server-side registry for at most two minutes. In `LOOPBACK_HTTP_TEST`, the response also
+        carries an ephemeral or rotating public JWK and `kid`; the browser keeps those values only
+        in memory, wraps the password in one compact JWE `passwordEnvelope` using exactly
+        `RSA-OAEP-256` and `A256GCM`, and binds the encrypted plaintext to this context. The
+        normalized username remains plaintext. At most 1,000 unconsumed contexts may exist per
+        instance. Java
+        atomically consumes the context before the next accepted `POST /auth/login` can call IDCS;
+        every terminal result requires a fresh context. JWE is defense in depth only and is not
+        TLS, transport integrity, or Java-server authentication.
+      security: []
+      responses:
+        '200':
+          description: >-
+            A one-time login context was issued. The loopback profile also returns its public
+            encryption-key contract; the secure profile does not require password wrapping.
+          headers:
+            Cache-Control:
+              $ref: '#/components/headers/NoStore'
+            X-CSRF-Token:
+              $ref: '#/components/headers/LoginCsrfToken'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginContext'
+        '403':
+          $ref: '#/components/responses/LoginContextForbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+
+  /auth/login:
+    post:
+      tags: [Authentication]
+      operationId: login
+      summary: Authenticate a local compatible IDCS doctor and establish an application session.
+      description: |
+        Accepts the active profile's strict credential request from the same-origin Oracle JET form
+        only after its network boundary, exact Origin, Fetch Metadata, and server-issued pre-
+        authentication CSRF token have been validated. `SECURE_DEMO` accepts normalized plaintext
+        `username` plus write-only plaintext `password` over HTTPS. `LOOPBACK_HTTP_TEST` accepts the
+        same plaintext normalized `username` plus write-only compact JWE `passwordEnvelope`; Java
+        accepts only `RSA-OAEP-256` with `A256GCM`, the context-bound `kid`, an unexpired one-use
+        context, and an authenticated tag. A raw password field in the loopback request, replay, or
+        wrong key/context/algorithm/tag fails before IDCS.
+
+        In `LOOPBACK_HTTP_TEST`, only the exact configured submitted username can reach IDCS. After
+        token validation, subject, provider-approved username representation, and identity-domain
+        claim must match the same sole externally provisioned disposable, non-privileged account
+        before a session is created. JWE remains defense in depth only; HTTP-delivered code and keys
+        are replaceable and provide neither TLS nor Java-server authentication.
+
+        Java performs one token request to the configured IDCS token endpoint with the server-fixed
+        `grant_type=password`, scope, and confidential-client authentication. None of those provider
+        controls is accepted from this request.
+
+        Java selects an immutable server-only IDCS authentication mode. `STRICT_JWT` validates the
+        signed access JWT signature, issuer, audience, subject, time bounds, identity domain, and
+        required claims. Local-only `DEMO_PROFILE` makes one certificate-validating HTTPS
+        `GET /admin/v1/Me` call with fixed `id,ocid,displayName,userName,name,emails` attributes,
+        requires `id` and `userName`, and requires the normalized returned username to match the
+        submitted username. No application doctor allowlist applies in this mode. The mode is not browser-selectable;
+        `DEMO_PROFILE` is never release evidence. Java immediately makes the decrypted password
+        unreachable. The password is never retained, retried, logged, traced, measured, cached,
+        included in an error, or copied to browser storage. IDCS access or refresh tokens are never
+        returned to the browser. Java keeps any approved IDCS token material only behind an
+        expiring server-side `SecretHandle`; the application session contains the opaque handle,
+        not the token value. Local compatible IDCS accounts only are supported; MFA and
+        federated-account behavior remain explicit implementation gates. When IDCS returns
+        `invalid_grant` with the explicit password-change-required description, Java returns the
+        provider-neutral `PASSWORD_CHANGE_REQUIRED` problem; no provider description or account
+        detail is forwarded.
+
+        After `204`, Oracle JET calls the authenticated no-store `GET /me` operation to obtain the
+        normalized username, enrollment-status or safe unavailable projection, allowed actions,
+        and session-bound application CSRF token.
+      security: []
+      parameters:
+        - $ref: '#/components/parameters/LoginCsrfToken'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '204':
+          description: Credential exchange succeeded and the opaque application session is established.
+          headers:
+            Cache-Control:
+              $ref: '#/components/headers/NoStore'
+            X-CSRF-Token:
+              $ref: '#/components/headers/CsrfToken'
+            Set-Cookie:
+              description: >-
+                `SECURE_DEMO` sets `__Host-AIWORLD_SESSION`; Secure; HttpOnly; SameSite=Lax;
+                Path=/; no Domain. `LOOPBACK_HTTP_TEST` sets the distinct host-only
+                `AIWORLD_LOOPBACK_SESSION`; HttpOnly; SameSite=Strict; Path=/; no Domain; no
+                Secure. Each profile rejects the other cookie.
+              schema:
+                type: string
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/LoginFailed'
+        '403':
+          $ref: '#/components/responses/LoginRequestForbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '502':
+          $ref: '#/components/responses/DependencyFailure'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+
+  /auth/sign-out:
+    post:
+      tags: [Authentication]
+      operationId: signOut
+      summary: End local/downstream sessions and apply the approved IDCS token disposal behavior.
+      description: |
+        Every request is accepted only after exact same-origin `Origin` and Fetch Metadata
+        validation. The endpoint is intentionally callable with or without a usable application
+        session and can only remove local state and expire the application cookie.
+
+        Immediately removes local access and marks the application session unusable. If the
+        approved IDCS contract supports token revocation, Java retains the revocation input only
+        long enough to make that bounded server-to-server attempt and then discards all server-side
+        IDCS token material regardless of its outcome. The associated `SecretHandle` is destroyed
+        after that bounded attempt. Local sign-out remains successful if remote revocation is
+        unavailable or fails; no browser SSO redirect is used.
+      security: []
+      responses:
+        '204':
+          description: Local session and credentials cleared; approved revocation was attempted when available.
+          headers:
+            Cache-Control:
+              $ref: '#/components/headers/NoStore'
+            Set-Cookie:
+              description: Expired application session cookie.
+              schema:
+                type: string
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+  /me:
+    get:
+      tags: [Identity]
+      operationId: getCurrentUser
+      summary: Return the authenticated doctor, enrollment status and allowed actions.
+      responses:
+        '200':
+          description: >-
+            Current application state. An IAM enrollment-status outage is represented as
+            `enrollmentStatus: UNKNOWN`, `enrollmentStatusLookupState: TEMPORARILY_UNAVAILABLE`,
+            and `allowedActions: [SIGN_OUT]` so the authenticated doctor can retry or sign out.
+          headers:
+            Cache-Control:
+              $ref: '#/components/headers/NoStore'
+            X-CSRF-Token:
+              $ref: '#/components/headers/CsrfToken'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CurrentUser'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /voice/enrollment-status:
+    get:
+      tags: [Enrollment]
+      operationId: getEnrollmentStatus
+      summary: Refresh the authoritative IAM voice-factor status.
+      responses:
+        '200':
+          description: Authoritative enrollment status and valid next actions.
+          headers:
+            Cache-Control:
+              $ref: '#/components/headers/NoStore'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnrollmentStatusResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '502':
+          $ref: '#/components/responses/DependencyFailure'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+
+  /voice/enrollment:
+    delete:
+      tags: [Enrollment]
+      operationId: deleteVoiceEnrollment
+      summary: Delete the authenticated doctor's current voice enrollment.
+      description: |
+        This identifier-free operation accepts no request body. Java derives the IAM user from the
+        authenticated application session, lists current factors, and deletes only one
+        server-resolved factor whose methods contain exact `VOICE_BIOMETRIC`. No match is returned
+        as already unenrolled; multiple or malformed matches fail closed. The response is successful
+        only after a fresh authoritative factor list confirms that no voice factor remains.
+
+        An IAM DELETE request is attempted at most once. An ambiguous provider result is reconciled
+        through a read-only factor refresh and is never automatically retried. The browser never
+        submits or receives an IAM user or factor identifier.
+
+        If IAM refuses to delete the user's last active 2-Step Verification factor, the application
+        returns `409 VOICE_UNENROLLMENT_REQUIRES_ANOTHER_FACTOR` and preserves the enrolled state.
+      security:
+        - secureSessionCookie: []
+          csrfToken: []
+        - loopbackSessionCookie: []
+          csrfToken: []
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      responses:
+        '200':
+          description: The voice factor is authoritatively absent after deletion or was already absent.
+          headers:
+            Cache-Control:
+              $ref: '#/components/headers/NoStore'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VoiceUnenrollmentResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '502':
+          $ref: '#/components/responses/DependencyFailure'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+
+  /voice/enrollment-attempt:
+    post:
+      tags: [Enrollment]
+      operationId: createEnrollmentAttempt
+      summary: Start an IAM voice-enrollment request and obtain current consent text.
+      security:
+        - secureSessionCookie: []
+        - loopbackSessionCookie: []
+          csrfToken: []
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateEnrollmentAttemptRequest'
+      responses:
+        '201':
+          description: Enrollment attempt created; capture remains disabled pending consent.
+          headers:
+            Cache-Control:
+              $ref: '#/components/headers/NoStore'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnrollmentAttempt'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/Unprocessable'
+        '502':
+          $ref: '#/components/responses/DependencyFailure'
+
+  /voice/enrollment-attempt/consent:
+    put:
+      tags: [Enrollment]
+      operationId: recordConsentDecision
+      summary: Record the browser's local consent intent for the current enrollment attempt.
+      description: |
+        The decision is bound locally to the authenticated doctor, attempt, factor, and digest of
+        the exact displayed consent. `DECLINE` ends the attempt and sends no IAM request. `ACCEPT`
+        records intent only: it does not bind consent in IAM, obtain ABIS authorization, or open
+        audio capture.
+
+        After an accepted intent, the browser performs microphone and audio-profile preflight. A
+        later valid `POST /voice-session` for ENROLLMENT causes Java to make one confirmed IAM
+        secure request with `action=ACCEPTED`; that single request both binds IAM consent and
+        returns the downstream authorization held only behind a server-side `SecretHandle`.
+        There is no separate provider authorization request.
+      security:
+        - secureSessionCookie: []
+        - loopbackSessionCookie: []
+          csrfToken: []
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConsentDecisionRequest'
+      responses:
+        '200':
+          description: Local consent intent recorded; provider consent is not yet bound for ACCEPT.
+          headers:
+            Cache-Control:
+              $ref: '#/components/headers/NoStore'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnrollmentAttempt'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '410':
+          $ref: '#/components/responses/Gone'
+        '422':
+          $ref: '#/components/responses/Unprocessable'
+
+  /voice-session:
+    post:
+      tags: [Voice sessions]
+      operationId: createVoiceSession
+      summary: Create and preauthorize one enrollment or verification capture session.
+      description: |
+        This request is permitted only after the browser has obtained microphone permission,
+        confirmed the selected input remains available, and verified that it can produce the
+        supported application audio profile. The request contains only a positive preflight
+        assertion and the supported profile; it contains no device identifier, label, hardware
+        fingerprint, or permission metadata.
+
+        On permission denial, device unavailability, or format incompatibility, the browser MUST
+        NOT call this operation. Consequently Java creates no application or IAM voice session and
+        opens no application, ABIS, or OCI Speech WebSocket.
+
+        For ENROLLMENT, Java requires a previously accepted local consent intent, then makes one
+        confirmed IAM `action=ACCEPTED` secure request. That one request both binds provider consent
+        and returns `requestState` plus `securityToken`; the ABIS base URL is loaded from ignored
+        server environment configuration. Secret token material is stored only behind a bounded
+        server-side `SecretHandle`. Java makes no
+        separate provider authorize call. For VERIFICATION, Java uses the confirmed IAM
+        authentication-initiation semantic after successful preflight and likewise stores returned
+        authorization behind a `SecretHandle`.
+
+        IAM authorization finishes before this operation returns `PREAUTHORIZED`. It is an HTTP
+        control step, not a WebSocket readiness branch. The response exposes only the application
+        `voiceSessionId` and constant WebSocket path; only ABIS and OCI Speech participate in
+        streaming readiness. The first WebSocket command must bind this identifier.
+      security:
+        - secureSessionCookie: []
+        - loopbackSessionCookie: []
+          csrfToken: []
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateVoiceSessionRequest'
+      responses:
+        '201':
+          description: Voice session preauthorized.
+          headers:
+            Cache-Control:
+              $ref: '#/components/headers/NoStore'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VoiceSession'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/Unprocessable'
+        '502':
+          $ref: '#/components/responses/DependencyFailure'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+
+    get:
+      tags: [Voice sessions]
+      operationId: getVoiceSession
+      summary: Return the current or most recent masked voice-session snapshot.
+      responses:
+        '200':
+          description: Voice-session snapshot.
+          headers:
+            Cache-Control:
+              $ref: '#/components/headers/NoStore'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VoiceSessionSnapshot'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /voice-session/cancel:
+    post:
+      tags: [Voice sessions]
+      operationId: cancelVoiceSession
+      summary: Idempotently cancel a session when graceful WebSocket completion is unavailable.
+      description: |
+        This is an abortive fallback. `capture.end` on `/ws/v1/voice` is the authoritative
+        graceful completion command. Cancellation never represents successful enrollment or
+        verification. For a verification session Java invokes the semantic
+        `cancelVerification` transition `CANCELLATION_PENDING -> CANCELLED` and stops local, ABIS,
+        and Speech work. The exact IAM cancellation route, payload, result, and retry behavior are
+        not present in the reviewed provider contract and MUST remain an approval blocker; this
+        application route does not imply or invent a provider cancellation API.
+      security:
+        - secureSessionCookie: []
+        - loopbackSessionCookie: []
+          csrfToken: []
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CancelVoiceSessionRequest'
+      responses:
+        '202':
+          description: Cancellation accepted or original cancellation result returned.
+          headers:
+            Cache-Control:
+              $ref: '#/components/headers/NoStore'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VoiceSessionSnapshot'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+
+  /voice-session/utterances:
+    get:
+      tags: [Evidence]
+      operationId: listUtterances
+      summary: List masked utterance evidence for the current or most recent verification session.
+      description: >-
+        Assurance evidence is verification-only. Enrollment progress and transcription are
+        delivered through the active WebSocket and do not create assurance-result evidence.
+      responses:
+        '200':
+          description: Utterance summaries in canonical sequence order.
+          headers:
+            Cache-Control:
+              $ref: '#/components/headers/NoStore'
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                required: [voiceSessionId, items]
+                properties:
+                  voiceSessionId:
+                    $ref: '#/components/schemas/OpaqueId'
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/UtteranceEvidence'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /voice-session/utterance-evidence:
+    post:
+      tags: [Evidence]
+      operationId: getUtteranceEvidence
+      summary: Return one masked, correlated verification-utterance evidence record without URL identifiers.
+      description: >-
+        The referenced utterance must belong to a verification session. Enrollment utterances do
+        not create an AssuranceResult and are not exposed by this assurance-evidence operation.
+      security:
+        - secureSessionCookie: []
+        - loopbackSessionCookie: []
+          csrfToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UtteranceEvidenceRequest'
+      responses:
+        '200':
+          description: Correlated transcript, assurance and audit evidence.
+          headers:
+            Cache-Control:
+              $ref: '#/components/headers/NoStore'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UtteranceEvidence'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /readiness/dependencies:
+    get:
+      tags: [Operations]
+      operationId: getDependencyReadiness
+      summary: Return safe ABIS and Speech streaming readiness for the approved operator.
+      responses:
+        '200':
+          description: >-
+            Safe streaming-branch readiness without credentials or endpoints. IAM is an HTTP
+            authorization/audit control and is not represented as a streaming readiness branch.
+          headers:
+            Cache-Control:
+              $ref: '#/components/headers/NoStore'
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                required: [observedAt, dependencies]
+                properties:
+                  observedAt:
+                    type: string
+                    format: date-time
+                  dependencies:
+                    type: array
+                    minItems: 2
+                    maxItems: 2
+                    uniqueItems: true
+                    items:
+                      $ref: '#/components/schemas/DependencyReadinessState'
+                    allOf:
+                      - contains:
+                          type: object
+                          properties:
+                            dependency:
+                              const: ABIS
+                        minContains: 1
+                        maxContains: 1
+                      - contains:
+                          type: object
+                          properties:
+                            dependency:
+                              const: SPEECH
+                        minContains: 1
+                        maxContains: 1
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+components:
+  securitySchemes:
+    secureSessionCookie:
+      type: apiKey
+      in: cookie
+      name: __Host-AIWORLD_SESSION
+      description: >-
+        `SECURE_DEMO` opaque application session cookie: Secure, HttpOnly, SameSite=Lax, Path=/,
+        no Domain. It is never accepted by `LOOPBACK_HTTP_TEST`.
+    loopbackSessionCookie:
+      type: apiKey
+      in: cookie
+      name: AIWORLD_LOOPBACK_SESSION
+      description: >-
+        `LOOPBACK_HTTP_TEST` opaque host-only cookie: HttpOnly, SameSite=Strict, Path=/, no Domain,
+        no Secure, and bounded lifetime. It is accepted only at exact `127.0.0.1:8080`, never by
+        `SECURE_DEMO`, expires on sign-out, and becomes unusable after Java process termination.
+    csrfToken:
+      type: apiKey
+      in: header
+      name: X-CSRF-Token
+      description: >-
+        Application CSRF token required for state-changing same-origin HTTP calls. JET obtains it
+        from the no-store `GET /me` response, keeps it only in memory, and refreshes after session
+        rotation. It is never supplied in a readable cookie, URL, browser storage, or log.
+
+  headers:
+    NoStore:
+      description: Authentication, identity, consent, session, and evidence data is not cached.
+      schema:
+        type: string
+        const: no-store
+    CsrfToken:
+      description: >-
+        Opaque CSRF token bound to the current application session. Keep in browser memory only;
+        refresh with `GET /me` after application-session rotation.
+      schema:
+        type: string
+        minLength: 32
+        maxLength: 512
+        pattern: '^[A-Za-z0-9._~-]+$'
+    LoginCsrfToken:
+      description: >-
+        One-time, short-lived anti-forgery token issued by `GET /auth/login-context`. Keep it only
+        in browser memory and consume it on the next explicit login attempt.
+      schema:
+        type: string
+        minLength: 32
+        maxLength: 512
+        pattern: '^[A-Za-z0-9._~-]+$'
+
+  parameters:
+    LoginCsrfToken:
+      name: X-CSRF-Token
+      in: header
+      required: true
+      description: >-
+        One-time, short-lived token obtained from the no-store same-origin
+        `GET /auth/login-context` operation and held only in browser memory. Java validates and
+        consumes it together with exact Origin and Fetch Metadata before reading or forwarding
+        credentials. It is not an identity-provider transaction cookie and contains no username,
+        password, provider token, or endpoint.
+      schema:
+        type: string
+        minLength: 32
+        maxLength: 512
+        pattern: '^[A-Za-z0-9._~-]+$'
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      description: Opaque client-generated key unique to one semantic mutation.
+      schema:
+        type: string
+        minLength: 16
+        maxLength: 128
+        pattern: '^[A-Za-z0-9._:-]+$'
+
+  responses:
+    BadRequest:
+      description: Malformed or invalid request.
+      headers:
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+    Unauthorized:
+      description: Missing, expired or invalid application session.
+      headers:
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+    Forbidden:
+      description: Authenticated actor is not authorized for the target operation.
+      headers:
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+    NotFound:
+      description: Resource not found or not visible to the authenticated actor.
+      headers:
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+    Conflict:
+      description: State, idempotency or active-session conflict.
+      headers:
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+    Gone:
+      description: Enrollment attempt or authorization expired.
+      headers:
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+    Unprocessable:
+      description: Request is well formed but incompatible with authoritative state.
+      headers:
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+    DependencyFailure:
+      description: An external dependency failed; raw provider details are not exposed.
+      headers:
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+    ServiceUnavailable:
+      description: Required application capability is not ready.
+      headers:
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+    LoginFailed:
+      description: >-
+        Authentication did not establish an application session. Unknown users, wrong passwords,
+        disabled/incompatible accounts, and other credential rejections use the generic
+        `LOGIN_FAILED` code. The exact IDCS password-change-required condition uses the safe
+        `PASSWORD_CHANGE_REQUIRED` code and provider-neutral guidance. Raw provider descriptions
+        and credentials are never returned.
+      headers:
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+    LoginRequestForbidden:
+      description: >-
+        The active profile's peer/Host/Origin/forwarded-header boundary, Fetch Metadata,
+        pre-authentication CSRF token, sole-account policy, or credential envelope was rejected
+        before IDCS.
+      headers:
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+    LoginContextForbidden:
+      description: >-
+        Same-origin Fetch Metadata was missing/invalid, or a supplied Origin did not exactly match,
+        so no login-context token was issued.
+      headers:
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+    TooManyRequests:
+      description: The login-context or credential-login protection limit was exceeded; account existence is not disclosed.
+      headers:
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+        Retry-After:
+          description: Safe delay in seconds before another login attempt may be submitted.
+          schema:
+            type: integer
+            minimum: 1
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+
+  schemas:
+    RuntimeProfile:
+      type: string
+      enum: [SECURE_DEMO, LOOPBACK_HTTP_TEST]
+
+    RuntimeContext:
+      type: object
+      additionalProperties: false
+      required:
+        - protocolVersion
+        - transportProfile
+        - browserTransport
+        - evidenceClassification
+        - warningRequired
+      properties:
+        protocolVersion:
+          type: string
+          const: '1.0'
+        transportProfile:
+          $ref: '#/components/schemas/RuntimeProfile'
+        browserTransport:
+          type: string
+          enum: [HTTPS_WSS, HTTP_WS]
+        evidenceClassification:
+          type: string
+          enum: [LIVE_CANDIDATE, LOCAL_DEVELOPMENT_ONLY]
+          description: >-
+            LIVE_CANDIDATE means only that secure-profile results may be considered after all
+            independent provider, deployment, remote-browser, and demo-readiness gates pass.
+        warningRequired:
+          type: boolean
+        warningText:
+          type: string
+          const: Local insecure transport - disposable test account only - not release-ready
+      allOf:
+        - if:
+            properties:
+              transportProfile:
+                const: LOOPBACK_HTTP_TEST
+            required: [transportProfile]
+          then:
+            required: [warningText]
+            properties:
+              browserTransport:
+                const: HTTP_WS
+              evidenceClassification:
+                const: LOCAL_DEVELOPMENT_ONLY
+              warningRequired:
+                const: true
+          else:
+            properties:
+              browserTransport:
+                const: HTTPS_WSS
+              evidenceClassification:
+                const: LIVE_CANDIDATE
+              warningRequired:
+                const: false
+
+    RsaEncryptionJwk:
+      type: object
+      additionalProperties: false
+      required: [kty, use, alg, kid, n, e]
+      properties:
+        kty:
+          type: string
+          const: RSA
+        use:
+          type: string
+          const: enc
+        alg:
+          type: string
+          const: RSA-OAEP-256
+        kid:
+          type: string
+          minLength: 16
+          maxLength: 128
+        n:
+          type: string
+          minLength: 256
+          maxLength: 2048
+          pattern: '^[A-Za-z0-9_-]+$'
+        e:
+          type: string
+          minLength: 2
+          maxLength: 16
+          pattern: '^[A-Za-z0-9_-]+$'
+
+    PasswordEnvelopeContract:
+      type: object
+      additionalProperties: false
+      required: [format, keyId, algorithm, encryption, publicJwk, expiresAt]
+      properties:
+        format:
+          type: string
+          const: JWE_COMPACT
+        keyId:
+          type: string
+          minLength: 16
+          maxLength: 128
+        algorithm:
+          type: string
+          const: RSA-OAEP-256
+        encryption:
+          type: string
+          const: A256GCM
+        publicJwk:
+          $ref: '#/components/schemas/RsaEncryptionJwk'
+        expiresAt:
+          type: string
+          format: date-time
+
+    SecureLoginContext:
+      type: object
+      additionalProperties: false
+      required: [protocolVersion, loginContextToken]
+      properties:
+        protocolVersion:
+          type: string
+          const: '1.0'
+        loginContextToken:
+          type: string
+          minLength: 32
+          maxLength: 512
+          pattern: '^[A-Za-z0-9._~-]+$'
+          description: >-
+            Same one-use value returned in `X-CSRF-Token`; held in memory until atomic server
+            consumption.
+
+    LoopbackLoginContext:
+      type: object
+      additionalProperties: false
+      required: [protocolVersion, loginContextToken, passwordEnvelope]
+      properties:
+        protocolVersion:
+          type: string
+          const: '1.0'
+        loginContextToken:
+          type: string
+          minLength: 32
+          maxLength: 512
+          pattern: '^[A-Za-z0-9._~-]+$'
+          description: >-
+            Same one-use value returned in `X-CSRF-Token`; held in memory and bound inside the
+            encrypted password-envelope plaintext before atomic server consumption.
+        passwordEnvelope:
+          $ref: '#/components/schemas/PasswordEnvelopeContract'
+
+    LoginContext:
+      description: >-
+        The server emits only the shape for its active profile. The browser cannot select the
+        profile. `SECURE_DEMO` has no JWE key contract; `LOOPBACK_HTTP_TEST` does.
+      oneOf:
+        - $ref: '#/components/schemas/SecureLoginContext'
+        - $ref: '#/components/schemas/LoopbackLoginContext'
+
+    OpaqueId:
+      type: string
+      minLength: 16
+      maxLength: 128
+      pattern: '^[A-Za-z0-9_-]+$'
+
+    LoginRequest:
+      description: >-
+        The server accepts only the request shape for its active profile. The normalized username
+        remains plaintext in both. `SECURE_DEMO` accepts plaintext password only over HTTPS;
+        `LOOPBACK_HTTP_TEST` accepts only `passwordEnvelope` and rejects a raw password field.
+      oneOf:
+        - $ref: '#/components/schemas/SecureLoginRequest'
+        - $ref: '#/components/schemas/LoopbackLoginRequest'
+
+    SecureLoginRequest:
+      type: object
+      additionalProperties: false
+      required: [username, password]
+      properties:
+        username:
+          type: string
+          minLength: 1
+          maxLength: 254
+          description: >-
+            Normalized local compatible IDCS account name. It never selects a domain.
+        password:
+          type: string
+          format: password
+          writeOnly: true
+          minLength: 1
+          maxLength: 1024
+          description: >-
+            Accepted only by `SECURE_DEMO` over HTTPS, used for at most one Java-to-IDCS request,
+            and made unreachable after the terminal exchange.
+
+    LoopbackLoginRequest:
+      type: object
+      additionalProperties: false
+      required: [username, passwordEnvelope]
+      properties:
+        username:
+          type: string
+          minLength: 1
+          maxLength: 254
+          description: >-
+            Plaintext normalized local IDCS account name. Only the exact configured sole test-
+            account representation may proceed to IDCS; it is never encrypted inside the JWE.
+        passwordEnvelope:
+          type: string
+          writeOnly: true
+          minLength: 128
+          maxLength: 8192
+          pattern: '^[A-Za-z0-9_-]+\.[A-Za-z0-9_-]*\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$'
+          description: >-
+            One compact JWE using exactly `RSA-OAEP-256` and `A256GCM`, the issued `kid`, and the
+            one-use login-context binding. Its encrypted plaintext contains only the password and
+            context binding. Java rejects a raw password field and makes decrypted password state
+            unreachable after at most one IDCS request. JWE is defense in depth, not a replacement
+            for TLS or server authentication.
+
+    EnrollmentStatus:
+      type: string
+      enum: [UNKNOWN, NOT_ENROLLED, ENROLLED]
+
+    EnrollmentStatusLookupState:
+      type: string
+      enum: [AVAILABLE, TEMPORARILY_UNAVAILABLE]
+
+    AllowedAction:
+      type: string
+      enum: [ENROLL, VERIFY, DELETE_VOICE_ENROLLMENT, SIGN_OUT]
+
+    CurrentUser:
+      type: object
+      additionalProperties: false
+      required:
+        - protocolVersion
+        - correlationId
+        - username
+        - enrollmentStatus
+        - enrollmentStatusLookupState
+        - allowedActions
+      properties:
+        protocolVersion:
+          type: string
+          const: '1.0'
+        correlationId:
+          $ref: '#/components/schemas/OpaqueId'
+        username:
+          type: string
+          minLength: 1
+          maxLength: 256
+        displayName:
+          type: string
+          maxLength: 256
+        organization:
+          type: string
+          maxLength: 256
+        enrollmentStatus:
+          $ref: '#/components/schemas/EnrollmentStatus'
+        enrollmentStatusLookupState:
+          $ref: '#/components/schemas/EnrollmentStatusLookupState'
+        statusObservedAt:
+          type: string
+          format: date-time
+          description: Present only when enrollmentStatusLookupState is AVAILABLE.
+        allowedActions:
+          type: array
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/AllowedAction'
+      allOf:
+        - if:
+            properties:
+              enrollmentStatusLookupState:
+                const: AVAILABLE
+          then:
+            required: [statusObservedAt]
+            properties:
+              enrollmentStatus:
+                enum: [NOT_ENROLLED, ENROLLED]
+        - if:
+            properties:
+              enrollmentStatusLookupState:
+                const: TEMPORARILY_UNAVAILABLE
+          then:
+            not:
+              required: [statusObservedAt]
+            properties:
+              enrollmentStatus:
+                const: UNKNOWN
+              allowedActions:
+                const: [SIGN_OUT]
+        - if:
+            properties:
+              enrollmentStatusLookupState:
+                const: AVAILABLE
+              enrollmentStatus:
+                const: NOT_ENROLLED
+            required: [enrollmentStatusLookupState, enrollmentStatus]
+          then:
+            properties:
+              allowedActions:
+                minItems: 2
+                maxItems: 2
+                allOf:
+                  - contains:
+                      const: ENROLL
+                  - contains:
+                      const: SIGN_OUT
+        - if:
+            properties:
+              enrollmentStatusLookupState:
+                const: AVAILABLE
+              enrollmentStatus:
+                const: ENROLLED
+            required: [enrollmentStatusLookupState, enrollmentStatus]
+          then:
+            properties:
+              allowedActions:
+                minItems: 3
+                maxItems: 3
+                allOf:
+                  - contains:
+                      const: VERIFY
+                  - contains:
+                      const: DELETE_VOICE_ENROLLMENT
+                  - contains:
+                      const: SIGN_OUT
+
+    EnrollmentStatusResponse:
+      type: object
+      additionalProperties: false
+      required: [correlationId, status, observedAt, allowedActions]
+      properties:
+        correlationId:
+          $ref: '#/components/schemas/OpaqueId'
+        status:
+          type: string
+          enum: [NOT_ENROLLED, ENROLLED]
+        observedAt:
+          type: string
+          format: date-time
+        allowedActions:
+          type: array
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/AllowedAction'
+      allOf:
+        - if:
+            properties:
+              status:
+                const: NOT_ENROLLED
+            required: [status]
+          then:
+            properties:
+              allowedActions:
+                minItems: 2
+                maxItems: 2
+                allOf:
+                  - contains:
+                      const: ENROLL
+                  - contains:
+                      const: SIGN_OUT
+        - if:
+            properties:
+              status:
+                const: ENROLLED
+            required: [status]
+          then:
+            properties:
+              allowedActions:
+                minItems: 3
+                maxItems: 3
+                allOf:
+                  - contains:
+                      const: VERIFY
+                  - contains:
+                      const: DELETE_VOICE_ENROLLMENT
+                  - contains:
+                      const: SIGN_OUT
+
+    VoiceUnenrollmentResponse:
+      type: object
+      additionalProperties: false
+      required:
+        - protocolVersion
+        - correlationId
+        - outcome
+        - enrollmentStatus
+        - enrollmentStatusLookupState
+        - statusObservedAt
+        - allowedActions
+      properties:
+        protocolVersion:
+          type: string
+          const: '1.0'
+        correlationId:
+          $ref: '#/components/schemas/OpaqueId'
+        outcome:
+          type: string
+          enum: [DELETED, ALREADY_NOT_ENROLLED]
+        enrollmentStatus:
+          type: string
+          const: NOT_ENROLLED
+        enrollmentStatusLookupState:
+          type: string
+          const: AVAILABLE
+        statusObservedAt:
+          type: string
+          format: date-time
+        allowedActions:
+          type: array
+          uniqueItems: true
+          minItems: 2
+          maxItems: 2
+          allOf:
+            - contains:
+                const: ENROLL
+            - contains:
+                const: SIGN_OUT
+          items:
+            $ref: '#/components/schemas/AllowedAction'
+    CreateEnrollmentAttemptRequest:
+      type: object
+      additionalProperties: false
+      required: [factor]
+      properties:
+        factor:
+          type: string
+          const: VOICE
+        locale:
+          type: string
+          default: en
+          pattern: '^[A-Za-z]{2,3}(-[A-Za-z0-9]{2,8})*$'
+
+    ConsentText:
+      type: object
+      additionalProperties: false
+      required: [version, locale, text]
+      properties:
+        version:
+          type: string
+          minLength: 1
+          maxLength: 128
+          description: >-
+            Application display-integrity version or digest for the exact text. The reviewed IAM
+            source does not document a provider consent-version field, so this value is not sent
+            to IAM unless a later approved contract defines one.
+        locale:
+          type: string
+          minLength: 2
+          maxLength: 35
+        text:
+          type: string
+          minLength: 1
+          maxLength: 10000
+          description: >-
+            IAM-authoritative consent content formatted using the application's restricted Markdown
+            subset: level-one through level-three headings, paragraphs, bold text, and ordered or unordered
+            lists. Raw HTML, links, images, embedded content, and other Markdown constructs are not
+            interpreted and are displayed as inert text. IAM should supply actual line-feed characters;
+            the browser also tolerates a provider value containing literal escaped line endings for
+            compatibility with IAM configuration paths that preserve them.
+
+    EnrollmentAttempt:
+      type: object
+      additionalProperties: false
+      required: [enrollmentAttemptId, correlationId, state, consent, expiresAt]
+      properties:
+        enrollmentAttemptId:
+          $ref: '#/components/schemas/OpaqueId'
+        correlationId:
+          $ref: '#/components/schemas/OpaqueId'
+        state:
+          type: string
+          enum:
+            - CONSENT_PENDING
+            - CONSENT_ACCEPT_INTENT_RECORDED
+            - CONSENT_DECLINED
+            - BINDING_CONSENT_AND_AUTHORIZING
+            - READY
+            - CAPTURING
+            - FINALIZING
+            - COMPLETING_IAM
+            - ENROLLED
+            - FAILED
+            - CANCELLED
+            - EXPIRED
+        consent:
+          $ref: '#/components/schemas/ConsentText'
+        expiresAt:
+          type: string
+          format: date-time
+        failure:
+          $ref: '#/components/schemas/SafeFailure'
+
+    ConsentDecisionRequest:
+      type: object
+      additionalProperties: false
+      required: [enrollmentAttemptId, decision, consentVersion]
+      properties:
+        enrollmentAttemptId:
+          description: Opaque active-attempt identifier carried only in a no-log JSON body.
+          $ref: '#/components/schemas/OpaqueId'
+        decision:
+          type: string
+          enum: [ACCEPT, DECLINE]
+        consentVersion:
+          type: string
+          minLength: 1
+          maxLength: 128
+          description: Application display-integrity value from the exact consent shown.
+
+    VoicePurpose:
+      type: string
+      enum: [ENROLLMENT, VERIFICATION]
+
+    AudioProfile:
+      type: object
+      additionalProperties: false
+      required: [encoding, sampleRateHz, channels, sampleSizeBits, byteOrder, nominalFrameMs]
+      properties:
+        encoding:
+          type: string
+          const: PCM_SIGNED
+        sampleRateHz:
+          type: integer
+          const: 16000
+        channels:
+          type: integer
+          const: 1
+        sampleSizeBits:
+          type: integer
+          const: 16
+        byteOrder:
+          type: string
+          const: LITTLE_ENDIAN
+        nominalFrameMs:
+          type: integer
+          const: 20
+
+    CapturePreflight:
+      type: object
+      additionalProperties: false
+      description: >-
+        Positive browser assertion made only after permission, input availability, and supported
+        profile checks succeed. Device identifiers and permission metadata are forbidden.
+      required: [originMicrophoneCapable, microphonePermission, audioProfileSupported]
+      properties:
+        originMicrophoneCapable:
+          type: boolean
+          const: true
+          description: >-
+            The browser confirmed that the active exact origin permits microphone capture. This
+            must be true for `http://127.0.0.1:8080` before any loopback mutation or connection.
+        microphonePermission:
+          type: string
+          const: GRANTED
+        audioProfileSupported:
+          type: boolean
+          const: true
+
+    CreateVoiceSessionRequest:
+      type: object
+      additionalProperties: false
+      required: [purpose, capturePreflight, audioProfile]
+      properties:
+        purpose:
+          $ref: '#/components/schemas/VoicePurpose'
+        enrollmentAttemptId:
+          description: Required for ENROLLMENT and forbidden for VERIFICATION.
+          $ref: '#/components/schemas/OpaqueId'
+        capturePreflight:
+          $ref: '#/components/schemas/CapturePreflight'
+        audioProfile:
+          $ref: '#/components/schemas/AudioProfile'
+      if:
+        required: [purpose]
+        properties:
+          purpose:
+            const: ENROLLMENT
+      then:
+        required: [enrollmentAttemptId]
+      else:
+        not:
+          required: [enrollmentAttemptId]
+
+    VoiceSessionState:
+      type: string
+      enum:
+        - AUTHORIZING
+        - PREAUTHORIZED
+        - BINDING
+        - READY
+        - CAPTURING
+        - PAUSED_BACKPRESSURE
+        - DRAINING
+        - COMPLETED
+        - FAILED
+        - CANCELLED
+        - EXPIRED
+        - DISCONNECTED
+
+    DependencyName:
+      type: string
+      description: Streaming readiness has exactly the ABIS and Speech branches; IAM is HTTP control.
+      enum: [ABIS, SPEECH]
+
+    BranchName:
+      type: string
+      enum: [ABIS, SPEECH]
+
+    ProcessingState:
+      type: string
+      enum: [NOT_STARTED, CONNECTING, READY, PROCESSING, DRAINING, COMPLETED, FAILED, TIMED_OUT]
+
+    DependencyReadinessState:
+      type: object
+      additionalProperties: false
+      required: [dependency, state, observedAt]
+      properties:
+        dependency:
+          $ref: '#/components/schemas/DependencyName'
+        state:
+          $ref: '#/components/schemas/ProcessingState'
+        observedAt:
+          type: string
+          format: date-time
+        retryable:
+          type: boolean
+        safeCode:
+          type: string
+          maxLength: 128
+
+    BranchState:
+      type: object
+      additionalProperties: false
+      required: [dependency, state, observedAt]
+      properties:
+        dependency:
+          $ref: '#/components/schemas/BranchName'
+        state:
+          $ref: '#/components/schemas/ProcessingState'
+        observedAt:
+          type: string
+          format: date-time
+        retryable:
+          type: boolean
+        safeCode:
+          type: string
+          maxLength: 128
+
+    OperationalLimits:
+      type: object
+      additionalProperties: false
+      required:
+        - bindDeadlineSeconds
+        - dependencyReadinessDeadlineSeconds
+        - heartbeatIntervalSeconds
+        - halfOpenTimeoutSeconds
+        - branchQueueFrames
+        - branchQueueBytes
+        - drainDeadlineSeconds
+        - enrollmentMaxCaptureSeconds
+        - verificationMaxCaptureSeconds
+      properties:
+        bindDeadlineSeconds:
+          type: integer
+          const: 5
+        dependencyReadinessDeadlineSeconds:
+          type: integer
+          const: 10
+        heartbeatIntervalSeconds:
+          type: integer
+          const: 15
+        halfOpenTimeoutSeconds:
+          type: integer
+          const: 45
+        branchQueueFrames:
+          type: integer
+          const: 100
+        branchQueueBytes:
+          type: integer
+          const: 64000
+        drainDeadlineSeconds:
+          type: integer
+          const: 10
+        enrollmentMaxCaptureSeconds:
+          type: integer
+          const: 90
+        verificationMaxCaptureSeconds:
+          type: integer
+          const: 900
+
+    VoiceSessionFields:
+      type: object
+      required:
+        - protocolVersion
+        - correlationId
+        - voiceSessionId
+        - purpose
+        - state
+        - websocketPath
+        - bindExpiresAt
+        - audioProfile
+        - operationalLimits
+        - maxCaptureSeconds
+        - drainDeadlineSeconds
+        - dependencies
+      properties:
+        protocolVersion:
+          type: string
+          const: '1.0'
+        correlationId:
+          $ref: '#/components/schemas/OpaqueId'
+        voiceSessionId:
+          $ref: '#/components/schemas/OpaqueId'
+        purpose:
+          $ref: '#/components/schemas/VoicePurpose'
+        state:
+          $ref: '#/components/schemas/VoiceSessionState'
+        websocketPath:
+          type: string
+          const: /ws/v1/voice
+        bindExpiresAt:
+          type: string
+          format: date-time
+        audioProfile:
+          $ref: '#/components/schemas/AudioProfile'
+        operationalLimits:
+          $ref: '#/components/schemas/OperationalLimits'
+        maxCaptureSeconds:
+          type: integer
+          enum: [90, 900]
+        drainDeadlineSeconds:
+          type: integer
+          const: 10
+        dependencies:
+          type: array
+          minItems: 2
+          maxItems: 2
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/BranchState'
+          allOf:
+            - contains:
+                type: object
+                properties:
+                  dependency:
+                    const: ABIS
+              minContains: 1
+              maxContains: 1
+            - contains:
+                type: object
+                properties:
+                  dependency:
+                    const: SPEECH
+              minContains: 1
+              maxContains: 1
+      if:
+        required: [purpose]
+        properties:
+          purpose:
+            const: ENROLLMENT
+      then:
+        properties:
+          maxCaptureSeconds:
+            const: 90
+      else:
+        properties:
+          maxCaptureSeconds:
+            const: 900
+
+    VoiceSession:
+      allOf:
+        - $ref: '#/components/schemas/VoiceSessionFields'
+        - type: object
+          properties:
+            state:
+              const: PREAUTHORIZED
+      unevaluatedProperties: false
+
+    VoiceSessionSnapshot:
+      allOf:
+        - $ref: '#/components/schemas/VoiceSessionFields'
+        - type: object
+          required: [createdAt, updatedAt, acceptedAudioFrames, utteranceCount]
+          properties:
+            createdAt:
+              type: string
+              format: date-time
+            updatedAt:
+              type: string
+              format: date-time
+            acceptedAudioFrames:
+              type: integer
+              minimum: 0
+            utteranceCount:
+              type: integer
+              minimum: 0
+            failure:
+              $ref: '#/components/schemas/SafeFailure'
+      unevaluatedProperties: false
+
+    CancelVoiceSessionRequest:
+      type: object
+      additionalProperties: false
+      required: [voiceSessionId, reason]
+      properties:
+        voiceSessionId:
+          description: Opaque active-session identifier carried only in a no-log JSON body.
+          $ref: '#/components/schemas/OpaqueId'
+        reason:
+          type: string
+          enum: [UI_ABORT, WEBSOCKET_LOST, NAVIGATION, SIGN_OUT, OPERATOR_CANCEL]
+
+    TranscriptState:
+      type: string
+      enum: [NOT_STARTED, PENDING, PARTIAL, FINAL, FAILED, TIMED_OUT]
+
+    AssuranceProcessingState:
+      type: string
+      enum: [NOT_ELIGIBLE, PENDING, COMPLETED, FAILED, TIMED_OUT]
+
+    AssuranceOutcome:
+      type: string
+      description: Biometric comparison outcome; processing failures are represented separately.
+      enum: [MATCH, MISMATCH, INCONCLUSIVE]
+
+    AuditState:
+      type: string
+      enum: [NOT_REQUIRED, PENDING, ACCEPTED, FAILED]
+
+    UtteranceEvidenceRequest:
+      type: object
+      additionalProperties: false
+      required: [voiceSessionId, utteranceId]
+      properties:
+        voiceSessionId:
+          description: Opaque application identifier carried in JSON, never in the URL.
+          $ref: '#/components/schemas/OpaqueId'
+        utteranceId:
+          description: Opaque canonical utterance identifier carried in JSON, never in the URL.
+          $ref: '#/components/schemas/OpaqueId'
+
+    UtteranceEvidence:
+      type: object
+      additionalProperties: false
+      required:
+        - utteranceId
+        - correlationId
+        - purpose
+        - sequence
+        - startAudioSequence
+        - endAudioSequence
+        - startTime
+        - endTime
+        - maskedDoctorRef
+        - maskedApplicationSessionRef
+        - maskedIamVoiceRequestRef
+        - maskedBiometricSessionRef
+        - transcriptState
+        - assuranceState
+        - auditState
+      properties:
+        utteranceId:
+          $ref: '#/components/schemas/OpaqueId'
+        correlationId:
+          $ref: '#/components/schemas/OpaqueId'
+        purpose:
+          type: string
+          const: VERIFICATION
+        sequence:
+          type: integer
+          minimum: 1
+        startAudioSequence:
+          type: integer
+          minimum: 1
+        endAudioSequence:
+          type: integer
+          minimum: 1
+        startTime:
+          type: string
+          format: date-time
+        endTime:
+          type: string
+          format: date-time
+        maskedDoctorRef:
+          type: string
+          maxLength: 128
+        maskedApplicationSessionRef:
+          type: string
+          maxLength: 128
+        maskedIamVoiceRequestRef:
+          type: string
+          maxLength: 128
+        maskedBiometricSessionRef:
+          type: string
+          maxLength: 128
+        maskedSpeechResultRef:
+          type: string
+          maxLength: 128
+        maskedAbisResultRef:
+          type: string
+          maxLength: 128
+        transcriptState:
+          $ref: '#/components/schemas/TranscriptState'
+        transcriptRevision:
+          type: integer
+          minimum: 0
+        transcript:
+          type: string
+          maxLength: 20000
+        assuranceState:
+          $ref: '#/components/schemas/AssuranceProcessingState'
+        assuranceOutcome:
+          $ref: '#/components/schemas/AssuranceOutcome'
+        assuranceSummary:
+          type: string
+          maxLength: 512
+        ineligibilityReason:
+          type: string
+          enum: [EMPTY_OR_SILENCE, BELOW_MINIMUM_SPEECH, EXCESSIVE_NOISE, CLIPPED, OTHER_QUALITY]
+        auditState:
+          $ref: '#/components/schemas/AuditState'
+        transcriptFailure:
+          description: Speech/application processing failure; never a biometric outcome.
+          $ref: '#/components/schemas/SafeFailure'
+        assuranceFailure:
+          description: ABIS/application processing failure; never MATCH, MISMATCH, or INCONCLUSIVE.
+          $ref: '#/components/schemas/SafeFailure'
+        auditFailure:
+          description: IAM audit-binding failure; does not change the assurance outcome.
+          $ref: '#/components/schemas/SafeFailure'
+      allOf:
+        - if:
+            required: [assuranceState]
+            properties:
+              assuranceState:
+                const: COMPLETED
+          then:
+            required: [assuranceOutcome]
+          else:
+            not:
+              required: [assuranceOutcome]
+        - if:
+            required: [transcriptState]
+            properties:
+              transcriptState:
+                enum: [FAILED, TIMED_OUT]
+          then:
+            required: [transcriptFailure]
+          else:
+            not:
+              required: [transcriptFailure]
+        - if:
+            required: [assuranceState]
+            properties:
+              assuranceState:
+                enum: [FAILED, TIMED_OUT]
+          then:
+            required: [assuranceFailure]
+          else:
+            not:
+              required: [assuranceFailure]
+        - if:
+            required: [purpose, assuranceState]
+            properties:
+              purpose:
+                const: VERIFICATION
+              assuranceState:
+                const: NOT_ELIGIBLE
+          then:
+            required: [ineligibilityReason]
+          else:
+            not:
+              required: [ineligibilityReason]
+        - if:
+            required: [assuranceState]
+            properties:
+              assuranceState:
+                enum: [NOT_ELIGIBLE, FAILED, TIMED_OUT]
+          then:
+            properties:
+              auditState:
+                const: NOT_REQUIRED
+          else:
+            properties:
+              auditState:
+                enum: [PENDING, ACCEPTED, FAILED]
+        - if:
+            required: [auditState]
+            properties:
+              auditState:
+                const: FAILED
+          then:
+            required: [auditFailure]
+          else:
+            not:
+              required: [auditFailure]
+
+    FailureKind:
+      type: string
+      description: Stable normalized class; raw provider error detail is never exposed.
+      enum:
+        - AUTHENTICATION
+        - AUTHORIZATION
+        - TRANSPORT
+        - TIMEOUT
+        - QUALITY
+        - PROTOCOL
+        - BACKPRESSURE
+        - CORRELATION
+        - DEPENDENCY
+        - CANCELLED
+        - INTERNAL
+
+    SafeFailure:
+      type: object
+      additionalProperties: false
+      required: [stage, failureKind, code, retryable, terminal]
+      properties:
+        stage:
+          type: string
+          enum: [AUTH, IAM, CAPTURE, FLOW, TURN, ABIS, SPEECH, AUDIT, APPLICATION]
+        failureKind:
+          $ref: '#/components/schemas/FailureKind'
+        code:
+          type: string
+          minLength: 1
+          maxLength: 128
+        processingState:
+          type: string
+          enum: [FAILED, TIMED_OUT]
+        retryable:
+          type: boolean
+        terminal:
+          type: boolean
+        message:
+          type: string
+          maxLength: 512
+
+    Problem:
+      type: object
+      additionalProperties: false
+      required: [type, title, status, code, stage, failureKind, retryable, terminal, correlationId]
+      properties:
+        type:
+          type: string
+          format: uri-reference
+        title:
+          type: string
+          maxLength: 160
+        status:
+          type: integer
+          minimum: 400
+          maximum: 599
+        code:
+          type: string
+          maxLength: 128
+        stage:
+          type: string
+          maxLength: 64
+        failureKind:
+          $ref: '#/components/schemas/FailureKind'
+        retryable:
+          type: boolean
+        terminal:
+          type: boolean
+        correlationId:
+          $ref: '#/components/schemas/OpaqueId'
+        detail:
+          type: string
+          maxLength: 512

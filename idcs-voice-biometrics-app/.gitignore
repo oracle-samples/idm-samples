@@ -1,0 +1,57 @@
+# Local configuration and secrets
+.env
+.env.*
+!.env.example
+.secrets/
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.keystore
+*.crt
+*.cer
+
+# Biometric/transient evidence must never be committed
+*.wav
+*.pcm
+*.raw
+runtime-audio/
+runtime-transcripts/
+provider-payloads/
+secret-mounts/
+
+# Java
+target/
+build/
+*.class
+*.jar
+!.mvn/wrapper/maven-wrapper.jar
+hs_err_pid*
+
+# Node / Oracle JET
+node_modules/
+frontend/dist/
+frontend/web/
+coverage/
+.nyc_output/
+
+# IDE, OS, and logs
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db
+*.tmp
+*.swp
+*.log
+logs/
+tmp/
+temp/
+
+# Generated Oracle JET themes
+/frontend/staged-themes/
+
+# SDK model staged from an explicit distribution input
+/models/
+/dist/

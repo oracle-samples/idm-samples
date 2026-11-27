@@ -1,0 +1,142 @@
+{
+  "baseUrl": ".",
+  "use": "local",
+  "cdns": {},
+  "libs": {
+    "ojs": {
+      "cwd": "node_modules/@oracle/oraclejet/dist/js/libs/oj",
+      "debug": {
+        "src": ["debug*/**"],
+        "path": "libs/oj/#{version}",
+        "pathSuffix": "/debug'"
+      },
+      "release": {
+        "src": ["min*/**"],
+        "path": "libs/oj/#{version}",
+        "pathSuffix": "/min'"
+      }
+    },
+    "ojL10n": {
+      "cwd": "node_modules/@oracle/oraclejet/dist/js/libs/oj",
+      "debug": {
+        "src": "ojL10n.js",
+        "path": "libs/oj/#{version}/ojL10n.js"
+      },
+      "release": {
+        "src": "ojL10n.js",
+        "path": "libs/oj/#{version}/ojL10n.js"
+      }
+    },
+    "ojtranslations": {
+      "cwd": "node_modules/@oracle/oraclejet/dist/js/libs/oj/resources",
+      "debug": {
+        "src": ["**"],
+        "path": "libs/oj/#{version}/resources"
+      },
+      "release": {
+        "src": ["**"],
+        "path": "libs/oj/#{version}/resources"
+      }
+    },
+    "@oracle/oraclejet-preact": {
+      "cwd": "node_modules/@oracle/oraclejet-preact/amd",
+      "debug": {
+        "src": ["**"],
+        "path": "libs/oraclejet-preact/amd"
+      },
+      "release": {
+        "src": ["**"],
+        "path": "libs/oraclejet-preact/amd"
+      }
+    },
+    "oj-c": {
+      "cwd": "node_modules/@oracle/oraclejet-core-pack/oj-c",
+      "debug": {
+        "src": ["**"],
+        "path": "libs/packs/oj-c"
+      },
+      "release": {
+        "src": ["**"],
+        "path": "libs/packs/oj-c/min"
+      }
+    },
+    "preact": {
+      "cwd": "node_modules/preact/dist",
+      "debug": {
+        "src": ["preact.umd.js", "preact.umd.js.map"],
+        "path": "libs/preact/dist/preact.umd.js"
+      },
+      "release": {
+        "src": ["preact.umd.js", "preact.umd.js.map"],
+        "path": "libs/preact/dist/preact.umd.js"
+      }
+    },
+    "preact/hooks": {
+      "cwd": "node_modules/preact/hooks/dist",
+      "debug": {
+        "src": ["hooks.umd.js", "hooks.umd.js.map"],
+        "path": "libs/preact/hooks/dist/hooks.umd.js"
+      },
+      "release": {
+        "src": ["hooks.umd.js", "hooks.umd.js.map"],
+        "path": "libs/preact/hooks/dist/hooks.umd.js"
+      }
+    },
+    "preact/compat": {
+      "cwd": "node_modules/preact/compat/dist",
+      "debug": {
+        "src": ["compat.umd.js", "compat.umd.js.map"],
+        "path": "libs/preact/compat/dist/compat.umd.js"
+      },
+      "release": {
+        "src": ["compat.umd.js", "compat.umd.js.map"],
+        "path": "libs/preact/compat/dist/compat.umd.js"
+      },
+      "requireMap": "react"
+    },
+    "preact/jsx-runtime": {
+      "cwd": "node_modules/preact/jsx-runtime/dist",
+      "debug": {
+        "src": ["jsxRuntime.umd.js", "jsxRuntime.umd.js.map"],
+        "path": "libs/preact/jsx-runtime/dist/jsxRuntime.umd.js"
+      },
+      "release": {
+        "src": ["jsxRuntime.umd.js", "jsxRuntime.umd.js.map"],
+        "path": "libs/preact/jsx-runtime/dist/jsxRuntime.umd.js"
+      }
+    },
+    "preact/debug": {
+      "cwd": "node_modules/preact/debug/dist",
+      "debug": {
+        "src": ["debug.umd.js", "debug.umd.js.map"],
+        "path": "libs/preact/debug/dist/debug.umd.js"
+      },
+      "release": {
+        "src": ["debug.umd.js", "debug.umd.js.map"],
+        "path": "libs/preact/debug/dist/debug.umd.js"
+      }
+    },
+    "preact/devtools": {
+      "cwd": "node_modules/preact/devtools/dist",
+      "debug": {
+        "src": ["devtools.umd.js", "devtools.umd.js.map"],
+        "path": "libs/preact/devtools/dist/devtools.umd.js"
+      },
+      "release": {
+        "src": ["devtools.umd.js", "devtools.umd.js.map"],
+        "path": "libs/preact/devtools/dist/devtools.umd.js"
+      }
+    },
+    "css": {
+      "cwd": "node_modules/require-css",
+      "debug": {
+        "src": ["css.js", "css-builder.js", "normalize.js"],
+        "path": "libs/require-css/css.js"
+      },
+      "release": {
+        "src": ["css.min.js", "css-builder.js", "normalize.js"],
+        "path": "libs/require-css/css.min.js"
+      }
+    }
+  }
+}
