@@ -1,0 +1,16 @@
+{
+  "base": "..",
+  "jetVer": "20.0.0",
+  "theme": "Redwood",
+  "files": [
+    "src/**/*.html",
+    "src/**/*.tsx"
+  ],
+  "exclude": [
+    "src/**/*.test.tsx"
+  ],
+  "groups": [
+    "jet-acc"
+  ],
+  "followLinks": false
+}

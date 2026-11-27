@@ -15,6 +15,7 @@ The code samples are:
  - **idcs-rest-clients**: Complete set of REST API requests to be used with Oracle Identity Cloud Service.
  - **idcs-scim-gateway-app**: Application that exposes SCIM-based REST APIs to integrate Oracle Identity Cloud Service for provisioning purpose.
  - **idcs-sdk-sample-apps**: Multiple applications (Node.js, Java, Python, .NET, Android and iOS) which use Oracle Identity Cloud Service's SDK for authentication.
+ - **[idcs-voice-biometrics-app](./idcs-voice-biometrics-app)**: Voice enrollment and verification sample with a Java backend, Oracle JET UI, and IAM, Voice Biometrics SDK, and OCI Speech integrations.
  - **postman-collection-examples**: Postman collection that includes 7 use -cases related to passwordless flows such as: Username – Password, Username - Email OTP, Username - SMS OTP, Username – TOTP, Username - PUSH Notification, Username - Password and SMS Login from using backup factor, and Username - SMS - MFA Push Notification.
  - **salesinsight**: Sample web application used to test the Oracle Identity Cloud Service integration with OAuth2 as a resource server application.
 
