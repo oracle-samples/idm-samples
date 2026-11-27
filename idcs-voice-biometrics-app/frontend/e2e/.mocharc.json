@@ -1,0 +1,7 @@
+{
+  "require": ["ts-node/register"],
+  "extension": ["js", "ts"],
+  "spec": ["e2e/**/*.e2e.js", "e2e/**/*.e2e.ts"],
+  "timeout": 15000,
+  "reporter": "spec"
+}

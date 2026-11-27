@@ -1,0 +1,137 @@
+spring:
+  application:
+    name: ai-world-voice-demo
+  config:
+    import:
+      - optional:file:.env[.properties]
+      - optional:file:../.env[.properties]
+  jackson:
+    default-property-inclusion: non_null
+    deserialization:
+      fail-on-unknown-properties: true
+  main:
+    banner-mode: "off"
+  web:
+    resources:
+      cache:
+        cachecontrol:
+          no-cache: true
+
+server:
+  address: ${VOICE_BIOMETRIC_BIND_ADDRESS:127.0.0.1}
+  port: ${VOICE_BIOMETRIC_BACKEND_PORT:8080}
+  ssl:
+    enabled: ${VOICE_BIOMETRIC_TLS_ENABLED:false}
+    certificate: ${VOICE_BIOMETRIC_TLS_CERTIFICATE_FILE:}
+    certificate-private-key: ${VOICE_BIOMETRIC_TLS_PRIVATE_KEY_FILE:}
+  error:
+    include-message: never
+    include-binding-errors: never
+    include-stacktrace: never
+    whitelabel:
+      enabled: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+ai-world:
+  public-origin: ${VOICE_BIOMETRIC_PUBLIC_ORIGIN:https://localhost:8443}
+  abis:
+    enabled: ${VOICE_BIOMETRIC_ABIS_ENABLED:false}
+    base-url: ${VOICE_BIOMETRIC_ABIS_BASE_URL:}
+    tls-verify: ${VOICE_BIOMETRIC_ABIS_TLS_VERIFY:true}
+    connect-timeout-ms: ${VOICE_BIOMETRIC_ABIS_CONNECT_TIMEOUT_MS:10000}
+    verification-max-ms: ${VOICE_BIOMETRIC_ABIS_VERIFICATION_MAX_MS:10000}
+    registration-min-ms: ${VOICE_BIOMETRIC_ABIS_REGISTRATION_MIN_MS:7000}
+    registration-max-ms: ${VOICE_BIOMETRIC_ABIS_REGISTRATION_MAX_MS:10000}
+    pre-roll-ms: ${VOICE_BIOMETRIC_ABIS_PRE_ROLL_MS:200}
+    end-silence-ms: ${VOICE_BIOMETRIC_ABIS_END_SILENCE_MS:800}
+    registration-start-frames: ${VOICE_BIOMETRIC_ABIS_REGISTRATION_START_FRAMES:3}
+    pending-pcm-bytes: ${VOICE_BIOMETRIC_ABIS_PENDING_PCM_BYTES:4194304}
+    finish-timeout-ms: ${VOICE_BIOMETRIC_ABIS_FINISH_TIMEOUT_MS:30000}
+    store-enrollment-audio: ${VOICE_BIOMETRIC_ABIS_STORE_ENROLLMENT_AUDIO:false}
+    store-verification-audio: ${VOICE_BIOMETRIC_ABIS_STORE_VERIFICATION_AUDIO:false}
+  speech:
+    enabled: ${VOICE_BIOMETRIC_OCI_SPEECH_ENABLED:false}
+    auth-mode: ${VOICE_BIOMETRIC_OCI_AUTH_MODE:SESSION_TOKEN}
+    config-file: ${VOICE_BIOMETRIC_OCI_CONFIG_FILE:}
+    profile: ${VOICE_BIOMETRIC_OCI_PROFILE:DEFAULT}
+    expected-tenancy-ocid: ${VOICE_BIOMETRIC_OCI_EXPECTED_TENANCY_OCID:}
+    region: ${VOICE_BIOMETRIC_OCI_REGION:}
+    compartment-ocid: ${VOICE_BIOMETRIC_OCI_SPEECH_COMPARTMENT_OCID:}
+    realtime-endpoint: ${VOICE_BIOMETRIC_OCI_SPEECH_REALTIME_ENDPOINT:}
+    model-type: ${VOICE_BIOMETRIC_OCI_SPEECH_MODEL_TYPE:WHISPER}
+    model-domain: ${VOICE_BIOMETRIC_OCI_SPEECH_MODEL_DOMAIN:GENERIC}
+    language-code: ${VOICE_BIOMETRIC_OCI_SPEECH_LANGUAGE_CODE:en}
+    encoding: ${VOICE_BIOMETRIC_OCI_SPEECH_ENCODING:audio/raw;rate=16000}
+    punctuation: ${VOICE_BIOMETRIC_OCI_SPEECH_PUNCTUATION:AUTO}
+    ack-enabled: ${VOICE_BIOMETRIC_OCI_SPEECH_ACK_ENABLED:true}
+    stabilize-partial-results: ${VOICE_BIOMETRIC_OCI_SPEECH_STABILIZE_PARTIAL_RESULTS:NONE}
+    partial-silence-ms: ${VOICE_BIOMETRIC_OCI_SPEECH_PARTIAL_SILENCE_MS:0}
+    final-silence-ms: ${VOICE_BIOMETRIC_OCI_SPEECH_FINAL_SILENCE_MS:300}
+    readiness-timeout-ms: ${VOICE_BIOMETRIC_OCI_SPEECH_READINESS_TIMEOUT_MS:10000}
+    drain-timeout-ms: ${VOICE_BIOMETRIC_OCI_SPEECH_DRAIN_TIMEOUT_MS:10000}
+  session:
+    idle-seconds: ${VOICE_BIOMETRIC_SESSION_IDLE_SECONDS:900}
+    absolute-seconds: ${VOICE_BIOMETRIC_SESSION_ABSOLUTE_SECONDS:28800}
+    capacity: ${VOICE_BIOMETRIC_SESSION_CAPACITY:1000}
+  idcs:
+    enabled: ${VOICE_BIOMETRIC_IDCS_ENABLED:false}
+    authentication-mode: ${VOICE_BIOMETRIC_IDCS_AUTHENTICATION_MODE:STRICT_JWT}
+    domain-url: ${VOICE_BIOMETRIC_IDCS_DOMAIN_URL:}
+    token-path: ${VOICE_BIOMETRIC_IDCS_TOKEN_PATH:/oauth2/v1/token}
+    profile-path: ${VOICE_BIOMETRIC_IDCS_PROFILE_PATH:/admin/v1/Me}
+    client-id: ${VOICE_BIOMETRIC_IDCS_CLIENT_ID:}
+    client-secret-file: ${VOICE_BIOMETRIC_IDCS_CLIENT_SECRET_FILE:}
+    scope: ${VOICE_BIOMETRIC_IDCS_SCOPE:}
+    tls-verify: ${VOICE_BIOMETRIC_IDCS_TLS_VERIFY:true}
+    issuer: ${VOICE_BIOMETRIC_IDCS_ISSUER:}
+    audience: ${VOICE_BIOMETRIC_IDCS_AUDIENCE:}
+    jwks-uri: ${VOICE_BIOMETRIC_IDCS_JWKS_URI:}
+    identity-domain-claim: ${VOICE_BIOMETRIC_IDCS_IDENTITY_DOMAIN_CLAIM:}
+    identity-domain-value: ${VOICE_BIOMETRIC_IDCS_IDENTITY_DOMAIN_VALUE:}
+    username-claim: ${VOICE_BIOMETRIC_IDCS_USERNAME_CLAIM:}
+    display-name-claim: ${VOICE_BIOMETRIC_IDCS_DISPLAY_NAME_CLAIM:}
+    organization-claim: ${VOICE_BIOMETRIC_IDCS_ORGANIZATION_CLAIM:}
+    user-guid-claim: ${VOICE_BIOMETRIC_IDCS_USER_GUID_CLAIM:}
+    clock-skew-seconds: ${VOICE_BIOMETRIC_IDCS_CLOCK_SKEW_SECONDS:60}
+    login-rate-limit-attempts: ${VOICE_BIOMETRIC_IDCS_LOGIN_RATE_LIMIT_ATTEMPTS:10}
+    login-rate-limit-ip-attempts: ${VOICE_BIOMETRIC_IDCS_LOGIN_RATE_LIMIT_IP_ATTEMPTS:100}
+    login-rate-limit-window-seconds: ${VOICE_BIOMETRIC_IDCS_LOGIN_RATE_LIMIT_WINDOW_SECONDS:60}
+    approved-doctors-file: ${VOICE_BIOMETRIC_IDCS_APPROVED_DOCTORS_FILE:}
+    connect-timeout-ms: ${VOICE_BIOMETRIC_IDCS_CONNECT_TIMEOUT_MS:3000}
+    response-timeout-ms: ${VOICE_BIOMETRIC_IDCS_RESPONSE_TIMEOUT_MS:10000}
+  iam:
+    status-enabled: ${VOICE_BIOMETRIC_IAM_STATUS_ENABLED:false}
+    enrollment-enabled: ${VOICE_BIOMETRIC_IAM_ENROLLMENT_ENABLED:false}
+    secure-domain-url: ${VOICE_BIOMETRIC_IAM_SECURE_DOMAIN_URL:}
+    service-token-path: ${VOICE_BIOMETRIC_IAM_SERVICE_TOKEN_PATH:/oauth2/v1/token}
+    service-client-id: ${VOICE_BIOMETRIC_IAM_SERVICE_CLIENT_ID:}
+    service-scope: ${VOICE_BIOMETRIC_IAM_SERVICE_SCOPE:urn:opc:idm:__myscopes__}
+    tls-verify: ${VOICE_BIOMETRIC_IAM_TLS_VERIFY:true}
+    mtls-keystore-file: ${VOICE_BIOMETRIC_IAM_MTLS_KEYSTORE_FILE:}
+    mtls-keystore-password-file: ${VOICE_BIOMETRIC_IAM_MTLS_KEYSTORE_PASSWORD_FILE:}
+    mtls-keystore-type: ${VOICE_BIOMETRIC_IAM_MTLS_KEYSTORE_TYPE:PKCS12}
+    mtls-truststore-file: ${VOICE_BIOMETRIC_IAM_MTLS_TRUSTSTORE_FILE:}
+    mtls-truststore-password-file: ${VOICE_BIOMETRIC_IAM_MTLS_TRUSTSTORE_PASSWORD_FILE:}
+    mtls-truststore-type: ${VOICE_BIOMETRIC_IAM_MTLS_TRUSTSTORE_TYPE:PKCS12}
+    factor-status-path: ${VOICE_BIOMETRIC_IAM_FACTOR_STATUS_PATH:/mfa/v1/users/{userId}/factors}
+    verification-request-path: ${VOICE_BIOMETRIC_IAM_VERIFICATION_REQUEST_PATH:/mfa/v1/requests}
+    verification-request-item-path: ${VOICE_BIOMETRIC_IAM_VERIFICATION_REQUEST_ITEM_PATH:/mfa/v1/requests/{requestId}}
+    connect-timeout-ms: ${VOICE_BIOMETRIC_IAM_CONNECT_TIMEOUT_MS:3000}
+    response-timeout-ms: ${VOICE_BIOMETRIC_IAM_RESPONSE_TIMEOUT_MS:10000}
+    factor-mapping-approved: ${VOICE_BIOMETRIC_IAM_FACTOR_MAPPING_APPROVED:false}
+    factors-json-pointer: ${VOICE_BIOMETRIC_IAM_FACTORS_JSON_POINTER:}
+    factor-method-field: ${VOICE_BIOMETRIC_IAM_FACTOR_METHOD_FIELD:}
+    factor-status-field: ${VOICE_BIOMETRIC_IAM_FACTOR_STATUS_FIELD:}
+    voice-method-value: ${VOICE_BIOMETRIC_IAM_VOICE_METHOD_VALUE:}
+    enrolled-status-value: ${VOICE_BIOMETRIC_IAM_ENROLLED_STATUS_VALUE:}
+    not-enrolled-status-values: ${VOICE_BIOMETRIC_IAM_NOT_ENROLLED_STATUS_VALUES:}
+    absent-voice-status: ${VOICE_BIOMETRIC_IAM_ABSENT_VOICE_STATUS:}
+    unenrollment-enabled: ${VOICE_BIOMETRIC_IAM_UNENROLLMENT_ENABLED:false}
+    factor-resource-path: ${VOICE_BIOMETRIC_IAM_FACTOR_RESOURCE_PATH:${VOICE_BIOMETRIC_IAM_FACTOR_DELETE_PATH:/mfa/v1/users/{userId}/factors/{factorId}}}
+    factor-id-field: ${VOICE_BIOMETRIC_IAM_FACTOR_ID_FIELD:factorId}
+    factor-user-guid-field: ${VOICE_BIOMETRIC_IAM_FACTOR_USER_GUID_FIELD:userGUID}

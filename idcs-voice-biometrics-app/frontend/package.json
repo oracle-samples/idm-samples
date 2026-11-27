@@ -1,0 +1,50 @@
+{
+  "name": "ai-world-voice-identity-ui",
+  "version": "0.1.0",
+  "description": "Oracle JET frontend for the AI World voice identity demo",
+  "private": true,
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "scripts": {
+    "build": "ojet build",
+    "build:release": "ojet build --release",
+    "serve": "ojet serve --server-only",
+    "typecheck": "tsc --noEmit",
+    "test": "jest -c jest.config.js --runInBand",
+    "test:watch": "jest -c jest.config.js --watch",
+    "test:e2e": "TS_NODE_PROJECT=e2e/tsconfig.json mocha --config e2e/.mocharc.json",
+    "audit": "ojaf --config test-config/jaf.json"
+  },
+  "dependencies": {
+    "@oracle/oraclejet": "20.0.0",
+    "@oracle/oraclejet-core-pack": "20.0.0",
+    "preact": "10.26.10"
+  },
+  "devDependencies": {
+    "@oracle/ojet-cli": "20.0.0",
+    "@oracle/oraclejet-audit": "20.0.0",
+    "@oracle/oraclejet-jest-preset": "20.0.0",
+    "@oracle/oraclejet-webdriver": "20.0.0",
+    "@testing-library/preact": "3.2.3",
+    "@testing-library/user-event": "14.6.1",
+    "@types/jest": "29.5.3",
+    "@types/mocha": "10.0.4",
+    "@types/selenium-webdriver": "4.1.20",
+    "extract-zip": "1.7.0",
+    "fs-extra": "8.1.0",
+    "glob": "10.4.5",
+    "jest": "29.6.2",
+    "jest-environment-jsdom": "29.6.2",
+    "mocha": "10.2.0",
+    "regenerator-runtime": "0.13.11",
+    "selenium-webdriver": "4.15.0",
+    "ts-node": "10.9.2",
+    "typescript": "5.8.3",
+    "underscore": "1.13.7",
+    "yargs-parser": "13.1.2"
+  },
+  "overrides": {
+    "@types/minimatch": "5.1.2"
+  }
+}

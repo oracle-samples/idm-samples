@@ -1,0 +1,27 @@
+{
+  "paths": {
+    "source": {
+      "common": "src",
+      "web": "src-web",
+      "javascript": ".",
+      "typescript": ".",
+      "styles": "styles",
+      "themes": "themes",
+      "components": "components",
+      "exchangeComponents": "exchange_components"
+    },
+    "staging": {
+      "web": "web",
+      "themes": "staged-themes"
+    }
+  },
+  "unversioned": true,
+  "generateSourceMaps": false,
+  "defaultBrowser": "chrome",
+  "sassVer": "1.80.5",
+  "defaultTheme": "redwood",
+  "typescriptLibraries": "typescript@5.8.3 yargs-parser@13.1.2",
+  "jestTestingLibraries": "jest@29.6.2 @testing-library/preact@3.2.3 @types/jest@29.5.3 jest-environment-jsdom@29.6.2 regenerator-runtime@0.13.11 @oracle/oraclejet-jest-preset@20.0.0",
+  "architecture": "vdom",
+  "defaultWebpackOjL10nLocale": "en-US"
+}

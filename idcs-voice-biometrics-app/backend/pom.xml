@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>4.1.1</version>
+        <relativePath/>
+    </parent>
+
+    <groupId>com.oracle.aiworld</groupId>
+    <artifactId>ai-world-backend</artifactId>
+    <version>0.1.0-SNAPSHOT</version>
+    <name>AI World Voice Identity Backend</name>
+    <description>Same-origin backend-for-frontend for the AI World voice identity demo.</description>
+
+    <properties>
+        <java.version>21</java.version>
+        <mockwebserver.version>4.12.0</mockwebserver.version>
+        <voice.biometric.sdk.version>1.2.5-SNAPSHOT</voice.biometric.sdk.version>
+        <oci.java.sdk.version>3.95.0</oci.java.sdk.version>
+        <!-- OCI Java SDK 3.95.0's HTTP provider is built against Jersey 2.x/JAX-RS 2.x.
+             Spring Boot 4 manages Jersey 4/JAX-RS 4, which makes ServiceLoader fail when
+             instance-principal authentication first initializes the OCI HTTP provider. -->
+        <oci.jersey.version>2.47</oci.jersey.version>
+        <oci.jaxrs.version>2.1.6</oci.jaxrs.version>
+        <oci.speech.jetty.version>9.4.58.v20250814</oci.speech.jetty.version>
+        <frontend.release.directory>${project.basedir}/../frontend/web</frontend.release.directory>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency><groupId>com.oracle.oci.sdk</groupId><artifactId>oci-java-sdk-bom</artifactId><version>${oci.java.sdk.version}</version><type>pom</type><scope>import</scope></dependency>
+            <dependency><groupId>org.eclipse.jetty</groupId><artifactId>jetty-bom</artifactId><version>${oci.speech.jetty.version}</version><type>pom</type><scope>import</scope></dependency>
+        </dependencies>
+    </dependencyManagement>
+    <dependencies>
+        <dependency>
+            <groupId>com.oracle.voicebiometrics</groupId>
+            <artifactId>voice-biometrics</artifactId>
+            <version>${voice.biometric.sdk.version}</version>
+            <exclusions>
+                <exclusion><groupId>org.slf4j</groupId><artifactId>slf4j-simple</artifactId></exclusion>
+                <!-- Only the SDK's standalone tester uses the Jetty servlet/server stack. -->
+                <exclusion><groupId>org.eclipse.jetty</groupId><artifactId>jetty-server</artifactId></exclusion>
+                <exclusion><groupId>org.eclipse.jetty</groupId><artifactId>jetty-servlet</artifactId></exclusion>
+                <exclusion><groupId>org.eclipse.jetty.websocket</groupId><artifactId>websocket-server</artifactId></exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-oauth2-jose</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.oracle.oci.sdk</groupId>
+            <artifactId>oci-java-sdk-addons-aispeech-realtime</artifactId>
+            <version>${oci.java.sdk.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-simple</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.eclipse.jetty.websocket</groupId>
+                    <artifactId>websocket-server</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <!-- Keep the OCI SDK's Jersey provider internally version-consistent. These direct
+             dependencies intentionally override Spring Boot 4's incompatible Jersey 4 set. -->
+        <dependency>
+            <groupId>org.glassfish.jersey.core</groupId>
+            <artifactId>jersey-client</artifactId>
+            <version>${oci.jersey.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.core</groupId>
+            <artifactId>jersey-common</artifactId>
+            <version>${oci.jersey.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.inject</groupId>
+            <artifactId>jersey-hk2</artifactId>
+            <version>${oci.jersey.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-json-jackson</artifactId>
+            <version>${oci.jersey.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.ext</groupId>
+            <artifactId>jersey-entity-filtering</artifactId>
+            <version>${oci.jersey.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.connectors</groupId>
+            <artifactId>jersey-apache-connector</artifactId>
+            <version>${oci.jersey.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.ws.rs</groupId>
+            <artifactId>jakarta.ws.rs-api</artifactId>
+            <version>${oci.jaxrs.version}</version>
+        </dependency>
+        <!-- The OCI realtime addon uses the Jetty 9 client API. Spring Boot 4 manages Jetty 12,
+             so this client-only island is pinned explicitly to prevent binary linkage failures. -->
+        <dependency>
+            <groupId>org.eclipse.jetty.websocket</groupId>
+            <artifactId>websocket-client</artifactId>
+            <version>${oci.speech.jetty.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-client</artifactId>
+            <version>${oci.speech.jetty.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-http</artifactId>
+            <version>${oci.speech.jetty.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-io</artifactId>
+            <version>${oci.speech.jetty.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-util</artifactId>
+            <version>${oci.speech.jetty.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.projectreactor</groupId>
+            <artifactId>reactor-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>mockwebserver</artifactId>
+            <version>${mockwebserver.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>require-frontend-release</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <available file="${frontend.release.directory}/index.html"
+                                           property="frontend.release.index.exists"/>
+                                <available file="${project.build.outputDirectory}/static/index.html"
+                                           property="frontend.packaged.index.exists"/>
+                                <fail unless="frontend.release.index.exists"
+                                      message="Missing frontend/web/index.html; run npm run build:release in frontend before Maven packaging."/>
+                                <fail unless="frontend.packaged.index.exists"
+                                      message="Frontend index.html was not copied into the application classpath."/>
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-frontend-release</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.outputDirectory}/static</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${frontend.release.directory}</directory>
+                                    <filtering>false</filtering>
+                                    <excludes>
+                                        <exclude>**/*.map</exclude>
+                                        <exclude>**/*.md</exclude>
+                                        <exclude>**/*.scss</exclude>
+                                        <exclude>**/*.ts</exclude>
+                                        <exclude>**/*.test.js</exclude>
+                                    </excludes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <systemPropertyVariables>
+                        <reactor.netty.http.server.accessLogEnabled>false</reactor.netty.http.server.accessLogEnabled>
+                    </systemPropertyVariables>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
